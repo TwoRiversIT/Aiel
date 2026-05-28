@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.Permissions.Testing.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.Permissions.Testing\Aiel.Permissions.Testing.csproj" />
+	</ItemGroup>
+
+</Project>

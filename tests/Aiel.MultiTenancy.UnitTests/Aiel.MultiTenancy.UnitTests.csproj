@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.MultiTenancy.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+	</ItemGroup>
+
+</Project>

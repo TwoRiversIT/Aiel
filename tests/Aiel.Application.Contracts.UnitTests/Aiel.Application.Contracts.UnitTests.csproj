@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.Application.Contracts.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>

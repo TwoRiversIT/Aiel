@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.AspNetCore.Blazor.WebAssembly\Aiel.AspNetCore.Blazor.WebAssembly.csproj" />
+    </ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="coverlet.collector" Version="10.0.0" />
+	  <PackageReference Update="FluentAssertions" Version="8.9.0" />
+	  <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+	</ItemGroup>
+
+</Project>

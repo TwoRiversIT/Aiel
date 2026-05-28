@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Testing.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+        <None Remove="appsettings.Testing.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="appsettings.Testing.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    
+	<ItemGroup>
+        <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.7" />
+	</ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="coverlet.collector" Version="10.0.0" />
+      <PackageReference Update="FluentAssertions" Version="8.9.0" />
+      <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    </ItemGroup>
+
+</Project>

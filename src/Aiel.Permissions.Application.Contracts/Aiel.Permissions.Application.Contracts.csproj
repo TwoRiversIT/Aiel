@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.Permissions.Application.Contracts</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Update="ConfigureAwait.Fody">
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
+		<ProjectReference Include="..\Aiel.Permissions.Domain.Shared\Aiel.Permissions.Domain.Shared.csproj" />
+		<ProjectReference Include="..\Aiel.Results\Aiel.Results.csproj" />
+		<ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Aiel.Permissions.Generators\Aiel.Permissions.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+	</ItemGroup>
+
+</Project>

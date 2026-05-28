@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.Results</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>true</IsPackable>
+
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
+		<!--
+		Suppress this warning because this assembly does not consume the generated types.
+		'PDRP0001: Results types are used but AddResultPattern() is not called on IServiceCollection'		
+		-->
+		<NoWarn>$(NoWarn);PDRP0001</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="./README.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Update="ConfigureAwait.Fody">
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- Includes the analyzer DLL in the NuGet package to ensure it is available and used during compilation of consuming projects. -->
+	<ItemGroup>
+		<None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<!-- Reference the analyzer project as an analyzer to ensure it is used during compilation of this project. -->
+	<ItemGroup>
+		<ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Aiel\Aiel.csproj" />
+	</ItemGroup>
+
+	<Import Project="..\Aiel.Shared\Aiel.Shared.projitems" Label="Shared" />
+
+</Project>

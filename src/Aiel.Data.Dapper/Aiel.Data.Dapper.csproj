@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Data.Dapper</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>true</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="./README.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Update="ConfigureAwait.Fody">
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+        <PackageReference Include="Dapper" Version="2.1.72" />
+    </ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Aiel\Aiel.csproj" />
+	</ItemGroup>
+
+</Project>

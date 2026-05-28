@@ -1,0 +1,11 @@
+<Project>
+
+    <PropertyGroup>
+        <AielResultsGeneratorsPath>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\analyzers\dotnet\cs'))</AielResultsGeneratorsPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Analyzer Include="$(AielResultsGeneratorsPath)\Aiel.Results.Generators.dll" />
+    </ItemGroup>
+
+</Project>

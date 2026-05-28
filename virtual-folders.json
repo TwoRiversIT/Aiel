@@ -1,0 +1,18 @@
+{
+    "solutionFolders": {
+        "/dev/": {
+            "path": ".",
+            "include": [],
+            "exclude": [
+                "*.slnx"
+            ]
+        },
+        "/docs/": {
+            "path": "docs",
+            "recurse": true,
+            "include": [
+                "**/*.md"
+            ]
+        }
+    }
+}

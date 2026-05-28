@@ -20,9 +20,9 @@ The Aiel Application Framework follows these core patterns:
 The following documents are the basis for the framework. While not required reading, they document the core philosophy and architectural goals that guide the framework implementation.
 
 - [Conceptual Overview](./docs/ConceptualOverview.md)
-- [Architecture](./docs/Architecture.md)
-- [Domain Primitives Contract](./docs/DomainPrimitives.md)
-- [Aggregate Root Discussion](./docs/AggregateRootDiscussion.md)
+- [Architecture](./docs/ArchitectureOverview.md)
+- [Domain Primitives Contract](./docs/features/ddd/DomainPrimitives.md)
+- [Aggregate Root Discussion](./docs/features/ddd/AggregateRootDiscussion.md)
 
 ## Core Packages
 
@@ -52,7 +52,7 @@ Result Pattern implementation for representing operation outcomes without except
 - Trimming and AOT compatible
 - JSON serialization support
 
-### [Aiel.Results.AspNetCore](./src/Aiel.Results.AspNetCore/README.md)
+### Aiel.Results.AspNetCore
 
 ASP.NET Core integration for the Result Pattern with ProblemDetails support.
 
@@ -91,7 +91,7 @@ Column mapping for Dapper enabling property-to-column name mapping via attribute
 - `ColumnMapper` for automatic mapping discovery from assemblies
 - Type-safe mapping without manual configuration
 
-### [Aiel.EntityFramework](./src/Aiel.EntityFramework/README.md)
+### [Aiel.EntityFrameworkCore](./src/Aiel.EntityFrameworkCore/README.md)
 
 Entity Framework Core utilities and extensions (in development).
 

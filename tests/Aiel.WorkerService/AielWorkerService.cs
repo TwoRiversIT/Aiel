@@ -1,0 +1,65 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using Microsoft.EntityFrameworkCore;
+using Aiel.AspNetCore;
+using Aiel.Dependencies;
+using Aiel.EntityFrameworkCore;
+using Aiel.EntityFrameworkCore.Migrations;
+using Aiel.Security;
+using Aiel.WorkerService.Shared;
+
+namespace Aiel.WorkerService;
+
+[DependsOn(typeof(AielAspNetCore))]
+[DependsOn(typeof(AielSecurity))]
+[DependsOn(typeof(AielWorkerServiceShared))]
+[DependsOn(typeof(AielEntityFrameworkCore))]
+public sealed class AielWorkerService : Dependencies.AielApplication
+{
+    public override String ApplicationName => ThisAssembly.AssemblyName;
+    public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
+
+    public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        // https://www.npgsql.org/efcore/release-notes/6.0.html#opting-out-of-the-new-timestamp-mapping-logic
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+        return Task.CompletedTask;
+    }
+
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        var connStr = context.GetConnectionStringOrDefault("MyAppDb");
+        context.Services.AddDbContext<MyAppDbContext>(options =>
+        {
+            options.UseNpgsql(connStr, options => options.MigrationsAssembly("Inara.IdentityProvider.EntityFrameworkCore.PostgreSql"));
+            options.EnableSensitiveDataLogging(context.IsDevelopment);
+        });
+
+        context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<MyAppDbContext>>();
+
+        return Task.CompletedTask;
+    }
+}
+
+public class MyAppDbContext : DbContext;

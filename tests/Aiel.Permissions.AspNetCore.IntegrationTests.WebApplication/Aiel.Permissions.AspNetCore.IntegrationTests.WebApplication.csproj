@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Permissions.AspNetCore.IntegrationTests.WebApplication</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <StartupObject>Aiel.Permissions.AspNetCore.Program</StartupObject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Update="ConfigureAwait.Fody">
+            <TreatAsUsed>true</TreatAsUsed>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Permissions.Application.Contracts\Aiel.Permissions.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Permissions.Domain.Shared\Aiel.Permissions.Domain.Shared.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Permissions.Testing\Aiel.Permissions.Testing.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
+    </ItemGroup>
+
+</Project>

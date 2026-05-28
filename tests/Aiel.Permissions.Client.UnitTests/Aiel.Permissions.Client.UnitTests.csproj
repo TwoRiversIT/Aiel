@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.Permissions.Client.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.Permissions.Application.Contracts\Aiel.Permissions.Application.Contracts.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.Permissions.Client\Aiel.Permissions.Client.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
+	</ItemGroup>
+
+</Project>

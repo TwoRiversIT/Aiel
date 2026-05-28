@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Results.GeneratedErrors</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+
+		<!-- Analyzer/Source Generator settings -->
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
+        <!-- Source generators embed timestamps so deterministic builds are not possible. -->
+        <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+        <Deterministic>false</Deterministic>
+
+        <!--
+		Suppress this warning because this assembly does not consume the generated types.
+		'PDRP0001: Results types are used but AddResultPattern() is not called on IServiceCollection'		
+		-->
+        <NoWarn>$(NoWarn);PDRP0001</NoWarn>
+    </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Update="ConfigureAwait.Fody">
+			<TreatAsUsed>true</TreatAsUsed>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+        <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -50,6 +50,7 @@ public sealed class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserDto>
         CancellationToken cancellationToken)
     {
         // Read state, return Result.Success(dto) or Result.Failure(error)
+        // Note: implementations must return Result<TDto> for the value to reach the caller
     }
 }
 ```
@@ -88,7 +89,7 @@ public sealed class SendWelcomeEmailHandler : INotificationHandler<UserCreatedNo
         UserCreatedNotification notification,
         CancellationToken cancellationToken)
     {
-        // Send email. If one or more handlers throw, PublishAsync() surfaces an AggregateException after every registered handler has run.
+        // Send email. Exceptions are logged via ILogger and swallowed; all handlers run regardless of prior failures.
     }
 }
 ```
@@ -305,8 +306,7 @@ public async Task ExecuteAsync_WithInvalidCommand_ValidationFails()
 
 - **Behaviors run in registration order** — The first behavior added wraps all others. This is fixed at startup; you cannot alter the pipeline per-request.
 - **Notification handlers are invoked sequentially** — All handlers for a notification run one after another in registration order. If you need parallel execution, you can `Task.WhenAll()` them inside a behavior.
-- **Notification publish awaits all handlers** — Exceptions from notification handlers are collected and rethrown as an `AggregateException` after every registered handler has been invoked. If no handlers are registered for a notification type, `PublishAsync()` returns immediately (no-op).
+- **Notification publish awaits all handlers** — Exceptions from notification handlers are logged via `ILogger<NotificationHandlerBase>` at Error level and swallowed; all handlers run to completion regardless of prior failures. `PublishAsync()` completes successfully even if handlers threw. If no handlers are registered for a notification type, `PublishAsync()` returns immediately (no-op).
 - **Handlers are scoped** — Each dispatch creates a new dependency scope and is cleaned up when the dispatch completes. This ensures isolation but prevents long-lived cached state within a handler.
-- **Query handlers must return `Result`** — The dispatcher casts query results to `Result<TDto>` internally. If a behavior short-circuits with a plain `Result.Failure()`, it is promoted to `Result<TDto>.Failure()` automatically.
+- **Query handlers must return `Result<TDto>`** — The handler interface declares `ValueTask<Result>` for pipeline uniformity, but implementations must return `Result<TDto>` (e.g., `Result<UserDto>.Success(dto)`) for the value to be available to the caller. If a behavior short-circuits with a plain `Result.Failure()`, it is automatically promoted to `Result<TDto>.Failure()`.
 - **Validation behavior requires FluentValidation** — If you use `ValidationBehavior<>`, you must add `AbstractValidator<TAction>` implementations for any action you want to validate. Behaviors without validators are skipped.
-s without validators are skipped.

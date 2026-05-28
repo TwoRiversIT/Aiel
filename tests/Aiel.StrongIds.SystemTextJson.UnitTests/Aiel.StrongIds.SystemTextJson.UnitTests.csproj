@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.StrongIds.SystemTextJson.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Update="coverlet.collector" Version="10.0.0" />
+	  <PackageReference Update="FluentAssertions" Version="8.9.0" />
+	  <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,130 @@
+<Project>
+
+	<!-- Shared defaults and language settings -->
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<NeutralLanguage>en</NeutralLanguage>
+
+		<IsAotCompatible>false</IsAotCompatible>
+		<IsTrimmable>false</IsTrimmable>
+
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+		<!-- NBGV versioning -->
+		<NBGV_ThisAssemblyNamespace>$(AssemblyName)</NBGV_ThisAssemblyNamespace>
+		<NBGV_ThisAssemblyIncludesPackageVersion>true</NBGV_ThisAssemblyIncludesPackageVersion>
+ 		<GitVersionBaseDirectory>$(MSBuildThisFileDirectory)</GitVersionBaseDirectory>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+
+		<!-- Test project detection -->
+		<IsTestProject Condition="$(MSBuildProjectName.EndsWith('Tests')) or $(MSBuildProjectName.EndsWith('.TestBase'))">true</IsTestProject>
+	</PropertyGroup>
+
+	<!-- NuGet metadata (applies to all packable projects) -->
+	<PropertyGroup>
+		<Title>Two Rivers Aiel</Title>
+		<Description>Framework and tools for implementing applications by following best practices in a developer friendly way.</Description>
+		<Authors>Doug Wilson</Authors>
+		<Company>Two Rivers Information Technology Inc.</Company>
+		<Copyright>© Two Rivers Information Technology Inc. All rights reserved.</Copyright>
+
+		<PackageProjectUrl>https://forgejo.dkw.io/Aiel/AppFramework</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+		<RepositoryUrl>https://forgejo.dkw.io/Aiel/AppFramework.git</RepositoryUrl>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+
+		<PackageId>$(AssemblyName)</PackageId>
+		<ErrorReport>send</ErrorReport>
+
+		<GenerateDocumentationFile>false</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<Deterministic>true</Deterministic>
+
+	</PropertyGroup>
+
+	<!-- NBGV package reference -->
+	<ItemGroup>
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DotNet.ReproducibleBuilds" Version="2.0.2" PrivateAssets="All"/>
+	</ItemGroup>
+	
+	<!-- Analyzer -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- Fody weavers -->
+	<ItemGroup Condition="'$(IsTestProject)' == 'false'">
+		<PackageReference Include="Fody" Version="6.9.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets='All' />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(IsTestProject)' == 'false'">
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+	</PropertyGroup>
+	
+	<!-- Test project overrides -->
+	<PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+		<IsPackable>false</IsPackable>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(IsTestProject)' == 'true'">
+		<Using Include="Bogus" />
+		<Using Include="FluentAssertions" />
+		<Using Include="Moq" />
+		<Using Include="Xunit" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(IsTestProject)' == 'true'">
+		<PackageReference Include="Bogus" Version="35.6.5" />
+		<PackageReference Include="Bogus.Hollywood" Version="35.6.5" />
+		<PackageReference Include="Bogus.Text" Version="35.6.5" />
+		<PackageReference Include="FluentAssertions" Version="8.8.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+		<PackageReference Include="Moq" Version="4.20.72" />
+		<PackageReference Include="xunit.v3" Version="3.2.2" />
+		<PackageReference Include="Bogus.Tools.Analyzer" Version="35.6.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.collector" Version="8.0.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+</Project>

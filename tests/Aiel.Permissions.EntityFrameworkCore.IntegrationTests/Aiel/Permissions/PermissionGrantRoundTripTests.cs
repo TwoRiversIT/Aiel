@@ -1,0 +1,178 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using Microsoft.Extensions.DependencyInjection;
+using Aiel.Permissions.EntityFrameworkCore;
+using Aiel.Permissions.Testing;
+using Aiel.Testing;
+
+namespace Aiel.Permissions;
+
+public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixture, ITestOutputHelper output)
+    : IntegrationTestBase<PermissionsEfCoreFixture>(fixture, output)
+{
+    [Fact]
+    public async Task CreateGrantAsync_WithValidPermissionName_ReturnsNewGrantId()
+    {
+        await ResetDatabaseAsync();
+
+        var stableId = PermissionStableId.From($"perm.test.{Guid.NewGuid()}");
+        var runner = Services.GetRequiredService<PermissionMigrationRunner>();
+        var plan = new PermissionMigrationPlan()
+            .Add(stableId, PermissionTestData.PermissionNameRead, PermissionTestData.ScopeTypeAlpha);
+
+        var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
+        Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
+
+        var store = Services.GetRequiredService<IPermissionStore>();
+
+        // Act
+        var result = await store.CreateGrantAsync(
+            PermissionTestData.PermissionNameRead,
+            PermissionTestData.ScopeTypeAlpha,
+            PermissionTestData.ScopeKeyAlpha,
+            PermissionTestData.SubjectTypeAlpha,
+            PermissionTestData.SubjectKeyAlpha,
+            PermissionGrantDecision.Granted,
+            CancellationToken);
+
+        // Assert
+        Assert.True(result.IsSuccess, $"Expected success but got: {result}");
+        Assert.NotEqual(default, result.Value.Value);
+    }
+
+    [Fact]
+    public async Task GetGrantsForSubjectAsync_AfterCreatingGrant_ReturnsThatGrant()
+    {
+        await ResetDatabaseAsync();
+
+        var stableId = PermissionStableId.From($"perm.test.{Guid.NewGuid()}");
+        var subjectKey = PermissionSubjectKey.From($"subject-{Guid.NewGuid()}");
+
+        var runner = Services.GetRequiredService<PermissionMigrationRunner>();
+        var plan = new PermissionMigrationPlan()
+            .Add(stableId, PermissionTestData.PermissionNameRead, PermissionTestData.ScopeTypeAlpha);
+
+        var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
+        Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
+
+        var store = Services.GetRequiredService<IPermissionStore>();
+        var createResult = await store.CreateGrantAsync(
+            PermissionTestData.PermissionNameRead,
+            PermissionTestData.ScopeTypeAlpha,
+            PermissionTestData.ScopeKeyAlpha,
+            PermissionTestData.SubjectTypeAlpha,
+            subjectKey,
+            PermissionGrantDecision.Granted,
+            CancellationToken);
+
+        Assert.True(createResult.IsSuccess);
+
+        // Act
+        var result = await store.GetGrantsForSubjectAsync(
+            PermissionTestData.SubjectTypeAlpha,
+            subjectKey,
+            CancellationToken);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        var grants = result.Value;
+        Assert.Single(grants);
+        Assert.Equal(PermissionTestData.PermissionNameRead.Value, grants[0].PermissionName.Value);
+        Assert.Equal(PermissionGrantDecision.Granted, grants[0].Decision);
+    }
+
+    [Fact]
+    public async Task RevokeGrantAsync_AfterCreatingGrant_RemovesGrant()
+    {
+        await ResetDatabaseAsync();
+
+        var stableId = PermissionStableId.From($"perm.test.{Guid.NewGuid()}");
+        var subjectKey = PermissionSubjectKey.From($"subject-{Guid.NewGuid()}");
+
+        var runner = Services.GetRequiredService<PermissionMigrationRunner>();
+        var plan = new PermissionMigrationPlan()
+            .Add(stableId, PermissionTestData.PermissionNameRead, PermissionTestData.ScopeTypeAlpha);
+
+        var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
+        Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
+
+        var store = Services.GetRequiredService<IPermissionStore>();
+        var createResult = await store.CreateGrantAsync(
+            PermissionTestData.PermissionNameRead,
+            PermissionTestData.ScopeTypeAlpha,
+            PermissionTestData.ScopeKeyAlpha,
+            PermissionTestData.SubjectTypeAlpha,
+            subjectKey,
+            PermissionGrantDecision.Granted,
+            CancellationToken);
+
+        Assert.True(createResult.IsSuccess);
+
+        // Act
+        var revokeResult = await store.RevokeGrantAsync(createResult.Value, CancellationToken);
+
+        // Assert
+        Assert.True(revokeResult.IsSuccess, $"Expected success but got: {revokeResult}");
+
+        var grantsResult = await store.GetGrantsForSubjectAsync(
+            PermissionTestData.SubjectTypeAlpha,
+            subjectKey,
+            CancellationToken);
+
+        Assert.True(grantsResult.IsSuccess);
+        Assert.Empty(grantsResult.Value);
+    }
+
+    [Fact]
+    public async Task CreateGrantAsync_WithUnknownPermissionName_ReturnsFailure()
+    {
+        await ResetDatabaseAsync();
+
+        // Arrange — catalog is empty (no migration run)
+        var store = Services.GetRequiredService<IPermissionStore>();
+        var unknownName = PermissionName.From("testing.unknown");
+
+        // Act
+        var result = await store.CreateGrantAsync(
+            unknownName,
+            PermissionTestData.ScopeTypeAlpha,
+            PermissionTestData.ScopeKeyAlpha,
+            PermissionTestData.SubjectTypeAlpha,
+            PermissionTestData.SubjectKeyAlpha,
+            PermissionGrantDecision.Granted,
+            CancellationToken);
+
+        // Assert
+        Assert.False(result.IsSuccess);
+        Assert.IsType<PermissionCatalogEntryNotFoundError>(result.Error);
+    }
+
+    private async Task ResetDatabaseAsync()
+    {
+        var dbContext = Services.GetRequiredService<PermissionsDbContext>();
+        await dbContext.Database.EnsureDeletedAsync(CancellationToken);
+
+        var initializer = Services.GetRequiredService<PermissionsDbInitializer>();
+        await initializer.EnsureCreatedAsync(CancellationToken);
+    }
+}

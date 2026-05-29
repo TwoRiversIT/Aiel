@@ -39,7 +39,7 @@ public static class Results
     /// <remarks>
     /// This instance is pre-configured with converters for <see cref="Result"/>, and <see cref="Result{T}"/> types.
     /// </remarks>
-    public static JsonSerializerOptions JSO => PrivateJSO ?? ConfigureForResults(new JsonSerializerOptions());
+    public static JsonSerializerOptions JSO => PrivateJSO ??= ConfigureForResults(new JsonSerializerOptions());
 
     /// <summary>
     /// Resets the static JSO instance. For testing purposes only.
@@ -94,14 +94,26 @@ public static class Results
     /// Configures the JSON serializer options used for serialization and deserialization of
     /// <see cref="Result"/>, and <see cref="Result{T}"/> types.
     /// </summary>
-    /// <remarks>This method applies the specified configuration to the shared serializer options and ensures
-    /// that the options are set up appropriately for result handling.</remarks>
-    /// <param name="configureOptions">An optional action that receives the current <see cref="JsonSerializerOptions"/> instance, allowing
-    /// customization of serialization behavior.</param>
+    /// <remarks>
+    /// <para>This method replaces the shared <see cref="JSO"/> instance with a freshly created copy so that
+    /// the caller's configuration action can modify options freely, even after the previous instance has been
+    /// frozen by a prior serialization or deserialization call.</para>
+    /// <para>The new instance inherits all settings from the current <see cref="JSO"/> before the action is applied,
+    /// and <see cref="ConfigureForResults"/> is always re-applied afterwards to ensure the required converters
+    /// are present.</para>
+    /// </remarks>
+    /// <param name="configureOptions">An action that receives a fresh, mutable <see cref="JsonSerializerOptions"/> instance
+    /// copied from the current <see cref="JSO"/>, allowing customization of serialization behavior.</param>
     public static void ConfigureJsonSerializerOptionsForResults(Action<JsonSerializerOptions> configureOptions)
     {
         ArgumentNullException.ThrowIfNull(configureOptions);
-        configureOptions(JSO);
-        ConfigureForResults(JSO);
+
+        // Copy from the current JSO (even if it has been frozen by a prior serialization call)
+        // to get a fresh mutable instance. This prevents InvalidOperationException when the
+        // existing instance is read-only.
+        var fresh = new JsonSerializerOptions(JSO);
+        configureOptions(fresh);
+        ConfigureForResults(fresh);
+        PrivateJSO = fresh;
     }
 }

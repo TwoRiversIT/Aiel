@@ -23,6 +23,7 @@
 using Microsoft.EntityFrameworkCore;
 using Aiel.Commands;
 using Aiel.Domain;
+using Aiel.Execution;
 using Aiel.MultiTenancy;
 
 namespace Aiel.EntityFrameworkCore;
@@ -36,6 +37,7 @@ namespace Aiel.EntityFrameworkCore;
 /// </summary>
 public class AielDbContext : DbContext, IUnitOfWork
 {
+    private readonly IExecutionContext? _executionContext;
     private readonly ITenantResolver? _tenantResolver;
     private Task<TenantResolution>? _tenantResolutionTask;
 
@@ -48,6 +50,12 @@ public class AielDbContext : DbContext, IUnitOfWork
     {
     }
 
+    protected AielDbContext(DbContextOptions options, IExecutionContext executionContext)
+        : base(options)
+    {
+        _executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
+    }
+
     protected AielDbContext(DbContextOptions options, TenantIdentity tenantIdentity)
         : base(options)
     {
@@ -55,10 +63,27 @@ public class AielDbContext : DbContext, IUnitOfWork
         SetTenantResolution(new TenantResolution.Resolved(tenantIdentity));
     }
 
+    protected AielDbContext(DbContextOptions options, TenantIdentity tenantIdentity, IExecutionContext executionContext)
+        : base(options)
+    {
+        ArgumentNullException.ThrowIfNull(tenantIdentity);
+
+        _executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
+        SetTenantResolution(new TenantResolution.Resolved(tenantIdentity));
+    }
+
     protected AielDbContext(DbContextOptions options, ITenantResolver tenantResolver)
         : base(options)
     {
         _tenantResolver = tenantResolver ?? throw new ArgumentNullException(nameof(tenantResolver));
+        _tenantResolutionTask = LoadTenantResolutionAsync(CancellationToken.None);
+    }
+
+    protected AielDbContext(DbContextOptions options, ITenantResolver tenantResolver, IExecutionContext executionContext)
+        : base(options)
+    {
+        _tenantResolver = tenantResolver ?? throw new ArgumentNullException(nameof(tenantResolver));
+        _executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
         _tenantResolutionTask = LoadTenantResolutionAsync(CancellationToken.None);
     }
 
@@ -85,6 +110,7 @@ public class AielDbContext : DbContext, IUnitOfWork
         var tenantResolution = await EnsureTenantResolutionAsync(cancellationToken);
 
         StampTenantIds(tenantResolution);
+        StampAuditMetadata();
 
         var aggregates = GetTrackedAggregates().ToArray();
         var domainEvents = aggregates.SelectMany(static aggregate => aggregate.DomainEvents).ToArray();
@@ -171,6 +197,38 @@ public class AielDbContext : DbContext, IUnitOfWork
             if (entry.Entity.TenantId == default)
             {
                 entry.Entity.TenantId = resolved.TenantIdentity.TenantId;
+            }
+        }
+    }
+
+    private void StampAuditMetadata()
+    {
+        var timestamp = DateTimeOffset.UtcNow;
+        var auditIdentity = (_executionContext?.Actor ?? SystemActor.Instance).AuditIdentity;
+
+        foreach (var entry in ChangeTracker.Entries<IAuditedEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    if (entry.Entity.CreatedAt == default)
+                    {
+                        entry.Entity.CreatedAt = timestamp;
+                    }
+
+                    if (String.IsNullOrWhiteSpace(entry.Entity.CreatedBy))
+                    {
+                        entry.Entity.CreatedBy = auditIdentity;
+                    }
+
+                    entry.Entity.ModifiedAt = timestamp;
+                    entry.Entity.ModifiedBy = auditIdentity;
+                    break;
+
+                case EntityState.Modified:
+                    entry.Entity.ModifiedAt = timestamp;
+                    entry.Entity.ModifiedBy = auditIdentity;
+                    break;
             }
         }
     }

@@ -31,6 +31,9 @@ public sealed class SystemActor : IActor
     {
     }
 
+    /// <inheritdoc />
+    public String AuditIdentity => "system";
+
     /// <summary>Gets the singleton system actor instance.</summary>
     public static SystemActor Instance { get; } = new();
 }

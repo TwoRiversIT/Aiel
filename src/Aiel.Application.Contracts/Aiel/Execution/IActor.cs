@@ -25,4 +25,15 @@ namespace Aiel.Execution;
 /// <summary>
 /// Represents the authenticated actor responsible for an application execution chain.
 /// </summary>
-public interface IActor;
+public interface IActor
+{
+	/// <summary>
+	/// Gets a stable identifier suitable for audit stamping.
+	/// </summary>
+	/// <remarks>
+	/// Concrete actor types may override this when they can supply a domain-specific
+	/// identifier. The default falls back to the runtime type name so audit metadata
+	/// remains populated even for marker-style test actors.
+	/// </remarks>
+	String AuditIdentity => GetType().FullName ?? GetType().Name;
+}

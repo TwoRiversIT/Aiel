@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
 		<ProjectReference Include="..\..\src\Aiel.Permissions.Application.Contracts\Aiel.Permissions.Application.Contracts.csproj" />
 		<ProjectReference Include="..\..\src\Aiel.Permissions.Application\Aiel.Permissions.Application.csproj" />
 		<ProjectReference Include="..\..\src\Aiel.Permissions.Testing\Aiel.Permissions.Testing.csproj" />

@@ -1,8 +1,8 @@
-# Permission System - Action-Centered Implementation Plan
+# Permission and Role System - Action-Centered RBAC Implementation Plan
 
 ## Status
 
-**Ready for implementation planning**
+Ready for implementation planning.
 
 ---
 
@@ -33,13 +33,19 @@ keeping Aiel's design principles intact:
 
 ## Design Thesis
 
-Permissions are durable catalog entries for actions. An action type is the source of intent. A
-permission name is the stable key used for storage, policy interop, manifests, and client capability
-snapshots.
+Permissions are durable catalog entries for actions. Roles are durable bundles of authority that
+collect those permissions and assign them to actors within scope. An action type is the source of
+intent. A permission name is the stable key used for storage, policy interop, manifests, and client
+capability snapshots.
 
-The permission system should therefore answer this question:
+The authorization system should therefore answer this question:
 
 > Can this actor execute this action, in this scope, possibly against this resource?
+
+In practice, the answer should usually come from RBAC evaluation:
+
+> Which effective subjects apply to this actor in this scope, which roles do those subjects hold,
+> and do those direct or role-derived grants authorize the action?
 
 The command or query object is the runtime action instance. It already carries context such as
 `AppointmentId`, `ClientId`, `TenantId`, `ClinicId`, dates, state transitions, or requested query
@@ -55,12 +61,15 @@ use case.
 3. Derive default permission keys from a configured application/module root and relative action identity.
 4. Keep generated permission constants to avoid magic strings.
 5. Fail closed when an action has no authorization story.
-6. Support typed, action-specific permission checkers for resource-aware authorization.
-7. Keep ASP.NET Core authorization for authentication and transport-level policy, not as the
+6. Make roles first-class framework concepts rather than a naming convention over generic subjects.
+7. Support typed, action-specific permission checkers for resource-aware authorization.
+8. Evaluate permissions through effective subjects so actor authority can come from direct grants,
+    role assignments, or both.
+9. Keep ASP.NET Core authorization for authentication and transport-level policy, not as the
    authoritative permission boundary.
-8. Provide client-side capability data so applications can hide actions a user cannot perform.
-9. Keep server-side permission checks authoritative even when the client hides unavailable actions.
-10. Preserve Clean Architecture boundaries across the permission package family.
+10. Provide client-side capability data so applications can hide actions a user cannot perform.
+11. Keep server-side permission checks authoritative even when the client hides unavailable actions.
+12. Preserve Clean Architecture boundaries across the permission and role package family.
 
 ---
 
@@ -70,9 +79,11 @@ use case.
 2. Do not require controllers or endpoints to repeat action-level permissions.
 3. Do not replace ASP.NET Core authentication or authorization infrastructure.
 4. Do not auto-discover permissions through runtime assembly scanning.
-5. Do not store application user, role, tenant, clinic, or identity tables inside the permission
-   persistence package.
+5. Do not store application user, tenant, clinic, or identity tables inside the authorization
+    persistence package.
 6. Do not make permission checks depend on `HttpContext`.
+7. Do not preserve a permission-only evaluator surface when a cleaner RBAC-oriented contract is
+    available. Greenfield posture allows breaking changes.
 
 ---
 
@@ -82,31 +93,51 @@ The permission feature should follow the same Clean Architecture boundaries expe
 features. Some assemblies may start thin; that is acceptable if the dependency direction is correct.
 
 | Package | Responsibility |
-|---|---|
+| --- | --- |
 | `Aiel.Application.Contracts` | Core action abstractions: `IAction`, `ICommand`, `IQuery<TResult>`, execution context contracts, application service contracts |
-| `Aiel.Permissions.Domain.Shared` | Permission value objects, strong IDs, lifecycle enums, scope type names, subject type names |
-| `Aiel.Permissions.Domain` | Permission catalog, grant aggregate, grant precedence rules, lifecycle transition rules |
-| `Aiel.Permissions.Application.Contracts` | `IPermissionChecker`, `IPermissionManager`, action authorization contracts, and the shared capability request/snapshot DTOs (`ActionCapabilityRequest`, `ActionCapabilitySnapshot`, `IActionCapabilityService`) |
-| `Aiel.Permissions.Application` | Default permission checker, manager, action authorization gate services, scope and subject orchestration |
-| `Aiel.Permissions.EntityFrameworkCore` | EF Core implementation of application persistence contracts and DbContext mappings |
+| `Aiel.Permissions.Domain.Shared` | Permission and role value objects, strong IDs, lifecycle enums, scope type names, subject type names |
+| `Aiel.Permissions.Domain` | Permission catalog, role catalog, grant aggregate, role assignment aggregate, and grant precedence rules |
+| `Aiel.Permissions.Application.Contracts` | `IPermissionChecker`, `IPermissionManager`, `IRoleManager`, effective-subject resolution contracts, action authorization contracts, and the shared capability request/snapshot DTOs (`ActionCapabilityRequest`, `ActionCapabilitySnapshot`, `IActionCapabilityService`) |
+| `Aiel.Permissions.Application` | Default permission checker, managers, action authorization gate services, scope orchestration, and effective-subject orchestration |
+| `Aiel.Permissions.EntityFrameworkCore` | EF Core implementation of application persistence contracts and DbContext mappings for permission and role data |
 | `Aiel.Permissions.EntityFrameworkCore.PostgreSql` | PostgreSQL-specific configuration, migrations, indexes, and provider extensions |
 | `Aiel.Permissions.AspNetCore` | ASP.NET Core middleware, authorization integration, generated endpoint support, HTTP action adapters |
 | `Aiel.Permissions.Client` | Client-side capability cache and refresh abstractions shared by UI frameworks |
 | `Aiel.Permissions.Client.Blazor` | Blazor visibility helpers such as `CanExecute` and snapshot-aware action rendering helpers |
 | `Aiel.Permissions.Testing` | Test doubles, fake stores, configurable context factories, always-grant and always-deny helpers |
-| `Aiel.Permissions.Generators` | Source generators for action permission constants, manifests, definitions, and client helpers |
-| `Aiel.Permissions.Analyzers` | Diagnostics for missing authorization, invalid lifecycle changes, unsafe strings, and missing registration |
+| `Aiel.Permissions.Generators` | Source generators for action permission constants, manifests, default role manifests, definitions, and client helpers |
+| `Aiel.Permissions.Analyzers` | Diagnostics for missing authorization, invalid lifecycle changes, unsafe strings, missing registration, and RBAC drift |
 
-Domain grant entities belong in `Aiel.Permissions.Domain`. EF Core owns mappings and persistence
-records only. If EF Core maps a domain aggregate directly, the aggregate type still lives in the
-Domain package. If EF Core needs a separate persistence shape, that shape should be named as a
-persistence record or EF entity, not a domain entity.
+Domain grant and role-assignment entities belong in `Aiel.Permissions.Domain`. EF Core owns
+mappings and persistence records only. If EF Core maps a domain aggregate directly, the aggregate
+type still lives in the Domain package. If EF Core needs a separate persistence shape, that shape
+should be named as a persistence record or EF entity, not a domain entity.
 
 The target layer for action and application service contracts is `Aiel.Application.Contracts`
 because those types define the public application boundary used by generated endpoints, generated
-HTTP clients, Blazor Server applications, background workers, and tests. Permission domain types stay
-inside the permission package family; application contracts should not depend on permission storage or
-infrastructure packages.
+HTTP clients, Blazor Server applications, background workers, and tests. Permission and role domain
+types stay inside the permission package family; application contracts should not depend on storage
+or infrastructure packages.
+
+---
+
+## RBAC Upgrade Decision
+
+The current implementation already models grants against a generic `PermissionSubjectTypeName` plus
+`PermissionSubjectKey`, which is a good base. It does not yet model role definitions, role
+assignments, or effective-subject expansion during evaluation. That means the current system is a
+generic subject-grant system, not yet a full RBAC system.
+
+Greenfield posture means Aiel should not preserve that narrower shape. The recommended direction is
+to make a breaking change now and standardize on these rules:
+
+1. Roles are first-class authorization concepts, not just a conventional subject type.
+2. Direct grants remain supported, but roles become the primary assignment mechanism for human actors.
+3. Grant evaluation resolves effective subjects for the actor and scope before looking up grants.
+4. Role definitions and role assignments have stable identities, lifecycle, and migration stories just
+    like permissions.
+5. The default authorization story for application actors should be role-based, with direct grants
+    used sparingly for exceptions, bootstrapping, or break-glass operations.
 
 ---
 
@@ -567,7 +598,7 @@ for the domain work they perform rather than being mandatory one-to-one command 
 Concrete error contracts should be available before generator work begins:
 
 | Error | Meaning |
-|---|---|
+| --- | --- |
 | `PermissionErrors.MissingAuthorizationStory` | No checker, generated definition, or explicit permission-free marker exists |
 | `PermissionErrors.PermissionDenied` | Grant evaluation or resource authorization denied the action |
 | `PermissionErrors.PermissionDefinitionNotFound` | A generated/default checker could not resolve the action permission definition |
@@ -751,6 +782,184 @@ resource authorization.
 
 ---
 
+## Role Model
+
+Roles answer a distinct question from permissions:
+
+- Permissions answer what action is being authorized.
+- Roles answer which reusable authority bundle is being assigned.
+
+The framework should introduce first-class role concepts instead of treating roles as an
+application-only convention.
+
+```csharp
+public sealed record RoleName
+{
+    public RoleName(string value)
+    {
+        Value = RoleNameValidator.Validate(value);
+    }
+
+    public string Value { get; }
+}
+
+[StrongId<Guid>(DisallowDefault = true)]
+public readonly partial record struct RoleDefinitionId : IStrongId<Guid>;
+
+[StrongId<Guid>(DisallowDefault = true)]
+public readonly partial record struct RoleAssignmentId : IStrongId<Guid>;
+```
+
+A role definition should include:
+
+1. Stable identity.
+2. Published role name.
+3. Display metadata for admin and client UX.
+4. Allowed assignment scope types.
+5. Allowed assignee subject types.
+6. Lifecycle state and optional replacement metadata.
+
+```csharp
+public sealed class RoleDefinition
+{
+    public RoleDefinitionId Id { get; init; }
+    public RoleName Name { get; init; }
+    public string DisplayName { get; init; }
+    public string? Description { get; init; }
+    public IReadOnlyCollection<PermissionScopeTypeName> AllowedScopeTypes { get; init; }
+    public IReadOnlyCollection<PermissionSubjectTypeName> AllowedAssigneeTypes { get; init; }
+    public RoleLifecycle Lifecycle { get; init; }
+}
+```
+
+A role assignment should bind an assignee subject to a role within scope:
+
+```csharp
+public sealed class RoleAssignment
+{
+    public RoleAssignmentId Id { get; init; }
+    public RoleDefinitionId RoleId { get; init; }
+    public PermissionScope Scope { get; init; }
+    public PermissionSubject Assignee { get; init; }
+    public RoleAssignmentOrigin Origin { get; init; }
+}
+```
+
+The first RBAC milestone should not include nested roles. Role-to-role inheritance can be a later
+extension if real application scenarios require it. V1 should support:
+
+1. Permission grants to role subjects.
+2. Role assignments from actor subjects to role definitions.
+3. Effective evaluation of direct subject grants plus role-derived grants.
+
+That is sufficient to make the system real RBAC without introducing hierarchy complexity on day one.
+
+---
+
+## Effective Subject Resolution
+
+The current evaluator shape takes a single `subjectType` and `subjectKey`, which is too narrow for
+RBAC because an actor's authority may come from multiple effective subjects:
+
+1. The actor directly.
+2. One or more assigned roles.
+3. Later, possibly system or derived subjects.
+
+This should become a breaking contract change. Instead of making callers expand subjects manually,
+the framework should resolve effective subjects before evaluating grants.
+
+```csharp
+public interface IEffectivePermissionSubjectResolver
+{
+    ValueTask<Result<IReadOnlyList<EffectivePermissionSubject>>> ResolveAsync(
+        IExecutionContext context,
+        PermissionScope scope,
+        CancellationToken cancellationToken = default);
+}
+
+public sealed record EffectivePermissionSubject(
+    PermissionSubject Subject,
+    EffectivePermissionSubjectKind Kind,
+    Int32 Precedence);
+```
+
+`IPermissionGrantEvaluator` should then evaluate across effective subjects, not a single explicit
+subject:
+
+```csharp
+public interface IPermissionGrantEvaluator
+{
+    Task<Result<PermissionGrantEvaluation>> EvaluateAsync(
+        PermissionName permissionName,
+        PermissionScope scope,
+        IExecutionContext context,
+        CancellationToken cancellationToken = default);
+}
+
+public sealed record PermissionGrantEvaluation(
+    PermissionGrantDecision? Decision,
+    PermissionSubject? WinningSubject,
+    RoleDefinitionId? WinningRoleId,
+    PermissionGrantSource Source);
+```
+
+Recommended precedence for v1:
+
+1. Prohibit beats grant.
+2. Direct subject decisions beat role-derived decisions.
+3. More specific scope beats less specific scope when a scope chain is involved.
+4. If no direct or role-derived decision exists, the result is no decision and the action checker
+   fails closed.
+
+This evaluation result should be audit-friendly. The framework should preserve which effective
+subject produced the decision so telemetry and admin tooling can answer why authorization succeeded
+or failed.
+
+---
+
+## Role Definitions, Assignment, and Mutation APIs
+
+`IPermissionManager` should remain focused on direct grant mutation. RBAC needs separate role
+contracts so the framework does not force applications to fake role management through generic
+subject writes.
+
+```csharp
+public interface IRoleManager
+{
+    ValueTask<Result<RoleDefinitionId>> CreateOrUpdateRoleAsync(
+        UpsertRoleDefinitionRequest request,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<Result<RoleAssignmentId>> AssignRoleAsync(
+        AssignRoleRequest request,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<Result> UnassignRoleAsync(
+        UnassignRoleRequest request,
+        CancellationToken cancellationToken = default);
+}
+```
+
+The manager validates:
+
+- The role exists and is active.
+- The assignee subject type is allowed for the role.
+- The assignment scope type is allowed for the role.
+- The assignee subject reference is valid according to registered subject validators.
+- Duplicate or contradictory assignments are rejected.
+
+Default roles can still be generated from application code and committed manifests, but runtime
+assignments are operational data. The plan should support both:
+
+1. Code-defined default roles with stable IDs and migration support.
+2. Runtime role assignments in persistence.
+3. Optional runtime-created custom roles later, if applications need them.
+
+For the first RBAC slice, Aiel should implement code-defined roles plus runtime role assignments.
+That keeps the migration story deterministic while still delivering a real RBAC model.
+
+---
+
 ## Strong IDs and Value Objects
 
 Aiel is greenfield and has a zero-technical-debt posture. Permission public models should use
@@ -796,7 +1005,7 @@ to EF migrations. A tool compares that snapshot with the current generated manif
 changes before producing a migration.
 
 | Manifest change | Required migration action |
-|---|---|
+| --- | --- |
 | New stable ID | Add catalog row |
 | Same stable ID, different permission name | Rename grants and catalog identity |
 | Same stable ID, different scope type | Move scope or require an explicit migration block |
@@ -822,7 +1031,7 @@ public partial class RenameAppointmentPermission : Migration
 Potential DSL operations:
 
 | Operation | Purpose |
-|---|---|
+| --- | --- |
 | `Add` | Add a permission catalog row |
 | `Deprecate` | Mark a permission as deprecated and optionally point to a replacement |
 | `Rename` | Move grants and catalog identity from one permission name to another |
@@ -836,6 +1045,23 @@ migration-driven, not a hidden startup mutation.
 The first executable prototype should prove one scenario end to end: rename `ChangeAppointment` to
 `RescheduleAppointment`, preserve existing grants, and emit a manifest snapshot showing the previous
 name.
+
+Role lifecycle should follow the same discipline. Default roles are persisted authorization catalog
+data, not incidental UI labels. Renames and removals need stable IDs and migrations.
+
+Role manifest diff rules should mirror permission rules:
+
+| Role manifest change | Required migration action |
+| --- | --- |
+| New stable ID | Add role definition row |
+| Same stable ID, different role name | Rename role definition and preserve assignments |
+| Same stable ID, different allowed scope types | Require explicit migration or assignment validation backfill |
+| Same stable ID, lifecycle changed to deprecated | Deprecate with optional replacement |
+| Stable ID removed | Remove only after a deprecation window |
+
+The first RBAC persistence prototype should prove one scenario end to end: rename a default role,
+preserve existing assignments, and show a manifest snapshot that links the previous role name to the
+current stable ID.
 
 ---
 
@@ -895,29 +1121,58 @@ public interface IPermissionStore
 Decorator candidates:
 
 | Decorator | Purpose |
-|---|---|
+| --- | --- |
 | `CachingPermissionStore` | Cache grant lookups by permission, scope, and subject |
 | `BatchingPermissionStore` | Coalesce multiple grant lookups within a single evaluation |
 | `AuditingPermissionStore` | Record grant writes and lifecycle changes |
 
 This depends on a broader Aiel decorator system and should be tracked separately.
 
+RBAC adds separate persistence seams for role definition and role assignment data:
+
+```csharp
+public interface IRoleAssignmentStore
+{
+    ValueTask<Result<IReadOnlyCollection<RoleAssignment>>> GetAssignmentsAsync(
+        PermissionSubject assignee,
+        PermissionScope scope,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<Result<RoleAssignmentId>> CreateAssignmentAsync(
+        RoleAssignment assignment,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<Result> DeleteAssignmentAsync(
+        RoleAssignmentId assignmentId,
+        CancellationToken cancellationToken = default);
+}
+```
+
+Decorator candidates expand accordingly:
+
+| Decorator | Purpose |
+| --- | --- |
+| `CachingRoleAssignmentStore` | Cache role membership lookups by assignee and scope |
+| `BatchingRoleAssignmentStore` | Coalesce assignment lookups during capability or grant evaluation |
+| `AuditingRoleAssignmentStore` | Record assignment writes and lifecycle changes |
+
 ---
 
 ## EF Core Persistence Boundary
 
-`Aiel.Permissions.EntityFrameworkCore` should store permission catalog rows and grant rows. It
-should not own application user, role, tenant, clinic, or client-application tables.
+`Aiel.Permissions.EntityFrameworkCore` should store permission catalog rows, grant rows, role
+definition rows, and role assignment rows. It should not own application user, tenant, clinic, or
+client-application tables.
 
 Reasons:
 
 1. Identity providers differ across applications.
-2. Role semantics differ across applications.
+2. Application identity semantics still differ across applications.
 3. Tenant and scope topology differ across applications.
 4. Owning those tables would force permissions infrastructure to depend outward on application
    identity and tenancy concerns.
 
-The EF package stores validated subject references:
+The EF package stores validated subject references and framework-owned RBAC records:
 
 ```csharp
 public sealed class PermissionGrant
@@ -940,6 +1195,51 @@ public interface IPermissionSubjectValidator
         CancellationToken cancellationToken = default);
 }
 ```
+
+Applications still own the authoritative user and tenant records. The authorization package owns
+role definitions and role assignments because those are framework-level authorization data.
+
+---
+
+## Default Roles and Application Composition
+
+Permissions are too granular to be the default admin surface. Applications need stable, named roles
+that bundle action permissions in language the business recognizes.
+
+Examples for Aviendha could include:
+
+- `TenantOwner`
+- `ClinicAdministrator`
+- `Counsellor`
+- `Scheduler`
+- `ClientAreaUser`
+
+Default role definitions should be generated or registered alongside permission definitions:
+
+```csharp
+public sealed class AviendhaRoleDefinitionProvider : IRoleDefinitionProvider
+{
+    public void Define(IRoleDefinitionBuilder builder)
+    {
+        builder.Role(AviendhaRoles.ClinicAdministrator)
+            .DisplayName("Clinic administrator")
+            .AssignableTo("User")
+            .InScopes("Clinic")
+            .Grants(
+                AviendhaPermissions.Scheduling.RescheduleAppointment,
+                AviendhaPermissions.Scheduling.CreateAppointment);
+    }
+}
+```
+
+This gives the framework a clean split:
+
+1. Actions define permissions.
+2. Applications define default roles as named bundles of those permissions.
+3. Runtime operations assign subjects to those roles inside scope.
+
+The design should not require every application to expose direct grant management to business
+administrators. In most cases, the main operational surface should be role assignment.
 
 ---
 
@@ -1128,6 +1428,11 @@ The client should treat capability snapshots as cacheable but invalidatable:
 
 The current implementation follows that rule by invalidating the cached request key and immediately refreshing the matching snapshot when an application-service call returns `PermissionDeniedError`.
 
+RBAC adds one more client requirement: applications need role-aware invalidation semantics even when
+the permission catalog does not change. A role assignment or role definition change can alter many
+action capabilities at once. Capability snapshots should therefore be invalidated by an
+authorization-state version, not only by permission snapshot version.
+
 Manifest-driven permission rename migration remains owned by `Aiel.Permissions.EntityFrameworkCore` and `Aiel.Permissions.EntityFrameworkCore.PostgreSql`. The client packages consume stable permission names and snapshot versions only; they do not introduce a separate migration surface.
 
 ---
@@ -1137,15 +1442,18 @@ Manifest-driven permission rename migration remains owned by `Aiel.Permissions.E
 Analyzers are what make convention safe. The action-centered model should include diagnostics for:
 
 | Diagnostic | Condition | Severity |
-|---|---|---|
+| --- | --- | --- |
 | Missing authorization story | Action has no concrete checker, generated permission, or explicit allow-without-permission marker | Error |
 | Unstable permission rename | Action namespace/type change would alter a persisted permission name without migration metadata | Error |
 | Raw permission string | Application code uses a raw permission name instead of generated constants/value objects | Warning or Error |
 | Missing registration | Generated permission provider is not registered through a reachable dependency module | Error in CI |
+| Missing role registration | Generated role definition provider is not registered through a reachable dependency module | Error in CI |
 | Controller permission attribute | Controller or endpoint uses Aiel action permission attribute instead of ASP.NET Core authorization | Warning |
 | Client unsafe checker | Permission checker is marked client-safe while depending on server-only services | Error |
 | Missing client metadata | Action intended for UI use has no client display or grouping metadata | Warning |
 | Discouraged action verb | Action type starts with a vague or reserved verb such as `Update`, `Modify`, `Manage`, `Process`, `Handle`, `Do`, `Run`, `Execute`, `Perform`, `Save`, `Set`, or `Edit` | Warning by default; configurable as Error |
+| Role manifest drift | A default role changed stable identity, scope allowance, or permission membership without an explicit manifest migration | Error |
+| Invalid role assignment metadata | A generated default role has no allowed assignee type or no allowed scope type | Error |
 
 ### Action verb diagnostics
 
@@ -1198,23 +1506,27 @@ for permission-affecting diagnostics.
 ## Updated Implementation Milestones
 
 | Milestone | Work |
-|---|---|
+| --- | --- |
 | 1 | Introduce `Aiel.Application.Contracts` for `IAction`, `ICommand`, `IQuery<TResult>`, execution context contracts, and application service contracts |
 | 2 | Freeze canonical permission identity: configured root, relative action namespace, action type name, `ActionPermissionNameAttribute`, stable ID, and manifest snapshot fields |
 | 3 | Add structural action validation contracts and `IActionGate<TAction>` as an explicit application service helper |
 | 4 | Add action permission checker contracts, default checker behavior, runtime `PermissionErrors`, and fail-closed analyzer rules |
 | 5 | Generate permission constants, definitions, manifests, registration helpers, and committed manifest snapshots from action types |
-| 6 | Implement `IPermissionManager`, grant evaluator, scope resolver, subject validators, and simple store contract |
-| 7 | Implement EF Core store, permission migration DSL, and manifest-driven rename migration test |
-| 8 | Implement ASP.NET Core execution-context middleware, generated endpoint support, and HTTP client adapters that call application service contracts |
-| 9 | Add resource authorization contracts and a `RescheduleAppointment` resource-aware checker sample |
-| 10 | Add client capability contracts, selected-permission snapshot requests, Blazor helpers, and server capability endpoint |
-| 11 | Update Aviendha SAD.md with an action-based permission matrix and client visibility guidance |
+| 6 | Introduce first-class role contracts: `RoleName`, `RoleDefinitionId`, `RoleAssignmentId`, `IRoleManager`, `IRoleDefinitionRegistry`, and `IRoleAssignmentStore` |
+| 7 | Generate default role constants, role definitions, role manifests, registration helpers, and committed manifest snapshots for code-defined roles |
+| 8 | Replace single-subject grant evaluation with `IEffectivePermissionSubjectResolver` and an RBAC-aware `IPermissionGrantEvaluator` that evaluates direct and role-derived grants |
+| 9 | Implement `IPermissionManager`, `IRoleManager`, scope resolver, subject validators, and simple permission and role stores |
+| 10 | Implement EF Core stores, permission and role migration DSL, and manifest-driven rename migration tests for both permissions and roles |
+| 11 | Implement ASP.NET Core execution-context middleware, generated endpoint support, and HTTP client adapters that call application service contracts |
+| 12 | Add resource authorization contracts and a `RescheduleAppointment` resource-aware checker sample that exercises role-derived authorization |
+| 13 | Add client capability contracts, authorization-state invalidation, selected-permission snapshot requests, Blazor helpers, and server capability endpoint |
+| 14 | Update Aviendha SAD.md with an action-based RBAC matrix, default role catalog, and client visibility guidance |
 
-The first implementation slice should be deliberately narrow: `RescheduleAppointment`, one validator,
-one resource-aware checker, one application service, one generated endpoint/client pair, one analyzer
-failure for a missing authorization story, and one rename migration test from `ChangeAppointment` to
-`RescheduleAppointment`.
+The first RBAC implementation slice should be deliberately narrow: `RescheduleAppointment`, one
+validator, one resource-aware checker, one application service, one generated endpoint/client pair,
+one default role such as `ClinicScheduler`, one role assignment path, one analyzer failure for a
+missing authorization story, and one rename migration test for both `ChangeAppointment` to
+`RescheduleAppointment` and the default role manifest that grants it.
 
 ---
 
@@ -1226,21 +1538,33 @@ failure for a missing authorization story, and one rename migration test from `C
 3. Should generated Blazor helpers be component-based, service-based, or both?
 4. Which action permission checkers, if any, can safely run on the client?
 5. Should a concrete action checker replace the default grant check or compose with it by default?
-6. Should generic command/query dispatchers remain as compatibility abstractions, lower-level
+6. Should direct user grants remain a first-class public admin feature or be positioned as an
+    exception path behind role assignment?
+7. Should default roles be code-defined only in v1, or should runtime-created custom roles ship in
+    the first milestone?
+8. Should nested roles ever be supported, or should Aiel keep role graphs flat by design?
+9. Should generic command/query dispatchers remain as compatibility abstractions, lower-level
     primitives, or be deprecated after application service contracts become first-class?
-7. How should action context flow through sagas, queues, and background workers?
-8. What cache lifetime should be the default for global and resource-specific capability snapshots?
+10. How should action context flow through sagas, queues, and background workers?
+11. What cache lifetime and invalidation trigger should be the default for global and resource-specific capability snapshots?
 
 ---
 
 ## Working Verdict
 
-The action-centered model is worth pursuing. It reduces attribute ceremony, keeps authorization at the
-application service boundary, gives resource authorization access to action payloads, and creates a
-coherent path for client-side action visibility.
+The action-centered model is still worth pursuing, but it should be completed as RBAC rather than
+left as a permission-only system. The current generic subject model is a useful substrate, not the
+finished design.
 
-The main design risk is convention drift: type names and namespaces are easier to refactor than
-persisted permission keys. The design now resolves that risk by freezing published permission names in
-committed manifests, preserving stable IDs across renames, and requiring EF migration DSL operations
-for identity, scope, and lifecycle changes. With that tooling in place, the action-centered approach
-is more aligned with Aiel than an attribute-first permission model.
+The main design risks are now twofold:
+
+1. Convention drift for published permission and role identities.
+2. Hidden evaluator complexity if effective subject resolution is bolted onto the current direct
+    subject contracts instead of replacing them cleanly.
+
+The design should resolve both by freezing published permission and role identities in committed
+manifests, preserving stable IDs across renames, requiring migration DSL operations for identity,
+scope, lifecycle, and role membership changes, and replacing the single-subject evaluator surface
+with explicit RBAC-aware effective subject resolution. With that tooling in place, the action-
+centered approach is more aligned with Aiel than an attribute-first permission model or an
+application-specific role layer bolted on afterward.

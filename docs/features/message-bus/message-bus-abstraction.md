@@ -52,8 +52,7 @@ The following are out of scope for the abstraction layer:
 - queue or topic provisioning
 - retry policy orchestration
 - dead-letter management
-- delayed or scheduled delivery
-- saga orchestration
+- delayed or scheduled delivery (includes saga timeout and scheduling patterns)
 - request-response or RPC abstractions
 - endpoint addressing as a first-class application concept
 - automatic publication of domain events to a broker
@@ -100,6 +99,8 @@ The abstraction is successful only if application developers can tell which one 
 | Package | Purpose |
 | --- | --- |
 | `Aiel.MessageBus.Abstractions` | Core contracts: integration messages, envelopes, metadata, publisher, handler, serializer, and type registry |
+| `Aiel.MessageBus.Sagas` | Saga orchestration contracts: state, lifecycle markers, correlation, and repository seam |
+| `Aiel.MessageBus.Outbox` | Outbox implementation — vNext (seam interfaces defined in this document) |
 | `Aiel.MessageBus.Testing` | Test doubles, recording publishers, deterministic fake transport contexts, and assertion helpers |
 
 Transport adapter packages (for Rebus, MassTransit, or other transports) live in separate packages or in the consuming application and are intentionally outside the core abstraction family.
@@ -149,6 +150,7 @@ public readonly record struct MessageTypeName(string Value);
 public readonly record struct MessagePropertyName(string Value);
 public readonly record struct ActorKind(string Value);
 public readonly record struct ActorIdentifier(string Value);
+public readonly record struct SagaId(Guid Value);
 
 public sealed record MessageActorSnapshot(
     ActorKind Kind,
@@ -162,6 +164,7 @@ public sealed record MessageMetadata(
     Guid? ClientInstanceId,
     MessageActorSnapshot Actor,
     TenantIdentity? Tenant,
+    SagaId? SagaCorrelationId,
     DateTimeOffset OccurredAtUtc,
     IReadOnlyDictionary<MessagePropertyName, string> Properties);
 
@@ -251,6 +254,102 @@ public interface IMessageTypeRegistry
 }
 ```
 
+### Saga contracts
+
+```csharp
+namespace Aiel.MessageBus.Sagas;
+
+// SagaId is declared in Aiel.MessageBus.Abstractions (above) and referenced here.
+
+/// <summary>
+/// Base class for all saga state bags. State is a pure data holder with no behavior
+/// other than <see cref="MarkComplete"/>. Orchestration logic lives in the
+/// implementing handler class, not here.
+/// </summary>
+public abstract class SagaState
+{
+    public SagaId SagaId { get; internal set; }
+    public bool IsCompleted { get; private set; }
+
+    /// <summary>
+    /// Signals that the saga has completed. The saga runtime deletes the persisted
+    /// state entry after the handler returns when this returns <c>true</c>.
+    /// </summary>
+    protected internal void MarkComplete() => IsCompleted = true;
+}
+
+/// <summary>
+/// Applied to the saga orchestrator class to mark it as the handler that creates a
+/// new saga instance. Exactly one implementation per saga type.
+/// </summary>
+public interface IAmStartedByMessage<TMessage>
+    where TMessage : IIntegrationMessage;
+
+/// <summary>
+/// Applied to the saga orchestrator class to mark it as a handler for a message type
+/// that continues an existing saga instance.
+/// </summary>
+public interface IHandleSagaMessage<TMessage>
+    where TMessage : IIntegrationMessage;
+
+/// <summary>
+/// Implemented by the saga orchestrator for every message type it handles.
+/// Maps an inbound message to the <see cref="SagaId"/> of the target saga instance.
+/// Correlation is explicit and type-safe; there is no convention-based scanning.
+/// </summary>
+public interface ICorrelateMessage<TSagaState, TMessage>
+    where TSagaState : SagaState
+    where TMessage : IIntegrationMessage
+{
+    SagaId GetSagaId(TMessage message, MessageMetadata metadata);
+}
+
+/// <summary>
+/// Context passed to the saga handler for every inbound message.
+/// </summary>
+/// <remarks>
+/// <b>v1 note:</b> <see cref="Publisher"/> is backed directly by <see cref="IMessagePublisher"/>.
+/// State save and publish are <b>not atomic</b> in v1. The vNext outbox slice
+/// (<c>Aiel.MessageBus.Outbox</c>) achieves atomicity by replacing the backing
+/// implementation with <c>IOutboxWriter</c> when the outbox is registered.
+/// </remarks>
+public sealed record SagaHandlingContext<TSagaState, TMessage>(
+    TSagaState State,
+    InboundMessageContext<TMessage> MessageContext,
+    IMessagePublisher Publisher)
+    where TSagaState : SagaState
+    where TMessage : IIntegrationMessage;
+
+/// <summary>
+/// The handler contract implemented by saga orchestrators. The saga runtime loads
+/// state, invokes this, then saves or deletes state after the call returns.
+/// </summary>
+public interface ISagaMessageHandler<TSagaState, TMessage>
+    where TSagaState : SagaState
+    where TMessage : IIntegrationMessage
+{
+    ValueTask HandleAsync(
+        SagaHandlingContext<TSagaState, TMessage> context,
+        CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Persistence seam for saga state. Implemented by infrastructure packages
+/// (EF Core, Dapper, etc.). No framework-provided default — missing registration
+/// fails composition at startup.
+/// </summary>
+public interface ISagaRepository<TSagaState>
+    where TSagaState : SagaState, new()
+{
+    ValueTask<TSagaState?> FindAsync(SagaId sagaId, CancellationToken cancellationToken = default);
+    ValueTask SaveAsync(TSagaState state, CancellationToken cancellationToken = default);
+    ValueTask DeleteAsync(SagaId sagaId, CancellationToken cancellationToken = default);
+}
+
+[DependsOn(typeof(MessageBusAbstractionsDependency))]
+public sealed class SagasDependency : AielDependency { }
+```
+
 ### Why this shape fits Aiel
 
 - `IIntegrationMessage` makes the cross-process boundary explicit. Arbitrary objects, mediator notifications, and domain events are not implicitly bus messages.
@@ -262,6 +361,9 @@ public interface IMessageTypeRegistry
 - `[MessageType("stable-name")]` on a message type overrides the default `MessageTypeName`, which is derived from the fully qualified CLR type name. The default requires no ceremony; the attribute provides a stable, broker-friendly name when the CLR name is not suitable.
 - `SerializedMessage.Body` is `ReadOnlyMemory<byte>` rather than `byte[]` to avoid unnecessary copies in adapters that work with pooled buffers or memory-mapped transport payloads.
 - `IMessageSerializer` and `IMessageTypeRegistry` are sufficient to support adapters and a future outbox without baking a wire format into the application layer.
+- `SagaState` and the orchestrator class are separate. State is a pure data holder; orchestration logic lives in the handler class. This keeps the persistence seam independent of orchestration behavior.
+- `IAmStartedByMessage<T>` and `IHandleSagaMessage<T>` are explicit lifecycle marker interfaces on the orchestrator class, not method-name conventions. The saga lifecycle is visible at the type level.
+- `ICorrelateMessage<TSagaState, TMessage>` is required on the orchestrator for every handled message type. Routing from message to saga instance is provable at the type level and inspectable without running the runtime.
 
 ### Existing `MessageContext<TMessage>`
 
@@ -372,6 +474,46 @@ The transport-backed message bus is therefore an **integration edge**, not a sec
 
 ---
 
+## Saga Orchestration
+
+Sagas are durable, correlated, long-running coordination workflows. They live in `Aiel.MessageBus.Sagas` and are first-class in the framework. See the Saga contracts block in the Core Contracts section for the complete interface definitions.
+
+### Lifecycle
+
+Each saga type is an orchestrator class that implements some combination of `IAmStartedByMessage<T>` and `IHandleSagaMessage<T>`:
+
+- `IAmStartedByMessage<T>` — the runtime creates a new `SagaState` instance when a message of type `T` arrives and no instance exists for the correlated `SagaId`
+- `IHandleSagaMessage<T>` — the runtime loads an existing instance; missing state on a non-start message is a runtime error
+- `MarkComplete()` on the state signals that the saga is finished; the runtime deletes the persisted state entry after the handler returns
+
+### Correlation
+
+The orchestrator implements `ICorrelateMessage<TSagaState, TMessage>` for every message type it handles. The runtime calls `GetSagaId` to route the inbound message to the correct state instance. Correlation is explicit and type-safe — there is no convention-based scanning or method-name matching.
+
+### State persistence
+
+`ISagaRepository<TSagaState>` is the only persistence seam. Infrastructure packages (EF Core, Dapper, or others) provide implementations. The framework does not register a default in-memory repository — missing registration fails composition. The runtime sequence is: load state → invoke handler → save state (or delete if `IsCompleted`).
+
+### `SagaCorrelationId` on the wire
+
+`MessageMetadata.SagaCorrelationId` carries the `SagaId` of the active saga instance on every message emitted from within a saga handler. This allows downstream consumers and the saga runtime to correlate inbound messages back to the correct instance without ad hoc header conventions.
+
+### Publishing from a saga (v1 constraint)
+
+`SagaHandlingContext.Publisher` is backed directly by `IMessagePublisher` in v1. **State save and message publish are not atomic.** If the process fails between saving state and publishing the message, the message may be lost without a corresponding state change.
+
+This is a known and documented v1 constraint. The vNext outbox slice (`Aiel.MessageBus.Outbox`) resolves this by backing `SagaHandlingContext.Publisher` with `IOutboxWriter`, making state save and message persistence part of the same transaction commit.
+
+### Saga timeouts
+
+Saga timeout and scheduling patterns are out of scope for v1 and are explicitly covered under “delayed or scheduled delivery (includes saga timeout and scheduling patterns)” in the Non-Goals. Transport adapters may expose delayed message delivery natively.
+
+### Idempotency
+
+Saga handlers inherit the same at-least-once delivery assumption as `IMessageHandler<T>`. State must be designed so that receiving the same message twice produces the correct result.
+
+---
+
 ## Tenant and Execution-Context Propagation
 
 This area must be explicit and strongly typed.
@@ -473,6 +615,77 @@ The outbox should be the place where transport durability is introduced.
 It should **not** force applications to replace domain-event handlers with message-bus handlers, and it should **not** require domain events to become transport messages.
 
 The message bus abstraction succeeds here if a future outbox can be inserted by changing infrastructure wiring rather than by rewriting application code.
+
+---
+
+## vNext Extension Points
+
+The following interfaces are defined now so that adapters and first applications have a stable seam to target. They are **not yet implemented, not yet registered in DI, and not included in v1 Completion Criteria**. They will be activated in dedicated follow-on slices.
+
+### Outbox seam
+
+Defined in the `Aiel.MessageBus` namespace. Implemented by `Aiel.MessageBus.Outbox` (vNext).
+
+```csharp
+namespace Aiel.MessageBus;
+
+// vNext — seam only; implemented in Aiel.MessageBus.Outbox; not registered in v1
+
+/// <summary>
+/// Writes a serialized message to a durable outbox within the current unit of work.
+/// Replaces <see cref="IMessagePublisher"/> as the write path when the outbox is active.
+/// The saga runtime uses this to make state save and message persistence part of the
+/// same transaction commit.
+/// </summary>
+public interface IOutboxWriter
+{
+    ValueTask WriteAsync(SerializedMessage message, CancellationToken cancellationToken = default);
+}
+
+/// <summary>
+/// Background-service contract. Reads pending outbox entries and publishes them
+/// through the configured transport adapter.
+/// </summary>
+public interface IOutboxDispatcher
+{
+    ValueTask DispatchPendingAsync(CancellationToken cancellationToken = default);
+}
+```
+
+### Consumer pipeline seam
+
+Defined in the `Aiel.MessageBus` namespace. Ordering and registration are added to `MessageBusAbstractionsDependency` (vNext).
+
+```csharp
+namespace Aiel.MessageBus;
+
+// vNext — seam only; not registered in v1
+
+/// <summary>
+/// Non-generic view of an inbound message. Available to middleware that must operate
+/// across all message types without referencing the concrete message type parameter.
+/// </summary>
+public interface IInboundMessageContext
+{
+    MessageMetadata Metadata { get; }
+    IExecutionContext ExecutionContext { get; }
+    TransportContext Transport { get; }
+}
+
+/// <summary>
+/// Ordered middleware applied before handler dispatch. Use for idempotency filters,
+/// tenant binding, distributed tracing, and other cross-cutting concerns.
+/// </summary>
+public interface IMessageConsumptionMiddleware
+{
+    ValueTask InvokeAsync(
+        IInboundMessageContext context,
+        Func<CancellationToken, ValueTask> next,
+        CancellationToken cancellationToken);
+}
+```
+
+Adapters invoke the middleware chain before resolving `IMessageHandler<T>` or `ISagaMessageHandler<TSagaState, TMessage>`.
 
 ---
 
@@ -581,9 +794,9 @@ The dependency direction should remain explicit:
 
 ### D6 - Aiel will not standardize broker-specific features
 
-**Decision:** Aiel will not put retries, scheduling, endpoint addressing, subscriptions, sagas, or topology APIs into the core abstraction.
+**Decision:** Aiel will not put retries, scheduling, endpoint addressing, subscriptions, dead-letter management, or topology APIs into the core abstraction. Sagas are first-class in `Aiel.MessageBus.Sagas` — see D11.
 
-**Rationale:** Those features are transport-specific, and standardizing them at the Aiel level would either leak broker semantics or force Aiel to invent low-value abstractions.
+**Rationale:** Broker-specific features (retries, subscriptions, topology) are transport-specific, and standardizing them at the Aiel level would either leak broker semantics or force Aiel to invent low-value abstractions. Sagas are an application-level coordination pattern with clear lifecycle and persistence semantics, which is why they receive a dedicated package rather than being deferred to transport libraries.
 
 ---
 
@@ -619,6 +832,30 @@ The dependency direction should remain explicit:
 
 ---
 
+### D11 - Sagas are first-class in `Aiel.MessageBus.Sagas`
+
+**Decision:** Saga orchestration is first-class in a dedicated package. The state class and the orchestrator class are separate. `ISagaRepository<TSagaState>` is the only persistence seam. Lifecycle markers (`IAmStartedByMessage<T>`, `IHandleSagaMessage<T>`) and correlation (`ICorrelateMessage<TSagaState, TMessage>`) are explicit interfaces, not method-name conventions. Missing `ISagaRepository<TSagaState>` registration fails composition.
+
+**Rationale:** Sagas are an application-level coordination pattern with clear persistence and lifecycle semantics. Separating them into a dedicated package keeps `Aiel.MessageBus.Abstractions` narrow while giving sagas a governed, testable contract surface. Explicit interfaces make the lifecycle and correlation routing visible at the type level without convention scanning.
+
+---
+
+### D12 - `SagaCorrelationId` is a first-class nullable field on `MessageMetadata`
+
+**Decision:** `MessageMetadata` carries a nullable `SagaId? SagaCorrelationId`. The envelope factory propagates it when a saga context is active. Adapters must treat it as a first-class metadata field.
+
+**Rationale:** Correlating messages emitted from within a saga back to the correct instance must not rely on ad hoc string headers invented per application. A typed nullable field on `MessageMetadata` keeps the convention inside the framework and makes it inspectable in tests without running a full saga runtime.
+
+---
+
+### D13 - Outbox and pipeline seams are specified in v1, implemented in vNext
+
+**Decision:** `IOutboxWriter`, `IOutboxDispatcher`, `IMessageConsumptionMiddleware`, and `IInboundMessageContext` are defined as seam interfaces in the vNext Extension Points section. No DI registration and no implementations are added until dedicated follow-on slices. They are not part of v1 Completion Criteria.
+
+**Rationale:** Defining seam interfaces before the implementation work gives adapters and first applications a stable target. It makes the intended extension points visible to contributors without requiring speculative implementation and keeps the v1 scope bounded.
+
+---
+
 ## Completion Criteria
 
 This feature is complete when all of the following are true:
@@ -641,6 +878,12 @@ This feature is complete when all of the following are true:
 - [ ] all new projects are added to the solution files, folder maps, and central package configuration where required
 - [ ] unit tests cover metadata creation, context reconstruction, and failure behavior for missing transport registration
 - [ ] solution build remains clean
+- [ ] `Aiel.MessageBus.Sagas` exists and contains all saga contracts: `SagaState`, `IAmStartedByMessage<T>`, `IHandleSagaMessage<T>`, `ICorrelateMessage<TSagaState, TMessage>`, `SagaHandlingContext<TSagaState, TMessage>`, `ISagaMessageHandler<TSagaState, TMessage>`, `ISagaRepository<TSagaState>`, and `SagasDependency`
+- [ ] `ISagaRepository<TSagaState>` is the only persistence seam; the framework provides no default in-memory implementation; missing registration fails composition at startup
+- [ ] `IAmStartedByMessage<T>` and `IHandleSagaMessage<T>` are the only supported lifecycle markers; no convention-based scanning is performed
+- [ ] `ICorrelateMessage<TSagaState, TMessage>` is required on the orchestrator for every handled message type; missing correlation is a compilation or composition error
+- [ ] `SagasDependency : AielDependency` participates in the module graph via `[DependsOn(typeof(MessageBusAbstractionsDependency))]`
+- [ ] `MessageMetadata.SagaCorrelationId` is nullable `SagaId?`; `IMessageEnvelopeFactory` propagates it when a saga context is present
 
 ---
 
@@ -781,13 +1024,44 @@ No production code changes in this task.
 
 This task should include Rebus and MassTransit examples in documentation only. It should not force transport implementations into the core package.
 
+### Task 9 - Add saga package
+
+**Projects:**
+
+- add `src/Aiel.MessageBus.Sagas/Aiel.MessageBus.Sagas.csproj`
+- add `tests/Aiel.MessageBus.Sagas.UnitTests/Aiel.MessageBus.Sagas.UnitTests.csproj`
+
+**Contents:**
+
+All saga contracts from the Core Contracts section:
+
+- `SagaState`
+- `IAmStartedByMessage<TMessage>`
+- `IHandleSagaMessage<TMessage>`
+- `ICorrelateMessage<TSagaState, TMessage>`
+- `SagaHandlingContext<TSagaState, TMessage>`
+- `ISagaMessageHandler<TSagaState, TMessage>`
+- `ISagaRepository<TSagaState>`
+- `SagasDependency : AielDependency`
+
+**Test gate:**
+
+- `ICorrelateMessage` returns the correct `SagaId` for a given message and metadata
+- `MarkComplete()` sets `IsCompleted` to `true`; `IsCompleted` starts `false`
+- The saga runtime creates a new state instance for `IAmStartedByMessage<T>` when no existing state is found
+- The saga runtime calls `DeleteAsync` on `ISagaRepository<TSagaState>` when `IsCompleted` is `true` after the handler returns
+- The saga runtime throws when no state is found for an `IHandleSagaMessage<T>` handler (non-start message)
+- No transport package reference appears in the project
+
 ### Task 8 - Plan outbox integration as a separate follow-on slice
 
 **Goal:**
 
+- implement `IOutboxWriter` and `IOutboxDispatcher` in a new `Aiel.MessageBus.Outbox` package (seam contracts are already defined in the vNext Extension Points section)
 - define how a future outbox stores `SerializedMessage`
 - define how domain-event handlers create integration messages
 - define how an outbox dispatcher uses the transport adapter
+- achieve saga atomicity by having the saga runtime use `IOutboxWriter` instead of `IMessagePublisher` when the outbox is registered, making state save and message persistence part of the same transaction commit
 
 **Important constraint:**
 

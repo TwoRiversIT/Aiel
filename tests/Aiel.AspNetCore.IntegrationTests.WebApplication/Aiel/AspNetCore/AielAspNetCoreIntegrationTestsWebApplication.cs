@@ -25,6 +25,9 @@ using Aiel.Dependencies;
 namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(AielAspNetCore))]
-[DependsOn(typeof(MultiTenancy.AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielDependency;
+public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplication
+{
+    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
+    public override String ApplicationVersion => "1.0.0";
+}
 

@@ -44,8 +44,8 @@ public interface IDependencyConfigurator
     /// </remarks>
     /// <param name="context">The application configuration context.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous pre-configuration operation.</returns>
-    Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
+    /// <returns>A value task that represents the asynchronous pre-configuration operation.</returns>
+    ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Configures services and options for the current dependency.
@@ -57,6 +57,6 @@ public interface IDependencyConfigurator
     /// </remarks>
     /// <param name="context">The application configuration context.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A task that represents the asynchronous configuration operation.</returns>
-    Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
+    /// <returns>A value task that represents the asynchronous configuration operation.</returns>
+    ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
 }

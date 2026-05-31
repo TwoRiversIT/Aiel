@@ -29,11 +29,11 @@ namespace Aiel.AspNetCore;
 [SuppressMessage("Roslynator", "RCS1102:Make class static", Justification = "No, it is used as an entry point for WebApplicationFactory<TEntryPoint>.")]
 public class Program
 {
-    private static void Main(String[] args)
+    private static async Task Main(String[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddAielTenantAccess();
+        await builder.AddApplicationAsync<AielAspNetCoreIntegrationTestsWebApplication>();
         builder.Services.AddSingleton<ITenantResolver, UnconfiguredTenantResolver>();
 
         var app = builder.Build();

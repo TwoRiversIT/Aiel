@@ -34,6 +34,6 @@ public abstract class AielDependency : IDependencyConfigurator
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    public virtual Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-    public virtual Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public virtual ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+    public virtual ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 }

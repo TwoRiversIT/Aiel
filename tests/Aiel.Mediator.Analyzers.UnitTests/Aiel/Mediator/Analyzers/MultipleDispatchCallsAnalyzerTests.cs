@@ -84,7 +84,7 @@ public sealed class MultipleDispatchCallsAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var d = Assert.Single(diagnostics);
-        Assert.Equal("TRMD0001", d.Id);
+        Assert.Equal("AIEL00005", d.Id);
         Assert.Equal(DiagnosticSeverity.Warning, d.Severity);
         Assert.Contains("DoWorkAsync", d.GetMessage());
         Assert.Contains("2", d.GetMessage());
@@ -114,7 +114,7 @@ public sealed class MultipleDispatchCallsAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var d = Assert.Single(diagnostics);
-        Assert.Equal("TRMD0001", d.Id);
+        Assert.Equal("AIEL00005", d.Id);
     }
 
     [Fact]
@@ -141,7 +141,7 @@ public sealed class MultipleDispatchCallsAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var d = Assert.Single(diagnostics);
-        Assert.Equal("TRMD0001", d.Id);
+        Assert.Equal("AIEL00005", d.Id);
         Assert.Contains("2", d.GetMessage());
     }
 

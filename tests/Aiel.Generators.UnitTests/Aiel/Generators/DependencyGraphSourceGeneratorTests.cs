@@ -376,7 +376,7 @@ public class DependencyGraphSourceGeneratorTests
 #pragma warning restore CS0618 // Type or member is obsolete
 
         result.GeneratedSources.Should().BeEmpty();
-        result.Diagnostics.Should().ContainSingle(d => d.Id == "TRAF00004" && d.Severity == DiagnosticSeverity.Error);
+        result.Diagnostics.Should().ContainSingle(d => d.Id == "AIEL00004" && d.Severity == DiagnosticSeverity.Error);
     }
 
     [Fact]

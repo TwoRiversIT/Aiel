@@ -24,22 +24,24 @@ using Microsoft.CodeAnalysis;
 
 namespace Aiel.Roslyn;
 
+// IMPORTANT: All diagnostic descriptor IDs must start with the canonical "AIEL" prefix.
+// Never use any other prefix (e.g. TRAF, TRSG, TRMD). See GitHub issue #7.
 internal static class DiagnosticDescriptors
 {
     /// <summary>
     /// Rule identifier for enforcing a single root AielDependency type per assembly.
     /// </summary>
-    public const String RootDependencyRequiredId = "TRAF00001";
-    public const String ErrorTypesMustHaveSingleStringConstructorId = "TRAF00002";
-    public const String PreferResultHttpClientExtensionsId = "TRAF00003";
-    public const String AmbiguousProjectTypeDiagnosticId = "TRAF00004";
-    public const String StrongIdMustBePartialRecordTypeId = "TRSG0001";
-    public const String StrongIdMustNotUsePositionalRecordSyntaxId = "TRSG0002";
-    public const String StrongIdMustImplementMatchingInterfaceId = "TRSG0003";
-    public const String StrongIdMustNotDeclareValueMemberId = "TRSG0004";
-    public const String StrongIdMustNotDeclareInstanceConstructorsId = "TRSG0005";
-    public const String StrongIdBackingTypeUnsupportedId = "TRSG0006";
-    public const String MultipleDispatchCallsInMethodId = "TRMD0001";
+    public const String RootDependencyRequiredId = "AIEL00001";
+    public const String ErrorTypesMustHaveSingleStringConstructorId = "AIEL00002";
+    public const String PreferResultHttpClientExtensionsId = "AIEL00003";
+    public const String AmbiguousProjectTypeDiagnosticId = "AIEL00004";
+    public const String MultipleDispatchCallsInMethodId = "AIEL00005";
+    public const String StrongIdMustBePartialRecordTypeId = "AIEL10001";
+    public const String StrongIdMustNotUsePositionalRecordSyntaxId = "AIEL10002";
+    public const String StrongIdMustImplementMatchingInterfaceId = "AIEL10003";
+    public const String StrongIdMustNotDeclareValueMemberId = "AIEL10004";
+    public const String StrongIdMustNotDeclareInstanceConstructorsId = "AIEL10005";
+    public const String StrongIdBackingTypeUnsupportedId = "AIEL10006";
 
     /// <summary>
     /// Any assembly that references Aiel must declare exactly one public,

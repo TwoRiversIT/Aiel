@@ -31,7 +31,7 @@ This requirement ensures:
 - **Explicit clarity** on what each assembly depends on and provides
 - **Future maintainability** when modules are added or moved
 
-The `AssemblyAnalyzer` enforces this rule at compile time and reports diagnostic `TRAF00001` (error) if the constraint is violated.
+The `AssemblyAnalyzer` enforces this rule at compile time and reports diagnostic `AIEL00001` (error) if the constraint is violated.
 
 ### Declarative Dependencies
 
@@ -130,9 +130,9 @@ Each generated `DependencyDescriptor` includes the dependency type itself in its
 
 The generator requires that the `AielApplication` subclass be `sealed` and non-abstract; open types are ignored.
 
-##### Analyzer — `AssemblyAnalyzer` (`TRAF00001`)
+##### Analyzer — `AssemblyAnalyzer` (`AIEL00001`)
 
-`Aiel.Analyzers` ships a Roslyn diagnostic analyzer. It reports `TRAF00001` (error) when a compilation that references Aiel contains zero or more than one public, sealed, parameterless-constructor `AielDependency` or `AielApplication` subclass. Add it as an analyzer-only project reference:
+`Aiel.Analyzers` ships a Roslyn diagnostic analyzer. It reports `AIEL00001` (error) when a compilation that references Aiel contains zero or more than one public, sealed, parameterless-constructor `AielDependency` or `AielApplication` subclass. Add it as an analyzer-only project reference:
 
 ```xml
 <ProjectReference Include="..\path\to\Aiel.Analyzers.csproj"

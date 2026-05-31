@@ -22,4 +22,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Usage", "TRAF00003:Use ResultHttpClientExtensions for Result types", Justification = "<Pending>", Scope = "NamespaceAndDescendants", Target = "~N:Aiel.Results")]
+[assembly: SuppressMessage("Usage", "AIEL00003:Use ResultHttpClientExtensions for Result types", Justification = "<Pending>", Scope = "NamespaceAndDescendants", Target = "~N:Aiel.Results")]

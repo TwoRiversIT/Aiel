@@ -2,4 +2,4 @@
 
 Rule ID    | Category             | Severity | Notes
 -----------|----------------------|----------|---------------------------------------------
-TRAF00004  | Aiel.Generators    | Error    | Multiple project types detected in assembly.
+AIEL00004  | Aiel.Generators    | Error    | Multiple project types detected in assembly.

@@ -63,7 +63,7 @@ Task 12 starts with failing transport tests, not package plumbing.
 
 3. **Result analyzer regression**
    - `Aiel/tests/Aiel.Results.Generators.UnitTests/Aiel.Results.Generators.UnitTests.csproj`
-   - Keep `TRAF00003` coverage green so the sample client does not normalize a bad `HttpClient` pattern.
+   - Keep `AIEL00003` coverage green so the sample client does not normalize a bad `HttpClient` pattern.
 
 ---
 
@@ -102,7 +102,7 @@ Implementation must be blocked or rejected if any of the following occurs.
 
 3. **Wrong transport semantics**
    - Reject if the sample client uses `GetFromJsonAsync`, `ReadFromJsonAsync`, `JsonSerializer.Deserialize`, or equivalent generic JSON APIs for `Result` or `Result<T>` payloads.
-   - Reject any `#pragma` or suppression that hides `TRAF00003` instead of fixing the client call.
+   - Reject any `#pragma` or suppression that hides `AIEL00003` instead of fixing the client call.
 
 4. **Generated-endpoint creep**
    - Reject source-generated endpoint/client work, broad endpoint scaffolding, or reusable transport abstractions that reach past the narrow Task 12 proof.

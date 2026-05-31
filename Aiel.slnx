@@ -26,8 +26,8 @@
     <File Path="docs/TermsAndAbbreviations.md" />
   </Folder>
   <Folder Name="/docs/analyzers/">
-    <File Path="docs/analyzers/TRAF00002.md" />
-    <File Path="docs/analyzers/TRAF00003.md" />
+    <File Path="docs/analyzers/AIEL00002.md" />
+    <File Path="docs/analyzers/AIEL00003.md" />
   </Folder>
   <Folder Name="/docs/Aiel.Gps.HP/">
     <File Path="docs/Aiel.Gps.HP/benchmarks.md" />

@@ -94,16 +94,16 @@ public sealed class DependencyDiscoveryExtensionsTests
             ConfigureCount = 0;
         }
 
-        public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigureCount++;
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             ConfigureCount++;
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
     }
 

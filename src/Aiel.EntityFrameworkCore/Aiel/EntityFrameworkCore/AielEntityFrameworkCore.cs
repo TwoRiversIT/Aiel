@@ -34,16 +34,16 @@ namespace Aiel.EntityFrameworkCore;
 [DependsOn(typeof(AielMultiTenancy))]
 public class AielEntityFrameworkCore : AielDependency
 {
-    public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         AutoAddDatabaseMigrators(context.Services);
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.Configure<SeedingOptions>(context.Configuration.GetSection(nameof(SeedingOptions)));
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
     private static void AutoAddDatabaseMigrators(IServiceCollection services)

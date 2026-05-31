@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace />
+		<AssemblyName>Aiel.Authorization.Client.Blazor.UnitTests</AssemblyName>
+		<TargetFramework>net10.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.Authorization.Client\Aiel.Authorization.Client.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.Authorization.Client.Blazor\Aiel.Authorization.Client.Blazor.csproj" />
+	</ItemGroup>
+
+</Project>

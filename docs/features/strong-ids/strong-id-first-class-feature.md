@@ -245,12 +245,12 @@ Generator diagnostics protect declaration shape:
 
 | Diagnostic | Purpose |
 |---|---|
-| `TRSG0001` | Strong ID declarations must be partial record types |
-| `TRSG0002` | Strong ID declarations must not use positional record syntax |
-| `TRSG0003` | Strong ID declarations must implement `IStrongId<TValue>` with the same backing type |
-| `TRSG0004` | Strong ID declarations must not declare their own `Value` member |
-| `TRSG0005` | Strong ID declarations must not declare instance constructors |
-| `TRSG0006` | Unsupported strong ID backing type |
+| `AIEL10001` | Strong ID declarations must be partial record types |
+| `AIEL10002` | Strong ID declarations must not use positional record syntax |
+| `AIEL10003` | Strong ID declarations must implement `IStrongId<TValue>` with the same backing type |
+| `AIEL10004` | Strong ID declarations must not declare their own `Value` member |
+| `AIEL10005` | Strong ID declarations must not declare instance constructors |
+| `AIEL10006` | Unsupported strong ID backing type |
 
 Usage analyzers protect architectural rules:
 

@@ -4,7 +4,7 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-TRAF00002 | Usage | Error | TRAF00002_ConstructorAnalyzer, (Documentation)[https://github.com/AielIT/AppFramework/blob/main/docs/analyzers/TRAF00002.md]
+AIEL00002 | Usage | Error | AIEL00002_ConstructorAnalyzer, (Documentation)[https://github.com/TwoRiversIT/Aiel/blob/main/docs/analyzers/AIEL00002.md]
 
 ## Release 1.1.4
 
@@ -12,7 +12,7 @@ TRAF00002 | Usage | Error | TRAF00002_ConstructorAnalyzer, (Documentation)[https
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-TRAF00003 | Usage | Info | TRAF00003_ResultHttpClientUsageAnalyzer, (Documentation)[https://github.com/AielIT/AppFramework/blob/main/docs/analyzers/TRAF00003.md]
+AIEL00003 | Usage | Info | AIEL00003_ResultHttpClientUsageAnalyzer, (Documentation)[https://github.com/TwoRiversIT/Aiel/blob/main/docs/analyzers/AIEL00003.md]
 
 ## Release 1.1.5
 

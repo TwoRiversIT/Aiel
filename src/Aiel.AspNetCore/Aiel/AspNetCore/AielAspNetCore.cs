@@ -22,9 +22,20 @@
 
 using Aiel.Dependencies;
 using Aiel.MultiTenancy;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(AielAppFramework))]
 [DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCore : AielDependency;
+public sealed class AielAspNetCore : AielDependency
+{
+    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.Services.AddHttpContextAccessor();
+        context.Services.TryAddScoped<ITenantAccessor, HttpContextTenantAccessor>();
+
+        return ValueTask.CompletedTask;
+    }
+}

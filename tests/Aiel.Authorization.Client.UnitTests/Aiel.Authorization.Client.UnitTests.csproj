@@ -10,7 +10,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Client\Aiel.Authorization.Client.csproj" />
 		<ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
 	</ItemGroup>
 

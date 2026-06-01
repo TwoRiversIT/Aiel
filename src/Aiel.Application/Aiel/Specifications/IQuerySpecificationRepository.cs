@@ -25,22 +25,11 @@ using System.Linq.Expressions;
 
 namespace Aiel.Specifications;
 
-public interface IQuerySpecificationRepository<TEntity> : IDisposable
+/// <summary>
+/// Backward-compatible name for the specification-based read repository.
+/// New code should prefer <see cref="IReadRepository{TEntity}"/>.
+/// </summary>
+public interface IQuerySpecificationRepository<TEntity> : IReadRepository<TEntity>
     where TEntity : class
 {
-    IAsyncEnumerable<TEntity> FindAsync(
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
-        PageRequest? page = null);
-
-    Task<TEntity?> GetAsync(
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
-        CancellationToken cancellationToken = default);
-
-    Task<Boolean> AnyAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default);
-    Task<Boolean> AnyAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);
-
-    Task<Int32> CountAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default);
-    Task<Int32> CountAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);
 }

@@ -22,6 +22,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Aiel.Domain;
+using Aiel.Execution;
 using Aiel.MultiTenancy;
 
 namespace Aiel.EntityFrameworkCore;
@@ -90,6 +91,59 @@ public class AielDbContextTests
         aggregate.DomainEvents.Should().BeEmpty();
     }
 
+    [Fact]
+    public async Task SaveChangesAsync_stamps_audit_fields_for_new_entities()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var databaseName = Guid.NewGuid().ToString("N");
+        var context = DefaultExecutionContext.CreateRoot(new AuditTestActor("counsellor:alpha"));
+
+        await using var dbContext = CreateAuditedDbContext(databaseName, context);
+
+        var entity = new AuditedNote { Id = Guid.NewGuid(), Name = "alpha" };
+        dbContext.Notes.Add(entity);
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        entity.CreatedAt.Should().NotBe(default);
+        entity.ModifiedAt.Should().NotBe(default);
+        entity.CreatedBy.Should().Be("counsellor:alpha");
+        entity.ModifiedBy.Should().Be("counsellor:alpha");
+    }
+
+    [Fact]
+    public async Task SaveChangesAsync_updates_modified_audit_fields_for_existing_entities()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var databaseName = Guid.NewGuid().ToString("N");
+        var context = DefaultExecutionContext.CreateRoot(new AuditTestActor("counsellor:beta"));
+
+        Guid entityId;
+        DateTimeOffset originalCreatedAt;
+
+        await using (var seedContext = CreateAuditedDbContext(databaseName, context))
+        {
+            var seeded = new AuditedNote { Id = Guid.NewGuid(), Name = "before" };
+            seedContext.Notes.Add(seeded);
+            await seedContext.SaveChangesAsync(cancellationToken);
+
+            entityId = seeded.Id;
+            originalCreatedAt = seeded.CreatedAt;
+        }
+
+        await using var dbContext = CreateAuditedDbContext(databaseName, context);
+        var entity = await dbContext.Notes.SingleAsync(static note => note.Name == "before", cancellationToken);
+        entity.Name = "after";
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        entity.Id.Should().Be(entityId);
+        entity.CreatedAt.Should().Be(originalCreatedAt);
+        entity.CreatedBy.Should().Be("counsellor:beta");
+        entity.ModifiedAt.Should().BeOnOrAfter(originalCreatedAt);
+        entity.ModifiedBy.Should().Be("counsellor:beta");
+    }
+
     private static TenantAwareDbContext CreateTenantDbContext(TenantIdentity tenantIdentity, String databaseName)
     {
         var options = new DbContextOptionsBuilder<TenantAwareDbContext>()
@@ -106,6 +160,15 @@ public class AielDbContextTests
             .Options;
 
         return new DomainEventDbContext(options);
+    }
+
+    private static AuditedDbContext CreateAuditedDbContext(String databaseName, IExecutionContext executionContext)
+    {
+        var options = new DbContextOptionsBuilder<AuditedDbContext>()
+            .UseInMemoryDatabase(databaseName)
+            .Options;
+
+        return new AuditedDbContext(options, executionContext);
     }
 
     private sealed class TenantAwareDbContext(DbContextOptions<TenantAwareDbContext> options, TenantIdentity tenantIdentity)
@@ -143,6 +206,18 @@ public class AielDbContextTests
         }
     }
 
+    private sealed class AuditedDbContext(DbContextOptions<AuditedDbContext> options, IExecutionContext executionContext)
+        : AielDbContext(options, executionContext)
+    {
+        public DbSet<AuditedNote> Notes => Set<AuditedNote>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AuditedNote>().HasKey(static note => note.Id);
+            base.OnModelCreating(modelBuilder);
+        }
+    }
+
     private sealed class TenantScopedNote : IMultiTenant
     {
         public Guid Id { get; set; }
@@ -151,6 +226,23 @@ public class AielDbContextTests
 
         public String Name { get; set; } = String.Empty;
     }
+
+    private sealed class AuditedNote : IAuditedEntity
+    {
+        public Guid Id { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
+
+        public String CreatedBy { get; set; } = String.Empty;
+
+        public DateTimeOffset ModifiedAt { get; set; }
+
+        public String ModifiedBy { get; set; } = String.Empty;
+
+        public String Name { get; set; } = String.Empty;
+    }
+
+    private sealed record AuditTestActor(String AuditIdentity) : IActor;
 
     private sealed class TestAggregate : IAggregateRoot
     {

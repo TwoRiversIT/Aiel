@@ -9,7 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Domain\Aiel.Authorization.Domain.csproj" />
-	</ItemGroup>
+</ItemGroup>
 
 </Project>

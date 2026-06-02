@@ -36,13 +36,12 @@
     <File Path="docs/analyzers/AIEL20002.md" />
   </Folder>
   <Folder Name="/docs/features/" />
-  <Folder Name="/docs/features/authorization (2)/" />
-  <Folder Name="/docs/features/authorization (2)/disucssions/">
-    <File Path="docs/features/authorization (2)/disucssions/persissions-system-disucssion-01.md" />
-  </Folder>
   <Folder Name="/docs/features/authorization/">
     <File Path="docs/features/authorization/authorization-system-design.md" />
     <File Path="docs/features/authorization/authorization-system-plan.md" />
+  </Folder>
+  <Folder Name="/docs/features/authorization/disucssions/">
+    <File Path="docs/features/authorization/disucssions/authorization-disucssion-01.md" />
   </Folder>
   <Folder Name="/docs/features/authorization/phases/">
     <File Path="docs/features/authorization/phases/phase-04a-contract-boundary-validation-brief.md" />
@@ -86,6 +85,7 @@
     <File Path="docs/features/gps-nmea/implementation-plan.md" />
   </Folder>
   <Folder Name="/docs/features/message-bus/">
+    <File Path="docs/features/message-bus/message-bus-abstraction-plan.md" />
     <File Path="docs/features/message-bus/message-bus-abstraction.md" />
   </Folder>
   <Folder Name="/docs/features/message-bus/discussions/">
@@ -143,6 +143,9 @@
     <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
     <Project Path="src/Aiel.Mediator/Aiel.Mediator.csproj" />
+    <Project Path="src/Aiel.MessageBus.Abstractions/Aiel.MessageBus.Abstractions.csproj" />
+    <Project Path="src/Aiel.MessageBus.Sagas/Aiel.MessageBus.Sagas.csproj" />
+    <Project Path="src/Aiel.MessageBus.Testing/Aiel.MessageBus.Testing.csproj" />
     <Project Path="src/Aiel.MultiTenancy/Aiel.MultiTenancy.csproj" />
     <Project Path="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
     <Project Path="src/Aiel.Results/Aiel.Results.csproj">
@@ -190,6 +193,9 @@
     <Project Path="tests/Aiel.InternetTypes.UnitTests/Aiel.InternetTypes.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.Analyzers.UnitTests/Aiel.Mediator.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.UnitTests/Aiel.Mediator.UnitTests.csproj" />
+    <Project Path="tests/Aiel.MessageBus.Sagas.UnitTests/Aiel.MessageBus.Sagas.UnitTests.csproj" />
+    <Project Path="tests/Aiel.MessageBus.Testing.UnitTests/Aiel.MessageBus.Testing.UnitTests.csproj" />
+    <Project Path="tests/Aiel.MessageBus.UnitTests/Aiel.MessageBus.UnitTests.csproj" />
     <Project Path="tests/Aiel.MultiTenancy.UnitTests/Aiel.MultiTenancy.UnitTests.csproj" />
     <Project Path="tests/Aiel.Results.Fixtures/Aiel.Results.Fixtures.csproj" />
     <Project Path="tests/Aiel.Results.GeneratedErrors/Aiel.Results.GeneratedErrors.csproj">

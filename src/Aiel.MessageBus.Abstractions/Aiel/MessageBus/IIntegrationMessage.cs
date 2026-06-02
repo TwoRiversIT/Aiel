@@ -20,9 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Execution;
+namespace Aiel.MessageBus;
 
-namespace Aiel.Messaging;
-
-public sealed record MessageContext<TMessage>(TMessage Message, IExecutionContext Context)
-    where TMessage : notnull;
+/// <summary>
+/// Marker interface for types that can be published through the transport-backed message bus.
+/// Only types implementing this interface are publishable via <see cref="IMessagePublisher"/>.
+/// </summary>
+/// <remarks>
+/// This is an explicit cross-process boundary. Domain events, mediator notifications, commands,
+/// and queries do not implement this interface and cannot be published directly to the bus.
+/// </remarks>
+public interface IIntegrationMessage;

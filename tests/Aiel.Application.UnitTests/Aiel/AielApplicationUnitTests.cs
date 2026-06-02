@@ -26,5 +26,5 @@ namespace Aiel;
 
 [DependsOn(typeof(AielApplicationContracts))]
 [DependsOn(typeof(AielApplication))]
-public sealed class AielApplicationUnitTests : AielDependency;
+public sealed class AielApplicationUnitTests : AielDependencyConfigurator;
 

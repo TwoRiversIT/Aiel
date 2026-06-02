@@ -42,25 +42,25 @@ All changes applied. Here's a summary of what was updated in message-bus-abstrac
 
 **Registration and Dependency Model**
 
-- Replaced the `AddAielMessageBusCore()` extension approach with the `AielDependency` module-graph pattern (`MessageBusAbstractionsDependency`)
+- Replaced the `AddAielMessageBusCore()` extension approach with the `AielDependencyConfigurator` module-graph pattern (`MessageBusAbstractionsDependency`)
 - Updated the adapter registration section to show the `[DependsOn]` pattern for adapters
 
 **Decisions**
 
-- Added **D9** (abstractions package participates in the module graph via `AielDependency`)
+- Added **D9** (abstractions package participates in the module graph via `AielDependencyConfigurator`)
 - Added **D10** (`MessageTypeName` defaults to CLR type name, overridable by `[MessageType]`)
 
 **Completion criteria** — three new items added:
 
 - `IMessageTypeRegistry` defaults to CLR type name / overridable by attribute
 - Convenience `IMessagePublisher` overload
-- `MessageBusAbstractionsDependency : AielDependency` subclass
+- `MessageBusAbstractionsDependency : AielDependencyConfigurator` subclass
 
 **Implementation plan**
 
 - Task 2: added `MessageTypeAttribute` to the contracts list; added `[MessageType]` to the test gate
 - Task 3: added the convenience publisher overload to the rules
-- Task 6: replaced the bare extension-method bullet with `MessageBusAbstractionsDependency : AielDependency` as the primary entry point
+- Task 6: replaced the bare extension-method bullet with `MessageBusAbstractionsDependency : AielDependencyConfigurator` as the primary entry point
 
 > Doug: Using MassTransit, NServiceBus and Rebus as the references, how well does the current message bus abstraction design cover their features. A summary table would be sufficient.
 
@@ -99,7 +99,7 @@ I have the full document. Now I'll produce the analysis from knowledge of those 
 | | Batch consumers | — | ✅ | — | — |
 | **Sagas** | Saga / workflow orchestration | — | ✅ | ✅ | 🔶 |
 | **Testing** | Fakes / recording publisher | ✅ planned (`Aiel.MessageBus.Testing`) | ✅ | ✅ | ✅ |
-| **DI** | Module graph / DI integration | ✅ `AielDependency` + `[DependsOn]` | ✅ | ✅ | ✅ |
+| **DI** | Module graph / DI integration | ✅ `AielDependencyConfigurator` + `[DependsOn]` | ✅ | ✅ | ✅ |
 
 ---
 

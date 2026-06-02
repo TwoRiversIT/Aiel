@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.Authorization;
 
 [DependsOn(typeof(AielAuthorizationApplicationContracts))]
-public sealed class AielAuthorizationGeneratorsUnitTests : AielDependency;
+public sealed class AielAuthorizationGeneratorsUnitTests : AielDependencyConfigurator;
 

@@ -20,12 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Aiel.Roslyn;
 using System.Collections.Immutable;
 using Verify = Microsoft.CodeAnalysis.Testing.AnalyzerVerifier<Aiel.Analyzers.AssemblyAnalyzer, Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<Aiel.Analyzers.AssemblyAnalyzer, Microsoft.CodeAnalysis.Testing.DefaultVerifier>, Microsoft.CodeAnalysis.Testing.DefaultVerifier>;
 
@@ -36,8 +36,8 @@ public class AssemblyAnalyzerTests
     private const String AielStub = """
         namespace Aiel.Dependencies
         {
-            public abstract class AielDependency { }
-            public abstract class AielApplication : AielDependency { }
+            public abstract class AielDependencyConfigurator { }
+            public abstract class AielApplication : AielDependencyConfigurator { }
         }
         """;
 
@@ -51,7 +51,7 @@ public class AssemblyAnalyzerTests
             {
                 public class SomeType
                 {
-                    // no AielDependency or AielApplication subclass here
+                    // no AielDependencyConfigurator or AielApplication subclass here
                 }
             }
             """;
@@ -100,7 +100,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public abstract class NotRoot : AielDependency { }
+		public abstract class NotRoot : AielDependencyConfigurator { }
 		""";
 
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
@@ -135,7 +135,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class MyRootDependency : AielDependency { }
+		public sealed class MyRootDependency : AielDependencyConfigurator { }
 		""";
 
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
@@ -167,8 +167,8 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class Root1 : AielDependency { }
-		public sealed class Root2 : AielDependency { }
+		public sealed class Root1 : AielDependencyConfigurator { }
+		public sealed class Root2 : AielDependencyConfigurator { }
 		""";
 
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
@@ -185,7 +185,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class Root1 : AielDependency { }
+		public sealed class Root1 : AielDependencyConfigurator { }
 		public sealed class Root2 : AielApplication { }
 		""";
 
@@ -203,7 +203,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class NoDefaultCtor : AielDependency
+		public sealed class NoDefaultCtor : AielDependencyConfigurator
 		{
 			public NoDefaultCtor(String name) { }
 		}
@@ -227,7 +227,7 @@ public class AssemblyAnalyzerTests
 
         if (referenceAielCore)
         {
-            // Provide a minimal in-memory definition of Aiel.Dependencies.AielDependency
+            // Provide a minimal in-memory definition of Aiel.Dependencies.AielDependencyConfigurator
             var coreTree = CSharpSyntaxTree.ParseText(AielStub);
             var coreCompilation = CSharpCompilation.Create(
                 "Aiel",

@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.StrongIds.AspNetCore;
 
 [DependsOn(typeof(AielStrongIdsAspNetCoreIntegrationTestsWebApplication))]
-public sealed class AielStrongIdsAspNetCoreIntegrationTests : AielDependency;
+public sealed class AielStrongIdsAspNetCoreIntegrationTests : AielDependencyConfigurator;
 

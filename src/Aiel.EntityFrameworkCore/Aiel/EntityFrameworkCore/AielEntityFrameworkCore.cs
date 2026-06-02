@@ -32,7 +32,7 @@ namespace Aiel.EntityFrameworkCore;
 [DependsOn(typeof(AielAppFramework))]
 [DependsOn(typeof(AielApplication))]
 [DependsOn(typeof(AielMultiTenancy))]
-public class AielEntityFrameworkCore : AielDependency
+public class AielEntityFrameworkCore : AielDependencyConfigurator
 {
     public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {

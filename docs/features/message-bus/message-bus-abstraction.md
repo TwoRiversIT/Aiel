@@ -347,7 +347,7 @@ public interface ISagaRepository<TSagaState>
 }
 
 [DependsOn(typeof(MessageBusAbstractionsDependency))]
-public sealed class SagasDependency : AielDependency { }
+public sealed class SagasDependency : AielDependencyConfigurator { }
 ```
 
 ### Why this shape fits Aiel
@@ -693,7 +693,7 @@ Adapters invoke the middleware chain before resolving `IMessageHandler<T>` or `I
 
 ### Core registration
 
-`Aiel.MessageBus.Abstractions` exposes a `MessageBusAbstractionsDependency : AielDependency` subclass as the primary registration entry point for Aiel applications. Applications declare it through `[DependsOn]` in their module graph:
+`Aiel.MessageBus.Abstractions` exposes a `MessageBusAbstractionsDependency : AielDependencyConfigurator` subclass as the primary registration entry point for Aiel applications. Applications declare it through `[DependsOn]` in their module graph:
 
 ```csharp
 [DependsOn(typeof(MessageBusAbstractionsDependency))]
@@ -722,14 +722,14 @@ Aiel should not perform broad ambient scanning of all loaded assemblies.
 
 ### Adapter registration
 
-Transport adapters should live in separate packages or in the consumer app and expose their own `AielDependency` subclass that depends on `MessageBusAbstractionsDependency`:
+Transport adapters should live in separate packages or in the consumer app and expose their own `AielDependencyConfigurator` subclass that depends on `MessageBusAbstractionsDependency`:
 
 ```csharp
 [DependsOn(typeof(MessageBusAbstractionsDependency))]
-public sealed class RebusMessageBusDependency : AielDependency { ... }
+public sealed class RebusMessageBusDependency : AielDependencyConfigurator { ... }
 ```
 
-Adapter-specific service-collection extension methods (such as `AddAielRebusMessageBus(...)`) may still be useful for configuration, but the `AielDependency` subclass is the module-graph entry point that makes the transport wiring explicit.
+Adapter-specific service-collection extension methods (such as `AddAielRebusMessageBus(...)`) may still be useful for configuration, but the `AielDependencyConfigurator` subclass is the module-graph entry point that makes the transport wiring explicit.
 
 Adapter registrations are responsible for:
 
@@ -818,7 +818,7 @@ The dependency direction should remain explicit:
 
 ### D9 - The abstractions package participates in the module graph
 
-**Decision:** `Aiel.MessageBus.Abstractions` exposes a `MessageBusAbstractionsDependency : AielDependency` subclass. Transport adapters expose their own `AielDependency` subclass that depends on it through `[DependsOn]`.
+**Decision:** `Aiel.MessageBus.Abstractions` exposes a `MessageBusAbstractionsDependency : AielDependencyConfigurator` subclass. Transport adapters expose their own `AielDependencyConfigurator` subclass that depends on it through `[DependsOn]`.
 
 **Rationale:** Consistent with every other Aiel package. The module graph makes the transport wiring visible at compile time through the source-generated dependency graph and gives the analyzer visibility into the dependency chain. Declaring a transport adapter in `[DependsOn]` is unambiguous; calling a manual registration method is not.
 
@@ -868,7 +868,7 @@ This feature is complete when all of the following are true:
 - [ ] serializer and message-type registry contracts exist, or an equally explicit alternative is adopted and documented
 - [ ] `IMessageTypeRegistry` defaults to the CLR type name and is overridable by `[MessageType]` attribute on the message type
 - [ ] `IMessagePublisher` exposes a convenience overload that accepts a raw message and delegates envelope creation to the registered `IMessageEnvelopeFactory`
-- [ ] `Aiel.MessageBus.Abstractions` exposes a `MessageBusAbstractionsDependency : AielDependency` subclass that applications declare in `[DependsOn]`
+- [ ] `Aiel.MessageBus.Abstractions` exposes a `MessageBusAbstractionsDependency : AielDependencyConfigurator` subclass that applications declare in `[DependsOn]`
 - [ ] no broker SDK dependency is introduced into the abstraction package
 - [ ] `MessageContext<TMessage>` ownership is clarified and the final naming is explicit
 - [ ] a testing package exists with at least a recording publisher and fake inbound context helpers
@@ -882,7 +882,7 @@ This feature is complete when all of the following are true:
 - [ ] `ISagaRepository<TSagaState>` is the only persistence seam; the framework provides no default in-memory implementation; missing registration fails composition at startup
 - [ ] `IAmStartedByMessage<T>` and `IHandleSagaMessage<T>` are the only supported lifecycle markers; no convention-based scanning is performed
 - [ ] `ICorrelateMessage<TSagaState, TMessage>` is required on the orchestrator for every handled message type; missing correlation is a compilation or composition error
-- [ ] `SagasDependency : AielDependency` participates in the module graph via `[DependsOn(typeof(MessageBusAbstractionsDependency))]`
+- [ ] `SagasDependency : AielDependencyConfigurator` participates in the module graph via `[DependsOn(typeof(MessageBusAbstractionsDependency))]`
 - [ ] `MessageMetadata.SagaCorrelationId` is nullable `SagaId?`; `IMessageEnvelopeFactory` propagates it when a saga context is present
 
 ---
@@ -1003,7 +1003,7 @@ No production code changes in this task.
 
 **Contracts and helpers:**
 
-- `MessageBusAbstractionsDependency : AielDependency` — the primary module-graph registration entry point for Aiel applications
+- `MessageBusAbstractionsDependency : AielDependencyConfigurator` — the primary module-graph registration entry point for Aiel applications
 - service-collection extension used internally by the dependency (and available for direct-registration scenarios outside the module system)
 - explicit composition tests showing that `IMessagePublisher` is unresolved until an adapter registers it
 
@@ -1042,7 +1042,7 @@ All saga contracts from the Core Contracts section:
 - `SagaHandlingContext<TSagaState, TMessage>`
 - `ISagaMessageHandler<TSagaState, TMessage>`
 - `ISagaRepository<TSagaState>`
-- `SagasDependency : AielDependency`
+- `SagasDependency : AielDependencyConfigurator`
 
 **Test gate:**
 

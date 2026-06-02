@@ -31,4 +31,4 @@ namespace Aiel.MessageBus.Sagas;
 /// <see cref="ISagaRepository{TSagaState}"/> implementations.
 /// </summary>
 [DependsOn(typeof(MessageBusAbstractionsDependency))]
-public sealed class SagasDependency : AielDependency;
+public sealed class SagasDependency : AielDependencyConfigurator;

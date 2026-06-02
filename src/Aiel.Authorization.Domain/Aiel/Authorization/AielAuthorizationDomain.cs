@@ -27,5 +27,5 @@ namespace Aiel.Authorization;
 [DependsOn(typeof(Domain.AielDomain))]
 [DependsOn(typeof(AielAuthorizationDomainShared))]
 [DependsOn(typeof(Results.AielResults))]
-public sealed class AielAuthorizationDomain : AielDependency;
+public sealed class AielAuthorizationDomain : AielDependencyConfigurator;
 

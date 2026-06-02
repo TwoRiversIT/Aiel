@@ -29,5 +29,5 @@ namespace Aiel.Authorization.AspNetCore;
 [DependsOn(typeof(AielAuthorizationDomainShared))]
 [DependsOn(typeof(Testing.AielAuthorizationTesting))]
 [DependsOn(typeof(Results.AielResults))]
-public sealed class AielAuthorizationAspNetCoreIntegrationTestsWebApplication : AielDependency;
+public sealed class AielAuthorizationAspNetCoreIntegrationTestsWebApplication : AielDependencyConfigurator;
 

@@ -26,5 +26,5 @@ namespace Aiel.MultiTenancy;
 
 [DependsOn(typeof(AielMultiTenancy))]
 [DependsOn(typeof(StrongIds.AielStrongIds))]
-public sealed class AielMultiTenancyUnitTests : AielDependency;
+public sealed class AielMultiTenancyUnitTests : AielDependencyConfigurator;
 

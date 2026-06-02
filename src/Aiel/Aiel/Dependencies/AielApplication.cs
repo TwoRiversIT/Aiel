@@ -26,7 +26,7 @@ namespace Aiel.Dependencies;
 /// Serves as the root node for the Aiel dependency injection framework to
 /// identify, configure, and initialize dependencies.
 /// </summary>
-public abstract class AielApplication : AielDependency
+public abstract class AielApplication : AielDependencyConfigurator
 {
     /// <summary>
     /// Gets the name of the application, which is used by the Aiel dependency injection framework

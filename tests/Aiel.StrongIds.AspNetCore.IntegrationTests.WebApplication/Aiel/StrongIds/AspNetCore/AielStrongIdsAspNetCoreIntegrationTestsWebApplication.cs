@@ -26,4 +26,4 @@ namespace Aiel.StrongIds.AspNetCore;
 
 [DependsOn(typeof(AielStrongIds))]
 [DependsOn(typeof(AielStrongIdsAspNetCore))]
-public sealed class AielStrongIdsAspNetCoreIntegrationTestsWebApplication : AielDependency;
+public sealed class AielStrongIdsAspNetCoreIntegrationTestsWebApplication : AielDependencyConfigurator;

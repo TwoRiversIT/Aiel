@@ -26,5 +26,5 @@ namespace Aiel.Internet;
 
 [DependsOn(typeof(AielInternetTypes))]
 [DependsOn(typeof(Testing.AielTesting))]
-public sealed class AielInternetTypesUnitTests : AielDependency;
+public sealed class AielInternetTypesUnitTests : AielDependencyConfigurator;
 

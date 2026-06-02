@@ -353,7 +353,7 @@ The generator may emit a fluent registration extension, but the consuming depend
 it explicitly. Runtime service registration must not be hidden behind a module initializer.
 
 ```csharp
-public sealed class AviendhaApplicationContracts : AielDependency
+public sealed class AviendhaApplicationContracts : AielDependencyConfigurator
 {
     public override Task PreConfigureAsync(
         DependencyConfigurationContext context,
@@ -372,7 +372,7 @@ public sealed class AviendhaApplicationContracts : AielDependency
 ```
 
 The analyzer should warn locally and fail in CI if generated permission registration is not reachable
-from a `AielDependency`.
+from a `AielDependencyConfigurator`.
 
 ---
 

@@ -31,4 +31,4 @@ namespace Aiel.Authorization;
 [DependsOn(typeof(AielApplicationContracts))]
 [DependsOn(typeof(AielAuthorizationDomainShared))]
 [DependsOn(typeof(AielResults))]
-public sealed class AielAuthorizationApplicationContracts : AielDependency;
+public sealed class AielAuthorizationApplicationContracts : AielDependencyConfigurator;

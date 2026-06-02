@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.WorkerService.Shared;
 
 [DependsOn(typeof(AielAppFramework))]
-public sealed class AielWorkerServiceShared : AielDependency;
+public sealed class AielWorkerServiceShared : AielDependencyConfigurator;

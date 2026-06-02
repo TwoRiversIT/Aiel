@@ -22,10 +22,10 @@
 
 namespace Aiel.Dependencies;
 
-public class DependencyNode(Type type, Int32 depth, AielDependency instance)
+public class DependencyNode(Type type, Int32 depth, AielDependencyConfigurator instance)
 {
     public Type Type { get; } = type;
     public Int32 Depth { get; } = depth;
-    public AielDependency Instance { get; } = instance ?? throw new ArgumentNullException(nameof(instance));
+    public AielDependencyConfigurator Instance { get; } = instance ?? throw new ArgumentNullException(nameof(instance));
     public List<DependencyNode> Dependencies { get; } = [];
 }

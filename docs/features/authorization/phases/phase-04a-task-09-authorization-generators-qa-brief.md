@@ -253,7 +253,7 @@ namespace {AssemblyRootNamespace}.Generated;
 /// Provides the generated <see cref="PermissionDefinitionManifest"/> instances for this assembly.
 /// </summary>
 /// <remarks>
-/// Invoke <see cref="GetManifests"/> from your <c>AielDependency.ConfigureAsync</c> to register
+/// Invoke <see cref="GetManifests"/> from your <c>AielDependencyConfigurator.ConfigureAsync</c> to register
 /// all generated permission definitions with the <see cref="IPermissionDefinitionRegistry"/>.
 /// </remarks>
 internal static class GeneratedPermissionManifests

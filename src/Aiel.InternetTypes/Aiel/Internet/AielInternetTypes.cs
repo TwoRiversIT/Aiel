@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.Internet;
 
 [DependsOn(typeof(AielAppFramework))]
-public sealed class AielInternetTypes : AielDependency;
+public sealed class AielInternetTypes : AielDependencyConfigurator;

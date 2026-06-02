@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.StrongIds;
 
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielStrongIdsSystemTextJsonUnitTests : AielDependency;
+public sealed class AielStrongIdsSystemTextJsonUnitTests : AielDependencyConfigurator;
 

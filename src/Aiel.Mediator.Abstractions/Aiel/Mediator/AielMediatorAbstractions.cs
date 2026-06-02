@@ -29,4 +29,4 @@ namespace Aiel.Mediator;
 /// Ensures that the Aiel.Mediator.Abstractions participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielApplicationContracts))]
-public sealed class AielMediatorAbstractions : AielDependency;
+public sealed class AielMediatorAbstractions : AielDependencyConfigurator;

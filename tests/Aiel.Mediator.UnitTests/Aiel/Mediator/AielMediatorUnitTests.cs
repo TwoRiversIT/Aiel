@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.Mediator;
 
 [DependsOn(typeof(AielMediator))]
-public sealed class AielMediatorUnitTests : AielDependency;
+public sealed class AielMediatorUnitTests : AielDependencyConfigurator;
 

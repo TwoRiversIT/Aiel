@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(AielAspNetCoreBlazor))]
-public sealed class AielAspNetCoreBlazorWebAssembly : AielDependency;
+public sealed class AielAspNetCoreBlazorWebAssembly : AielDependencyConfigurator;

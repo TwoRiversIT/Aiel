@@ -26,7 +26,7 @@ namespace Aiel.Dependencies;
 /// Serves as a marker for the Aiel dependency injection framework to
 /// identify, configure, and initialize dependencies.
 /// </summary>
-public abstract class AielDependency : IDependencyConfigurator
+public abstract class AielDependencyConfigurator : IDependencyConfigurator
 {
     /// <summary>
     /// Configures the dependency by registering services, setting up options, or performing

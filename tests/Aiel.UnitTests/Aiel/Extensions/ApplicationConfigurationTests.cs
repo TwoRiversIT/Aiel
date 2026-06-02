@@ -137,7 +137,7 @@ public class ApplicationConfigurationTests
         domainAssemblyFromDb.Dependencies.Select(d => d.Type).Should().Contain(typeof(DomainShared));
         AssertWasConfiguredOnceOnly(domainAssemblyFromDb.Instance);
 
-        static void AssertWasConfiguredOnceOnly(AielDependency dependency)
+        static void AssertWasConfiguredOnceOnly(AielDependencyConfigurator dependency)
         {
             if (dependency is TestDependency testAssembly)
             {
@@ -149,7 +149,7 @@ public class ApplicationConfigurationTests
             }
             else
             {
-                throw new InvalidOperationException($"Dependency of type {dependency.GetType().FullName} is not a AielDependency, cannot check configuration count");
+                throw new InvalidOperationException($"Dependency of type {dependency.GetType().FullName} is not a AielDependencyConfigurator, cannot check configuration count");
             }
         }
     }
@@ -480,7 +480,7 @@ public class ApplicationConfigurationTests
         rootAssembly1.Should().BeSameAs(rootAssembly2, "RootAssemblyInfo should be registered as singleton");
     }
 
-    public abstract class TestDependency : AielDependency
+    public abstract class TestDependency : AielDependencyConfigurator
     {
         public Int32 ConfigurationCount { get; protected set; }
 

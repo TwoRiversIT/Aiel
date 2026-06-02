@@ -16,7 +16,7 @@ Aiel has in-process coordination (`Aiel.Mediator` notifications, `IDomainEventDi
 
 | File | Purpose |
 |---|---|
-| `MessageBusAbstractionsDependency.cs` | `AielDependency` subclass; `[DependsOn(AielApplicationContracts)]` + `[DependsOn(AielMultiTenancy)]`; registers `IMessageEnvelopeFactory` and `IMessageTypeRegistry`; does **not** register `IMessagePublisher` |
+| `MessageBusAbstractionsDependency.cs` | `AielDependencyConfigurator` subclass; `[DependsOn(AielApplicationContracts)]` + `[DependsOn(AielMultiTenancy)]`; registers `IMessageEnvelopeFactory` and `IMessageTypeRegistry`; does **not** register `IMessagePublisher` |
 | `IIntegrationMessage.cs` | Marker interface |
 | `MessageTypeAttribute.cs` | `[AttributeUsage(Class\|Struct, Inherited=false)]`; `public String Name { get; }` |
 | `MessageTypeName.cs` | `readonly record struct(String Value)` |
@@ -82,7 +82,7 @@ Aiel has in-process coordination (`Aiel.Mediator` notifications, `IDomainEventDi
 
 ### 3. `src/Aiel.MessageBus.Testing/`
 
-**csproj:** project reference to `Aiel.MessageBus.Abstractions` only. No `AielDependency` — consumed directly as a test helper, not wired into the module graph.
+**csproj:** project reference to `Aiel.MessageBus.Abstractions` only. No `AielDependencyConfigurator` — consumed directly as a test helper, not wired into the module graph.
 
 **File layout** — `Aiel/MessageBus/Testing/`, namespace `Aiel.MessageBus.Testing`:
 

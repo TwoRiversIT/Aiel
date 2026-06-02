@@ -74,15 +74,15 @@ public sealed class DependencyDiscoveryExtensionsTests
 
     [DependsOn(typeof(DiamondLeftDependency))]
     [DependsOn(typeof(DiamondRightDependency))]
-    private sealed class DiamondRootDependency : AielDependency;
+    private sealed class DiamondRootDependency : AielDependencyConfigurator;
 
     [DependsOn(typeof(DiamondSharedDependency))]
-    private sealed class DiamondLeftDependency : AielDependency;
+    private sealed class DiamondLeftDependency : AielDependencyConfigurator;
 
     [DependsOn(typeof(DiamondSharedDependency))]
-    private sealed class DiamondRightDependency : AielDependency;
+    private sealed class DiamondRightDependency : AielDependencyConfigurator;
 
-    private sealed class DiamondSharedDependency : AielDependency
+    private sealed class DiamondSharedDependency : AielDependencyConfigurator
     {
         public static Int32 PreConfigureCount { get; private set; }
 
@@ -109,15 +109,15 @@ public sealed class DependencyDiscoveryExtensionsTests
 
     [DependsOn(typeof(InitializerLeftDependency))]
     [DependsOn(typeof(InitializerRightDependency))]
-    private sealed class InitializerRootDependency : AielDependency;
+    private sealed class InitializerRootDependency : AielDependencyConfigurator;
 
     [DependsOn(typeof(InitializerSharedDependency))]
-    private sealed class InitializerLeftDependency : AielDependency;
+    private sealed class InitializerLeftDependency : AielDependencyConfigurator;
 
     [DependsOn(typeof(InitializerSharedDependency))]
-    private sealed class InitializerRightDependency : AielDependency;
+    private sealed class InitializerRightDependency : AielDependencyConfigurator;
 
-    private sealed class InitializerSharedDependency : AielDependency, IDependencyInitializer
+    private sealed class InitializerSharedDependency : AielDependencyConfigurator, IDependencyInitializer
     {
         public static Int32 InitializeCount { get; private set; }
 

@@ -29,7 +29,7 @@ namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(AielAppFramework))]
 [DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCore : AielDependency
+public sealed class AielAspNetCore : AielDependencyConfigurator
 {
     public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {

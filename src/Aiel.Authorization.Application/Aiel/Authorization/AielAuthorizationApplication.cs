@@ -28,4 +28,4 @@ namespace Aiel.Authorization;
 /// Ensures that the Aiel.Authorization.Application participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielAuthorizationApplicationContracts))]
-public sealed class AielAuthorizationApplication : AielDependency;
+public sealed class AielAuthorizationApplication : AielDependencyConfigurator;

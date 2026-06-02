@@ -1,8 +1,33 @@
 {
     "cSpell.words": [
+        "affordances",
         "Aiel",
-        "Aiel’s",
-        "Multitenancy",
-        "Multitenant"
+        "Authentik",
+        "Aviendha",
+        "backplane",
+        "ciphertext",
+        "codegen",
+        "Configurator",
+        "Configurators",
+        "deployables",
+        "Egwene",
+        "Elayne",
+        "Faile",
+        "Idempotently",
+        "Keledes",
+        "lockdown",
+        "Loial",
+        "Moiraine",
+        "Nynaeve",
+        "Perrin",
+        "Rhuarc",
+        "toplevel",
+        "untriaged",
+        "Verin",
+        "Worktree"
+    ],
+    "cSpell.ignoreWords": [
+        "nologo",
+        "slnx"
     ]
 }

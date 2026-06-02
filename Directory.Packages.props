@@ -12,7 +12,7 @@
 		<PackageVersion Include="Bogus.Text" Version="35.6.5" />
 		<PackageVersion Include="Bogus.Tools.Analyzer" Version="35.6.5" />
 		<PackageVersion Include="coverlet.collector" Version="8.0.0" />
-		<PackageVersion Include="Dapper" Version="2.1.66" />
+		<PackageVersion Include="Dapper" Version="2.1.79" />
 		<PackageVersion Include="FluentAssertions" Version="8.8.0" />
 		<PackageVersion Include="FluentValidation" Version="12.1.1" />
 		<PackageVersion Include="Flurl" Version="4.0.0" />

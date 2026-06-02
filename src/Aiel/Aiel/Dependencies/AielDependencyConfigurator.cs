@@ -26,8 +26,24 @@ namespace Aiel.Dependencies;
 /// Serves as a marker for the Aiel dependency injection framework to
 /// identify, configure, and initialize dependencies.
 /// </summary>
+/// <remarks>
+/// If an assembly needs to perform custom initialization logic after the 
+/// dependency configuration phase, it can implement <see cref="IDependencyInitializer"/>.
+/// The Aiel framework will automatically discover and execute these configurators
+/// and initializers during application startup, allowing for modular and flexible
+/// dependency management across different assemblies.
+/// </remarks>
 public abstract class AielDependencyConfigurator : IDependencyConfigurator
 {
+    /// <summary>
+    /// Performs pre-configuration tasks such as validating configuration values or
+    /// setting up necessary prerequisites before the main configuration.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public virtual ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+
     /// <summary>
     /// Configures the dependency by registering services, setting up options, or performing
     /// other pre-initialization tasks.
@@ -35,5 +51,4 @@ public abstract class AielDependencyConfigurator : IDependencyConfigurator
     /// <param name="context"></param>
     /// <returns></returns>
     public virtual ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
-    public virtual ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 }

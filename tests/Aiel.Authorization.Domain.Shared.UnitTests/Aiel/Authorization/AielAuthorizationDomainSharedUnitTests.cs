@@ -24,6 +24,6 @@ using Aiel.Dependencies;
 
 namespace Aiel.Authorization;
 
-[DependsOn(typeof(AielPermissionsDomainShared))]
-public sealed class AielPermissionsDomainSharedUnitTests : AielDependency;
+[DependsOn(typeof(AielAuthorizationDomainShared))]
+public sealed class AielAuthorizationDomainSharedUnitTests : AielDependency;
 

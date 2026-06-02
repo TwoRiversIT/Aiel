@@ -27,7 +27,7 @@ public sealed class PermissionGrantTests
     [Fact]
     public void Create_RejectsDefaultIds_EmptyScope_EmptySubject_AndInvalidPermissionName()
     {
-        var result = PermissionGrant.Create(
+        var result = AuthorizationGrant.Create(
             default,
             default,
             default,
@@ -35,10 +35,10 @@ public sealed class PermissionGrantTests
             default,
             default,
             default,
-            PermissionGrantDecision.Granted);
+            AuthorizationGrantDecision.Granted);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<InvalidPermissionGrantError>();
+        result.Error.Should().BeOfType<InvalidAuthorizationGrantError>();
     }
 
     [Fact]
@@ -46,33 +46,33 @@ public sealed class PermissionGrantTests
     {
         var catalogEntry = CreateCatalogEntry(PermissionLifecycle.Removed);
 
-        var result = PermissionGrant.Create(
-            PermissionGrantId.From(Guid.Parse("8b2f8d89-6a95-47cd-8eec-c6f07a145ee5")),
+        var result = AuthorizationGrant.Create(
+            AuthorizationGrantId.From(Guid.Parse("8b2f8d89-6a95-47cd-8eec-c6f07a145ee5")),
             catalogEntry,
-            PermissionScopeKey.From("clinic:west"),
-            PermissionSubjectTypeName.From("User"),
-            PermissionSubjectKey.From("user:42"),
-            PermissionGrantDecision.Granted);
+            AuthorizationScopeKey.From("clinic:west"),
+            AuthorizationSubjectTypeName.From("User"),
+            AuthorizationSubjectKey.From("user:42"),
+            AuthorizationGrantDecision.Granted);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<InvalidPermissionGrantError>();
+        result.Error.Should().BeOfType<InvalidAuthorizationGrantError>();
     }
 
     [Fact]
     public void Create_FromCatalogEntry_CapturesPermissionIdentity_AndMatchesScopeAndSubject()
     {
         var catalogEntry = CreateCatalogEntry();
-        var scopeKey = PermissionScopeKey.From("clinic:west");
-        var subjectType = PermissionSubjectTypeName.From("User");
-        var subjectKey = PermissionSubjectKey.From("user:42");
+        var scopeKey = AuthorizationScopeKey.From("clinic:west");
+        var subjectType = AuthorizationSubjectTypeName.From("User");
+        var subjectKey = AuthorizationSubjectKey.From("user:42");
 
-        var result = PermissionGrant.Create(
-            PermissionGrantId.From(Guid.Parse("549d88cb-7114-4b7b-8690-c5c53ab0a724")),
+        var result = AuthorizationGrant.Create(
+            AuthorizationGrantId.From(Guid.Parse("549d88cb-7114-4b7b-8690-c5c53ab0a724")),
             catalogEntry,
             scopeKey,
             subjectType,
             subjectKey,
-            PermissionGrantDecision.Prohibited);
+            AuthorizationGrantDecision.Prohibited);
 
         result.IsSuccess.Should().BeTrue();
         result.Value.PermissionStableId.Should().Be(catalogEntry.Id);
@@ -81,11 +81,11 @@ public sealed class PermissionGrantTests
         result.Value.ScopeKey.Should().Be(scopeKey);
         result.Value.SubjectType.Should().Be(subjectType);
         result.Value.SubjectKey.Should().Be(subjectKey);
-        result.Value.Decision.Should().Be(PermissionGrantDecision.Prohibited);
-        result.Value.MatchesScope(PermissionScopeTypeName.From("Clinic"), scopeKey).Should().BeTrue();
-        result.Value.MatchesScope(PermissionScopeTypeName.From("Tenant"), scopeKey).Should().BeFalse();
+        result.Value.Decision.Should().Be(AuthorizationGrantDecision.Prohibited);
+        result.Value.MatchesScope(AuthorizationScopeTypeName.From("Clinic"), scopeKey).Should().BeTrue();
+        result.Value.MatchesScope(AuthorizationScopeTypeName.From("Tenant"), scopeKey).Should().BeFalse();
         result.Value.MatchesSubject(subjectType, subjectKey).Should().BeTrue();
-        result.Value.MatchesSubject(subjectType, PermissionSubjectKey.From("user:100")).Should().BeFalse();
+        result.Value.MatchesSubject(subjectType, AuthorizationSubjectKey.From("user:100")).Should().BeFalse();
     }
 
     private static PermissionCatalogEntry CreateCatalogEntry(PermissionLifecycle lifecycle = PermissionLifecycle.Active)
@@ -93,7 +93,7 @@ public sealed class PermissionGrantTests
         var result = PermissionCatalogEntry.Create(
             PermissionStableId.From("perm_01k0task4grant0000000000000001"),
             PermissionName.From("Aviendha.Scheduling.Appointments.ChangeAppointment"),
-            PermissionScopeTypeName.From("Clinic"),
+            AuthorizationScopeTypeName.From("Clinic"),
             lifecycle);
 
         result.IsSuccess.Should().BeTrue();

@@ -29,10 +29,10 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// <summary>
 /// Extension methods for registering EF Core permission infrastructure services.
 /// </summary>
-public static class PermissionsEntityFrameworkCoreServiceCollectionExtensions
+public static class AuthorizationEntityFrameworkCoreServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers the EF Core <see cref="IPermissionStore"/> implementation and the
+    /// Registers the EF Core <see cref="IAuthorizationGrantStore"/> implementation and the
     /// <see cref="PermissionMigrationRunner"/> using the supplied database context configuration.
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
@@ -46,10 +46,10 @@ public static class PermissionsEntityFrameworkCoreServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(configureOptions);
 
         services.TryAddSingleton(TimeProvider.System);
-        services.AddDbContext<PermissionsDbContext>(configureOptions);
-        services.AddScoped<IPermissionStore, EfCorePermissionStore>();
+        services.AddDbContext<AuthorizationDbContext>(configureOptions);
+        services.AddScoped<IAuthorizationGrantStore, EfCorePermissionStore>();
         services.AddScoped<PermissionMigrationRunner>();
-        services.AddScoped<PermissionsDbInitializer>();
+        services.AddScoped<AuthorizationDbInitializer>();
 
         return services;
     }

@@ -22,7 +22,7 @@
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
-internal static class PermissionsEfCoreErrorMessages
+internal static class AuthorizationEfCoreErrorMessages
 {
     internal static String CatalogEntryNotFoundForPermissionName(String permissionName)
         => $"No catalog entry found for permission name '{permissionName}'. Seed the catalog via a migration before creating grants.";

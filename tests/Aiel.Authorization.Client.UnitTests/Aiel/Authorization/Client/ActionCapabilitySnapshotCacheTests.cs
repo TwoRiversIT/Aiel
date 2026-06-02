@@ -29,9 +29,9 @@ public sealed class ActionCapabilitySnapshotCacheTests
     private static readonly PermissionName RescheduleAppointmentPermission =
         PermissionName.From("sample.Scheduling.RescheduleAppointment");
 
-    private static readonly PermissionScopeTypeName LocationScopeType = PermissionScopeTypeName.From("Location");
+    private static readonly AuthorizationScopeTypeName LocationScopeType = AuthorizationScopeTypeName.From("Location");
 
-    private static readonly PermissionScopeKey LocationScopeKey = PermissionScopeKey.From("clinic-west");
+    private static readonly AuthorizationScopeKey LocationScopeKey = AuthorizationScopeKey.From("clinic-west");
 
     [Fact]
     public void ForSelectedPermissions_UsesExplicitEmptyContinuationToken()
@@ -57,14 +57,14 @@ public sealed class ActionCapabilitySnapshotCacheTests
             [RescheduleAppointmentPermission],
             CapabilityContinuationToken.Empty);
         var capabilityService = new RecordingActionCapabilityService(
-            CreateSnapshot("snapshot-v1", PermissionGrantDecision.Prohibited),
-            CreateSnapshot("snapshot-v2", PermissionGrantDecision.Granted));
+            CreateSnapshot("snapshot-v1", AuthorizationGrantDecision.Prohibited),
+            CreateSnapshot("snapshot-v2", AuthorizationGrantDecision.Granted));
         var cache = new ActionCapabilitySnapshotCache(capabilityService);
 
         var initial = await cache.GetSnapshotAsync(request, TestContext.Current.CancellationToken);
         var refreshed = await cache.HandleAuthorizationFailureAsync(
             request,
-            Result.Failure(PermissionErrors.PermissionDenied(RescheduleAppointmentPermission)),
+            Result.Failure(AuthorizationErrors.PermissionDenied(RescheduleAppointmentPermission)),
             TestContext.Current.CancellationToken);
 
         initial.IsSuccess.Should().BeTrue();
@@ -74,13 +74,13 @@ public sealed class ActionCapabilitySnapshotCacheTests
         capabilityService.CallCount.Should().Be(2);
     }
 
-    private static ActionCapabilitySnapshot CreateSnapshot(String version, PermissionGrantDecision decision)
+    private static ActionCapabilitySnapshot CreateSnapshot(String version, AuthorizationGrantDecision decision)
         => new(
             CapabilitySnapshotVersion.From(version),
             LocationScopeType,
             LocationScopeKey,
             [
-                new ClientPermissionCapability
+                new ClientAuthorizationCapability
                 {
                     SnapshotVersion = CapabilitySnapshotVersion.From(version),
                     PermissionName = RescheduleAppointmentPermission,

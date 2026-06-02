@@ -27,6 +27,6 @@ namespace Aiel.Authorization;
 /// </summary>
 /// <param name="ScopeType">The type of scope this resolution identifies.</param>
 /// <param name="ScopeKey">The specific scope key resolved for the current action.</param>
-public sealed record PermissionScopeResolution(
-    PermissionScopeTypeName ScopeType,
-    PermissionScopeKey ScopeKey);
+public sealed record AuthorizationScopeResolution(
+    AuthorizationScopeTypeName ScopeType,
+    AuthorizationScopeKey ScopeKey);

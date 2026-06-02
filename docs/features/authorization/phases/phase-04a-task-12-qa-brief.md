@@ -4,7 +4,7 @@
 - **Author:** Verin
 - **Scope:** Task 12 only. Add the hand-written ASP.NET Core endpoint sample and matching HTTP client adapter sample on top of the Task 11 `RescheduleAppointment` reference slice.
 - **Layer:** Edge adapter sample in `Aiel.*`. Transport code only. The application-service contract remains the authority boundary.
-- **Baseline:** Task 11 is complete in `Aiel/tests/Aiel.Permissions.Application.UnitTests/Aiel/Permissions/RescheduleAppointmentReferenceSliceTests.cs`. Phase 04 decision D7 says edge adapters are samples first, not generated endpoints first.
+- **Baseline:** Task 11 is complete in `Aiel/tests/Aiel.Authorization.Application.UnitTests/Aiel/Authorization/RescheduleAppointmentReferenceSliceTests.cs`. Phase 04 decision D7 says edge adapters are samples first, not generated endpoints first.
 
 ---
 
@@ -47,14 +47,14 @@ Task 12 starts with failing transport tests, not package plumbing.
 
 ### Recommended homes for the new Task 12 tests
 
-- `Aiel/tests/Aiel.Permissions.AspNetCore.IntegrationTests/Aiel.Permissions.AspNetCore.IntegrationTests.csproj`
-- `Aiel/tests/Aiel.Permissions.AspNetCore.IntegrationTests.WebApplication/Aiel.Permissions.AspNetCore.IntegrationTests.WebApplication.csproj`
+- `Aiel/tests/Aiel.Authorization.AspNetCore.IntegrationTests/Aiel.Authorization.AspNetCore.IntegrationTests.csproj`
+- `Aiel/tests/Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication/Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication.csproj`
 - Keep the fake `IAppointmentApplicationService` and sample request/response DTOs inside the Task 12 sample test boundary, not in `Aviendha.*`.
 
 ### Mandatory regression guards to keep green while implementing
 
 1. **Task 11 application slice regression**
-   - `Aiel/tests/Aiel.Permissions.Application.UnitTests/Aiel.Permissions.Application.UnitTests.csproj`
+   - `Aiel/tests/Aiel.Authorization.Application.UnitTests/Aiel.Authorization.Application.UnitTests.csproj`
    - Keep the `RescheduleAppointment` gate-order tests green. Task 12 must consume the application contract, not reshape it.
 
 2. **Result transport regression**
@@ -72,8 +72,8 @@ Task 12 starts with failing transport tests, not package plumbing.
 Run these in order:
 
 ```powershell
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Permissions.AspNetCore.IntegrationTests\Aiel.Permissions.AspNetCore.IntegrationTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Permissions.Application.UnitTests\Aiel.Permissions.Application.UnitTests.csproj --no-restore -v minimal
+dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.AspNetCore.IntegrationTests\Aiel.Authorization.AspNetCore.IntegrationTests.csproj --no-restore -v minimal
+dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Application.UnitTests\Aiel.Authorization.Application.UnitTests.csproj --no-restore -v minimal
 dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Results.IntegrationTests\Aiel.Results.IntegrationTests.csproj --no-restore -v minimal
 dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Results.Generators.UnitTests\Aiel.Results.Generators.UnitTests.csproj --no-restore -v minimal
 dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\Aiel.slnx --no-restore -v minimal
@@ -129,7 +129,7 @@ Implementation must be blocked or rejected if any of the following occurs.
 
 This remains framework-owned work.
 
-- The new package name is `Aiel.Permissions.AspNetCore`, which squarely belongs to the Aiel hosting and extension-point layer.
+- The new package name is `Aiel.Authorization.AspNetCore`, which squarely belongs to the Aiel hosting and extension-point layer.
 - The task proves transport adapters around the existing framework application-service contract; it does not deliver an Aviendha user journey.
 - Perrin owns Aiel framework composition, hosting, and extension points, which is the exact seam Task 12 exercises.
 

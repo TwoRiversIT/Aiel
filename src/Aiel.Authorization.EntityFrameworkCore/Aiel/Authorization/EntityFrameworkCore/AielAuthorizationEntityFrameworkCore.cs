@@ -21,11 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Dependencies;
+using Aiel.Results;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
-[DependsOn(typeof(AielPermissionsApplicationContracts))]
-[DependsOn(typeof(AielPermissionsDomain))]
-[DependsOn(typeof(Results.AielResults))]
-public sealed class AielPermissionsEntityFrameworkCore : AielDependency;
+[DependsOn(typeof(AielAuthorizationApplicationContracts))]
+[DependsOn(typeof(AielAuthorizationDomain))]
+[DependsOn(typeof(AielResults))]
+public sealed class AielAuthorizationEntityFrameworkCore : AielDependency;
 

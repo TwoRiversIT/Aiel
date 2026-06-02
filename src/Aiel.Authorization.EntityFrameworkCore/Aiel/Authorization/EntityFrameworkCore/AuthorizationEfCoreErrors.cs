@@ -32,7 +32,7 @@ public sealed partial class PermissionCatalogEntryNotFoundError : Error;
 /// <summary>
 /// Represents a failure when a permission grant cannot be found for the requested grant ID.
 /// </summary>
-public sealed partial class PermissionGrantNotFoundError : Error;
+public sealed partial class AuthorizationGrantNotFoundError : Error;
 
 /// <summary>
 /// Represents a failure when a migration operation references a catalog entry that does not exist.

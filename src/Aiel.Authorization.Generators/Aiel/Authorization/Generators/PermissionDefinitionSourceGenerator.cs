@@ -31,7 +31,7 @@ namespace Aiel.Authorization.Generators;
 [Generator]
 public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
 {
-    private const String DefinesPermissionAttributeMetadataName = "Aiel.Authorization.DefinesPermissionAttribute";
+    private const String DefinesPermissionAttributeMetadataName = "Aiel.Authorization.AuthorizationDefinitionAttribute";
 
     private static readonly SymbolDisplayFormat GlobalFqnFormat = new(
         globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
@@ -124,10 +124,10 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
         }
 
         sb.AppendLine($"internal sealed class {model.ActionName}PermissionChecker(");
-        sb.AppendLine($"    global::Aiel.Authorization.IPermissionGrantEvaluator evaluator,");
-        sb.AppendLine($"    global::Aiel.Authorization.IPermissionScopeResolver<{model.ActionFqn}> scopeResolver,");
-        sb.AppendLine($"    global::Aiel.Authorization.IPermissionSubjectResolver<{model.ActionFqn}> subjectResolver)");
-        sb.AppendLine($"    : global::Aiel.Authorization.IActionPermissionChecker<{model.ActionFqn}>");
+        sb.AppendLine($"    global::Aiel.Authorization.IAuthorizationGrantEvaluator evaluator,");
+        sb.AppendLine($"    global::Aiel.Authorization.IAuthorizationScopeResolver<{model.ActionFqn}> scopeResolver,");
+        sb.AppendLine($"    global::Aiel.Authorization.IAuthorizationSubjectResolver<{model.ActionFqn}> subjectResolver)");
+        sb.AppendLine($"    : global::Aiel.Authorization.IActionAuthorizationChecker<{model.ActionFqn}>");
         sb.AppendLine("{");
         sb.AppendLine($"    public async global::System.Threading.Tasks.Task<global::Aiel.Results.Result> CheckPermissionAsync(");
         sb.AppendLine($"        global::Aiel.Execution.IActionExecutionContext<{model.ActionFqn}> context,");
@@ -138,7 +138,7 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("        var subjectKey = subjectResolver.ResolveSubjectKey(context);");
         sb.AppendLine($"        var permissionName = global::Aiel.Authorization.PermissionName.From(\"{model.PermissionName}\");");
-        sb.AppendLine($"        var subjectTypeName = global::Aiel.Authorization.PermissionSubjectTypeName.From(\"{model.SubjectType}\");");
+        sb.AppendLine($"        var subjectTypeName = global::Aiel.Authorization.AuthorizationSubjectTypeName.From(\"{model.SubjectType}\");");
         sb.AppendLine("        var decisionResult = await evaluator.EvaluateAsync(");
         sb.AppendLine("            permissionName,");
         sb.AppendLine("            scopeResult.Value.ScopeType,");
@@ -149,10 +149,10 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("        if (!decisionResult.IsSuccess) { return global::Aiel.Results.Result.Failure(decisionResult.Error); }");
         sb.AppendLine();
-        sb.AppendLine("        return decisionResult.Value == global::Aiel.Authorization.PermissionGrantDecision.Granted");
+        sb.AppendLine("        return decisionResult.Value == global::Aiel.Authorization.AuthorizationGrantDecision.Granted");
         sb.AppendLine("            ? global::Aiel.Results.Result.Success()");
         sb.AppendLine("            : global::Aiel.Results.Result.Failure(");
-        sb.AppendLine("                global::Aiel.Authorization.PermissionErrors.PermissionDenied(permissionName));");
+        sb.AppendLine("                global::Aiel.Authorization.AuthorizationErrors.PermissionDenied(permissionName));");
         sb.AppendLine("    }");
         sb.AppendLine("}");
 
@@ -172,7 +172,7 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
         sb.AppendLine("#nullable enable");
         sb.AppendLine();
         sb.AppendLine("/// <summary>Generated permission name constants. Declared <c>partial</c> to allow hand-authored additions.</summary>");
-        sb.AppendLine("public static partial class GeneratedPermissionNames");
+        sb.AppendLine("public static partial class GeneratedAuthorizationNames");
         sb.AppendLine("{");
         foreach (var model in models)
         {
@@ -181,21 +181,21 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
 
         sb.AppendLine("}");
         sb.AppendLine();
-        sb.AppendLine("/// <summary>Provides the generated <see cref=\"global::Aiel.Authorization.PermissionDefinitionManifest\"/> entries for registration at startup.</summary>");
-        sb.AppendLine("public static partial class GeneratedPermissionManifests");
+        sb.AppendLine("/// <summary>Provides the generated <see cref=\"global::Aiel.Authorization.AuthorizationDefinitionManifest\"/> entries for registration at startup.</summary>");
+        sb.AppendLine("public static partial class GeneratedAuthorizationManifests");
         sb.AppendLine("{");
         sb.AppendLine("    /// <summary>Returns all permission definition manifests produced by the source generator.</summary>");
-        sb.AppendLine("    public static global::System.Collections.Generic.IEnumerable<global::Aiel.Authorization.PermissionDefinitionManifest> GetManifests()");
+        sb.AppendLine("    public static global::System.Collections.Generic.IEnumerable<global::Aiel.Authorization.AuthorizationDefinitionManifest> GetManifests()");
         sb.AppendLine("    {");
         foreach (var model in models)
         {
-            sb.AppendLine($"        yield return new global::Aiel.Authorization.PermissionDefinitionManifest");
+            sb.AppendLine($"        yield return new global::Aiel.Authorization.AuthorizationDefinitionManifest");
             sb.AppendLine("        {");
             sb.AppendLine($"            PermissionName = global::Aiel.Authorization.PermissionName.From(\"{model.PermissionName}\"),");
             sb.AppendLine($"            StableId = global::Aiel.Authorization.PermissionStableId.From(\"{model.StableId}\"),");
             sb.AppendLine($"            ActionType = typeof({model.ActionFqn}),");
-            sb.AppendLine($"            ScopeType = global::Aiel.Authorization.PermissionScopeTypeName.From(\"{model.ScopeType}\"),");
-            sb.AppendLine($"            SubjectType = global::Aiel.Authorization.PermissionSubjectTypeName.From(\"{model.SubjectType}\"),");
+            sb.AppendLine($"            ScopeType = global::Aiel.Authorization.AuthorizationScopeTypeName.From(\"{model.ScopeType}\"),");
+            sb.AppendLine($"            SubjectType = global::Aiel.Authorization.AuthorizationSubjectTypeName.From(\"{model.SubjectType}\"),");
             sb.AppendLine($"            DisplayName = \"{EscapeString(model.DisplayName)}\",");
             sb.AppendLine($"            Description = \"{EscapeString(model.Description)}\",");
             sb.AppendLine($"            Lifecycle = global::Aiel.Authorization.PermissionLifecycle.{LifecycleName(model.LifecycleValue)},");

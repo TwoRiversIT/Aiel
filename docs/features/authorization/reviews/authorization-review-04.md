@@ -186,7 +186,7 @@ public sealed record ChangeAppointment(
 Generated:
 
 ```csharp
-public static partial class AviendhaPermissions
+public static partial class AviendhaAuthorization
 {
     public static partial class Scheduling
     {
@@ -200,7 +200,7 @@ Generated definition:
 
 ```csharp
 builder.Group("Aviendha.Scheduling", "Scheduling")
-    .Permission(AviendhaPermissions.Scheduling.ChangeAppointment)
+    .Permission(AviendhaAuthorization.Scheduling.ChangeAppointment)
         .Action<ChangeAppointment>()
         .Scope(AviendhaPermissionScopes.Clinic)
         .Lifecycle(PermissionLifecycle.Active);
@@ -263,8 +263,8 @@ public sealed class ChangeAppointmentPermissionChecker
         IActionExecutionContext<ChangeAppointment> context,
         CancellationToken cancellationToken = default)
     {
-        var permission = await Permissions.CheckAsync(
-            AviendhaPermissions.Scheduling.ChangeAppointment,
+        var permission = await Authorization.CheckAsync(
+            AviendhaAuthorization.Scheduling.ChangeAppointment,
             context,
             cancellationToken);
 

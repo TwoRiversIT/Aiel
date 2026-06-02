@@ -1,10 +1,10 @@
-# Phase 04a Task 9 — Aiel.Permissions.Generators QA Brief
+# Phase 04a Task 9 — Aiel.Authorization.Generators QA Brief
 
 - **Date:** 2026-05-30T00:00:00Z
 - **Author:** Verin
-- **Scope:** Task 9 only. Add `Aiel.Permissions.Generators` (src) and `Aiel.Permissions.Generators.UnitTests` (tests). Add `[DefinePermission]` and `[GeneratedPermission]` to `Aiel.Permissions.Application.Contracts`. Extend `PermissionDefinitionManifest` with `Lifecycle` and `PreviousNames`. Extend `ActionAuthorizationAnalyzer` with the third passing condition. Wire the generator DLL into `Aiel.Permissions.Application.Contracts`.
+- **Scope:** Task 9 only. Add `Aiel.Authorization.Generators` (src) and `Aiel.Authorization.Generators.UnitTests` (tests). Add `[DefinePermission]` and `[GeneratedPermission]` to `Aiel.Authorization.Application.Contracts`. Extend `PermissionDefinitionManifest` with `Lifecycle` and `PreviousNames`. Extend `ActionAuthorizationAnalyzer` with the third passing condition. Wire the generator DLL into `Aiel.Authorization.Application.Contracts`.
 - **Layer:** Roslyn source generator (compile-time only) + application contract extensions + analyzer extension. No EF Core. No persistence. No runtime service registration beyond the emitted registration helper.
-- **Baseline:** Task 8 committed and all tests passing. `ActionAuthorizationAnalyzer` fires `TRAF01001` on any concrete `IAction` with no checker and no `[DoesNotRespectAuthority]`. Task 9 closes the explicit gap documented in that diagnostic.
+- **Baseline:** Task 8 committed and all tests passing. `ActionAuthorizationAnalyzer` fires `AIEL20001` on any concrete `IAction` with no checker and no `[DoesNotRespectAuthority]`. Task 9 closes the explicit gap documented in that diagnostic.
 
 ---
 
@@ -19,7 +19,7 @@ Task 9 can land independently before any EF schema, migration tooling, or persis
 - EF Core `DbContext` modifications or migration files.
 - Persistence of permission grants, audit logs, or capability snapshots.
 - ASP.NET Core middleware or endpoint filters.
-- Anything in `Aiel.Permissions.Infrastructure.*`.
+- Anything in `Aiel.Authorization.Infrastructure.*`.
 
 Task 9 MUST NOT merge with any task that touches persistence or the application service layer beyond what is strictly required to wire the generator DLL and extend the manifest contract.
 
@@ -29,7 +29,7 @@ Task 9 MUST NOT merge with any task that touches persistence or the application 
 
 ### `[DefinePermission]` — generator input signal
 
-**Where:** `Aiel.Permissions.Application.Contracts`, namespace `Aiel.Permissions`.
+**Where:** `Aiel.Authorization.Application.Contracts`, namespace `Aiel.Authorization`.
 
 Applied by the developer to a concrete `IAction` class to instruct the generator to emit a permission definition for it.
 
@@ -43,7 +43,7 @@ Applied by the developer to a concrete `IAction` class to instruct the generator
 /// The generator emits a constants class, a manifest registration helper, and a
 /// <c>[GeneratedPermission]</c>-annotated marker class for the annotated action type.
 /// The <see cref="ActionAuthorizationAnalyzer"/> recognizes the generated marker and suppresses
-/// <c>TRAF01001</c> for the annotated action.
+/// <c>AIEL20001</c> for the annotated action.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public sealed class DefinePermissionAttribute : Attribute
@@ -84,7 +84,7 @@ public sealed class DefinePermissionAttribute : Attribute
 
 ### `[GeneratedPermission]` — analyzer recognition token
 
-**Where:** `Aiel.Permissions.Application.Contracts`, namespace `Aiel.Permissions`.
+**Where:** `Aiel.Authorization.Application.Contracts`, namespace `Aiel.Authorization`.
 
 Emitted by the generator on the generated constants class. Recognized by the extended `ActionAuthorizationAnalyzer` by fully qualified metadata name string — no compile-time reference from the analyzer to the contracts package.
 
@@ -92,9 +92,9 @@ Emitted by the generator on the generated constants class. Recognized by the ext
 
 ```csharp
 /// <summary>
-/// Applied by <c>Aiel.Permissions.Generators</c> to the generated constants class.
+/// Applied by <c>Aiel.Authorization.Generators</c> to the generated constants class.
 /// Signals to <c>ActionAuthorizationAnalyzer</c> that a permission definition exists for
-/// the specified action type, suppressing <c>TRAF01001</c>.
+/// the specified action type, suppressing <c>AIEL20001</c>.
 /// </summary>
 /// <remarks>
 /// This attribute MUST NOT be applied manually. It is exclusively for generator output.
@@ -113,14 +113,14 @@ public sealed class GeneratedPermissionAttribute : Attribute
 **Rules:**
 
 - Must NOT be `required` or have init-only properties that break the constructor pattern — the generator emits `[GeneratedPermission(typeof(TAction))]`.
-- The analyzer recognizes this by metadata name `Aiel.Permissions.GeneratedPermissionAttribute` — it does NOT reference the contracts package at compile time.
+- The analyzer recognizes this by metadata name `Aiel.Authorization.GeneratedPermissionAttribute` — it does NOT reference the contracts package at compile time.
 - This attribute MUST NOT be applied manually. Any hand-written usage is a code smell and may produce undefined analyzer behavior.
 
 ---
 
 ## `PermissionDefinitionManifest` contract extension
 
-The existing `PermissionDefinitionManifest` in `Aiel.Permissions.Application.Contracts` is missing `Lifecycle` and `PreviousNames`. Task 9 adds these as **non-required, non-breaking** properties with defaults:
+The existing `PermissionDefinitionManifest` in `Aiel.Authorization.Application.Contracts` is missing `Lifecycle` and `PreviousNames`. Task 9 adds these as **non-required, non-breaking** properties with defaults:
 
 ```csharp
 /// <summary>Gets the lifecycle state of this permission definition. Defaults to <see cref="PermissionLifecycle.Active"/>.</summary>
@@ -140,7 +140,7 @@ public IReadOnlyList<PermissionName> PreviousNames { get; init; } = [];
 
 ## Required projects and their dependencies
 
-### `Aiel/src/Aiel.Permissions.Generators/Aiel.Permissions.Generators.csproj`
+### `Aiel/src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj`
 
 Mirror `Aiel.Generators.csproj` exactly:
 
@@ -169,21 +169,21 @@ Mirror `Aiel.Generators.csproj` exactly:
 
 The project MUST include `AnalyzerReleases.Shipped.md` and `AnalyzerReleases.Unshipped.md` as `<AdditionalFiles>`. It MUST import `Aiel.Shared.projitems`.
 
-### Runtime package wiring — `Aiel.Permissions.Application.Contracts.csproj`
+### Runtime package wiring — `Aiel.Authorization.Application.Contracts.csproj`
 
-The generator DLL is delivered to consumers via `Aiel.Permissions.Application.Contracts` — the same pattern as `Aiel.Results.Generators` wired into this package. Add:
+The generator DLL is delivered to consumers via `Aiel.Authorization.Application.Contracts` — the same pattern as `Aiel.Results.Generators` wired into this package. Add:
 
 ```xml
 <!-- Pack the generator DLL into the contracts package's NuGet payload -->
-<None Include="..\Aiel.Permissions.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Permissions.Generators.dll"
+<None Include="..\Aiel.Authorization.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Authorization.Generators.dll"
       Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 
 <!-- Reference the generator as an analyzer during compilation of the contracts package itself -->
-<ProjectReference Include="..\Aiel.Permissions.Generators\Aiel.Permissions.Generators.csproj"
+<ProjectReference Include="..\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj"
                   OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
 ```
 
-### `Aiel/tests/Aiel.Permissions.Generators.UnitTests/Aiel.Permissions.Generators.UnitTests.csproj`
+### `Aiel/tests/Aiel.Authorization.Generators.UnitTests/Aiel.Authorization.Generators.UnitTests.csproj`
 
 Mirror `Aiel.Analyzers.UnitTests.csproj`:
 
@@ -199,7 +199,7 @@ Mirror `Aiel.Analyzers.UnitTests.csproj`:
 - `Microsoft.CodeAnalysis.CSharp.Workspaces`
 - `Microsoft.CodeAnalysis.Workspaces.Common`
 
-**Project reference:** `Aiel.Permissions.Generators` only. All Aiel type stubs are provided inline in test sources — no real `Aiel.*` assembly reference.
+**Project reference:** `Aiel.Authorization.Generators` only. All Aiel type stubs are provided inline in test sources — no real `Aiel.*` assembly reference.
 
 ---
 
@@ -211,8 +211,8 @@ Given a concrete `IAction` class annotated with `[DefinePermission]`, the genera
 
 ```csharp
 // <auto-generated />
-// Generated by Aiel.Permissions.Generators. Do not edit manually.
-using Aiel.Permissions;
+// Generated by Aiel.Authorization.Generators. Do not edit manually.
+using Aiel.Authorization;
 
 namespace {ActionNamespace}.Generated;
 
@@ -243,8 +243,8 @@ The `[GeneratedPermission(typeof({ActionType}))]` annotation is the analyzer rec
 
 ```csharp
 // <auto-generated />
-// Generated by Aiel.Permissions.Generators. Do not edit manually.
-using Aiel.Permissions;
+// Generated by Aiel.Authorization.Generators. Do not edit manually.
+using Aiel.Authorization;
 using System.Collections.Generic;
 
 namespace {AssemblyRootNamespace}.Generated;
@@ -287,7 +287,7 @@ internal static class GeneratedPermissionManifests
 The stable ID for a permission is computed on first generation and then preserved:
 
 - **First generation (no snapshot):** The stable ID is derived deterministically as `{permission-name}` — the value of `DefinePermission.Name` itself. Because permission names are already globally unique dot-delimited identifiers, the permission name IS the stable ID initially.
-- **Snapshot file:** The generator reads an optional snapshot file at `{ProjectDir}/Permissions.snapshot.json` (committed to source control). This file records the assigned stable ID for each permission name.
+- **Snapshot file:** The generator reads an optional snapshot file at `{ProjectDir}/Authorization.snapshot.json` (committed to source control). This file records the assigned stable ID for each permission name.
 - **Subsequent generation (snapshot exists):** If the snapshot contains an entry for the current permission name, that ID is used unchanged. If the permission was renamed (old name appears in `DefinePermission.PreviousNames`), the snapshot is searched by old name — the previously assigned stable ID is preserved.
 - **Rename-safety invariant:** Once a stable ID appears in a committed snapshot, re-running the generator MUST produce the same stable ID regardless of action type renames, namespace moves, or permission name changes (provided `PreviousNames` is populated correctly).
 
@@ -311,17 +311,17 @@ The snapshot MUST be included in source control. The generator MUST treat a miss
 
 ## Analyzer extension — third passing condition
 
-`ActionAuthorizationAnalyzer` in `Aiel.Permissions.Analyzers` MUST be extended in Task 9 to recognize generated permission definitions. This is the primary integration gate.
+`ActionAuthorizationAnalyzer` in `Aiel.Authorization.Analyzers` MUST be extended in Task 9 to recognize generated permission definitions. This is the primary integration gate.
 
 ### What changes
 
 In `CollectCoveredActions` (or a new `CollectGeneratedPermissionActions` helper), the analyzer MUST additionally walk the compilation for:
 
-- Any class carrying `[GeneratedPermissionAttribute]` (metadata name: `Aiel.Permissions.GeneratedPermissionAttribute`)
+- Any class carrying `[GeneratedPermissionAttribute]` (metadata name: `Aiel.Authorization.GeneratedPermissionAttribute`)
 - Extracting the `ActionType` constructor argument from the attribute data
 - Adding that `ITypeSymbol` to the set of covered actions
 
-The analyzer MUST NOT reference `Aiel.Permissions.Application.Contracts` at compile time. Recognition is by metadata name string, exactly as with `DoesNotRespectAuthorityAttribute`.
+The analyzer MUST NOT reference `Aiel.Authorization.Application.Contracts` at compile time. Recognition is by metadata name string, exactly as with `DoesNotRespectAuthorityAttribute`.
 
 ### Passing-condition summary after Task 9
 
@@ -333,9 +333,9 @@ The analyzer MUST NOT reference `Aiel.Permissions.Application.Contracts` at comp
 
 ### Diagnostic behavior — must be unchanged
 
-- `TRAF01001` MUST still fire for actions with none of the three conditions.
-- `TRAF01001` MUST NOT fire for actions covered by the generated marker.
-- `TRAF01002` behavior is entirely unchanged.
+- `AIEL20001` MUST still fire for actions with none of the three conditions.
+- `AIEL20001` MUST NOT fire for actions covered by the generated marker.
+- `AIEL20002` behavior is entirely unchanged.
 - No new diagnostic IDs are introduced in Task 9 (exception: the optional malformed-Name warning below).
 
 ### Optional diagnostic for malformed `[DefinePermission]` input
@@ -363,17 +363,17 @@ All generator unit tests MUST use `RescheduleAppointmentAction` (or `RescheduleA
 Task 9 is NOT done until ALL of the following are true:
 
 1. `dotnet test .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. **All 14 existing `ActionAuthorizationAnalyzerTests` still pass.** All new generator and analyzer-extension tests pass.
-2. `Aiel.Permissions.Generators.csproj` has `TargetFramework=netstandard2.0`, `IsGenerator=true`, `Deterministic=false`, `IncludeBuildOutput=false`, `EnforceExtendedAnalyzerRules=true`.
+2. `Aiel.Authorization.Generators.csproj` has `TargetFramework=netstandard2.0`, `IsGenerator=true`, `Deterministic=false`, `IncludeBuildOutput=false`, `EnforceExtendedAnalyzerRules=true`.
 3. The generator DLL appears at `analyzers/dotnet/cs` in the NuGet pack, NOT in `lib/`.
-4. `Aiel.Permissions.Application.Contracts.csproj` references `Aiel.Permissions.Generators` as `OutputItemType="Analyzer"` and includes the DLL in the NuGet payload via `<None Pack="true" PackagePath="analyzers/dotnet/cs" />`.
-5. `Aiel.Permissions.Generators.csproj` carries NO project or package reference to any `Aiel.*` package. All type recognition is by metadata name string.
-6. `[DefinePermission]` and `[GeneratedPermission]` exist in `Aiel.Permissions.Application.Contracts`, namespace `Aiel.Permissions`, with the shapes defined above.
+4. `Aiel.Authorization.Application.Contracts.csproj` references `Aiel.Authorization.Generators` as `OutputItemType="Analyzer"` and includes the DLL in the NuGet payload via `<None Pack="true" PackagePath="analyzers/dotnet/cs" />`.
+5. `Aiel.Authorization.Generators.csproj` carries NO project or package reference to any `Aiel.*` package. All type recognition is by metadata name string.
+6. `[DefinePermission]` and `[GeneratedPermission]` exist in `Aiel.Authorization.Application.Contracts`, namespace `Aiel.Authorization`, with the shapes defined above.
 7. `PermissionDefinitionManifest` gains `Lifecycle` (default `Active`) and `PreviousNames` (default `[]`) — neither is `required`. `PermissionTestData.CreateSampleManifest()` compiles and runs without modification.
 8. The generator emits a `[GeneratedPermission(typeof(TAction))]`-annotated constants class for each `[DefinePermission]`-annotated action.
 9. `ActionAuthorizationAnalyzer` recognizes `[GeneratedPermission(typeof(TAction))]` as the third passing condition — no `TRAF01001` fires on a covered action.
 10. The stable ID for `RescheduleAppointmentAction` is identical across two separate generator invocations with the same input (idempotency).
 11. The stable ID is preserved when the action type is renamed but `PreviousNames` is populated (rename-safety).
-12. `Permissions.snapshot.json` schema is documented (or self-documented by the file shape); a missing snapshot is treated as first run, not an error.
+12. `Authorization.snapshot.json` schema is documented (or self-documented by the file shape); a missing snapshot is treated as first run, not an error.
 13. All new projects are registered in `TwoRivers.slnx`, `Aiel/Aiel.slnx`, and `Aiel/virtual-folders.json`.
 14. Build is clean: no warnings (beyond suppressed `NU5128`/`RS2000`), no nullable suppressions, no `#pragma warning disable` outside the generator project's intentional suppressions.
 15. XML documentation is present on all public types in the generator project, the two new attribute types, and the two new manifest properties.
@@ -384,11 +384,11 @@ Task 9 is NOT done until ALL of the following are true:
 
 **Phase 1 — stubs (tests RED):**
 
-- Create `Aiel.Permissions.Generators` with an empty `[Generator] PermissionDefinitionGenerator : IIncrementalGenerator` that registers nothing.
-- Add `[DefinePermission]` and `[GeneratedPermission]` to `Aiel.Permissions.Application.Contracts`.
+- Create `Aiel.Authorization.Generators` with an empty `[Generator] PermissionDefinitionGenerator : IIncrementalGenerator` that registers nothing.
+- Add `[DefinePermission]` and `[GeneratedPermission]` to `Aiel.Authorization.Application.Contracts`.
 - Add `Lifecycle` and `PreviousNames` to `PermissionDefinitionManifest`.
-- Write all tests in `Aiel.Permissions.Generators.UnitTests` (see below).
-- Write the new analyzer extension tests in `Aiel.Permissions.Analyzers.UnitTests` (see below).
+- Write all tests in `Aiel.Authorization.Generators.UnitTests` (see below).
+- Write the new analyzer extension tests in `Aiel.Authorization.Analyzers.UnitTests` (see below).
 - Run: all new tests fail — generator emits no output; analyzer does not yet recognize the marker.
 
 **Phase 2 — implement generator (generator tests GREEN):**
@@ -406,7 +406,7 @@ Task 9 is NOT done until ALL of the following are true:
 
 ## Required tests
 
-### `PermissionGeneratorOutputTests` (new, in `Aiel.Permissions.Generators.UnitTests`)
+### `PermissionGeneratorOutputTests` (new, in `Aiel.Authorization.Generators.UnitTests`)
 
 All tests use `CSharpSourceGeneratorTest<PermissionDefinitionGenerator, DefaultVerifier>` with inline source stubs. Specimen action: `RescheduleAppointmentAction`.
 
@@ -446,7 +446,7 @@ All tests use `CSharpSourceGeneratorTest<PermissionDefinitionGenerator, DefaultV
    - Input: `[DefinePermission(..., PreviousNames = "scheduling.old-name;scheduling.older-name")]` on an action.
    - Expected: Generated manifest `PreviousNames` contains `PermissionName.From("scheduling.old-name")` and `PermissionName.From("scheduling.older-name")`.
 
-### New tests in `Aiel.Permissions.Analyzers.UnitTests`
+### New tests in `Aiel.Authorization.Analyzers.UnitTests`
 
 Test class: `GeneratedPermissionRecognitionTests`
 
@@ -474,11 +474,11 @@ Test class: `GeneratedPermissionRecognitionTests`
 
 I will reject the Task 9 attempt if any of the following are true:
 
-- `Aiel.Permissions.Generators.csproj` contains any project or package reference to any `Aiel.*` assembly. The generator identifies `[DefinePermission]` by metadata name string only.
-- `Aiel.Permissions.Generators.csproj` has `TargetFramework` targeting `net*` instead of `netstandard2.0`.
-- `Deterministic` is `true` in `Aiel.Permissions.Generators.csproj`. Generators are not deterministic; this must be `false`.
+- `Aiel.Authorization.Generators.csproj` contains any project or package reference to any `Aiel.*` assembly. The generator identifies `[DefinePermission]` by metadata name string only.
+- `Aiel.Authorization.Generators.csproj` has `TargetFramework` targeting `net*` instead of `netstandard2.0`.
+- `Deterministic` is `true` in `Aiel.Authorization.Generators.csproj`. Generators are not deterministic; this must be `false`.
 - The generator DLL lands in `lib/` (missing `IncludeBuildOutput=false`).
-- `Aiel.Permissions.Application.Contracts.csproj` does not include the generator DLL at `analyzers/dotnet/cs` in the NuGet payload.
+- `Aiel.Authorization.Application.Contracts.csproj` does not include the generator DLL at `analyzers/dotnet/cs` in the NuGet payload.
 - `ActionAuthorizationAnalyzer` has NOT been extended — `TRAF01001` still fires on an action covered by a `[GeneratedPermission]` marker.
 - Existing `ActionAuthorizationAnalyzerTests` are broken or modified to suppress failures. All 14 existing tests MUST pass unchanged.
 - `[GeneratedPermission]` is applied manually (not emitted by the generator) to suppress a TRAF01001 that should fire — this is a test smell and a deliberate safety breach.
@@ -487,9 +487,9 @@ I will reject the Task 9 attempt if any of the following are true:
 - `PreviousNames` returns `null`. The default MUST be an empty collection.
 - The stable ID changes on a second generator run without a snapshot change or `PreviousNames` update. Idempotency is a hard gate.
 - A missing snapshot causes a build error rather than triggering first-run derivation.
-- Any test in `Aiel.Permissions.Generators.UnitTests` references a real `Aiel.*` assembly instead of inline stubs.
+- Any test in `Aiel.Authorization.Generators.UnitTests` references a real `Aiel.*` assembly instead of inline stubs.
 - EF Core, database migrations, or `IDbContext` are referenced anywhere in the generator or its tests.
-- `EnforceExtendedAnalyzerRules` is missing or `false` in `Aiel.Permissions.Generators.csproj`.
+- `EnforceExtendedAnalyzerRules` is missing or `false` in `Aiel.Authorization.Generators.csproj`.
 - The build has warnings at solution level (beyond the suppressed `NU5128`/`RS2000` in the generator project).
 - Public types in the generator project, new attribute types, or new manifest properties lack XML documentation.
 - New projects are not registered in `TwoRivers.slnx`, `Aiel/Aiel.slnx`, and `Aiel/virtual-folders.json`.

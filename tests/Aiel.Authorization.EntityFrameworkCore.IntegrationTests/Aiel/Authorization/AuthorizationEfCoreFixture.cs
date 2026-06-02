@@ -20,16 +20,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Aiel.Authorization.EntityFrameworkCore;
 using Aiel.Authorization.Testing;
 using Aiel.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
 namespace Aiel.Authorization;
 
-public sealed class PermissionsEfCoreFixture : IntegrationTestFixture
+public sealed class AuthorizationEfCoreFixture : IntegrationTestFixture
 {
     private const String PostgreSqlImage = "postgres:15-alpine";
     private const String PostgreSqlUserName = "postgres";
@@ -49,13 +49,13 @@ public sealed class PermissionsEfCoreFixture : IntegrationTestFixture
 
         var manifests = new[]
         {
-            PermissionTestData.CreateSampleManifest(),
-            PermissionTestData.CreateRescheduleAppointmentManifest(),
+            AuthorizationTestData.CreateSampleManifest(),
+            AuthorizationTestData.CreateRescheduleAppointmentManifest(),
         };
 
-        services.AddSingleton<IPermissionDefinitionRegistry>(new FakePermissionDefinitionRegistry(manifests));
+        services.AddSingleton<IAuthorizationDefinitionRegistry>(new FakePermissionDefinitionRegistry(manifests));
 
-        services.AddScoped<IPermissionManager, DefaultPermissionManager>();
+        services.AddScoped<IAuthorizationManager, DefaultPermissionManager>();
 
         services.AddPermissionsNpgsql(GetConnectionString, options => options.EnableRetryOnFailure());
     }
@@ -65,7 +65,7 @@ public sealed class PermissionsEfCoreFixture : IntegrationTestFixture
         await _postgresContainer.StartAsync(TestContext.Current.CancellationToken);
         _connectionString = _postgresContainer.GetConnectionString();
 
-        var initializer = services.GetRequiredService<PermissionsDbInitializer>();
+        var initializer = services.GetRequiredService<AuthorizationDbInitializer>();
         await initializer.EnsureCreatedAsync(TestContext.Current.CancellationToken);
     }
 

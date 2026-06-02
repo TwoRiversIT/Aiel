@@ -27,6 +27,6 @@ namespace Aiel.Authorization;
 /// <summary>
 /// Ensures that the Aiel.Authorization.Client.Blazor participates in the dependency graph.
 /// </summary>
-[DependsOn(typeof(AielPermissionsApplicationContracts))]
-[DependsOn(typeof(AielPermissionsClient))]
-public sealed class AielPermissionsClientBlazor : AielDependency;
+[DependsOn(typeof(AielAuthorizationApplicationContracts))]
+[DependsOn(typeof(AielAuthorizationClient))]
+public sealed class AielAuthorizationClientBlazor : AielDependency;

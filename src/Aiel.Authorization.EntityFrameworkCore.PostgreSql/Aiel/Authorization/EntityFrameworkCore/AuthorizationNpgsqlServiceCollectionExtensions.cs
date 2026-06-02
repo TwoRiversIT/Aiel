@@ -29,10 +29,10 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// <summary>
 /// Extension methods for registering EF Core permission infrastructure services backed by PostgreSQL.
 /// </summary>
-public static class PermissionsNpgsqlServiceCollectionExtensions
+public static class AuthorizationNpgsqlServiceCollectionExtensions
 {
     /// <summary>
-    /// Registers the EF Core <see cref="IPermissionStore"/> implementation and the
+    /// Registers the EF Core <see cref="IAuthorizationGrantStore"/> implementation and the
     /// <see cref="PermissionMigrationRunner"/> using Npgsql (PostgreSQL) as the database provider.
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
@@ -52,7 +52,7 @@ public static class PermissionsNpgsqlServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Registers the EF Core <see cref="IPermissionStore"/> implementation and the
+    /// Registers the EF Core <see cref="IAuthorizationGrantStore"/> implementation and the
     /// <see cref="PermissionMigrationRunner"/> using an Npgsql connection string resolved at runtime.
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>

@@ -25,9 +25,9 @@ using Aiel.Dependencies;
 namespace Aiel.Authorization.AspNetCore;
 
 [DependsOn(typeof(AielApplicationContracts))]
-[DependsOn(typeof(AielPermissionsApplicationContracts))]
-[DependsOn(typeof(AielPermissionsDomainShared))]
-[DependsOn(typeof(Testing.AielPermissionsTesting))]
+[DependsOn(typeof(AielAuthorizationApplicationContracts))]
+[DependsOn(typeof(AielAuthorizationDomainShared))]
+[DependsOn(typeof(Testing.AielAuthorizationTesting))]
 [DependsOn(typeof(Results.AielResults))]
-public sealed class AielPermissionsAspNetCoreIntegrationTestsWebApplication : AielDependency;
+public sealed class AielAuthorizationAspNetCoreIntegrationTestsWebApplication : AielDependency;
 

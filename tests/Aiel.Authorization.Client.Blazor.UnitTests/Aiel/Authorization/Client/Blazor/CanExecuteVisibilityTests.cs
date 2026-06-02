@@ -27,14 +27,14 @@ public sealed class CanExecuteVisibilityTests
     private static readonly PermissionName RescheduleAppointmentPermission =
         PermissionName.From("sample.Scheduling.RescheduleAppointment");
 
-    private static readonly PermissionScopeTypeName LocationScopeType = PermissionScopeTypeName.From("Location");
+    private static readonly AuthorizationScopeTypeName LocationScopeType = AuthorizationScopeTypeName.From("Location");
 
-    private static readonly PermissionScopeKey LocationScopeKey = PermissionScopeKey.From("clinic-west");
+    private static readonly AuthorizationScopeKey LocationScopeKey = AuthorizationScopeKey.From("clinic-west");
 
     [Fact]
     public void CanExecute_WhenRescheduleAppointmentIsUnavailable_ReturnsFalse()
     {
-        var snapshot = CreateSnapshot(PermissionGrantDecision.Prohibited);
+        var snapshot = CreateSnapshot(AuthorizationGrantDecision.Prohibited);
 
         ActionCapabilityVisibility.CanExecute(snapshot, RescheduleAppointmentPermission).Should().BeFalse();
     }
@@ -42,18 +42,18 @@ public sealed class CanExecuteVisibilityTests
     [Fact]
     public void CanExecute_WhenRescheduleAppointmentIsGranted_ReturnsTrue()
     {
-        var snapshot = CreateSnapshot(PermissionGrantDecision.Granted);
+        var snapshot = CreateSnapshot(AuthorizationGrantDecision.Granted);
 
         ActionCapabilityVisibility.CanExecute(snapshot, RescheduleAppointmentPermission).Should().BeTrue();
     }
 
-    private static ActionCapabilitySnapshot CreateSnapshot(PermissionGrantDecision decision)
+    private static ActionCapabilitySnapshot CreateSnapshot(AuthorizationGrantDecision decision)
         => new(
             CapabilitySnapshotVersion.From("snapshot-v1"),
             LocationScopeType,
             LocationScopeKey,
             [
-                new ClientPermissionCapability
+                new ClientAuthorizationCapability
                 {
                     SnapshotVersion = CapabilitySnapshotVersion.From("snapshot-v1"),
                     PermissionName = RescheduleAppointmentPermission,

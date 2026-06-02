@@ -30,7 +30,7 @@ namespace Aiel.Authorization;
 /// </summary>
 /// <remarks>
 /// Use this service when authorization must be checked mid-handler or against a specific resource
-/// rather than at the gate boundary. It delegates evaluation to <see cref="IPermissionGrantEvaluator"/>.
+/// rather than at the gate boundary. It delegates evaluation to <see cref="IAuthorizationGrantEvaluator"/>.
 /// </remarks>
 public interface IResourceAuthorizationService
 {
@@ -44,12 +44,12 @@ public interface IResourceAuthorizationService
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
     /// <returns>
     /// <see cref="Result.Success()"/> when the actor holds the permission;
-    /// a failed <see cref="Result"/> carrying a <see cref="PermissionDeniedError"/> otherwise.
+    /// a failed <see cref="Result"/> carrying a <see cref="AuthorizationDeniedError"/> otherwise.
     /// </returns>
     Task<Result> AuthorizeAsync(
         IExecutionContext context,
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
         CancellationToken cancellationToken = default);
 }

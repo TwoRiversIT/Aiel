@@ -25,49 +25,53 @@ using Aiel.Results;
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Application service for creating, revoking, and querying permission grants.
+/// Provides raw persistence operations for permission grants.
 /// </summary>
 /// <remarks>
-/// <para>
-/// The manager coordinates with <see cref="IPermissionStore"/> for persistence and
-/// <see cref="IPermissionDefinitionRegistry"/> for validation without exposing domain entities
-/// or raw store records to callers.
-/// </para>
+/// This is an infrastructure-facing port. Business logic belongs in <see cref="IAuthorizationManager"/>,
+/// not here. Implementations live in the Infrastructure layer.
 /// </remarks>
-public interface IPermissionManager
+public interface IAuthorizationGrantStore
 {
     /// <summary>
-    /// Creates a new permission grant and returns its identifier.
+    /// Persists a new permission grant and returns its assigned identifier.
     /// </summary>
-    /// <param name="request">The grant parameters.</param>
+    /// <param name="permissionName">The permission to grant.</param>
+    /// <param name="scopeType">The scope type this grant applies to.</param>
+    /// <param name="scopeKey">The specific scope key this grant is bound to.</param>
+    /// <param name="subjectType">The subject type this grant targets.</param>
+    /// <param name="subjectKey">The specific subject key this grant is bound to.</param>
+    /// <param name="decision">Whether the grant allows or explicitly prohibits the permission.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
-    /// <returns>
-    /// A successful <see cref="Result{T}"/> holding the new <see cref="PermissionGrantId"/> on success;
-    /// a failed <see cref="Result{T}"/> when the request is invalid or the permission is not registered.
-    /// </returns>
-    Task<Result<PermissionGrantId>> GrantPermissionAsync(
-        GrantPermissionRequest request,
+    /// <returns>A successful <see cref="Result{T}"/> with the new <see cref="AuthorizationGrantId"/> on success.</returns>
+    Task<Result<AuthorizationGrantId>> CreateGrantAsync(
+        PermissionName permissionName,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
+        AuthorizationGrantDecision decision,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Revokes an existing permission grant.
+    /// Removes the persisted grant identified by <paramref name="grantId"/>.
     /// </summary>
-    /// <param name="request">The revocation parameters.</param>
+    /// <param name="grantId">The identifier of the grant to remove.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
     /// <returns>A successful <see cref="Result"/> on success.</returns>
-    Task<Result> RevokePermissionAsync(
-        RevokePermissionRequest request,
+    Task<Result> RevokeGrantAsync(
+        AuthorizationGrantId grantId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Returns all grants held by the given subject without exposing persistence records.
+    /// Returns all grants held by the given subject.
     /// </summary>
     /// <param name="subjectType">The type of subject to query.</param>
     /// <param name="subjectKey">The specific subject key to query.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
-    /// <returns>A non-null list of <see cref="PermissionGrantSummary"/> instances; empty when none are found.</returns>
-    Task<Result<IReadOnlyList<PermissionGrantSummary>>> GetGrantsForSubjectAsync(
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
+    /// <returns>A non-null, possibly empty list of <see cref="AuthorizationGrantSummary"/> instances.</returns>
+    Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default);
 }

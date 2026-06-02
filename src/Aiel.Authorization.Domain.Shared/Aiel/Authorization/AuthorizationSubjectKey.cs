@@ -23,59 +23,59 @@
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Represents the human-readable name of a permission subject type.
+/// Represents an opaque subject key without exposing raw strings in public models.
 /// </summary>
-public readonly record struct PermissionSubjectTypeName
+public readonly record struct AuthorizationSubjectKey
 {
     private readonly String? _value;
 
-    private PermissionSubjectTypeName(String value)
+    private AuthorizationSubjectKey(String value)
     {
         _value = value;
     }
 
     /// <summary>
-    /// Gets the canonical subject type name value.
+    /// Gets the canonical subject key value.
     /// </summary>
     public String Value => _value ?? String.Empty;
 
     /// <summary>
-    /// Creates a subject type name or throws when the supplied value is not valid.
+    /// Creates a subject key or throws when the supplied value is not valid.
     /// </summary>
-    /// <param name="value">The candidate subject type name.</param>
-    /// <returns>The validated subject type name.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid subject type name.</exception>
-    public static PermissionSubjectTypeName From(String value)
+    /// <param name="value">The candidate subject key.</param>
+    /// <returns>The validated subject key.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid subject key.</exception>
+    public static AuthorizationSubjectKey From(String value)
     {
-        if (!TryCreate(value, out var subjectTypeName))
+        if (!TryCreate(value, out var subjectKey))
         {
-            throw new ArgumentException("Subject type names must be single identifiers and cannot be empty.", nameof(value));
+            throw new ArgumentException("Subject keys cannot be empty or whitespace.", nameof(value));
         }
 
-        return subjectTypeName;
+        return subjectKey;
     }
 
     /// <summary>
-    /// Attempts to create a subject type name without throwing for expected validation failures.
+    /// Attempts to create a subject key without throwing for expected validation failures.
     /// </summary>
-    /// <param name="value">The candidate subject type name.</param>
-    /// <param name="subjectTypeName">The created subject type name when validation succeeds.</param>
+    /// <param name="value">The candidate subject key.</param>
+    /// <param name="subjectKey">The created subject key when validation succeeds.</param>
     /// <returns><see langword="true"/> when <paramref name="value"/> is valid; otherwise, <see langword="false"/>.</returns>
-    public static Boolean TryCreate(String? value, out PermissionSubjectTypeName subjectTypeName)
+    public static Boolean TryCreate(String? value, out AuthorizationSubjectKey subjectKey)
     {
-        if (PermissionTextValidator.TryCreateTypeName(value, out var normalizedValue))
+        if (PermissionTextValidator.TryCreateKey(value, out var normalizedValue))
         {
-            subjectTypeName = new PermissionSubjectTypeName(normalizedValue);
+            subjectKey = new AuthorizationSubjectKey(normalizedValue);
             return true;
         }
 
-        subjectTypeName = default;
+        subjectKey = default;
         return false;
     }
 
     /// <summary>
-    /// Returns the canonical subject type name.
+    /// Returns the canonical subject key.
     /// </summary>
-    /// <returns>The canonical subject type name.</returns>
+    /// <returns>The canonical subject key.</returns>
     public override String ToString() => Value;
 }

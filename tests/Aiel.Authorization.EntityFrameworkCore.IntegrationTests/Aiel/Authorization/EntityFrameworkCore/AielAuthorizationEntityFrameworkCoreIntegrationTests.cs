@@ -24,10 +24,10 @@ using Aiel.Dependencies;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
-[DependsOn(typeof(AielPermissionsApplication))]
-[DependsOn(typeof(AielPermissionsEntityFrameworkCore))]
-[DependsOn(typeof(Testing.AielPermissionsTesting))]
+[DependsOn(typeof(AielAuthorizationApplication))]
+[DependsOn(typeof(AielAuthorizationEntityFrameworkCore))]
+[DependsOn(typeof(Testing.AielAuthorizationTesting))]
 [DependsOn(typeof(Aiel.Testing.AielTesting))]
-[DependsOn(typeof(AielPermissionsEntityFrameworkCorePostgreSql))]
-public sealed class AielPermissionsEntityFrameworkCoreIntegrationTests : AielDependency;
+[DependsOn(typeof(AielAuthorizationEntityFrameworkCorePostgreSql))]
+public sealed class AielAuthorizationEntityFrameworkCoreIntegrationTests : AielDependency;
 

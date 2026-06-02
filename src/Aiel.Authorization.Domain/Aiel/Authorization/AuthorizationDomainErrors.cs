@@ -25,20 +25,16 @@ using Aiel.Results;
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Raised when no authorization story covers the action being requested.
+/// Represents a catalog-entry validation failure in the permission domain.
 /// </summary>
-/// <remarks>
-/// An authorization story links an action type to a named permission and describes who may perform it.
-/// This error signals a development-time gap: the action has no story registered in <see cref="IPermissionDefinitionRegistry"/>.
-/// </remarks>
-public sealed partial class MissingAuthorizationStoryError : Error;
+public sealed partial class InvalidPermissionCatalogEntryError : Error;
 
 /// <summary>
-/// Raised when the actor does not hold the required permission for the requested scope.
+/// Represents a authorization-grant validation failure in the permission domain.
 /// </summary>
-public sealed partial class PermissionDeniedError : Error;
+public sealed partial class InvalidAuthorizationGrantError : Error;
 
 /// <summary>
-/// Raised when an action fails input validation before permission checks run.
+/// Represents an invalid authorization lifecycle transition.
 /// </summary>
-public sealed partial class PermissionValidationError : Error;
+public sealed partial class InvalidAuthorizationLifecycleTransitionError : Error;

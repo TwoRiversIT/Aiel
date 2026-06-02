@@ -27,7 +27,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Authorization.AspNetCore;
 
-internal sealed class PermissionsAspNetCoreWebApplicationFactory(IAppointmentApplicationService applicationService)
+internal sealed class AuthorizeAspNetCoreWebApplicationFactory(IAppointmentApplicationService applicationService)
     : WebApplicationFactory<Program>
 {
     private readonly IAppointmentApplicationService _applicationService = applicationService

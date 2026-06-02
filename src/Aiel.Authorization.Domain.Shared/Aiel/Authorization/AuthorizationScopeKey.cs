@@ -25,11 +25,11 @@ namespace Aiel.Authorization;
 /// <summary>
 /// Represents an opaque scope key without exposing raw strings in public models.
 /// </summary>
-public readonly record struct PermissionScopeKey
+public readonly record struct AuthorizationScopeKey
 {
     private readonly String? _value;
 
-    private PermissionScopeKey(String value)
+    private AuthorizationScopeKey(String value)
     {
         _value = value;
     }
@@ -45,7 +45,7 @@ public readonly record struct PermissionScopeKey
     /// <param name="value">The candidate scope key.</param>
     /// <returns>The validated scope key.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid scope key.</exception>
-    public static PermissionScopeKey From(String value)
+    public static AuthorizationScopeKey From(String value)
     {
         if (!TryCreate(value, out var scopeKey))
         {
@@ -61,11 +61,11 @@ public readonly record struct PermissionScopeKey
     /// <param name="value">The candidate scope key.</param>
     /// <param name="scopeKey">The created scope key when validation succeeds.</param>
     /// <returns><see langword="true"/> when <paramref name="value"/> is valid; otherwise, <see langword="false"/>.</returns>
-    public static Boolean TryCreate(String? value, out PermissionScopeKey scopeKey)
+    public static Boolean TryCreate(String? value, out AuthorizationScopeKey scopeKey)
     {
         if (PermissionTextValidator.TryCreateKey(value, out var normalizedValue))
         {
-            scopeKey = new PermissionScopeKey(normalizedValue);
+            scopeKey = new AuthorizationScopeKey(normalizedValue);
             return true;
         }
 

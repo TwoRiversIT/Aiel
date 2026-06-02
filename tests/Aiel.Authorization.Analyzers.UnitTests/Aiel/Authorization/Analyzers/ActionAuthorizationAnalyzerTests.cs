@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace Aiel.Authorization.Analyzers;
@@ -31,7 +31,7 @@ namespace Aiel.Authorization.Analyzers;
 public class ActionAuthorizationAnalyzerTests
 {
     /// <summary>
-    /// Minimal in-memory definitions of <c>IAction</c>, <c>IActionPermissionChecker&lt;TAction&gt;</c>,
+    /// Minimal in-memory definitions of <c>IAction</c>, <c>IActionAuthorizationChecker&lt;TAction&gt;</c>,
     /// and <c>DoesNotRespectAuthorityAttribute</c>. These stubs are compiled into the same
     /// <see cref="CSharpCompilation"/> as the test source so <c>GetTypeByMetadataName</c> can resolve them
     /// and <c>compilation.Assembly.GlobalNamespace</c> walking can discover test action classes.
@@ -47,7 +47,7 @@ public class ActionAuthorizationAnalyzerTests
 
         namespace Aiel.Authorization
         {
-            public interface IActionPermissionChecker<TAction>
+            public interface IActionAuthorizationChecker<TAction>
                 where TAction : global::Aiel.Actions.IAction { }
 
             [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
@@ -70,7 +70,7 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(PermissionDiagnosticDescriptors.ActionHasNoAuthorizationStoryId, diagnostic.Id);
+        Assert.Equal(DiagnosticDescriptors.ActionHasNoAuthorizationStoryId, diagnostic.Id);
         Assert.Contains("MyAction", diagnostic.GetMessage());
     }
 
@@ -80,7 +80,7 @@ public class ActionAuthorizationAnalyzerTests
         const String source = """
             namespace Sample;
             public class MyAction : Aiel.Actions.IAction { }
-            public class MyActionChecker : Aiel.Authorization.IActionPermissionChecker<MyAction> { }
+            public class MyActionChecker : Aiel.Authorization.IActionAuthorizationChecker<MyAction> { }
             """;
 
         var diagnostics = await AnalyzeAsync(source);
@@ -129,7 +129,7 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(PermissionDiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
+        Assert.Equal(DiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
         Assert.Contains("MyAction", diagnostic.GetMessage());
     }
 
@@ -146,7 +146,7 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(PermissionDiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
+        Assert.Equal(DiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
     }
 
     [Fact]
@@ -188,14 +188,14 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         Assert.Equal(2, diagnostics.Length);
-        Assert.All(diagnostics, d => Assert.Equal(PermissionDiagnosticDescriptors.ActionHasNoAuthorizationStoryId, d.Id));
+        Assert.All(diagnostics, d => Assert.Equal(DiagnosticDescriptors.ActionHasNoAuthorizationStoryId, d.Id));
     }
 
     [Fact]
-    public async Task DoesNotReport_TRAF01001_WhenMarkerIsPresentEvenWithEmptyReason()
+    public async Task DoesNotReport_AIEL20001_WhenMarkerIsPresentEvenWithEmptyReason()
     {
-        // When [DoesNotRespectAuthority] is present with an empty Reason, only TRAF01002 fires,
-        // never TRAF01001. The marker's presence is the authorization story; the Reason quality is separate.
+        // When [DoesNotRespectAuthority] is present with an empty Reason, only AIEL20002 fires,
+        // never AIEL20001. The marker's presence is the authorization story; the Reason quality is separate.
         const String source = """
             using Aiel.Authorization;
             namespace Sample;
@@ -205,7 +205,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.DoesNotContain(diagnostics, d => d.Id == PermissionDiagnosticDescriptors.ActionHasNoAuthorizationStoryId);
+        Assert.DoesNotContain(diagnostics, d => d.Id == DiagnosticDescriptors.ActionHasNoAuthorizationStoryId);
     }
 
     [Fact]
@@ -242,7 +242,7 @@ public class ActionAuthorizationAnalyzerTests
         // Checker recognition must be compilation-wide, not namespace-restricted.
         const String source = """
             namespace Foo { public class SampleAction : Aiel.Actions.IAction { } }
-            namespace Bar { public class SampleActionChecker : Aiel.Authorization.IActionPermissionChecker<Foo.SampleAction> { } }
+            namespace Bar { public class SampleActionChecker : Aiel.Authorization.IActionAuthorizationChecker<Foo.SampleAction> { } }
             """;
 
         var diagnostics = await AnalyzeAsync(source);
@@ -251,20 +251,20 @@ public class ActionAuthorizationAnalyzerTests
     }
 
     [Fact]
-    public async Task ReportsTRAF01001_WhenCheckerExistsForDifferentAction()
+    public async Task ReportsAIEL20001_WhenCheckerExistsForDifferentAction()
     {
         // Checker for A must not suppress the diagnostic for B.
         const String source = """
             namespace Sample;
             public class SampleActionA : Aiel.Actions.IAction { }
             public class SampleActionB : Aiel.Actions.IAction { }
-            public class SampleActionAChecker : Aiel.Authorization.IActionPermissionChecker<SampleActionA> { }
+            public class SampleActionAChecker : Aiel.Authorization.IActionAuthorizationChecker<SampleActionA> { }
             """;
 
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(PermissionDiagnosticDescriptors.ActionHasNoAuthorizationStoryId, diagnostic.Id);
+        Assert.Equal(DiagnosticDescriptors.ActionHasNoAuthorizationStoryId, diagnostic.Id);
         Assert.Contains("SampleActionB", diagnostic.GetMessage());
     }
 
@@ -276,7 +276,7 @@ public class ActionAuthorizationAnalyzerTests
         const String source = """
             namespace Sample;
             public class SampleAction : Aiel.Actions.IAction { }
-            public abstract class AbstractChecker : Aiel.Authorization.IActionPermissionChecker<SampleAction> { }
+            public abstract class AbstractChecker : Aiel.Authorization.IActionAuthorizationChecker<SampleAction> { }
             public sealed class ConcreteChecker : AbstractChecker { }
             """;
 

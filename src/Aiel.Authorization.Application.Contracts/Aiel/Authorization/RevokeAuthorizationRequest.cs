@@ -22,14 +22,11 @@
 
 namespace Aiel.Authorization;
 
-internal static class PermissionApplicationErrorMessages
+/// <summary>
+/// Carries the identifier of the grant to revoke.
+/// </summary>
+public sealed class RevokeAuthorizationRequest
 {
-    internal const String MissingAuthorizationStoryFormat =
-        "No authorization story is registered for permission '{0}'. Register a definition in IPermissionDefinitionRegistry.";
-
-    internal const String PermissionDeniedFormat =
-        "The actor does not hold the required '{0}' permission for the requested scope.";
-
-    internal const String PermissionValidationFormat =
-        "Action validation failed for permission '{0}': {1}";
+    /// <summary>Gets the unique identifier of the persisted grant to revoke.</summary>
+    public required AuthorizationGrantId GrantId { get; init; }
 }

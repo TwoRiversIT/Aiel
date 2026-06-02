@@ -4,6 +4,11 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<UserSecretsId>dotnet-Aiel.WorkerService-5e31773d-b77c-4ac1-bb17-a16b8c098ea6</UserSecretsId>
 		<IsPackable>false</IsPackable>
+
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
 	</PropertyGroup>
 
 	<ItemGroup>

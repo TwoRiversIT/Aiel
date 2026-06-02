@@ -30,4 +30,4 @@ namespace Aiel.Authorization;
 /// </summary>
 [DependsOn(typeof(AielAppFramework))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielPermissionsDomainShared : AielDependency;
+public sealed class AielAuthorizationDomainShared : AielDependency;

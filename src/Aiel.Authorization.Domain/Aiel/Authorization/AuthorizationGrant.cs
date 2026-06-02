@@ -26,19 +26,19 @@ using Aiel.Results;
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Represents a concrete permission decision for a subject within a scope.
+/// Represents a concrete authorization decision for a subject within a scope.
 /// </summary>
-public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
+public sealed class AuthorizationGrant : StateBasedAggregateRoot<AuthorizationGrantId>
 {
-    private PermissionGrant(
-        PermissionGrantId grantId,
+    private AuthorizationGrant(
+        AuthorizationGrantId grantId,
         PermissionStableId permissionStableId,
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
-        PermissionGrantDecision decision)
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
+        AuthorizationGrantDecision decision)
         : base(grantId)
     {
         PermissionStableId = permissionStableId;
@@ -50,7 +50,7 @@ public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
         Decision = decision;
     }
 
-    private PermissionGrant()
+    private AuthorizationGrant()
     {
         PermissionStableId = default;
         PermissionName = default;
@@ -58,7 +58,7 @@ public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
         ScopeKey = default;
         SubjectType = default;
         SubjectKey = default;
-        Decision = PermissionGrantDecision.Granted;
+        Decision = AuthorizationGrantDecision.Granted;
     }
 
     /// <summary>
@@ -74,27 +74,27 @@ public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
     /// <summary>
     /// Gets the scope type required by the grant.
     /// </summary>
-    public PermissionScopeTypeName ScopeType { get; private set; }
+    public AuthorizationScopeTypeName ScopeType { get; private set; }
 
     /// <summary>
     /// Gets the specific scope key targeted by the grant.
     /// </summary>
-    public PermissionScopeKey ScopeKey { get; private set; }
+    public AuthorizationScopeKey ScopeKey { get; private set; }
 
     /// <summary>
     /// Gets the subject type targeted by the grant.
     /// </summary>
-    public PermissionSubjectTypeName SubjectType { get; private set; }
+    public AuthorizationSubjectTypeName SubjectType { get; private set; }
 
     /// <summary>
     /// Gets the specific subject key targeted by the grant.
     /// </summary>
-    public PermissionSubjectKey SubjectKey { get; private set; }
+    public AuthorizationSubjectKey SubjectKey { get; private set; }
 
     /// <summary>
     /// Gets the persisted grant decision.
     /// </summary>
-    public PermissionGrantDecision Decision { get; private set; }
+    public AuthorizationGrantDecision Decision { get; private set; }
 
     /// <summary>
     /// Creates a permission grant from explicit permission identity values.
@@ -108,66 +108,66 @@ public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
     /// <param name="subjectKey">The targeted subject instance.</param>
     /// <param name="decision">The persisted grant decision.</param>
     /// <returns>A successful result containing the grant, or a typed failure.</returns>
-    public static Result<PermissionGrant> Create(
-        PermissionGrantId grantId,
+    public static Result<AuthorizationGrant> Create(
+        AuthorizationGrantId grantId,
         PermissionStableId permissionStableId,
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
-        PermissionGrantDecision decision)
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
+        AuthorizationGrantDecision decision)
     {
         if (grantId == default)
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantIdRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantIdRequired));
         }
 
         if (permissionStableId == default)
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantStableIdRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantStableIdRequired));
         }
 
         if (String.IsNullOrEmpty(permissionName.Value))
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantPermissionNameRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantPermissionNameRequired));
         }
 
         if (String.IsNullOrEmpty(scopeType.Value))
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantScopeTypeRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantScopeTypeRequired));
         }
 
         if (String.IsNullOrEmpty(scopeKey.Value))
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantScopeKeyRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantScopeKeyRequired));
         }
 
         if (String.IsNullOrEmpty(subjectType.Value))
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantSubjectTypeRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantSubjectTypeRequired));
         }
 
         if (String.IsNullOrEmpty(subjectKey.Value))
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantSubjectKeyRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantSubjectKeyRequired));
         }
 
         if (!Enum.IsDefined(decision))
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.GrantDecisionRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantDecisionRequired));
         }
 
-        return Result<PermissionGrant>.Success(
-            new PermissionGrant(
+        return Result<AuthorizationGrant>.Success(
+            new AuthorizationGrant(
                 grantId,
                 permissionStableId,
                 permissionName,
@@ -188,24 +188,24 @@ public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
     /// <param name="subjectKey">The targeted subject instance.</param>
     /// <param name="decision">The persisted grant decision.</param>
     /// <returns>A successful result containing the grant, or a typed failure.</returns>
-    public static Result<PermissionGrant> Create(
-        PermissionGrantId grantId,
+    public static Result<AuthorizationGrant> Create(
+        AuthorizationGrantId grantId,
         PermissionCatalogEntry? catalogEntry,
-        PermissionScopeKey scopeKey,
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
-        PermissionGrantDecision decision)
+        AuthorizationScopeKey scopeKey,
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
+        AuthorizationGrantDecision decision)
     {
         if (catalogEntry is null)
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.CatalogEntryRequired));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.CatalogEntryRequired));
         }
 
         if (!catalogEntry.AcceptsNewGrants)
         {
-            return Result<PermissionGrant>.Failure(
-                new InvalidPermissionGrantError(PermissionDomainErrorMessages.RemovedCatalogEntriesCannotIssueGrants));
+            return Result<AuthorizationGrant>.Failure(
+                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.RemovedCatalogEntriesCannotIssueGrants));
         }
 
         return Create(
@@ -225,7 +225,7 @@ public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
     /// <param name="scopeType">The scope type to compare.</param>
     /// <param name="scopeKey">The scope key to compare.</param>
     /// <returns><see langword="true"/> when the supplied scope matches this grant; otherwise, <see langword="false"/>.</returns>
-    public Boolean MatchesScope(PermissionScopeTypeName scopeType, PermissionScopeKey scopeKey)
+    public Boolean MatchesScope(AuthorizationScopeTypeName scopeType, AuthorizationScopeKey scopeKey)
         => ScopeType == scopeType && ScopeKey == scopeKey;
 
     /// <summary>
@@ -234,6 +234,6 @@ public sealed class PermissionGrant : StateBasedAggregateRoot<PermissionGrantId>
     /// <param name="subjectType">The subject type to compare.</param>
     /// <param name="subjectKey">The subject key to compare.</param>
     /// <returns><see langword="true"/> when the supplied subject matches this grant; otherwise, <see langword="false"/>.</returns>
-    public Boolean MatchesSubject(PermissionSubjectTypeName subjectType, PermissionSubjectKey subjectKey)
+    public Boolean MatchesSubject(AuthorizationSubjectTypeName subjectType, AuthorizationSubjectKey subjectKey)
         => SubjectType == subjectType && SubjectKey == subjectKey;
 }

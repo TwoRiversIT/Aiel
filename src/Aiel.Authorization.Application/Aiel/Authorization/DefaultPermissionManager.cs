@@ -25,22 +25,22 @@ using Aiel.Results;
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Default application-layer permission manager that delegates persistence to <see cref="IPermissionStore"/>.
+/// Default application-layer permission manager that delegates persistence to <see cref="IAuthorizationGrantStore"/>.
 /// </summary>
 public sealed class DefaultPermissionManager(
-    IPermissionDefinitionRegistry definitionRegistry,
-    IPermissionStore permissionStore) : IPermissionManager
+    IAuthorizationDefinitionRegistry definitionRegistry,
+    IAuthorizationGrantStore permissionStore) : IAuthorizationManager
 {
     /// <inheritdoc />
-    public Task<Result<IReadOnlyList<PermissionGrantSummary>>> GetGrantsForSubjectAsync(
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
+    public Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default)
         => permissionStore.GetGrantsForSubjectAsync(subjectType, subjectKey, cancellationToken);
 
     /// <inheritdoc />
-    public Task<Result> RevokePermissionAsync(
-        RevokePermissionRequest request,
+    public Task<Result> RevokeAsync(
+        RevokeAuthorizationRequest request,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -48,7 +48,7 @@ public sealed class DefaultPermissionManager(
     }
 
     /// <inheritdoc />
-    public Task<Result<PermissionGrantId>> GrantPermissionAsync(
+    public Task<Result<AuthorizationGrantId>> GrantAsync(
         GrantPermissionRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -57,8 +57,8 @@ public sealed class DefaultPermissionManager(
         if (!definitionRegistry.TryGet(request.PermissionName, out _))
         {
             return Task.FromResult(
-                Result<PermissionGrantId>.Failure(
-                    PermissionErrors.MissingAuthorizationStory(request.PermissionName)));
+                Result<AuthorizationGrantId>.Failure(
+                    AuthorizationErrors.MissingAuthorizationStory(request.PermissionName)));
         }
 
         return permissionStore.CreateGrantAsync(

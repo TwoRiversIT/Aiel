@@ -20,20 +20,35 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
+using Aiel.Execution;
+
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Represents the persisted grant polarity for a permission assignment.
+/// Resolves the permission subject key from an action execution context.
 /// </summary>
-public enum PermissionGrantDecision
+/// <typeparam name="TAction">The action payload type.</typeparam>
+/// <remarks>
+/// <para>
+/// Each action type decorated with <see cref="AuthorizationDefinitionAttribute"/> requires a corresponding
+/// resolver registered in the DI container. The generated <see cref="IActionAuthorizationChecker{TAction}"/>
+/// injects this resolver to identify the specific subject whose permission grants are evaluated.
+/// </para>
+/// <para>
+/// A common implementation extracts the subject key from the actor's identity claim or from a
+/// field on the action payload, depending on the bounded context's subject model.
+/// </para>
+/// </remarks>
+public interface IAuthorizationSubjectResolver<TAction>
+    where TAction : IAction
 {
     /// <summary>
-    /// The permission is granted for the matching subject and scope.
+    /// Resolves the subject key from <paramref name="context"/>.
     /// </summary>
-    Granted = 0,
-
-    /// <summary>
-    /// The permission is explicitly prohibited for the matching subject and scope.
-    /// </summary>
-    Prohibited = 1
+    /// <param name="context">The action execution context holding the payload and actor.</param>
+    /// <returns>
+    /// The <see cref="AuthorizationSubjectKey"/> identifying the subject for the permission check.
+    /// </returns>
+    AuthorizationSubjectKey ResolveSubjectKey(IActionExecutionContext<TAction> context);
 }

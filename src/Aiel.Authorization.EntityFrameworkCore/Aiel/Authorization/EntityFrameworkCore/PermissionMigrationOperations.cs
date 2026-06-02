@@ -36,7 +36,7 @@ public interface IPermissionMigrationOperation;
 public sealed record AddPermissionOperation(
     PermissionStableId StableId,
     PermissionName PermissionName,
-    PermissionScopeTypeName ScopeType) : IPermissionMigrationOperation;
+    AuthorizationScopeTypeName ScopeType) : IPermissionMigrationOperation;
 
 /// <summary>
 /// Renames an existing permission and updates all outstanding grants to reflect the new name.

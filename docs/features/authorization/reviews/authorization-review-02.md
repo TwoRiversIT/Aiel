@@ -35,22 +35,22 @@ Findings are ordered by remaining severity after the revision.
 
 ---
 
-## 1. `Aiel.Permissions.Domain` is listed in §4.2 but absent from every Task (blocker)
+## 1. `Aiel.Authorization.Domain` is listed in §4.2 but absent from every Task (blocker)
 
 Unchanged from Rev 1.
 
-The package family table in 4.2 includes `Aiel.Permissions.Domain` ("Permission catalog and grant
+The package family table in 4.2 includes `Aiel.Authorization.Domain` ("Permission catalog and grant
 domain model"), but no task in the Implementation Plan creates that project. Tasks 3–11 cover
 `Domain.Shared`, `Application.Contracts`, `Application`, `Analyzers`, `Generators`,
 `EntityFrameworkCore`, `EntityFrameworkCore.PostgreSql`, `AspNetCore`, `Client`, `Client.Blazor`, and
 `Testing`. Where does the `PermissionGrant` aggregate referenced in the design draft live?
 
 Task 8 implements EF Core mappings and a rename test that must operate on a grant aggregate. Without
-`Aiel.Permissions.Domain`, either the aggregate is conflated with the EF Core persistence record
+`Aiel.Authorization.Domain`, either the aggregate is conflated with the EF Core persistence record
 (violates the planning doc's explicit guidance) or it is being put in `Domain.Shared` (wrong layer
 for an aggregate, violates `A2`).
 
-Recommendation: add Task 3.5 — create `Aiel.Permissions.Domain` with the grant aggregate, catalog
+Recommendation: add Task 3.5 — create `Aiel.Authorization.Domain` with the grant aggregate, catalog
 entry, and lifecycle invariants, before Task 8 maps anything.
 
 ---
@@ -173,15 +173,15 @@ before the next layer commits to its shape.
 
 Recommended split if it is wanted — purely for review checkpoints, not for effort:
 
-- **04a — Contracts and gate.** `Aiel.Application.Contracts`, `Aiel.Permissions.Domain.Shared`,
-  `Aiel.Permissions.Domain`, `Aiel.Permissions.Application.Contracts`,
-  `Aiel.Permissions.Application`, `Aiel.Permissions.Analyzers`, `Aiel.Permissions.Testing`.
+- **04a — Contracts and gate.** `Aiel.Application.Contracts`, `Aiel.Authorization.Domain.Shared`,
+  `Aiel.Authorization.Domain`, `Aiel.Authorization.Application.Contracts`,
+  `Aiel.Authorization.Application`, `Aiel.Authorization.Analyzers`, `Aiel.Authorization.Testing`.
   Reference slice lives in tests.
-- **04b — Identity and persistence.** `Aiel.Permissions.Generators`,
-  `Aiel.Permissions.EntityFrameworkCore`, `Aiel.Permissions.EntityFrameworkCore.PostgreSql`,
+- **04b — Identity and persistence.** `Aiel.Authorization.Generators`,
+  `Aiel.Authorization.EntityFrameworkCore`, `Aiel.Authorization.EntityFrameworkCore.PostgreSql`,
   manifest snapshot + rename migration test.
-- **04c — Edges.** `Aiel.Permissions.AspNetCore`, `Aiel.Permissions.Client`,
-  `Aiel.Permissions.Client.Blazor`, Aviendha SAD update.
+- **04c — Edges.** `Aiel.Authorization.AspNetCore`, `Aiel.Authorization.Client`,
+  `Aiel.Authorization.Client.Blazor`, Aviendha SAD update.
 
 If the agent squad is willing to land 04a in many small PRs (one per package boundary), keeping it
 as a single phase is also defensible. The decision is about how Doug wants to review, not about how
@@ -200,7 +200,7 @@ is selected: `DoesNotRespectAuthority`, with a non-empty `Reason` required by th
 
 ---
 
-## 10. `Aiel.Permissions.Testing` has no creation task (low)
+## 10. `Aiel.Authorization.Testing` has no creation task (low)
 
 Listed in §4.2 and first **used** in Task 9, but no task creates the project. Either add a creation
 step inside Task 9 or add a small Task 4.5. With an agent squad, an unowned package will either get
@@ -220,7 +220,7 @@ Agents will do this work, but they need to know it is in scope.
 
 ## 12. Naming and packaging convention not pinned (low)
 
-The phase introduces `Aiel.Permissions.Domain.Shared` as a sibling under the permission family,
+The phase introduces `Aiel.Authorization.Domain.Shared` as a sibling under the permission family,
 establishing a convention. Worth one sentence: "Future feature families follow
 `<Family>.Domain.Shared`, `<Family>.Application.Contracts`, `<Family>.Application`."
 
@@ -243,7 +243,7 @@ Two concerns:
 - The phase already lists "Full Aviendha production permission rollout" as out of scope.
 
 Recommendation: narrow Task 12's SAD edit to a **pointer**, not a guidance section. Something like:
-"§5 Identity & Authorization now references `Aiel.Permissions.*` as the chosen permission
+"§5 Identity & Authorization now references `Aiel.Authorization.*` as the chosen permission
 mechanism; the action-based permission matrix and Safety Plan permission boundaries will be
 specified when Aviendha permission adoption is scoped." Leave the actual guidance to whichever phase
 owns Aviendha permission rollout.
@@ -264,8 +264,8 @@ phase document needs to be tighter than it would be for a human team, in three s
 - **Every implied-but-untested behavior must become an explicit test gate** or be explicitly
   deferred. Today: Task 6's third analyzer state (finding #4), Task 8's rename test fixture origin
   (finding #3), the "permission manager / store" path needed to make Task 8 testable (finding #2).
-- **Every entity in §4.2 must have a creation task.** Today: `Aiel.Permissions.Domain` (finding
-  #1), `Aiel.Permissions.Testing` (finding #10).
+- **Every entity in §4.2 must have a creation task.** Today: `Aiel.Authorization.Domain` (finding
+  #1), `Aiel.Authorization.Testing` (finding #10).
 
 The Zero Tech Debt policy depends on this. Agents asked to "complete the task with no warnings" can
 satisfy that by deleting the warning rather than fixing the cause. The phase doc is the only place
@@ -279,8 +279,8 @@ The action-centered direction is correct. Two findings became less severe once t
 and team makeup were clarified. The remaining blockers are about **specification completeness**, not
 scope or sequencing:
 
-1. **Spec gaps.** `Aiel.Permissions.Domain`, `IPermissionStore`, `IPermissionManager`, and
-   `Aiel.Permissions.Testing` all need explicit tasks before any agent picks up Task 4 or Task 8.
+1. **Spec gaps.** `Aiel.Authorization.Domain`, `IPermissionStore`, `IPermissionManager`, and
+   `Aiel.Authorization.Testing` all need explicit tasks before any agent picks up Task 4 or Task 8.
 2. **Sequencing.** Task 8 must explicitly own its rename-test fixture (independent of Task 9). Task
    6 must explicitly defer the generated-permission analyzer case to Task 7.
 3. **Decisions, not deferrals.** With an agent squad and Zero Tech Debt, "decide in the PR" is the

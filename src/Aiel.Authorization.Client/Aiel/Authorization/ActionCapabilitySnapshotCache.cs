@@ -77,7 +77,7 @@ public sealed class ActionCapabilitySnapshotCache(IActionCapabilityService capab
         Result actionResult,
         CancellationToken cancellationToken = default)
     {
-        if (!actionResult.IsSuccess && actionResult.Error.IsErrorType<PermissionDeniedError>())
+        if (!actionResult.IsSuccess && actionResult.Error.IsErrorType<AuthorizationDeniedError>())
         {
             await InvalidateAsync(request).ConfigureAwait(false);
             return await RefreshSnapshotAsync(request, cancellationToken).ConfigureAwait(false);

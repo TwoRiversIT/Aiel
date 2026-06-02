@@ -2,18 +2,18 @@
 
 ## 1. Target layer and package ownership
 
-`Aiel.Permissions.EntityFrameworkCore`: I am not entirely clear on what `grant entities` are, but if they are Domain entities then they belong in a a separate assembly. If we truly committed to the Clean Architecture pattern, then we should have the following assembly, regardless of how thin they might be.
+`Aiel.Authorization.EntityFrameworkCore`: I am not entirely clear on what `grant entities` are, but if they are Domain entities then they belong in a a separate assembly. If we truly committed to the Clean Architecture pattern, then we should have the following assembly, regardless of how thin they might be.
 
-- Aiel.Permissions.Application
-- Aiel.Permissions.Application.Contracts
-- Aiel.Permissions.Application.IntegrationTests
-- Aiel.Permissions.Domain
-- Aiel.Permissions.Domain.Shared
-- Aiel.Permissions.Domain.UnitTests
-- Aiel.Permissions.EntityFrameworkCore
-- Aiel.Permissions.EntityFrameworkCore.IntegrationTests
-- Aiel.Permissions.EntityFrameworkCore.PostgreSql
-- Aiel.Permissions.Testing
+- Aiel.Authorization.Application
+- Aiel.Authorization.Application.Contracts
+- Aiel.Authorization.Application.IntegrationTests
+- Aiel.Authorization.Domain
+- Aiel.Authorization.Domain.Shared
+- Aiel.Authorization.Domain.UnitTests
+- Aiel.Authorization.EntityFrameworkCore
+- Aiel.Authorization.EntityFrameworkCore.IntegrationTests
+- Aiel.Authorization.EntityFrameworkCore.PostgreSql
+- Aiel.Authorization.Testing
 
 ## 2. Generated output
 

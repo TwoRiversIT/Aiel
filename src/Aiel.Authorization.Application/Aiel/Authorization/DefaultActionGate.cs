@@ -54,18 +54,18 @@ public sealed class DefaultActionGate<TAction>(IServiceProvider serviceProvider)
             }
         }
 
-        var checker = ResolveOptional<IActionPermissionChecker<TAction>>();
+        var checker = ResolveOptional<IActionAuthorizationChecker<TAction>>();
         if (checker is null)
         {
             var permissionName = ResolveAuthorizationStoryName();
-            var definitionRegistry = ResolveOptional<IPermissionDefinitionRegistry>();
+            var definitionRegistry = ResolveOptional<IAuthorizationDefinitionRegistry>();
             if (definitionRegistry is not null && definitionRegistry.TryGetForAction<TAction>(out var manifest))
             {
                 permissionName = manifest.PermissionName;
             }
 
             return Result<IActionExecutionContext<TAction>>.Failure(
-                PermissionErrors.MissingAuthorizationStory(permissionName));
+                AuthorizationErrors.MissingAuthorizationStory(permissionName));
         }
 
         var permissionResult = await checker.CheckPermissionAsync(actionContext, cancellationToken).ConfigureAwait(false);

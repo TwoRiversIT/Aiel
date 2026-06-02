@@ -5,6 +5,11 @@
 		<AssemblyName>Aiel.Authorization.EntityFrameworkCore</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>true</IsPackable>
+
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,6 +26,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
+		<ProjectReference Include="..\Aiel.Authorization.Domain\Aiel.Authorization.Domain.csproj" />
 		<ProjectReference Include="..\Aiel.Results\Aiel.Results.csproj" />
 		<ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
 	</ItemGroup>

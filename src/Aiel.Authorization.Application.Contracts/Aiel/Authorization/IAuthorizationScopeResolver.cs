@@ -27,25 +27,26 @@ using Aiel.Results;
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Checks whether the actor in an execution context holds the required permission for the requested scope.
+/// Resolves the permission scope from the action execution context.
 /// </summary>
 /// <typeparam name="TAction">The action payload type.</typeparam>
 /// <remarks>
-/// Implement this interface per action type. The <see cref="IActionGate{TAction}"/> calls this
-/// after a successful <see cref="IActionValidator{TAction}"/> pass.
+/// Each action type that participates in permission checks must have a corresponding resolver
+/// that extracts the relevant <see cref="AuthorizationScopeResolution"/> from the action payload.
 /// </remarks>
-public interface IActionPermissionChecker<TAction>
+public interface IAuthorizationScopeResolver<TAction>
     where TAction : IAction
 {
     /// <summary>
-    /// Checks permission for the actor and scope described by <paramref name="context"/>.
+    /// Resolves the scope type and key from <paramref name="context"/>.
     /// </summary>
     /// <param name="context">The action execution context holding the payload and actor.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
     /// <returns>
-    /// <see cref="Result.Success()"/> when the actor holds the required permission;
-    /// a failed <see cref="Result"/> carrying a <see cref="PermissionDeniedError"/> or
-    /// <see cref="MissingAuthorizationStoryError"/> otherwise.
+    /// A successful <see cref="Result{T}"/> holding a <see cref="AuthorizationScopeResolution"/>
+    /// when the scope can be determined; a failed <see cref="Result{T}"/> otherwise.
     /// </returns>
-    Task<Result> CheckPermissionAsync(IActionExecutionContext<TAction> context, CancellationToken cancellationToken = default);
+    Task<Result<AuthorizationScopeResolution>> ResolveAsync(
+        IActionExecutionContext<TAction> context,
+        CancellationToken cancellationToken = default);
 }

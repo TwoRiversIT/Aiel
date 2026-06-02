@@ -26,7 +26,7 @@ namespace Aiel.Authorization;
 
 /// <summary>
 /// Marks an <see cref="IAction"/> implementation as deliberately not requiring
-/// an <see cref="IActionPermissionChecker{TAction}"/>.
+/// an <see cref="IActionAuthorizationChecker{TAction}"/>.
 /// </summary>
 /// <remarks>
 /// <para>

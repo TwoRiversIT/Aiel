@@ -30,20 +30,20 @@ namespace Aiel.Authorization;
 /// Applying this attribute causes the <c>Aiel.Authorization.Generators</c> source generator to emit:
 /// </para>
 /// <list type="bullet">
-///   <item>A string constant on <c>GeneratedPermissionNames</c> for the permission name.</item>
-///   <item>An <see cref="IActionPermissionChecker{TAction}"/> implementation that delegates to
-///         <see cref="IPermissionGrantEvaluator"/> via injected <see cref="IPermissionScopeResolver{TAction}"/>
-///         and <see cref="IPermissionSubjectResolver{TAction}"/>.</item>
-///   <item>A <c>PermissionDefinitionManifest</c> entry in <c>GeneratedPermissionManifests.GetManifests()</c>
-///         for registration with <see cref="IPermissionDefinitionRegistry"/> at startup.</item>
+///   <item>A string constant on <c>GeneratedAuthorizationNames</c> for the permission name.</item>
+///   <item>An <see cref="IActionAuthorizationChecker{TAction}"/> implementation that delegates to
+///         <see cref="IAuthorizationGrantEvaluator"/> via injected <see cref="IAuthorizationScopeResolver{TAction}"/>
+///         and <see cref="IAuthorizationSubjectResolver{TAction}"/>.</item>
+///   <item>A <c>AuthorizationDefinitionManifest</c> entry in <c>GeneratedAuthorizationManifests.GetManifests()</c>
+///         for registration with <see cref="IAuthorizationDefinitionRegistry"/> at startup.</item>
 /// </list>
 /// <para>
-/// The <c>ActionAuthorizationAnalyzer</c> (TRAF01001) treats the generated
-/// <see cref="IActionPermissionChecker{TAction}"/> as a valid authorization story for this action.
+/// The <c>ActionAuthorizationAnalyzer</c> (AIEL20001) treats the generated
+/// <see cref="IActionAuthorizationChecker{TAction}"/> as a valid authorization story for this action.
 /// </para>
 /// </remarks>
 /// <remarks>
-/// Initializes a new <see cref="DefinesPermissionAttribute"/> with required permission metadata.
+/// Initializes a new <see cref="AuthorizationDefinitionAttribute"/> with required permission metadata.
 /// </remarks>
 /// <param name="permissionName">
 /// The canonical dot-delimited permission name (e.g., <c>scheduling.RescheduleAppointment</c>).
@@ -51,15 +51,15 @@ namespace Aiel.Authorization;
 /// </param>
 /// <param name="scopeType">
 /// The scope type name this permission applies to (e.g., <c>Location</c>).
-/// Used in the generated manifest and passed to <see cref="IPermissionGrantEvaluator.EvaluateAsync"/>.
+/// Used in the generated manifest and passed to <see cref="IAuthorizationGrantEvaluator.EvaluateAsync"/>.
 /// </param>
 /// <param name="subjectType">
 /// The subject type name this permission targets (e.g., <c>User</c>).
-/// Used in the generated manifest and passed to <see cref="IPermissionGrantEvaluator.EvaluateAsync"/>.
+/// Used in the generated manifest and passed to <see cref="IAuthorizationGrantEvaluator.EvaluateAsync"/>.
 /// </param>
 /// <param name="displayName">A human-readable label for this permission.</param>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class DefinesPermissionAttribute(
+public sealed class AuthorizationDefinitionAttribute(
     String permissionName,
     String scopeType,
     String subjectType,

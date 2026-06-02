@@ -28,15 +28,15 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// EF Core database context for permission grants, the catalog, and migration snapshots.
 /// </summary>
 /// <remarks>
-/// This context is registered in DI and consumed only through <see cref="IPermissionStore"/> and
+/// This context is registered in DI and consumed only through <see cref="IAuthorizationGrantStore"/> and
 /// <see cref="PermissionMigrationRunner"/>. Avoid taking a direct dependency on this type from
 /// outside the infrastructure assembly.
 /// </remarks>
-public sealed class PermissionsDbContext(DbContextOptions<PermissionsDbContext> options)
+public sealed class AuthorizationDbContext(DbContextOptions<AuthorizationDbContext> options)
     : DbContext(options)
 {
     public DbSet<PermissionCatalogRecord> Catalog => Set<PermissionCatalogRecord>();
-    public DbSet<PermissionGrantRecord> Grants => Set<PermissionGrantRecord>();
+    public DbSet<AuthorizationGrantRecord> Grants => Set<AuthorizationGrantRecord>();
     public DbSet<PermissionManifestSnapshotRecord> Snapshots => Set<PermissionManifestSnapshotRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,7 +63,7 @@ public sealed class PermissionsDbContext(DbContextOptions<PermissionsDbContext> 
                 .HasPrincipalKey(r => r.StableId);
         });
 
-        modelBuilder.Entity<PermissionGrantRecord>(grant =>
+        modelBuilder.Entity<AuthorizationGrantRecord>(grant =>
         {
             grant.ToTable("permission_grants");
             grant.HasKey(r => r.Id);

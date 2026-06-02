@@ -31,15 +31,15 @@ namespace Aiel.Authorization.Testing;
 /// All values are stable, valid, and non-default — safe to use without additional configuration.
 /// Prefer these over ad-hoc test values to keep tests readable and consistent.
 /// </remarks>
-public static class PermissionTestData
+public static class AuthorizationTestData
 {
     /// <summary>Gets a non-default grant identifier for test scenarios. Alpha variant.</summary>
-    public static readonly PermissionGrantId GrantIdAlpha =
-        PermissionGrantId.From(Guid.Parse("a1000000-0000-0000-0000-000000000001"));
+    public static readonly AuthorizationGrantId GrantIdAlpha =
+        AuthorizationGrantId.From(Guid.Parse("a1000000-0000-0000-0000-000000000001"));
 
     /// <summary>Gets a non-default grant identifier for test scenarios. Beta variant.</summary>
-    public static readonly PermissionGrantId GrantIdBeta =
-        PermissionGrantId.From(Guid.Parse("b2000000-0000-0000-0000-000000000002"));
+    public static readonly AuthorizationGrantId GrantIdBeta =
+        AuthorizationGrantId.From(Guid.Parse("b2000000-0000-0000-0000-000000000002"));
 
     /// <summary>Gets a non-empty stable permission identifier for test scenarios. Alpha variant.</summary>
     public static readonly PermissionStableId StableIdAlpha =
@@ -78,46 +78,46 @@ public static class PermissionTestData
         PermissionName.From("testing.RescheduleAppointment");
 
     /// <summary>Gets a sample scope type name for use in test scenarios.</summary>
-    public static readonly PermissionScopeTypeName ScopeTypeAlpha =
-        PermissionScopeTypeName.From("TestScope");
+    public static readonly AuthorizationScopeTypeName ScopeTypeAlpha =
+        AuthorizationScopeTypeName.From("TestScope");
 
     /// <summary>Gets a sample scope key for use in test scenarios. Alpha variant.</summary>
-    public static readonly PermissionScopeKey ScopeKeyAlpha =
-        PermissionScopeKey.From("scope-alpha");
+    public static readonly AuthorizationScopeKey ScopeKeyAlpha =
+        AuthorizationScopeKey.From("scope-alpha");
 
     /// <summary>Gets a sample scope key for use in test scenarios. Beta variant.</summary>
-    public static readonly PermissionScopeKey ScopeKeyBeta =
-        PermissionScopeKey.From("scope-beta");
+    public static readonly AuthorizationScopeKey ScopeKeyBeta =
+        AuthorizationScopeKey.From("scope-beta");
 
     /// <summary>Gets a resource scope key for appointment reference-slice scenarios. Alpha variant.</summary>
-    public static readonly PermissionScopeKey AppointmentResourceScopeKeyAlpha =
-        PermissionScopeKey.From("appointment-resource-alpha");
+    public static readonly AuthorizationScopeKey AppointmentResourceScopeKeyAlpha =
+        AuthorizationScopeKey.From("appointment-resource-alpha");
 
     /// <summary>Gets a resource scope key for appointment reference-slice scenarios. Beta variant.</summary>
-    public static readonly PermissionScopeKey AppointmentResourceScopeKeyBeta =
-        PermissionScopeKey.From("appointment-resource-beta");
+    public static readonly AuthorizationScopeKey AppointmentResourceScopeKeyBeta =
+        AuthorizationScopeKey.From("appointment-resource-beta");
 
     /// <summary>Gets a sample subject type name for use in test scenarios.</summary>
-    public static readonly PermissionSubjectTypeName SubjectTypeAlpha =
-        PermissionSubjectTypeName.From("TestSubject");
+    public static readonly AuthorizationSubjectTypeName SubjectTypeAlpha =
+        AuthorizationSubjectTypeName.From("TestSubject");
 
     /// <summary>Gets a sample subject key for use in test scenarios. Alpha variant.</summary>
-    public static readonly PermissionSubjectKey SubjectKeyAlpha =
-        PermissionSubjectKey.From("subject-alpha");
+    public static readonly AuthorizationSubjectKey SubjectKeyAlpha =
+        AuthorizationSubjectKey.From("subject-alpha");
 
     /// <summary>Gets a sample subject key for use in test scenarios. Beta variant.</summary>
-    public static readonly PermissionSubjectKey SubjectKeyBeta =
-        PermissionSubjectKey.From("subject-beta");
+    public static readonly AuthorizationSubjectKey SubjectKeyBeta =
+        AuthorizationSubjectKey.From("subject-beta");
 
     /// <summary>
-    /// Creates a <see cref="PermissionDefinitionManifest"/> with well-known test values for the
+    /// Creates a <see cref="AuthorizationDefinitionManifest"/> with well-known test values for the
     /// specified <typeparamref name="TAction"/>.
     /// </summary>
     /// <typeparam name="TAction">The action type the manifest governs.</typeparam>
-    public static PermissionDefinitionManifest CreateSampleManifest<TAction>()
+    public static AuthorizationDefinitionManifest CreateSampleManifest<TAction>()
         where TAction : IAction
     {
-        return new PermissionDefinitionManifest
+        return new AuthorizationDefinitionManifest
         {
             StableId = StableIdAlpha,
             PermissionName = PermissionNameRead,
@@ -132,16 +132,16 @@ public static class PermissionTestData
     }
 
     /// <summary>
-    /// Creates a <see cref="PermissionDefinitionManifest"/> for <see cref="Fixtures.AlphaTestAction"/>
+    /// Creates a <see cref="AuthorizationDefinitionManifest"/> for <see cref="Fixtures.AlphaTestAction"/>
     /// with well-known test values.
     /// </summary>
-    public static PermissionDefinitionManifest CreateSampleManifest()
+    public static AuthorizationDefinitionManifest CreateSampleManifest()
         => CreateSampleManifest<Fixtures.AlphaTestAction>();
 
     /// <summary>
     /// Creates a renamed permission manifest for <see cref="Fixtures.RescheduleAppointmentTestAction"/>.
     /// </summary>
-    public static PermissionDefinitionManifest CreateRescheduleAppointmentManifest()
+    public static AuthorizationDefinitionManifest CreateRescheduleAppointmentManifest()
         => new()
         {
             StableId = StableIdAppointment,

@@ -20,13 +20,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Authorization;
+using Aiel.Execution;
+using Aiel.Results;
 
-/// <summary>
-/// Carries the identifier of the grant to revoke.
-/// </summary>
-public sealed class RevokePermissionRequest
+namespace Aiel.Authorization.AspNetCore;
+
+internal sealed class RescheduleAppointmentHttpClient(HttpClient httpClient) : IAppointmentApplicationService
 {
-    /// <summary>Gets the unique identifier of the persisted grant to revoke.</summary>
-    public required PermissionGrantId GrantId { get; init; }
+    private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
+    public Task<Result> RescheduleAsync(
+        IExecutionContext context,
+        RescheduleAppointment action,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(action);
+
+        var request = new RescheduleAppointmentRequest
+        {
+            AppointmentId = action.AppointmentId,
+            LocationScopeKey = action.LocationScopeKey.Value,
+            StartsAtUtc = action.StartsAtUtc,
+            EndsAtUtc = action.EndsAtUtc
+        };
+
+        return _httpClient.PostAndReturnResultAsync(
+            RescheduleAppointmentEndpoint.RoutePattern,
+            request,
+            cancellationToken);
+    }
 }

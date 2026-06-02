@@ -26,19 +26,19 @@ using System.Diagnostics.CodeAnalysis;
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Provides access to the set of <see cref="PermissionDefinitionManifest"/> instances registered at startup.
+/// Provides access to the set of <see cref="AuthorizationDefinitionManifest"/> instances registered at startup.
 /// </summary>
 /// <remarks>
 /// Implementations are typically populated during application bootstrap by scanning
-/// bounded-context assemblies that contribute <see cref="PermissionDefinitionManifest"/> registrations.
+/// bounded-context assemblies that contribute <see cref="AuthorizationDefinitionManifest"/> registrations.
 /// </remarks>
-public interface IPermissionDefinitionRegistry
+public interface IAuthorizationDefinitionRegistry
 {
     /// <summary>
     /// Returns all registered permission definition manifests.
     /// </summary>
     /// <returns>A non-null, possibly empty read-only list of manifests.</returns>
-    IReadOnlyList<PermissionDefinitionManifest> GetAll();
+    IReadOnlyList<AuthorizationDefinitionManifest> GetAll();
 
     /// <summary>
     /// Attempts to retrieve the manifest for the specified <paramref name="permissionName"/>.
@@ -51,7 +51,7 @@ public interface IPermissionDefinitionRegistry
     /// <returns><see langword="true"/> if a matching manifest was found; otherwise <see langword="false"/>.</returns>
     Boolean TryGet(
         PermissionName permissionName,
-        [NotNullWhen(true)] out PermissionDefinitionManifest manifest);
+        [NotNullWhen(true)] out AuthorizationDefinitionManifest manifest);
 
     /// <summary>
     /// Attempts to retrieve the manifest that defines the authorization story for <typeparamref name="TAction"/>.
@@ -61,6 +61,6 @@ public interface IPermissionDefinitionRegistry
     /// When this method returns <see langword="true"/>, contains the matching manifest.
     /// </param>
     /// <returns><see langword="true"/> if a matching manifest was found; otherwise <see langword="false"/>.</returns>
-    Boolean TryGetForAction<TAction>([NotNullWhen(true)] out PermissionDefinitionManifest manifest)
+    Boolean TryGetForAction<TAction>([NotNullWhen(true)] out AuthorizationDefinitionManifest manifest)
         where TAction : IAction;
 }

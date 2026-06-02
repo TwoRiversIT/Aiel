@@ -23,9 +23,9 @@
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Factory methods for well-known application-layer permission errors.
+/// Factory methods for well-known application-layer authorization errors.
 /// </summary>
-public static class PermissionErrors
+public static class AuthorizationErrors
 {
     /// <summary>
     /// Creates a <see cref="MissingAuthorizationStoryError"/> for the given permission name.
@@ -33,22 +33,22 @@ public static class PermissionErrors
     /// <param name="permission">The permission name with no registered authorization story.</param>
     /// <returns>A <see cref="MissingAuthorizationStoryError"/> describing the gap.</returns>
     public static MissingAuthorizationStoryError MissingAuthorizationStory(PermissionName permission)
-        => new(String.Format(PermissionApplicationErrorMessages.MissingAuthorizationStoryFormat, permission));
+        => new(String.Format(AuthorizationApplicationErrorMessages.MissingAuthorizationStoryFormat, permission));
 
     /// <summary>
-    /// Creates a <see cref="PermissionDeniedError"/> for the given permission name.
+    /// Creates a <see cref="AuthorizationDeniedError"/> for the given permission name.
     /// </summary>
     /// <param name="permission">The permission name the actor was denied.</param>
-    /// <returns>A <see cref="PermissionDeniedError"/> describing the denial.</returns>
-    public static PermissionDeniedError PermissionDenied(PermissionName permission)
-        => new(String.Format(PermissionApplicationErrorMessages.PermissionDeniedFormat, permission));
+    /// <returns>A <see cref="AuthorizationDeniedError"/> describing the denial.</returns>
+    public static AuthorizationDeniedError PermissionDenied(PermissionName permission)
+        => new(String.Format(AuthorizationApplicationErrorMessages.AuthorizationDeniedFormat, permission));
 
     /// <summary>
-    /// Creates a <see cref="PermissionValidationError"/> for the given permission name and reason.
+    /// Creates a <see cref="AuthorizationValidationError"/> for the given permission name and reason.
     /// </summary>
     /// <param name="permission">The permission name whose action failed validation.</param>
     /// <param name="reason">A human-readable description of the validation failure.</param>
-    /// <returns>A <see cref="PermissionValidationError"/> describing the failure.</returns>
-    public static PermissionValidationError ValidationFailed(PermissionName permission, String reason)
-        => new(String.Format(PermissionApplicationErrorMessages.PermissionValidationFormat, permission, reason));
+    /// <returns>A <see cref="AuthorizationValidationError"/> describing the failure.</returns>
+    public static AuthorizationValidationError ValidationFailed(PermissionName permission, String reason)
+        => new(String.Format(AuthorizationApplicationErrorMessages.AuthorizationValidationFormat, permission, reason));
 }

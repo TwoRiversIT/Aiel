@@ -20,26 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Authorization.EntityFrameworkCore;
+using Aiel.StrongIds;
+
+namespace Aiel.Authorization;
 
 /// <summary>
-/// EF Core persistence record for a permission grant.
+/// Identifies a published permission definition across renames.
 /// </summary>
-/// <remarks>
-/// This is an infrastructure type exposed only because EF Core requires it.
-/// Consume permission data through <see cref="IPermissionStore"/> instead.
-/// </remarks>
-public sealed class PermissionGrantRecord
-{
-    public Guid Id { get; set; }
-    public String StableId { get; set; } = String.Empty;
-    public String PermissionName { get; set; } = String.Empty;
-    public String ScopeType { get; set; } = String.Empty;
-    public String ScopeKey { get; set; } = String.Empty;
-    public String SubjectType { get; set; } = String.Empty;
-    public String SubjectKey { get; set; } = String.Empty;
-    public Int32 Decision { get; set; }
-    public DateTimeOffset GrantedAt { get; set; }
+[StrongId<String>(DisallowDefault = true)]
+public readonly partial record struct PermissionStableId : IStrongId<String>;
 
-    public PermissionCatalogRecord Catalog { get; set; } = default!;
-}
+/// <summary>
+/// Identifies a concrete persisted authorization grant.
+/// </summary>
+[StrongId<Guid>(DisallowDefault = true)]
+public readonly partial record struct AuthorizationGrantId : IStrongId<Guid>;
+
+/// <summary>
+/// Identifies a client capability snapshot version token.
+/// </summary>
+[StrongId<String>(DisallowDefault = true)]
+public readonly partial record struct CapabilitySnapshotVersion : IStrongId<String>;

@@ -26,10 +26,10 @@ namespace Aiel.Authorization;
 /// Describes a named permission as declared by the owning bounded context.
 /// </summary>
 /// <remarks>
-/// Manifests are registered in <see cref="IPermissionDefinitionRegistry"/> at startup.
+/// Manifests are registered in <see cref="IAuthorizationDefinitionRegistry"/> at startup.
 /// They carry the metadata needed to display, audit, and enforce permission assignments.
 /// </remarks>
-public sealed class PermissionDefinitionManifest
+public sealed class AuthorizationDefinitionManifest
 {
     /// <summary>Gets the stable, unique identifier for this permission definition across renames.</summary>
     public required PermissionStableId StableId { get; init; }
@@ -41,10 +41,10 @@ public sealed class PermissionDefinitionManifest
     public required Type ActionType { get; init; }
 
     /// <summary>Gets the scope type this permission applies to.</summary>
-    public required PermissionScopeTypeName ScopeType { get; init; }
+    public required AuthorizationScopeTypeName ScopeType { get; init; }
 
     /// <summary>Gets the subject type this permission targets.</summary>
-    public required PermissionSubjectTypeName SubjectType { get; init; }
+    public required AuthorizationSubjectTypeName SubjectType { get; init; }
 
     /// <summary>Gets a human-readable display name for this permission.</summary>
     public required String DisplayName { get; init; }

@@ -29,9 +29,9 @@ namespace Aiel.Authorization;
 /// </summary>
 /// <remarks>
 /// Implementations query the persisted grant store and apply any override rules (prohibit beats grant).
-/// This is a read-side concern; mutations go through <see cref="IPermissionManager"/>.
+/// This is a read-side concern; mutations go through <see cref="IAuthorizationManager"/>.
 /// </remarks>
-public interface IPermissionGrantEvaluator
+public interface IAuthorizationGrantEvaluator
 {
     /// <summary>
     /// Evaluates the effective decision for the given permission, scope, and subject.
@@ -43,14 +43,14 @@ public interface IPermissionGrantEvaluator
     /// <param name="subjectKey">The specific subject key being evaluated.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
     /// <returns>
-    /// The effective <see cref="PermissionGrantDecision"/> when a matching grant exists;
+    /// The effective <see cref="AuthorizationGrantDecision"/> when a matching grant exists;
     /// <see langword="null"/> when no grant covers the combination.
     /// </returns>
-    Task<Result<PermissionGrantDecision?>> EvaluateAsync(
+    Task<Result<AuthorizationGrantDecision?>> EvaluateAsync(
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default);
 }

@@ -5,6 +5,11 @@
 		<AssemblyName>Aiel.Authorization.Domain</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>true</IsPackable>
+
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -31,34 +31,34 @@ This is at least three phases of work packaged as one. Two concrete consequences
 
 Recommendation: split into three phases that each deliver a buildable, testable surface:
 
-- **04a — Contracts and gate.** `Aiel.Application.Contracts`, `Aiel.Permissions.Domain.Shared`,
-  `Aiel.Permissions.Application.Contracts`, `Aiel.Permissions.Application`,
-  `Aiel.Permissions.Analyzers`, `Aiel.Permissions.Testing`. End state: a sample slice exists in
+- **04a — Contracts and gate.** `Aiel.Application.Contracts`, `Aiel.Authorization.Domain.Shared`,
+  `Aiel.Authorization.Application.Contracts`, `Aiel.Authorization.Application`,
+  `Aiel.Authorization.Analyzers`, `Aiel.Authorization.Testing`. End state: a sample slice exists in
   tests, the analyzer fails closed, no persistence, no generation.
-- **04b — Identity and persistence.** `Aiel.Permissions.Domain`, `Aiel.Permissions.Generators`,
-  `Aiel.Permissions.EntityFrameworkCore`, `Aiel.Permissions.EntityFrameworkCore.PostgreSql`,
+- **04b — Identity and persistence.** `Aiel.Authorization.Domain`, `Aiel.Authorization.Generators`,
+  `Aiel.Authorization.EntityFrameworkCore`, `Aiel.Authorization.EntityFrameworkCore.PostgreSql`,
   manifest snapshot + rename migration test.
-- **04c — Edges.** `Aiel.Permissions.AspNetCore`, `Aiel.Permissions.Client`,
-  `Aiel.Permissions.Client.Blazor`, Aviendha SAD update.
+- **04c — Edges.** `Aiel.Authorization.AspNetCore`, `Aiel.Authorization.Client`,
+  `Aiel.Authorization.Client.Blazor`, Aviendha SAD update.
 
 Add a phase-level risk row: "Phase scope is too large to ship cleanly within normal cadence."
 
 ---
 
-## 2. `Aiel.Permissions.Domain` is listed in 4.2 but absent from every Task (blocker)
+## 2. `Aiel.Authorization.Domain` is listed in 4.2 but absent from every Task (blocker)
 
-The package family table in 4.2 includes `Aiel.Permissions.Domain` ("Permission catalog and grant
+The package family table in 4.2 includes `Aiel.Authorization.Domain` ("Permission catalog and grant
 domain model"), but no task in the Implementation Plan creates that project. Tasks 3–11 cover
 `Domain.Shared`, `Application.Contracts`, `Application`, `Analyzers`, `Generators`,
 `EntityFrameworkCore`, `EntityFrameworkCore.PostgreSql`, `AspNetCore`, `Client`, `Client.Blazor`, and
 `Testing`. Where does the `PermissionGrant` aggregate referenced in the design draft live?
 
 This matters because Task 8 implements EF Core mappings and a rename test that must operate on a
-grant aggregate. Without `Aiel.Permissions.Domain`, either the aggregate is being conflated with
+grant aggregate. Without `Aiel.Authorization.Domain`, either the aggregate is being conflated with
 the EF Core persistence record (violates the design draft's explicit guidance — see lines 102–105 of
 the planning doc) or it is being put in `Domain.Shared` (wrong layer for an aggregate).
 
-Recommendation: add Task 3.5 — create `Aiel.Permissions.Domain` with the grant aggregate, catalog
+Recommendation: add Task 3.5 — create `Aiel.Authorization.Domain` with the grant aggregate, catalog
 entry, and lifecycle invariants, before Task 8 maps anything.
 
 ---
@@ -182,9 +182,9 @@ the implementer to either over-deliver or argue at PR time.
 
 ---
 
-## 10. `Aiel.Permissions.Testing` has no creation task (low)
+## 10. `Aiel.Authorization.Testing` has no creation task (low)
 
-Listed in 4.2 and first **used** in Task 9 ("Use `Aiel.Permissions.Testing` for shared sample IDs
+Listed in 4.2 and first **used** in Task 9 ("Use `Aiel.Authorization.Testing` for shared sample IDs
 and fake services"), but no task creates the project. Either add a creation step inside Task 9 or
 add a small Task 4.5.
 
@@ -201,7 +201,7 @@ solution.
 
 ## 12. Naming and packaging convention not pinned (low)
 
-The phase introduces `Aiel.Permissions.Domain.Shared` as a sibling under the permission family.
+The phase introduces `Aiel.Authorization.Domain.Shared` as a sibling under the permission family.
 Today there is no `Aiel.Domain.Shared` — the convention is being established here. Worth one
 sentence noting that future feature families should follow the same `<Family>.Domain.Shared`,
 `<Family>.Application.Contracts`, `<Family>.Application` pattern so it doesn't drift.
@@ -232,8 +232,8 @@ implementation begins:
 
 1. Split the phase. Twelve packages plus generator plus analyzer plus EF migration DSL plus client
    helpers in one phase will either fail to ship or ship as stubs.
-2. Fill the gaps. `Aiel.Permissions.Domain`, `IPermissionStore`, `IPermissionManager`, and the
-   `Aiel.Permissions.Testing` creation step all need explicit tasks.
+2. Fill the gaps. `Aiel.Authorization.Domain`, `IPermissionStore`, `IPermissionManager`, and the
+   `Aiel.Authorization.Testing` creation step all need explicit tasks.
 3. Decide what is currently deferred. The marker name (already decided in the planning doc), the
    CQRS compatibility strategy (Task 2), and the `IExecutionContext` shape (planning open question)
    should all be resolved in `Decisions` before Task 1 starts. The repository's `AA1` gate requires

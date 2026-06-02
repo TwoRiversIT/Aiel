@@ -20,21 +20,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Results;
-
-namespace Aiel.Authorization;
+namespace Aiel.Authorization.EntityFrameworkCore;
 
 /// <summary>
-/// Represents a catalog-entry validation failure in the permission domain.
+/// EF Core persistence record for a permission grant.
 /// </summary>
-public sealed partial class InvalidPermissionCatalogEntryError : Error;
+/// <remarks>
+/// This is an infrastructure type exposed only because EF Core requires it.
+/// Consume permission data through <see cref="IAuthorizationGrantStore"/> instead.
+/// </remarks>
+public sealed class AuthorizationGrantRecord
+{
+    public Guid Id { get; set; }
+    public String StableId { get; set; } = String.Empty;
+    public String PermissionName { get; set; } = String.Empty;
+    public String ScopeType { get; set; } = String.Empty;
+    public String ScopeKey { get; set; } = String.Empty;
+    public String SubjectType { get; set; } = String.Empty;
+    public String SubjectKey { get; set; } = String.Empty;
+    public Int32 Decision { get; set; }
+    public DateTimeOffset GrantedAt { get; set; }
 
-/// <summary>
-/// Represents a permission-grant validation failure in the permission domain.
-/// </summary>
-public sealed partial class InvalidPermissionGrantError : Error;
-
-/// <summary>
-/// Represents an invalid permission lifecycle transition.
-/// </summary>
-public sealed partial class InvalidPermissionLifecycleTransitionError : Error;
+    public PermissionCatalogRecord Catalog { get; set; } = default!;
+}

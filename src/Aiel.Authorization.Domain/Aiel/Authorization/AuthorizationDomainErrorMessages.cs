@@ -22,7 +22,7 @@
 
 namespace Aiel.Authorization;
 
-internal static class PermissionDomainErrorMessages
+internal static class AuthorizationDomainErrorMessages
 {
     internal const String CatalogStableIdRequired = "Permission catalog entries require a non-default stable ID.";
     internal const String CatalogPermissionNameRequired = "Permission catalog entries require a valid permission name.";

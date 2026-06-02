@@ -25,11 +25,11 @@ namespace Aiel.Authorization;
 /// <summary>
 /// Represents the human-readable name of a permission scope type.
 /// </summary>
-public readonly record struct PermissionScopeTypeName
+public readonly record struct AuthorizationScopeTypeName
 {
     private readonly String? _value;
 
-    private PermissionScopeTypeName(String value)
+    private AuthorizationScopeTypeName(String value)
     {
         _value = value;
     }
@@ -45,7 +45,7 @@ public readonly record struct PermissionScopeTypeName
     /// <param name="value">The candidate scope type name.</param>
     /// <returns>The validated scope type name.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is not a valid scope type name.</exception>
-    public static PermissionScopeTypeName From(String value)
+    public static AuthorizationScopeTypeName From(String value)
     {
         if (!TryCreate(value, out var scopeTypeName))
         {
@@ -61,11 +61,11 @@ public readonly record struct PermissionScopeTypeName
     /// <param name="value">The candidate scope type name.</param>
     /// <param name="scopeTypeName">The created scope type name when validation succeeds.</param>
     /// <returns><see langword="true"/> when <paramref name="value"/> is valid; otherwise, <see langword="false"/>.</returns>
-    public static Boolean TryCreate(String? value, out PermissionScopeTypeName scopeTypeName)
+    public static Boolean TryCreate(String? value, out AuthorizationScopeTypeName scopeTypeName)
     {
         if (PermissionTextValidator.TryCreateTypeName(value, out var normalizedValue))
         {
-            scopeTypeName = new PermissionScopeTypeName(normalizedValue);
+            scopeTypeName = new AuthorizationScopeTypeName(normalizedValue);
             return true;
         }
 

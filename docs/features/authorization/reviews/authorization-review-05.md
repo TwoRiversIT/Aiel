@@ -54,7 +54,7 @@ In my mind, designing the routing conventions would be the tricky part.
 
 ### Store, Manager, and Decorators
 
-What does `PermissionGrantDecision` look like? Why is it returned from `IPermissionStore.GetGrantAsync()`? It seems like the store will have logic embedded in it violating the Single Responsibility Principle.
+What does `AuthorizationGrantDecision` look like? Why is it returned from `IPermissionStore.GetGrantAsync()`? It seems like the store will have logic embedded in it violating the Single Responsibility Principle.
 
 > This depends on a broader Aiel decorator system and should be tracked separately.
 
@@ -85,9 +85,9 @@ On the other hand, `<AuthorizeView Policy="@CAviendhaPolicy.SysAdmin" Context="B
 Also, I am not sure how custom generated components are an improvement over a standard if check:
 
 ```razor
-@inject IPermissionsChecker PermissionsChecker
+@inject IAuthorizationChecker AuthorizationChecker
 
-@if (PermissionsChecker.CanExecute(AviendhaActions.Scheduling.ChangeAppointment, appointment.Reference))
+@if (AuthorizationChecker.CanExecute(AviendhaActions.Scheduling.ChangeAppointment, appointment.Reference))
 {
     <button @onclick="ChangeAppointment">Change appointment</button>
 }
@@ -241,14 +241,14 @@ For rename detection, the analyzer can detect that a permission disappeared and 
 migrationBuilder.Permissions()
     .Rename(
         from: "Aviendha.Scheduling.ChangeAppointment",
-        to: AviendhaPermissions.Scheduling.Appointments.ChangeAppointment);
+        to: AviendhaAuthorization.Scheduling.Appointments.ChangeAppointment);
 ```
 
 The analyzer's job is to block unmanaged drift, not to infer every migration automatically.
 
 ### Store, Manager, and Decisions
 
-I agree that returning `PermissionGrantDecision` from the store smells wrong. The store should return persisted grant state only. The evaluator should produce the decision after considering grant state, prohibition precedence, lifecycle, scope chain, subject resolution, and fail-closed defaults.
+I agree that returning `AuthorizationGrantDecision` from the store smells wrong. The store should return persisted grant state only. The evaluator should produce the decision after considering grant state, prohibition precedence, lifecycle, scope chain, subject resolution, and fail-closed defaults.
 
 Because Aiel public APIs should not expose nullable return values, I would avoid `Result<PermissionGrantRecord?>`. Better shapes would be either an explicit optional value object or a lookup result:
 
@@ -289,9 +289,9 @@ Including `PermissionScope` is useful because a subject may exist globally but n
 
 For v1, I agree with service-based Blazor support and no resource-specific client-side permission execution. Resource-specific availability should come from server query results when the screen already has to load the resource. Coarse availability can come from a capability snapshot endpoint for navigation and top-level affordances.
 
-The client-side `IPermissionsChecker` should be a read model over the latest snapshot and any DTO-embedded availability, not a second authorization engine. A failed server authorization response should invalidate the relevant snapshot and trigger a refresh. Fluxor could host that state nicely, but the permission package should not require Fluxor in the base client abstractions.
+The client-side `IAuthorizationChecker` should be a read model over the latest snapshot and any DTO-embedded availability, not a second authorization engine. A failed server authorization response should invalidate the relevant snapshot and trigger a refresh. Fluxor could host that state nicely, but the permission package should not require Fluxor in the base client abstractions.
 
-I would not try to mirror ASP.NET Core policies in Blazor for v1. `AuthorizeView` is good for coarse authentication and role/policy UI, but nested context management gets awkward quickly, and resource-aware permissions need data the policy system does not naturally have. A direct `if` against `IPermissionsChecker` is boring in a good way.
+I would not try to mirror ASP.NET Core policies in Blazor for v1. `AuthorizeView` is good for coarse authentication and role/policy UI, but nested context management gets awkward quickly, and resource-aware permissions need data the policy system does not naturally have. A direct `if` against `IAuthorizationChecker` is boring in a good way.
 
 ### Action Verb Diagnostics
 

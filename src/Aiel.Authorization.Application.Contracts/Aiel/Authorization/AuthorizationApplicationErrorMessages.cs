@@ -20,10 +20,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+namespace Aiel.Authorization;
 
-namespace Aiel.Authorization.EntityFrameworkCore;
+internal static class AuthorizationApplicationErrorMessages
+{
+    internal const String MissingAuthorizationStoryFormat =
+        "No authorization story is registered for authorization '{0}'. Register a definition in IAuthorizationDefinitionRegistry.";
 
-[DependsOn(typeof(AielAuthorizationEntityFrameworkCore))]
-public sealed class AielAuthorizationEntityFrameworkCorePostgreSql : AielDependency;
+    internal const String AuthorizationDeniedFormat =
+        "The actor does not have the required '{0}' authorization for the requested scope.";
 
+    internal const String AuthorizationValidationFormat =
+        "Action validation failed for authorization '{0}': {1}";
+}

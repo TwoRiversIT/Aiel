@@ -27,8 +27,8 @@ using Aiel.Testing;
 
 namespace Aiel.Authorization;
 
-public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixture, ITestOutputHelper output)
-    : IntegrationTestBase<PermissionsEfCoreFixture>(fixture, output)
+public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fixture, ITestOutputHelper output)
+    : IntegrationTestBase<AuthorizationEfCoreFixture>(fixture, output)
 {
     [Fact]
     public async Task CreateGrantAsync_WithValidPermissionName_ReturnsNewGrantId()
@@ -38,21 +38,21 @@ public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixtu
         var stableId = PermissionStableId.From($"perm.test.{Guid.NewGuid()}");
         var runner = Services.GetRequiredService<PermissionMigrationRunner>();
         var plan = new PermissionMigrationPlan()
-            .Add(stableId, PermissionTestData.PermissionNameRead, PermissionTestData.ScopeTypeAlpha);
+            .Add(stableId, AuthorizationTestData.PermissionNameRead, AuthorizationTestData.ScopeTypeAlpha);
 
         var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
         Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
 
-        var store = Services.GetRequiredService<IPermissionStore>();
+        var store = Services.GetRequiredService<IAuthorizationGrantStore>();
 
         // Act
         var result = await store.CreateGrantAsync(
-            PermissionTestData.PermissionNameRead,
-            PermissionTestData.ScopeTypeAlpha,
-            PermissionTestData.ScopeKeyAlpha,
-            PermissionTestData.SubjectTypeAlpha,
-            PermissionTestData.SubjectKeyAlpha,
-            PermissionGrantDecision.Granted,
+            AuthorizationTestData.PermissionNameRead,
+            AuthorizationTestData.ScopeTypeAlpha,
+            AuthorizationTestData.ScopeKeyAlpha,
+            AuthorizationTestData.SubjectTypeAlpha,
+            AuthorizationTestData.SubjectKeyAlpha,
+            AuthorizationGrantDecision.Granted,
             CancellationToken);
 
         // Assert
@@ -66,30 +66,30 @@ public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixtu
         await ResetDatabaseAsync();
 
         var stableId = PermissionStableId.From($"perm.test.{Guid.NewGuid()}");
-        var subjectKey = PermissionSubjectKey.From($"subject-{Guid.NewGuid()}");
+        var subjectKey = AuthorizationSubjectKey.From($"subject-{Guid.NewGuid()}");
 
         var runner = Services.GetRequiredService<PermissionMigrationRunner>();
         var plan = new PermissionMigrationPlan()
-            .Add(stableId, PermissionTestData.PermissionNameRead, PermissionTestData.ScopeTypeAlpha);
+            .Add(stableId, AuthorizationTestData.PermissionNameRead, AuthorizationTestData.ScopeTypeAlpha);
 
         var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
         Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
 
-        var store = Services.GetRequiredService<IPermissionStore>();
+        var store = Services.GetRequiredService<IAuthorizationGrantStore>();
         var createResult = await store.CreateGrantAsync(
-            PermissionTestData.PermissionNameRead,
-            PermissionTestData.ScopeTypeAlpha,
-            PermissionTestData.ScopeKeyAlpha,
-            PermissionTestData.SubjectTypeAlpha,
+            AuthorizationTestData.PermissionNameRead,
+            AuthorizationTestData.ScopeTypeAlpha,
+            AuthorizationTestData.ScopeKeyAlpha,
+            AuthorizationTestData.SubjectTypeAlpha,
             subjectKey,
-            PermissionGrantDecision.Granted,
+            AuthorizationGrantDecision.Granted,
             CancellationToken);
 
         Assert.True(createResult.IsSuccess);
 
         // Act
         var result = await store.GetGrantsForSubjectAsync(
-            PermissionTestData.SubjectTypeAlpha,
+            AuthorizationTestData.SubjectTypeAlpha,
             subjectKey,
             CancellationToken);
 
@@ -97,8 +97,8 @@ public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixtu
         Assert.True(result.IsSuccess);
         var grants = result.Value;
         Assert.Single(grants);
-        Assert.Equal(PermissionTestData.PermissionNameRead.Value, grants[0].PermissionName.Value);
-        Assert.Equal(PermissionGrantDecision.Granted, grants[0].Decision);
+        Assert.Equal(AuthorizationTestData.PermissionNameRead.Value, grants[0].PermissionName.Value);
+        Assert.Equal(AuthorizationGrantDecision.Granted, grants[0].Decision);
     }
 
     [Fact]
@@ -107,23 +107,23 @@ public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixtu
         await ResetDatabaseAsync();
 
         var stableId = PermissionStableId.From($"perm.test.{Guid.NewGuid()}");
-        var subjectKey = PermissionSubjectKey.From($"subject-{Guid.NewGuid()}");
+        var subjectKey = AuthorizationSubjectKey.From($"subject-{Guid.NewGuid()}");
 
         var runner = Services.GetRequiredService<PermissionMigrationRunner>();
         var plan = new PermissionMigrationPlan()
-            .Add(stableId, PermissionTestData.PermissionNameRead, PermissionTestData.ScopeTypeAlpha);
+            .Add(stableId, AuthorizationTestData.PermissionNameRead, AuthorizationTestData.ScopeTypeAlpha);
 
         var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
         Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
 
-        var store = Services.GetRequiredService<IPermissionStore>();
+        var store = Services.GetRequiredService<IAuthorizationGrantStore>();
         var createResult = await store.CreateGrantAsync(
-            PermissionTestData.PermissionNameRead,
-            PermissionTestData.ScopeTypeAlpha,
-            PermissionTestData.ScopeKeyAlpha,
-            PermissionTestData.SubjectTypeAlpha,
+            AuthorizationTestData.PermissionNameRead,
+            AuthorizationTestData.ScopeTypeAlpha,
+            AuthorizationTestData.ScopeKeyAlpha,
+            AuthorizationTestData.SubjectTypeAlpha,
             subjectKey,
-            PermissionGrantDecision.Granted,
+            AuthorizationGrantDecision.Granted,
             CancellationToken);
 
         Assert.True(createResult.IsSuccess);
@@ -135,7 +135,7 @@ public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixtu
         Assert.True(revokeResult.IsSuccess, $"Expected success but got: {revokeResult}");
 
         var grantsResult = await store.GetGrantsForSubjectAsync(
-            PermissionTestData.SubjectTypeAlpha,
+            AuthorizationTestData.SubjectTypeAlpha,
             subjectKey,
             CancellationToken);
 
@@ -149,17 +149,17 @@ public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixtu
         await ResetDatabaseAsync();
 
         // Arrange — catalog is empty (no migration run)
-        var store = Services.GetRequiredService<IPermissionStore>();
+        var store = Services.GetRequiredService<IAuthorizationGrantStore>();
         var unknownName = PermissionName.From("testing.unknown");
 
         // Act
         var result = await store.CreateGrantAsync(
             unknownName,
-            PermissionTestData.ScopeTypeAlpha,
-            PermissionTestData.ScopeKeyAlpha,
-            PermissionTestData.SubjectTypeAlpha,
-            PermissionTestData.SubjectKeyAlpha,
-            PermissionGrantDecision.Granted,
+            AuthorizationTestData.ScopeTypeAlpha,
+            AuthorizationTestData.ScopeKeyAlpha,
+            AuthorizationTestData.SubjectTypeAlpha,
+            AuthorizationTestData.SubjectKeyAlpha,
+            AuthorizationGrantDecision.Granted,
             CancellationToken);
 
         // Assert
@@ -169,10 +169,10 @@ public sealed class PermissionGrantRoundTripTests(PermissionsEfCoreFixture fixtu
 
     private async Task ResetDatabaseAsync()
     {
-        var dbContext = Services.GetRequiredService<PermissionsDbContext>();
+        var dbContext = Services.GetRequiredService<AuthorizationDbContext>();
         await dbContext.Database.EnsureDeletedAsync(CancellationToken);
 
-        var initializer = Services.GetRequiredService<PermissionsDbInitializer>();
+        var initializer = Services.GetRequiredService<AuthorizationDbInitializer>();
         await initializer.EnsureCreatedAsync(CancellationToken);
     }
 }

@@ -12,6 +12,7 @@
 ## First failing-test path
 
 ### Primary red gate — `Aiel.Application.Contracts.UnitTests`
+
 - **Target project:** `Aiel/tests/Aiel.Application.Contracts.UnitTests/Aiel.Application.Contracts.UnitTests.csproj`
 - **Add file:** `Aiel/tests/Aiel.Application.Contracts.UnitTests/Aiel/Contracts/ApplicationContractSurfaceTests.cs`
 - **Make it fail first by asserting that the contract package exposes:**
@@ -27,6 +28,7 @@
 - **Expected red reason today:** the CQRS interfaces still live under `Aiel.Application`, and `IExecutionContext` is still split across `Aiel.Application.Contracts` and `Aiel.Domain`.
 
 ### Secondary red gate — `Aiel.Application.UnitTests`
+
 - **Target project:** `Aiel/tests/Aiel.Application.UnitTests/Aiel.Application.UnitTests.csproj`
 - **Add file:** `Aiel/tests/Aiel.Application.UnitTests/Aiel/Contracts/ContractBoundaryAssemblyTests.cs`
 - **Retarget these existing tests to the new contract boundary before implementation:**
@@ -46,6 +48,7 @@
 ## Focused preflight gate
 
 Treat this command pair as authoritative for the first 04a slice:
+
 1. `dotnet test .\Aiel\tests\Aiel.Application.Contracts.UnitTests\Aiel.Application.Contracts.UnitTests.csproj --nologo --verbosity minimal`
 2. `dotnet test .\Aiel\tests\Aiel.Application.UnitTests\Aiel.Application.UnitTests.csproj --nologo --verbosity minimal`
 

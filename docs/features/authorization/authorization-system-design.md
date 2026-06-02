@@ -60,18 +60,18 @@ Create the package family from the accepted permission design:
 
 | Package | Purpose |
 |---|---|
-| `Aiel.Permissions.Domain.Shared` | Permission value objects, strong IDs, lifecycle enums, scope and subject type names |
-| `Aiel.Permissions.Domain` | Permission catalog and grant domain model |
-| `Aiel.Permissions.Application.Contracts` | Permission manager, checker, gate, manifest, resource authorization, and capability contracts |
-| `Aiel.Permissions.Application` | Default permission checker, action gate, grant evaluator, scope orchestration |
-| `Aiel.Permissions.EntityFrameworkCore` | Provider-neutral EF Core store mappings and migration DSL |
-| `Aiel.Permissions.EntityFrameworkCore.PostgreSql` | PostgreSQL-specific migrations and provider wiring |
-| `Aiel.Permissions.AspNetCore` | Execution-context integration and generated endpoint support |
-| `Aiel.Permissions.Client` | Client capability abstractions |
-| `Aiel.Permissions.Client.Blazor` | Blazor action-visibility helpers |
-| `Aiel.Permissions.Testing` | Test doubles and sample permission fixtures |
-| `Aiel.Permissions.Generators` | Permission constants, manifests, definitions, and registration helpers |
-| `Aiel.Permissions.Analyzers` | Missing authorization, unsafe string, registration, rename, and client-safety diagnostics |
+| `Aiel.Authorization.Domain.Shared` | Permission value objects, strong IDs, lifecycle enums, scope and subject type names |
+| `Aiel.Authorization.Domain` | Permission catalog and grant domain model |
+| `Aiel.Authorization.Application.Contracts` | Permission manager, checker, gate, manifest, resource authorization, and capability contracts |
+| `Aiel.Authorization.Application` | Default permission checker, action gate, grant evaluator, scope orchestration |
+| `Aiel.Authorization.EntityFrameworkCore` | Provider-neutral EF Core store mappings and migration DSL |
+| `Aiel.Authorization.EntityFrameworkCore.PostgreSql` | PostgreSQL-specific migrations and provider wiring |
+| `Aiel.Authorization.AspNetCore` | Execution-context integration and generated endpoint support |
+| `Aiel.Authorization.Client` | Client capability abstractions |
+| `Aiel.Authorization.Client.Blazor` | Blazor action-visibility helpers |
+| `Aiel.Authorization.Testing` | Test doubles and sample permission fixtures |
+| `Aiel.Authorization.Generators` | Permission constants, manifests, definitions, and registration helpers |
+| `Aiel.Authorization.Analyzers` | Missing authorization, unsafe string, registration, rename, and client-safety diagnostics |
 
 Future feature families should follow this package shape where it applies:
 `<Family>.Domain.Shared`, `<Family>.Domain`, `<Family>.Application.Contracts`,
@@ -204,7 +204,7 @@ Phase 04 is complete when all of the following are true:
 - [ ] `Aiel.Application.Contracts` exists and owns the public action and execution-context contracts.
 - [ ] Existing CQRS contracts are moved to `Aiel.Application.Contracts`; old definitions are deleted in the same change.
 - [ ] Permission package projects exist with dependency direction matching the package ownership table.
-- [ ] `Aiel.Permissions.Domain` owns the grant aggregate, catalog entry, and lifecycle invariants.
+- [ ] `Aiel.Authorization.Domain` owns the grant aggregate, catalog entry, and lifecycle invariants.
 - [ ] `IPermissionStore` and `IPermissionManager` exist before EF Core persistence work begins.
 - [ ] Permission public models use `Aiel.StrongIds` and value objects from the first implementation.
 - [ ] `IActionGate<TAction>` validates, authorizes, and returns typed `Result` failures without running business logic.
@@ -278,8 +278,8 @@ No type-forwarding, no `[Obsolete]`, and no duplicate compatibility wrappers.
 ### Task 3 - Create permission domain shared contracts
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Domain.Shared/Aiel.Permissions.Domain.Shared.csproj`
-- Add `Aiel/tests/Aiel.Permissions.Domain.Shared.UnitTests/Aiel.Permissions.Domain.Shared.UnitTests.csproj`
+- Add `Aiel/src/Aiel.Authorization.Domain.Shared/Aiel.Authorization.Domain.Shared.csproj`
+- Add `Aiel/tests/Aiel.Authorization.Domain.Shared.UnitTests/Aiel.Authorization.Domain.Shared.UnitTests.csproj`
 
 **Initial types:**
 - `PermissionName`
@@ -301,8 +301,8 @@ Use `Aiel.StrongIds` for IDs and explicit value objects for human-readable names
 ### Task 4 - Create permission domain model
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Domain/Aiel.Permissions.Domain.csproj`
-- Add `Aiel/tests/Aiel.Permissions.Domain.UnitTests/Aiel.Permissions.Domain.UnitTests.csproj`
+- Add `Aiel/src/Aiel.Authorization.Domain/Aiel.Authorization.Domain.csproj`
+- Add `Aiel/tests/Aiel.Authorization.Domain.UnitTests/Aiel.Authorization.Domain.UnitTests.csproj`
 
 **Initial model:**
 - `PermissionGrant` aggregate
@@ -318,8 +318,8 @@ Use `Aiel.StrongIds` for IDs and explicit value objects for human-readable names
 ### Task 5 - Add permission application contracts and failing gate tests
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Application.Contracts/Aiel.Permissions.Application.Contracts.csproj`
-- Add `Aiel/tests/Aiel.Permissions.Application.UnitTests/Aiel.Permissions.Application.UnitTests.csproj`
+- Add `Aiel/src/Aiel.Authorization.Application.Contracts/Aiel.Authorization.Application.Contracts.csproj`
+- Add `Aiel/tests/Aiel.Authorization.Application.UnitTests/Aiel.Authorization.Application.UnitTests.csproj`
 
 **Contracts:**
 - `IActionValidator<TAction>`
@@ -345,7 +345,7 @@ Use `Aiel.StrongIds` for IDs and explicit value objects for human-readable names
 ### Task 6 - Implement permission application services
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Application/Aiel.Permissions.Application.csproj`
+- Add `Aiel/src/Aiel.Authorization.Application/Aiel.Authorization.Application.csproj`
 
 Implement the default action gate, default action permission checker, grant evaluator, and permission
 manager. The gate explicitly creates the action context, runs validation, resolves a concrete or
@@ -356,13 +356,13 @@ The gate must not support ordered behavior chains.
 **Test gate:**
 - All Task 5 tests pass.
 - Tests verify the gate never invokes business logic.
-- Manager tests use an in-memory fake store from the unit test project until `Aiel.Permissions.Testing` exists.
+- Manager tests use an in-memory fake store from the unit test project until `Aiel.Authorization.Testing` exists.
 
 ### Task 7 - Create permission testing package
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Testing/Aiel.Permissions.Testing.csproj`
-- Add `Aiel/tests/Aiel.Permissions.Testing.UnitTests/Aiel.Permissions.Testing.UnitTests.csproj`
+- Add `Aiel/src/Aiel.Authorization.Testing/Aiel.Authorization.Testing.csproj`
+- Add `Aiel/tests/Aiel.Authorization.Testing.UnitTests/Aiel.Authorization.Testing.UnitTests.csproj`
 
 **Initial helpers:**
 - fake permission store
@@ -377,8 +377,8 @@ The gate must not support ordered behavior chains.
 ### Task 8 - Add fail-closed analyzer foundation
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Analyzers/Aiel.Permissions.Analyzers.csproj`
-- Add `Aiel/tests/Aiel.Permissions.Analyzers.UnitTests/Aiel.Permissions.Analyzers.UnitTests.csproj`
+- Add `Aiel/src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj`
+- Add `Aiel/tests/Aiel.Authorization.Analyzers.UnitTests/Aiel.Authorization.Analyzers.UnitTests.csproj`
 
 **First diagnostic:**
 - Action has no concrete checker, generated permission definition, or explicit permission-free marker.
@@ -395,8 +395,8 @@ not exist yet.
 ### Task 9 - Define manifest snapshot and generator minimum viable output
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Generators/Aiel.Permissions.Generators.csproj`
-- Add `Aiel/tests/Aiel.Permissions.Generators.UnitTests/Aiel.Permissions.Generators.UnitTests.csproj`
+- Add `Aiel/src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj`
+- Add `Aiel/tests/Aiel.Authorization.Generators.UnitTests/Aiel.Authorization.Generators.UnitTests.csproj`
 
 **Generator output:**
 - permission constants
@@ -415,16 +415,16 @@ packages that require generation must deliver the generator DLL under `analyzers
 ### Task 10 - Add permission EF Core store and migration DSL prototype
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.EntityFrameworkCore/Aiel.Permissions.EntityFrameworkCore.csproj`
-- Add `Aiel/src/Aiel.Permissions.EntityFrameworkCore.PostgreSql/Aiel.Permissions.EntityFrameworkCore.PostgreSql.csproj`
-- Add `Aiel/tests/Aiel.Permissions.EntityFrameworkCore.IntegrationTests/Aiel.Permissions.EntityFrameworkCore.IntegrationTests.csproj`
+- Add `Aiel/src/Aiel.Authorization.EntityFrameworkCore/Aiel.Authorization.EntityFrameworkCore.csproj`
+- Add `Aiel/src/Aiel.Authorization.EntityFrameworkCore.PostgreSql/Aiel.Authorization.EntityFrameworkCore.PostgreSql.csproj`
+- Add `Aiel/tests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests.csproj`
 
 **First migration DSL operations:**
 - `Add`
 - `Rename`
 - `Deprecate`
 
-The rename test uses inline fixture action types from `Aiel.Permissions.Testing`; it does not depend
+The rename test uses inline fixture action types from `Aiel.Authorization.Testing`; it does not depend
 on the Task 11 `RescheduleAppointment` reference slice.
 
 **Test gate:**
@@ -437,7 +437,7 @@ on the Task 11 `RescheduleAppointment` reference slice.
 
 **Projects:**
 - Prefer a sample or fixture project rather than Aviendha production code for the first Aiel slice.
-- Use `Aiel.Permissions.Testing` for shared sample IDs and fake services.
+- Use `Aiel.Authorization.Testing` for shared sample IDs and fake services.
 
 **Slice components:**
 - `RescheduleAppointment : ICommand`
@@ -456,7 +456,7 @@ on the Task 11 `RescheduleAppointment` reference slice.
 ### Task 12 - Add ASP.NET Core and HTTP client adapter sample
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.AspNetCore/Aiel.Permissions.AspNetCore.csproj`
+- Add `Aiel/src/Aiel.Authorization.AspNetCore/Aiel.Authorization.AspNetCore.csproj`
 - Add integration tests or sample web app as needed.
 
 Hand-written endpoint sample code creates the action and calls `IAppointmentApplicationService`.
@@ -470,8 +470,8 @@ Hand-written HTTP client sample code implements the same application service con
 ### Task 13 - Add client capability contracts and Blazor helper sample
 
 **Projects:**
-- Add `Aiel/src/Aiel.Permissions.Client/Aiel.Permissions.Client.csproj`
-- Add `Aiel/src/Aiel.Permissions.Client.Blazor/Aiel.Permissions.Client.Blazor.csproj`
+- Add `Aiel/src/Aiel.Authorization.Client/Aiel.Authorization.Client.csproj`
+- Add `Aiel/src/Aiel.Authorization.Client.Blazor/Aiel.Authorization.Client.Blazor.csproj`
 
 **Contracts and behavior:**
 - selected-permission capability requests
@@ -492,7 +492,7 @@ Hand-written HTTP client sample code implements the same application service con
 - package READMEs for new Aiel permission packages
 
 Update Aiel docs with the implemented contract names, packaging choices, and migration behavior.
-Update `Aviendha/docs/SAD.md` only with a pointer that `Aiel.Permissions.*` is the chosen
+Update `Aviendha/docs/SAD.md` only with a pointer that `Aiel.Authorization.*` is the chosen
 permission mechanism. Do not add the Aviendha action-based permission matrix or Safety Plan
 permission boundaries in Phase 04; those belong to the later Aviendha adoption phase.
 

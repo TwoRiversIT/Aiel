@@ -25,7 +25,7 @@ using Aiel.Commands;
 using Aiel.Execution;
 using Aiel.Results;
 
-namespace Aiel.Permissions;
+namespace Aiel.Authorization;
 
 public sealed class ActionGateCommandPipelineBehaviorTests
 {
@@ -141,7 +141,7 @@ public sealed class ActionGateCommandPipelineBehaviorTests
             {
                 return Task.FromResult(
                     Result<IActionExecutionContext<TAction>>.Failure(
-                        PermissionErrors.PermissionDenied(PermissionName.From("test.denied"))));
+                        AuthorizationErrors.PermissionDenied(PermissionName.From("test.denied"))));
             }
 
             IActionExecutionContext<TAction> actionContext = new StubActionContext<TAction>(context, action);

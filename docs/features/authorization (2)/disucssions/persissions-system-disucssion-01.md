@@ -1,6 +1,6 @@
-# Permissions System Discussion 01
+# Authorization System Discussion 01
 
-> I just realized that I completely forgot to include Roles in the permission system. Looking at the current design and existing implementation, please draft a plan to add support for Roles to transfrom this from a Permissions System to a full RBAC system.
+> I just realized that I completely forgot to include Roles in the permission system. Looking at the current design and existing implementation, please draft a plan to add support for Roles to transfrom this from a Authorization System to a full RBAC system.
 > Remember, greenfield posture. Breaking changes are allowed
 
 I’m grounding this in the existing permissions design and code so the RBAC plan lands on the actual abstractions already in place. First I’m locating the current permission contracts and any role-adjacent implementation surfaces, then I’ll draft the plan directly into the design context.
@@ -17,15 +17,15 @@ The codebase already has generic subjects, which is promising; the critical chec
 
 Searched for regex `class .*PermissionGrantEvaluator|sealed class .*GrantEvaluator|IPermissionGrantEvaluator` (`**/Aiel/src/**`), 6 results
 
-Read [](file:///d%3A/source/Aviendha/Aiel/src/Aiel.Permissions.Application.Contracts/Aiel/Permissions/IPermissionGrantEvaluator.cs)
+Read [](file:///d%3A/source/Aviendha/Aiel/src/Aiel.Authorization.Application.Contracts/Aiel/Authorization/IPermissionGrantEvaluator.cs)
 
-Read [](file:///d%3A/source/Aviendha/Aiel/src/Aiel.Permissions.Application/Aiel/Permissions/DefaultPermissionManager.cs)
+Read [](file:///d%3A/source/Aviendha/Aiel/src/Aiel.Authorization.Application/Aiel/Authorization/DefaultPermissionManager.cs)
 
-Read [](file:///d%3A/source/Aviendha/Aiel/src/Aiel.Permissions.Domain/Aiel/Permissions/PermissionGrant.cs)
+Read [](file:///d%3A/source/Aviendha/Aiel/src/Aiel.Authorization.Domain/Aiel/Authorization/PermissionGrant.cs)
 
 The evaluator surface is currently direct subject lookup only, which means roles are not just missing terminology; they’re missing the effective-subject expansion step that RBAC needs. I’m reading that implementation seam and the current design doc next so I can add the plan in the right place rather than bolting on a separate role subsystem.
 
-Searched for regex `EvaluateAsync\(|GetGrantDecision|PermissionGrantDecision\?` (`**/Aiel/src/Aiel.Permissions.Application/**`), no results
+Searched for regex `EvaluateAsync\(|GetGrantDecision|AuthorizationGrantDecision\?` (`**/Aiel/src/Aiel.Authorization.Application/**`), no results
 
 Read [](file:///d%3A/source/Aviendha/Aiel/docs/features/permissions/permissions-system-plan.md#1-1), lines 1 to 180
 

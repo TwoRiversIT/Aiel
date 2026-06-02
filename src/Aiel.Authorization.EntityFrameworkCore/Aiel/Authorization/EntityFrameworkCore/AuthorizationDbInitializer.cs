@@ -29,7 +29,7 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// Resolve this type from DI and call <see cref="EnsureCreatedAsync"/> once during
 /// application startup or test fixture initialization to create all required tables.
 /// </remarks>
-public sealed class PermissionsDbInitializer(PermissionsDbContext dbContext)
+public sealed class AuthorizationDbInitializer(AuthorizationDbContext dbContext)
 {
     /// <summary>
     /// Ensures the permissions schema exists. Creates it if it does not.

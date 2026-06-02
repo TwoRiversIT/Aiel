@@ -21,14 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Aiel.Permissions;
+using Aiel.Authorization;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Service collection extensions for registering Aiel.Permissions.Application services.
+/// Service collection extensions for registering Aiel.Authorization.Application services.
 /// </summary>
-public static class AielPermissionsApplicationServiceCollectionExtensions
+public static class AielAuthorizationApplicationServiceCollectionExtensions
 {
     /// <summary>
     /// Registers the permissions application services required to run the command authorization gate.
@@ -40,14 +40,14 @@ public static class AielPermissionsApplicationServiceCollectionExtensions
     /// <para>
     /// After calling this method, register pipeline behaviors explicitly in the order you want them to run:
     /// <code>
-    /// services.AddAielPermissionsApplication();
+    /// services.AddAielAuthorizationApplication();
     /// services.AddTransient(typeof(ICommandPipelineBehavior&lt;&gt;), typeof(ActionGateCommandPipelineBehavior&lt;&gt;));
     /// </code>
     /// </para>
     /// </remarks>
     /// <param name="services">The service collection to configure.</param>
     /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
-    public static IServiceCollection AddAielPermissionsApplication(
+    public static IServiceCollection AddAielAuthorizationApplication(
         this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);

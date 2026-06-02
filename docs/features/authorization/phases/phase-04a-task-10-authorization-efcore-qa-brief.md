@@ -1,18 +1,18 @@
-# Phase 04a Task 10 — Aiel.Permissions EF Core Store & Migration DSL QA Brief
+# Phase 04a Task 10 — Aiel.Authorization EF Core Store & Migration DSL QA Brief
 
 - **Date:** 2026-06-01T00:00:00Z
 - **Author:** Verin
-- **Scope:** Task 10 only. Add `Aiel.Permissions.EntityFrameworkCore` (provider-neutral store + migration DSL), `Aiel.Permissions.EntityFrameworkCore.PostgreSql` (provider registration adapter), and `Aiel.Permissions.EntityFrameworkCore.IntegrationTests`. Implement the first three migration DSL operations: `Add`, `Rename`, `Deprecate`. Extend `Aiel.Permissions.Testing` with `ChangeAppointmentTestAction` and `RescheduleAppointmentTestAction`. Fix the `PermissionDefinitionManifest` mismatch carried forward from Task 9.
-- **Layer:** Infrastructure adapter (`I` in the architecture key). `Aiel.Permissions.EntityFrameworkCore` depends inward on `Application.Contracts` and `Domain`. No business logic in the adapter. The migration DSL is a compile-time / startup-time declaration surface — NOT an EF Core `IMigration` subclass hierarchy.
+- **Scope:** Task 10 only. Add `Aiel.Authorization.EntityFrameworkCore` (provider-neutral store + migration DSL), `Aiel.Authorization.EntityFrameworkCore.PostgreSql` (provider registration adapter), and `Aiel.Authorization.EntityFrameworkCore.IntegrationTests`. Implement the first three migration DSL operations: `Add`, `Rename`, `Deprecate`. Extend `Aiel.Authorization.Testing` with `ChangeAppointmentTestAction` and `RescheduleAppointmentTestAction`. Fix the `PermissionDefinitionManifest` mismatch carried forward from Task 9.
+- **Layer:** Infrastructure adapter (`I` in the architecture key). `Aiel.Authorization.EntityFrameworkCore` depends inward on `Application.Contracts` and `Domain`. No business logic in the adapter. The migration DSL is a compile-time / startup-time declaration surface — NOT an EF Core `IMigration` subclass hierarchy.
 - **Baseline:** Task 9 committed (generator + analyzer integration). All existing tests pass. **Two Task 9 residuals are unresolved** (see §Pre-conditions); they must be fixed as the first changeset of Task 10.
 
 ---
 
 ## Slice-boundary verdict: Task 10 is a standalone slice ✅ — with required pre-conditions
 
-Task 10 can land independently before Task 11 (`RescheduleAppointment` reference slice). All rename test scenarios use fixture action types from `Aiel.Permissions.Testing` — there is no dependency on the production `RescheduleAppointment : ICommand` introduced in Task 11.
+Task 10 can land independently before Task 11 (`RescheduleAppointment` reference slice). All rename test scenarios use fixture action types from `Aiel.Authorization.Testing` — there is no dependency on the production `RescheduleAppointment : ICommand` introduced in Task 11.
 
-**Decision D6 compliance:** The EF Core store is an infrastructure adapter. `IPermissionStore` (the port) is already defined in `Aiel.Permissions.Application.Contracts`. Task 10 provides the first real implementation of that port.
+**Decision D6 compliance:** The EF Core store is an infrastructure adapter. `IPermissionStore` (the port) is already defined in `Aiel.Authorization.Application.Contracts`. Task 10 provides the first real implementation of that port.
 
 **Explicit boundary — what Task 10 MUST NOT absorb:**
 
@@ -39,7 +39,7 @@ public required PermissionName PermissionName { get; init; }
 
 **Generator emits:**
 ```csharp
-Name = global::Aiel.Permissions.PermissionName.From("..."),
+Name = global::Aiel.Authorization.PermissionName.From("..."),
 ```
 
 The generator initializes property `Name`; the manifest declares property `PermissionName`. This is a compile-time mismatch. **Fix:** rename the manifest property from `PermissionName` to `Name`. Update all callsites (there are few — the type is new).
@@ -50,7 +50,7 @@ The generator initializes property `Name`; the manifest declares property `Permi
 
 **Generator emits:**
 ```csharp
-Lifecycle = global::Aiel.Permissions.PermissionLifecycle.Active,
+Lifecycle = global::Aiel.Authorization.PermissionLifecycle.Active,
 PreviousNames = [],
 ```
 
@@ -74,7 +74,7 @@ Note: the generator already emits `PreviousNames` as a `string[]` array initiali
 
 `PermissionFixtureActions.cs` currently only contains `AlphaTestAction`, `BetaTestAction`, `GammaTestAction`. The rename migration test requires two fixture action types representing the "before" and "after" permission names.
 
-**Fix:** add to `PermissionFixtureActions.cs` in `Aiel.Permissions.Testing`:
+**Fix:** add to `PermissionFixtureActions.cs` in `Aiel.Authorization.Testing`:
 
 ```csharp
 /// <summary>
@@ -98,9 +98,9 @@ These are test-only fixture types. They MUST NOT reference, depend on, or be con
 
 | Project | Path | Role |
 |---|---|---|
-| `Aiel.Permissions.EntityFrameworkCore` | `Aiel/src/` | Provider-neutral EF Core store implementation + migration DSL |
-| `Aiel.Permissions.EntityFrameworkCore.PostgreSql` | `Aiel/src/` | PostgreSQL provider registration adapter |
-| `Aiel.Permissions.EntityFrameworkCore.IntegrationTests` | `Aiel/tests/` | Integration tests; uses real PostgreSQL via Testcontainers |
+| `Aiel.Authorization.EntityFrameworkCore` | `Aiel/src/` | Provider-neutral EF Core store implementation + migration DSL |
+| `Aiel.Authorization.EntityFrameworkCore.PostgreSql` | `Aiel/src/` | PostgreSQL provider registration adapter |
+| `Aiel.Authorization.EntityFrameworkCore.IntegrationTests` | `Aiel/tests/` | Integration tests; uses real PostgreSQL via Testcontainers |
 
 All three MUST be registered in `TwoRivers.slnx`, `Aiel/Aiel.slnx`, and `Aiel/virtual-folders.json`.
 
@@ -108,15 +108,15 @@ All three MUST be registered in `TwoRivers.slnx`, `Aiel/Aiel.slnx`, and `Aiel/vi
 
 | Project | Allowed | Forbidden |
 |---|---|---|
-| `Aiel.Permissions.EntityFrameworkCore` | `Aiel.Permissions.Application.Contracts`, `Aiel.Permissions.Domain`, `Aiel.Permissions.Domain.Shared`, `Aiel.StrongIds.EntityFrameworkCore`, `Microsoft.EntityFrameworkCore` (provider-neutral), `Aiel.Common` | Any `Npgsql.*`, any presentation layer, `Aiel.Permissions.Application` (service implementations) |
-| `Aiel.Permissions.EntityFrameworkCore.PostgreSql` | `Aiel.Permissions.EntityFrameworkCore`, `Npgsql.EntityFrameworkCore.PostgreSQL` | Direct `Aiel.Permissions.Domain` reference beyond what flows transitively, any business-logic code |
-| `Aiel.Permissions.EntityFrameworkCore.IntegrationTests` | `Aiel.Permissions.EntityFrameworkCore`, `Aiel.Permissions.EntityFrameworkCore.PostgreSql`, `Aiel.Permissions.Testing`, `Aiel.Permissions.Application`, `Aiel.Testing`, `Npgsql.EntityFrameworkCore.PostgreSQL`, `Testcontainers.PostgreSql`, xUnit, FluentAssertions | `Aiel.Permissions.Generators` (test code must not depend on generator internals), any presentation layer |
+| `Aiel.Authorization.EntityFrameworkCore` | `Aiel.Authorization.Application.Contracts`, `Aiel.Authorization.Domain`, `Aiel.Authorization.Domain.Shared`, `Aiel.StrongIds.EntityFrameworkCore`, `Microsoft.EntityFrameworkCore` (provider-neutral), `Aiel.Common` | Any `Npgsql.*`, any presentation layer, `Aiel.Authorization.Application` (service implementations) |
+| `Aiel.Authorization.EntityFrameworkCore.PostgreSql` | `Aiel.Authorization.EntityFrameworkCore`, `Npgsql.EntityFrameworkCore.PostgreSQL` | Direct `Aiel.Authorization.Domain` reference beyond what flows transitively, any business-logic code |
+| `Aiel.Authorization.EntityFrameworkCore.IntegrationTests` | `Aiel.Authorization.EntityFrameworkCore`, `Aiel.Authorization.EntityFrameworkCore.PostgreSql`, `Aiel.Authorization.Testing`, `Aiel.Authorization.Application`, `Aiel.Testing`, `Npgsql.EntityFrameworkCore.PostgreSQL`, `Testcontainers.PostgreSql`, xUnit, FluentAssertions | `Aiel.Authorization.Generators` (test code must not depend on generator internals), any presentation layer |
 
 ---
 
 ## EF Core mapping surface — minimum for Task 10
 
-The persistence entity (`PermissionGrantRecord`) is an **internal infrastructure type**. It MUST NOT appear in any signature in `Aiel.Permissions.Application.Contracts`, `Aiel.Permissions.Domain`, or any public API.
+The persistence entity (`PermissionGrantRecord`) is an **internal infrastructure type**. It MUST NOT appear in any signature in `Aiel.Authorization.Application.Contracts`, `Aiel.Authorization.Domain`, or any public API.
 
 ### `PermissionGrantRecord` entity shape
 
@@ -128,7 +128,7 @@ The persistence entity (`PermissionGrantRecord`) is an **internal infrastructure
 | `ScopeKey` | `varchar(512)` NOT NULL | `string` | `PermissionScopeKey` → `string` value converter |
 | `SubjectTypeName` | `varchar(128)` NOT NULL | `string` | `PermissionSubjectTypeName` → `string` value converter |
 | `SubjectKey` | `varchar(512)` NOT NULL | `string` | `PermissionSubjectKey` → `string` value converter |
-| `Decision` | `integer` NOT NULL | `int` | `PermissionGrantDecision` enum cast (Granted=0, Prohibited=1) |
+| `Decision` | `integer` NOT NULL | `int` | `AuthorizationGrantDecision` enum cast (Granted=0, Prohibited=1) |
 | `GrantedAt` | `timestamp with time zone` NOT NULL | `DateTimeOffset` | None needed |
 
 **Deferred:** `RevokedAt` column (soft-delete / audit trail) — not needed for Task 10 test gates. Flag for Task 13 (hardening).
@@ -144,7 +144,7 @@ The persistence entity (`PermissionGrantRecord`) is an **internal infrastructure
 
 The migration DSL is a **compile-time / startup-time declaration surface**. Operations describe intent; they are NOT EF Core `IMigration` subclasses and they do NOT execute raw SQL during test teardown.
 
-### Interfaces and types — in `Aiel.Permissions.EntityFrameworkCore`
+### Interfaces and types — in `Aiel.Authorization.EntityFrameworkCore`
 
 ```csharp
 /// <summary>A single permission definition migration operation.</summary>
@@ -172,7 +172,7 @@ public sealed class DeprecatePermissionOperation : IPermissionMigrationOperation
 
 **All parameters are strongly typed `PermissionName` value objects.** Raw `string` parameters are forbidden. The `From` and `To` type on `RenamePermissionOperation` MUST be `PermissionName`, not `string`.
 
-### Migration runner — in `Aiel.Permissions.EntityFrameworkCore`
+### Migration runner — in `Aiel.Authorization.EntityFrameworkCore`
 
 ```csharp
 /// <summary>Applies a sequence of permission migration operations against the permission store.</summary>
@@ -205,7 +205,7 @@ Create a permission grant via `EfCorePermissionStore.CreateGrantAsync`. Read it 
 1. The returned `PermissionGrantSummary` contains the same `PermissionGrantId` as the create response.
 2. `PermissionName` on the summary matches the name passed to `CreateGrantAsync`.
 3. `ScopeType`, `ScopeKey`, `SubjectType`, `SubjectKey` all round-trip without mutation.
-4. `Decision` is `PermissionGrantDecision.Granted`.
+4. `Decision` is `AuthorizationGrantDecision.Granted`.
 
 This test MAY use the EF InMemory provider (schema accuracy is not the subject here).
 
@@ -240,7 +240,7 @@ Call `GetGrantsForSubjectAsync` for a subject that has no grants. Assert:
 
 ## First red tests — method stubs
 
-These tests must be **written first** and fail before implementation begins. All names are in `Aiel.Permissions.EntityFrameworkCore.IntegrationTests`.
+These tests must be **written first** and fail before implementation begins. All names are in `Aiel.Authorization.EntityFrameworkCore.IntegrationTests`.
 
 ```csharp
 // Gate 1 — Round-trip
@@ -258,7 +258,7 @@ public async Task EfCorePermissionStore_CreateGrant_RoundTrips_AllFields()
     // Act — create
     var createResult = await store.CreateGrantAsync(
         permissionName, scopeType, scopeKey, subjectType, subjectKey,
-        PermissionGrantDecision.Granted, TestCancellation);
+        AuthorizationGrantDecision.Granted, TestCancellation);
 
     // Assert — create succeeded
     createResult.IsSuccess.Should().BeTrue();
@@ -275,7 +275,7 @@ public async Task EfCorePermissionStore_CreateGrant_RoundTrips_AllFields()
     grant.Name.Should().Be(permissionName);
     grant.ScopeType.Should().Be(scopeType);
     grant.ScopeKey.Should().Be(scopeKey);
-    grant.Decision.Should().Be(PermissionGrantDecision.Granted);
+    grant.Decision.Should().Be(AuthorizationGrantDecision.Granted);
 }
 
 // Gate 2 — Rename preserves grants (PostgreSQL required)
@@ -294,7 +294,7 @@ public async Task RenamePermission_Preserves_ExistingGrants_AndPermissionGrantId
 
     var createResult = await store.CreateGrantAsync(
         oldName, scopeType, scopeKey, subjectType, subjectKey,
-        PermissionGrantDecision.Granted, TestCancellation);
+        AuthorizationGrantDecision.Granted, TestCancellation);
     var originalGrantId = createResult.Value;
 
     // Act
@@ -398,7 +398,7 @@ Task 10 integration tests that exercise real schema behavior (Gate 2: rename mig
 
 | # | Condition | Severity |
 |---|---|---|
-| R1 | `PermissionGrantRecord`, `PermissionDbContext`, or any EF Core entity type appears in a public member of `Aiel.Permissions.Application.Contracts` or `Aiel.Permissions.Domain` | **BLOCK** |
+| R1 | `PermissionGrantRecord`, `PermissionDbContext`, or any EF Core entity type appears in a public member of `Aiel.Authorization.Application.Contracts` or `Aiel.Authorization.Domain` | **BLOCK** |
 | R2 | `PermissionDefinitionManifest` still lacks `Lifecycle` or `PreviousNames` when Task 10 is submitted | **BLOCK** |
 | R3 | Generator emits `Name =` but manifest property is still named `PermissionName` (compile failure in integration tests) | **BLOCK** |
 | R4 | Rename migration test (`Gate 2`) uses EF InMemory provider instead of real PostgreSQL or Testcontainers | **BLOCK** |
@@ -406,8 +406,8 @@ Task 10 integration tests that exercise real schema behavior (Gate 2: rename mig
 | R6 | `PermissionGrantId` (PK) is changed or regenerated after a rename migration | **BLOCK** |
 | R7 | `GetGrantsForSubjectAsync` returns `null` instead of an empty `IReadOnlyList<PermissionGrantSummary>` | **BLOCK** |
 | R8 | Task 11's `RescheduleAppointment : ICommand` is referenced by the integration test project or migration DSL fixtures | **BLOCK** |
-| R9 | PostgreSQL-specific configuration (column types, Npgsql-specific calls) in `Aiel.Permissions.EntityFrameworkCore` (must be in `.PostgreSql`) | **BLOCK** |
-| R10 | `IPermissionMigrationRunner` or any migration DSL type defined in `Aiel.Permissions.Application.Contracts` or `Aiel.Permissions.Application` (belongs in the infrastructure adapter layer) | **BLOCK** |
+| R9 | PostgreSQL-specific configuration (column types, Npgsql-specific calls) in `Aiel.Authorization.EntityFrameworkCore` (must be in `.PostgreSql`) | **BLOCK** |
+| R10 | `IPermissionMigrationRunner` or any migration DSL type defined in `Aiel.Authorization.Application.Contracts` or `Aiel.Authorization.Application` (belongs in the infrastructure adapter layer) | **BLOCK** |
 | R11 | Migration DSL operations implemented as EF Core `IMigration` subclasses or `MigrationBuilder`-based DDL scripts | **REJECT** |
 | R12 | `PermissionStableId` recomputed or changed on rename (stable ID must survive permission name changes) | **BLOCK** |
 | R13 | New external package added without Doug approval (especially `Testcontainers.PostgreSql`) | **HOLD** |

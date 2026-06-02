@@ -36,6 +36,6 @@ public sealed class PermissionCatalogRecord
     public String ScopeType { get; set; } = String.Empty;
     public Int32 Lifecycle { get; set; }
 
-    public List<PermissionGrantRecord> Grants { get; set; } = [];
+    public List<AuthorizationGrantRecord> Grants { get; set; } = [];
     public List<PermissionManifestSnapshotRecord> Snapshots { get; set; } = [];
 }

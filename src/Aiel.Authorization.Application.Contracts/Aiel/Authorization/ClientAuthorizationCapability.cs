@@ -23,32 +23,26 @@
 namespace Aiel.Authorization;
 
 /// <summary>
-/// A domain-neutral summary of a persisted permission grant returned by <see cref="IPermissionStore"/>.
+/// Declares a named permission that a client instance supports, together with its current grant state.
 /// </summary>
 /// <remarks>
-/// This DTO intentionally omits domain entity internals. Callers receive only the information
-/// needed to display, audit, or revoke a grant.
+/// Client capability snapshots are versioned via <see cref="CapabilitySnapshotVersion"/>.
+/// They allow the server to proactively push permission state rather than requiring per-request checks.
 /// </remarks>
-public sealed class PermissionGrantSummary
+public sealed class ClientAuthorizationCapability
 {
-    /// <summary>Gets the unique identifier for this persisted grant.</summary>
-    public required PermissionGrantId GrantId { get; init; }
+    /// <summary>Gets the version token for the snapshot this capability belongs to.</summary>
+    public required CapabilitySnapshotVersion SnapshotVersion { get; init; }
 
-    /// <summary>Gets the name of the permission this grant covers.</summary>
+    /// <summary>Gets the name of the declared permission.</summary>
     public required PermissionName PermissionName { get; init; }
 
-    /// <summary>Gets the scope type this grant applies to.</summary>
-    public required PermissionScopeTypeName ScopeType { get; init; }
+    /// <summary>Gets the scope type this capability covers.</summary>
+    public required AuthorizationScopeTypeName ScopeType { get; init; }
 
-    /// <summary>Gets the specific scope key this grant is bound to.</summary>
-    public required PermissionScopeKey ScopeKey { get; init; }
+    /// <summary>Gets the specific scope key this capability is bound to.</summary>
+    public required AuthorizationScopeKey ScopeKey { get; init; }
 
-    /// <summary>Gets the subject type this grant targets.</summary>
-    public required PermissionSubjectTypeName SubjectType { get; init; }
-
-    /// <summary>Gets the specific subject key this grant is bound to.</summary>
-    public required PermissionSubjectKey SubjectKey { get; init; }
-
-    /// <summary>Gets whether this grant explicitly allows or prohibits the permission.</summary>
-    public required PermissionGrantDecision Decision { get; init; }
+    /// <summary>Gets the current decision the server holds for this subject+scope combination.</summary>
+    public required AuthorizationGrantDecision Decision { get; init; }
 }

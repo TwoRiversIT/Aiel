@@ -95,20 +95,20 @@ features. Some assemblies may start thin; that is acceptable if the dependency d
 | Package | Responsibility |
 | --- | --- |
 | `Aiel.Application.Contracts` | Core action abstractions: `IAction`, `ICommand`, `IQuery<TResult>`, execution context contracts, application service contracts |
-| `Aiel.Permissions.Domain.Shared` | Permission and role value objects, strong IDs, lifecycle enums, scope type names, subject type names |
-| `Aiel.Permissions.Domain` | Permission catalog, role catalog, grant aggregate, role assignment aggregate, and grant precedence rules |
-| `Aiel.Permissions.Application.Contracts` | `IPermissionChecker`, `IPermissionManager`, `IRoleManager`, effective-subject resolution contracts, action authorization contracts, and the shared capability request/snapshot DTOs (`ActionCapabilityRequest`, `ActionCapabilitySnapshot`, `IActionCapabilityService`) |
-| `Aiel.Permissions.Application` | Default permission checker, managers, action authorization gate services, scope orchestration, and effective-subject orchestration |
-| `Aiel.Permissions.EntityFrameworkCore` | EF Core implementation of application persistence contracts and DbContext mappings for permission and role data |
-| `Aiel.Permissions.EntityFrameworkCore.PostgreSql` | PostgreSQL-specific configuration, migrations, indexes, and provider extensions |
-| `Aiel.Permissions.AspNetCore` | ASP.NET Core middleware, authorization integration, generated endpoint support, HTTP action adapters |
-| `Aiel.Permissions.Client` | Client-side capability cache and refresh abstractions shared by UI frameworks |
-| `Aiel.Permissions.Client.Blazor` | Blazor visibility helpers such as `CanExecute` and snapshot-aware action rendering helpers |
-| `Aiel.Permissions.Testing` | Test doubles, fake stores, configurable context factories, always-grant and always-deny helpers |
-| `Aiel.Permissions.Generators` | Source generators for action permission constants, manifests, default role manifests, definitions, and client helpers |
-| `Aiel.Permissions.Analyzers` | Diagnostics for missing authorization, invalid lifecycle changes, unsafe strings, missing registration, and RBAC drift |
+| `Aiel.Authorization.Domain.Shared` | Permission and role value objects, strong IDs, lifecycle enums, scope type names, subject type names |
+| `Aiel.Authorization.Domain` | Permission catalog, role catalog, grant aggregate, role assignment aggregate, and grant precedence rules |
+| `Aiel.Authorization.Application.Contracts` | `IPermissionChecker`, `IPermissionManager`, `IRoleManager`, effective-subject resolution contracts, action authorization contracts, and the shared capability request/snapshot DTOs (`ActionCapabilityRequest`, `ActionCapabilitySnapshot`, `IActionCapabilityService`) |
+| `Aiel.Authorization.Application` | Default permission checker, managers, action authorization gate services, scope orchestration, and effective-subject orchestration |
+| `Aiel.Authorization.EntityFrameworkCore` | EF Core implementation of application persistence contracts and DbContext mappings for permission and role data |
+| `Aiel.Authorization.EntityFrameworkCore.PostgreSql` | PostgreSQL-specific configuration, migrations, indexes, and provider extensions |
+| `Aiel.Authorization.AspNetCore` | ASP.NET Core middleware, authorization integration, generated endpoint support, HTTP action adapters |
+| `Aiel.Authorization.Client` | Client-side capability cache and refresh abstractions shared by UI frameworks |
+| `Aiel.Authorization.Client.Blazor` | Blazor visibility helpers such as `CanExecute` and snapshot-aware action rendering helpers |
+| `Aiel.Authorization.Testing` | Test doubles, fake stores, configurable context factories, always-grant and always-deny helpers |
+| `Aiel.Authorization.Generators` | Source generators for action permission constants, manifests, default role manifests, definitions, and client helpers |
+| `Aiel.Authorization.Analyzers` | Diagnostics for missing authorization, invalid lifecycle changes, unsafe strings, missing registration, and RBAC drift |
 
-Domain grant and role-assignment entities belong in `Aiel.Permissions.Domain`. EF Core owns
+Domain grant and role-assignment entities belong in `Aiel.Authorization.Domain`. EF Core owns
 mappings and persistence records only. If EF Core maps a domain aggregate directly, the aggregate
 type still lives in the Domain package. If EF Core needs a separate persistence shape, that shape
 should be named as a persistence record or EF entity, not a domain entity.
@@ -268,7 +268,7 @@ visible. The generator must not silently replace an existing manifest item becau
 The source generator emits constants from action types:
 
 ```csharp
-public static partial class AviendhaPermissions
+public static partial class AviendhaAuthorization
 {
     public static partial class Scheduling
     {
@@ -281,7 +281,7 @@ public static partial class AviendhaPermissions
 Application code still avoids magic strings:
 
 ```csharp
-var permissionName = AviendhaPermissions.Scheduling.ChangeAppointment;
+var permissionName = AviendhaAuthorization.Scheduling.ChangeAppointment;
 ```
 
 If the default convention is not stable enough, the action can declare a stable permission name with
@@ -308,7 +308,7 @@ public sealed class AviendhaActionPermissionDefinitionProvider : IPermissionDefi
     public void Define(IPermissionDefinitionBuilder builder)
     {
         builder.Group("Aviendha.Scheduling.Appointments", "Scheduling appointments")
-            .Permission(AviendhaPermissions.Scheduling.ChangeAppointment)
+            .Permission(AviendhaAuthorization.Scheduling.ChangeAppointment)
                 .Action<ChangeAppointment>()
                 .Scope(AviendhaPermissionScopes.Clinic)
                 .Lifecycle(PermissionLifecycle.Active);
@@ -451,7 +451,7 @@ public sealed class ChangeAppointmentPermissionChecker(
         CancellationToken cancellationToken = default)
     {
         var permission = await grants.EvaluateAsync(
-            AviendhaPermissions.Scheduling.ChangeAppointment,
+            AviendhaAuthorization.Scheduling.ChangeAppointment,
             context,
             cancellationToken);
 
@@ -464,7 +464,7 @@ public sealed class ChangeAppointmentPermissionChecker(
             new ResourceAuthorizationRequest<AppointmentId>(
                 Resource: action.AppointmentId,
                 Action: new PermissionAction(
-                    new PermissionName(AviendhaPermissions.Scheduling.ChangeAppointment)),
+                    new PermissionName(AviendhaAuthorization.Scheduling.ChangeAppointment)),
                 ExecutionContext: context),
             cancellationToken);
     }
@@ -897,7 +897,7 @@ public interface IPermissionGrantEvaluator
 }
 
 public sealed record PermissionGrantEvaluation(
-    PermissionGrantDecision? Decision,
+    AuthorizationGrantDecision? Decision,
     PermissionSubject? WinningSubject,
     RoleDefinitionId? WinningRoleId,
     PermissionGrantSource Source);
@@ -1020,10 +1020,10 @@ public partial class RenameAppointmentPermission : Migration
         migrationBuilder.Permissions()
             .Rename(
                 from: "Aviendha.Scheduling.ChangeAppointment",
-                to: AviendhaPermissions.Scheduling.ChangeAppointment)
+                to: AviendhaAuthorization.Scheduling.ChangeAppointment)
             .Deprecate(
                 permission: "Aviendha.Scheduling.ChangeAppointment",
-                replacedBy: AviendhaPermissions.Scheduling.ChangeAppointment);
+                replacedBy: AviendhaAuthorization.Scheduling.ChangeAppointment);
     }
 }
 ```
@@ -1102,7 +1102,7 @@ not premature complexity in the base contract.
 ```csharp
 public interface IPermissionStore
 {
-    ValueTask<Result<PermissionGrantDecision>> GetGrantAsync(
+    ValueTask<Result<AuthorizationGrantDecision>> GetGrantAsync(
         PermissionName permissionName,
         PermissionScope scope,
         PermissionSubject subject,
@@ -1160,7 +1160,7 @@ Decorator candidates expand accordingly:
 
 ## EF Core Persistence Boundary
 
-`Aiel.Permissions.EntityFrameworkCore` should store permission catalog rows, grant rows, role
+`Aiel.Authorization.EntityFrameworkCore` should store permission catalog rows, grant rows, role
 definition rows, and role assignment rows. It should not own application user, tenant, clinic, or
 client-application tables.
 
@@ -1181,7 +1181,7 @@ public sealed class PermissionGrant
     public PermissionName PermissionName { get; init; }
     public PermissionScope Scope { get; init; }
     public PermissionSubject Subject { get; init; }
-    public PermissionGrantDecision Decision { get; init; }
+    public AuthorizationGrantDecision Decision { get; init; }
 }
 ```
 
@@ -1226,8 +1226,8 @@ public sealed class AviendhaRoleDefinitionProvider : IRoleDefinitionProvider
             .AssignableTo("User")
             .InScopes("Clinic")
             .Grants(
-                AviendhaPermissions.Scheduling.RescheduleAppointment,
-                AviendhaPermissions.Scheduling.CreateAppointment);
+                AviendhaAuthorization.Scheduling.RescheduleAppointment,
+                AviendhaAuthorization.Scheduling.CreateAppointment);
     }
 }
 ```
@@ -1317,7 +1317,7 @@ Capability snapshots are cacheable read models with explicit freshness semantics
 screens can request all available actions for a scope. Detail screens should request only the selected
 actions they need for the current resource or view.
 
-**Implemented in Phase 04 Task 13:** the shared capability contract surface now lives in `Aiel.Permissions.Application.Contracts` as `CapabilityContinuationToken`, `ActionCapabilityRequestMode`, `ActionCapabilityRequest`, `ActionCapabilitySnapshot`, and `IActionCapabilityService`. The client-side cache and refresh behavior lives in `Aiel.Permissions.Client` as `IActionCapabilitySnapshotCache` / `ActionCapabilitySnapshotCache`. Blazor visibility helpers live in `Aiel.Permissions.Client.Blazor` as `ActionCapabilityVisibility` and `CanExecute`.
+**Implemented in Phase 04 Task 13:** the shared capability contract surface now lives in `Aiel.Authorization.Application.Contracts` as `CapabilityContinuationToken`, `ActionCapabilityRequestMode`, `ActionCapabilityRequest`, `ActionCapabilitySnapshot`, and `IActionCapabilityService`. The client-side cache and refresh behavior lives in `Aiel.Authorization.Client` as `IActionCapabilitySnapshotCache` / `ActionCapabilitySnapshotCache`. Blazor visibility helpers live in `Aiel.Authorization.Client.Blazor` as `ActionCapabilityVisibility` and `CanExecute`.
 
 ```csharp
 public interface IActionCapabilityService
@@ -1433,7 +1433,7 @@ the permission catalog does not change. A role assignment or role definition cha
 action capabilities at once. Capability snapshots should therefore be invalidated by an
 authorization-state version, not only by permission snapshot version.
 
-Manifest-driven permission rename migration remains owned by `Aiel.Permissions.EntityFrameworkCore` and `Aiel.Permissions.EntityFrameworkCore.PostgreSql`. The client packages consume stable permission names and snapshot versions only; they do not introduce a separate migration surface.
+Manifest-driven permission rename migration remains owned by `Aiel.Authorization.EntityFrameworkCore` and `Aiel.Authorization.EntityFrameworkCore.PostgreSql`. The client packages consume stable permission names and snapshot versions only; they do not introduce a separate migration surface.
 
 ---
 

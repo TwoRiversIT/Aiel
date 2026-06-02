@@ -20,24 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.StrongIds;
+using Aiel.Results;
 
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Identifies a published permission definition across renames.
+/// Raised when no authorization story covers the action being requested.
 /// </summary>
-[StrongId<String>(DisallowDefault = true)]
-public readonly partial record struct PermissionStableId : IStrongId<String>;
+/// <remarks>
+/// An authorization story links an action type to a named permission and describes who may perform it.
+/// This error signals a development-time gap: the action has no story registered in <see cref="IAuthorizationDefinitionRegistry"/>.
+/// </remarks>
+public sealed partial class MissingAuthorizationStoryError : Error;
 
 /// <summary>
-/// Identifies a concrete persisted permission grant.
+/// Raised when the actor does not hold the required permission for the requested scope.
 /// </summary>
-[StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct PermissionGrantId : IStrongId<Guid>;
+public sealed partial class AuthorizationDeniedError : Error;
 
 /// <summary>
-/// Identifies a client capability snapshot version token.
+/// Raised when an action fails input validation before authorization checks run.
 /// </summary>
-[StrongId<String>(DisallowDefault = true)]
-public readonly partial record struct CapabilitySnapshotVersion : IStrongId<String>;
+public sealed partial class AuthorizationValidationError : Error;

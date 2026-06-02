@@ -1,6 +1,6 @@
-# Aiel.Permissions.Client.Blazor
+# Aiel.Authorization.Client.Blazor
 
-Blazor visibility helpers for `Aiel.Permissions.Client` capability snapshots.
+Blazor visibility helpers for `Aiel.Authorization.Client` capability snapshots.
 
 ## What This Package Contains
 

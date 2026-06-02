@@ -20,14 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Authorization.Testing;
 using Aiel.Commands;
 using Aiel.Execution;
-using Aiel.Authorization.Testing;
 using Aiel.Results;
 
 namespace Aiel.Authorization.AspNetCore;
 
-public static class RescheduleAppointmentPermissionMetadata
+public static class RescheduleAppointmentMetadata
 {
     public const String PermissionName = "sample.Scheduling.RescheduleAppointment";
     public const String GrantScopeType = "Location";
@@ -37,16 +37,16 @@ public static class RescheduleAppointmentPermissionMetadata
     public const String StableId = "perm_test_sample_reschedule_appointment";
 }
 
-[DefinesPermission(
-    RescheduleAppointmentPermissionMetadata.PermissionName,
-    RescheduleAppointmentPermissionMetadata.GrantScopeType,
-    RescheduleAppointmentPermissionMetadata.SubjectType,
-    RescheduleAppointmentPermissionMetadata.DisplayName,
-    Description = RescheduleAppointmentPermissionMetadata.Description,
-    StableId = RescheduleAppointmentPermissionMetadata.StableId)]
+[AuthorizationDefinition(
+    RescheduleAppointmentMetadata.PermissionName,
+    RescheduleAppointmentMetadata.GrantScopeType,
+    RescheduleAppointmentMetadata.SubjectType,
+    RescheduleAppointmentMetadata.DisplayName,
+    Description = RescheduleAppointmentMetadata.Description,
+    StableId = RescheduleAppointmentMetadata.StableId)]
 public sealed record RescheduleAppointment(
     Guid AppointmentId,
-    PermissionScopeKey LocationScopeKey,
+    AuthorizationScopeKey LocationScopeKey,
     DateTimeOffset StartsAtUtc,
     DateTimeOffset EndsAtUtc) : ICommand;
 
@@ -68,7 +68,7 @@ public sealed class DefaultExecutionContextFactory : IExecutionContextFactory
     public IExecutionContext Create(HttpContext httpContext)
     {
         _ = httpContext ?? throw new ArgumentNullException(nameof(httpContext));
-        return DefaultExecutionContext.CreateRoot(new RescheduleAppointmentActor(PermissionTestData.SubjectKeyAlpha));
+        return DefaultExecutionContext.CreateRoot(new RescheduleAppointmentActor(AuthorizationTestData.SubjectKeyAlpha));
     }
 }
 
@@ -85,7 +85,7 @@ public sealed class UnconfiguredAppointmentApplicationService : IAppointmentAppl
     }
 }
 
-public sealed record RescheduleAppointmentActor(PermissionSubjectKey SubjectKey) : IActor;
+public sealed record RescheduleAppointmentActor(AuthorizationSubjectKey SubjectKey) : IActor;
 
 public sealed class RescheduleAppointmentRequest
 {

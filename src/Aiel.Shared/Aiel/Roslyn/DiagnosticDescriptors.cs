@@ -42,6 +42,28 @@ internal static class DiagnosticDescriptors
     public const String StrongIdMustNotDeclareValueMemberId = "AIEL10004";
     public const String StrongIdMustNotDeclareInstanceConstructorsId = "AIEL10005";
     public const String StrongIdBackingTypeUnsupportedId = "AIEL10006";
+    public const String ActionHasNoAuthorizationStoryId = "AIEL20001";
+    public const String DoesNotRespectAuthorityReasonIsEmptyId = "AIEL20002";
+
+    public static readonly DiagnosticDescriptor ActionHasNoAuthorizationStory = new(
+        id: ActionHasNoAuthorizationStoryId,
+        title: "Action type has no authorization story",
+        messageFormat: "Action '{0}' has no concrete IActionAuthorizationChecker<{0}> and is not marked [DoesNotRespectAuthority]; every IAction implementation must have an authorization story. Note: generated permission definitions are recognized by the analyzer only after Aiel.Authorization.Generators is added.",
+        category: "Authorization",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Every IAction implementation must have either a concrete IActionAuthorizationChecker<TAction> in scope or be annotated [DoesNotRespectAuthority(Reason = \"...\")] to declare it permission-free. This rule is fail-closed: the absence of an authorization story is an error.",
+        customTags: [WellKnownDiagnosticTags.NotConfigurable, WellKnownDiagnosticTags.CompilationEnd]);
+
+    public static readonly DiagnosticDescriptor DoesNotRespectAuthorityReasonIsEmpty = new(
+        id: DoesNotRespectAuthorityReasonIsEmptyId,
+        title: "[DoesNotRespectAuthority] Reason must not be empty or whitespace",
+        messageFormat: "[DoesNotRespectAuthority] on action '{0}' has an empty or whitespace Reason; provide a non-empty justification",
+        category: "Authorization",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "[DoesNotRespectAuthority] is the explicit permission-free marker. Its Reason property must contain a non-empty, auditable justification.",
+        customTags: WellKnownDiagnosticTags.CompilationEnd);
 
     /// <summary>
     /// Any assembly that references Aiel must declare exactly one public,

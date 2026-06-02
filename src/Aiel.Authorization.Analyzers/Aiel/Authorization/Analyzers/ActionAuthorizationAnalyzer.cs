@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
@@ -28,12 +29,12 @@ namespace Aiel.Authorization.Analyzers;
 
 /// <summary>
 /// Ensures every concrete <c>IAction</c> implementation in the current assembly either has a
-/// concrete <c>IActionPermissionChecker&lt;TAction&gt;</c> visible in the same compilation, or is
+/// concrete <c>IActionAuthorizationChecker&lt;TAction&gt;</c> visible in the same compilation, or is
 /// annotated with <c>[DoesNotRespectAuthority(Reason = "...")]</c>.
 /// </summary>
 /// <remarks>
 /// <para>This analyzer is fail-closed: the absence of an authorization story is a compile-time error
-/// (TRAF01001). An empty or whitespace <c>Reason</c> on the marker attribute is also an error (TRAF01002).</para>
+/// (AIEL20001). An empty or whitespace <c>Reason</c> on the marker attribute is also an error (AIEL20002).</para>
 /// <para>
 /// Task 9 will add a third passing condition — a generated permission definition — without changing
 /// the diagnostic IDs or existing passing behavior.
@@ -43,15 +44,15 @@ namespace Aiel.Authorization.Analyzers;
 public sealed class ActionAuthorizationAnalyzer : DiagnosticAnalyzer
 {
     private const String IActionMetadataName = "Aiel.Actions.IAction";
-    private const String IActionPermissionCheckerMetadataName = "Aiel.Authorization.IActionPermissionChecker`1";
+    private const String IActionAuthorizationCheckerMetadataName = "Aiel.Authorization.IActionAuthorizationChecker`1";
     private const String DoesNotRespectAuthorityMetadataName = "Aiel.Authorization.DoesNotRespectAuthorityAttribute";
     private const String ReasonPropertyName = "Reason";
 
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         => [
-            PermissionDiagnosticDescriptors.ActionHasNoAuthorizationStory,
-            PermissionDiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmpty,
+            DiagnosticDescriptors.ActionHasNoAuthorizationStory,
+            DiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmpty,
         ];
 
     /// <inheritdoc />
@@ -71,7 +72,7 @@ public sealed class ActionAuthorizationAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var checkerInterface = context.Compilation.GetTypeByMetadataName(IActionPermissionCheckerMetadataName);
+        var checkerInterface = context.Compilation.GetTypeByMetadataName(IActionAuthorizationCheckerMetadataName);
         var markerAttribute = context.Compilation.GetTypeByMetadataName(DoesNotRespectAuthorityMetadataName);
 
         // Collect concrete checker coverage from the current assembly only.
@@ -106,12 +107,12 @@ public sealed class ActionAuthorizationAnalyzer : DiagnosticAnalyzer
                     ?? Location.None;
 
                 context.ReportDiagnostic(Diagnostic.Create(
-                    PermissionDiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmpty,
+                    DiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmpty,
                     location,
                     actionType.Name));
             }
 
-            // Do NOT also report TRAF01001 when the marker is present, regardless of Reason validity.
+            // Do NOT also report AIEL20001 when the marker is present, regardless of Reason validity.
             return;
         }
 
@@ -123,7 +124,7 @@ public sealed class ActionAuthorizationAnalyzer : DiagnosticAnalyzer
 
         var typeLocation = actionType.Locations.FirstOrDefault() ?? Location.None;
         context.ReportDiagnostic(Diagnostic.Create(
-            PermissionDiagnosticDescriptors.ActionHasNoAuthorizationStory,
+            DiagnosticDescriptors.ActionHasNoAuthorizationStory,
             typeLocation,
             actionType.Name));
     }

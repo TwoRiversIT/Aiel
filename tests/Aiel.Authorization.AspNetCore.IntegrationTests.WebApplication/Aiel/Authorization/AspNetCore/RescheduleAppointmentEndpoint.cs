@@ -47,7 +47,7 @@ public static class RescheduleAppointmentEndpoint
         ArgumentNullException.ThrowIfNull(applicationService);
         ArgumentNullException.ThrowIfNull(executionContextFactory);
 
-        if (!PermissionScopeKey.TryCreate(request.LocationScopeKey, out var locationScopeKey))
+        if (!AuthorizationScopeKey.TryCreate(request.LocationScopeKey, out var locationScopeKey))
         {
             return ToHttpResult(Result.Failure(new ResultError("LocationScopeKey must not be empty.")));
         }
@@ -77,8 +77,8 @@ public static class RescheduleAppointmentEndpoint
 
         var statusCode = result.Error switch
         {
-            PermissionValidationError => StatusCodes.Status400BadRequest,
-            PermissionDeniedError => StatusCodes.Status403Forbidden,
+            AuthorizationValidationError => StatusCodes.Status400BadRequest,
+            AuthorizationDeniedError => StatusCodes.Status403Forbidden,
             ResultError => StatusCodes.Status400BadRequest,
             _ => StatusCodes.Status500InternalServerError
         };

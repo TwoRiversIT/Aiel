@@ -42,12 +42,12 @@ public sealed class PermissionCatalogEntryTests
         var result = PermissionCatalogEntry.Create(
             PermissionStableId.From("perm_01k0task4catalog000000000001"),
             PermissionName.From("Aviendha.Scheduling.Appointments.ChangeAppointment"),
-            PermissionScopeTypeName.From("Clinic"));
+            AuthorizationScopeTypeName.From("Clinic"));
 
         result.IsSuccess.Should().BeTrue();
         result.Value.Id.Should().Be(PermissionStableId.From("perm_01k0task4catalog000000000001"));
         result.Value.PermissionName.Should().Be(PermissionName.From("Aviendha.Scheduling.Appointments.ChangeAppointment"));
-        result.Value.ScopeType.Should().Be(PermissionScopeTypeName.From("Clinic"));
+        result.Value.ScopeType.Should().Be(AuthorizationScopeTypeName.From("Clinic"));
         result.Value.Lifecycle.Should().Be(PermissionLifecycle.Active);
     }
 
@@ -72,7 +72,7 @@ public sealed class PermissionCatalogEntryTests
         var result = catalogEntry.TransitionTo(PermissionLifecycle.Removed);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<InvalidPermissionLifecycleTransitionError>();
+        result.Error.Should().BeOfType<InvalidAuthorizationLifecycleTransitionError>();
         catalogEntry.Lifecycle.Should().Be(PermissionLifecycle.Active);
     }
 
@@ -84,7 +84,7 @@ public sealed class PermissionCatalogEntryTests
         var result = catalogEntry.TransitionTo(PermissionLifecycle.Active);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<InvalidPermissionLifecycleTransitionError>();
+        result.Error.Should().BeOfType<InvalidAuthorizationLifecycleTransitionError>();
         catalogEntry.Lifecycle.Should().Be(PermissionLifecycle.Deprecated);
     }
 
@@ -93,7 +93,7 @@ public sealed class PermissionCatalogEntryTests
         var result = PermissionCatalogEntry.Create(
             PermissionStableId.From("perm_01k0task4catalog000000000002"),
             PermissionName.From("Aviendha.Scheduling.Appointments.ChangeAppointment"),
-            PermissionScopeTypeName.From("Clinic"),
+            AuthorizationScopeTypeName.From("Clinic"),
             lifecycle);
 
         result.IsSuccess.Should().BeTrue();

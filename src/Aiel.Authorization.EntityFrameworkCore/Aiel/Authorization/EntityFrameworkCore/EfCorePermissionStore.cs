@@ -20,29 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.EntityFrameworkCore;
 using Aiel.Results;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
 /// <summary>
-/// EF Core implementation of <see cref="IPermissionStore"/>.
+/// EF Core implementation of <see cref="IAuthorizationGrantStore"/>.
 /// </summary>
 /// <remarks>
 /// Requires the permission catalog to be seeded via <see cref="PermissionMigrationRunner"/> before
 /// grants can be created. Grant creation looks up the catalog entry by permission name to resolve
 /// the stable ID.
 /// </remarks>
-public sealed class EfCorePermissionStore(PermissionsDbContext dbContext, TimeProvider timeProvider) : IPermissionStore
+public sealed class EfCorePermissionStore(AuthorizationDbContext dbContext, TimeProvider timeProvider) : IAuthorizationGrantStore
 {
     /// <inheritdoc />
-    public async Task<Result<PermissionGrantId>> CreateGrantAsync(
+    public async Task<Result<AuthorizationGrantId>> CreateGrantAsync(
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
-        PermissionGrantDecision decision,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
+        AuthorizationGrantDecision decision,
         CancellationToken cancellationToken = default)
     {
         var catalogEntry = await dbContext.Catalog
@@ -50,14 +50,14 @@ public sealed class EfCorePermissionStore(PermissionsDbContext dbContext, TimePr
 
         if (catalogEntry is null)
         {
-            return Result<PermissionGrantId>.Failure(
+            return Result<AuthorizationGrantId>.Failure(
                 new PermissionCatalogEntryNotFoundError(
-                    PermissionsEfCoreErrorMessages.CatalogEntryNotFoundForPermissionName(permissionName.Value)));
+                    AuthorizationEfCoreErrorMessages.CatalogEntryNotFoundForPermissionName(permissionName.Value)));
         }
 
         var grantId = Guid.CreateVersion7();
 
-        var record = new PermissionGrantRecord
+        var record = new AuthorizationGrantRecord
         {
             Id = grantId,
             StableId = catalogEntry.StableId,
@@ -73,12 +73,12 @@ public sealed class EfCorePermissionStore(PermissionsDbContext dbContext, TimePr
         dbContext.Grants.Add(record);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result<PermissionGrantId>.Success(PermissionGrantId.From(grantId));
+        return Result<AuthorizationGrantId>.Success(AuthorizationGrantId.From(grantId));
     }
 
     /// <inheritdoc />
     public async Task<Result> RevokeGrantAsync(
-        PermissionGrantId grantId,
+        AuthorizationGrantId grantId,
         CancellationToken cancellationToken = default)
     {
         var record = await dbContext.Grants
@@ -87,8 +87,8 @@ public sealed class EfCorePermissionStore(PermissionsDbContext dbContext, TimePr
         if (record is null)
         {
             return Result.Failure(
-                new PermissionGrantNotFoundError(
-                    PermissionsEfCoreErrorMessages.GrantNotFound(grantId.Value)));
+                new AuthorizationGrantNotFoundError(
+                    AuthorizationEfCoreErrorMessages.GrantNotFound(grantId.Value)));
         }
 
         dbContext.Grants.Remove(record);
@@ -98,9 +98,9 @@ public sealed class EfCorePermissionStore(PermissionsDbContext dbContext, TimePr
     }
 
     /// <inheritdoc />
-    public async Task<Result<IReadOnlyList<PermissionGrantSummary>>> GetGrantsForSubjectAsync(
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
+    public async Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default)
     {
         var records = await dbContext.Grants
@@ -111,18 +111,18 @@ public sealed class EfCorePermissionStore(PermissionsDbContext dbContext, TimePr
             .Select(ToSummary)
             .ToList();
 
-        return Result<IReadOnlyList<PermissionGrantSummary>>.Success(summaries);
+        return Result<IReadOnlyList<AuthorizationGrantSummary>>.Success(summaries);
     }
 
-    private static PermissionGrantSummary ToSummary(PermissionGrantRecord record)
+    private static AuthorizationGrantSummary ToSummary(AuthorizationGrantRecord record)
         => new()
         {
-            GrantId = PermissionGrantId.From(record.Id),
+            GrantId = AuthorizationGrantId.From(record.Id),
             PermissionName = PermissionName.From(record.PermissionName),
-            ScopeType = PermissionScopeTypeName.From(record.ScopeType),
-            ScopeKey = PermissionScopeKey.From(record.ScopeKey),
-            SubjectType = PermissionSubjectTypeName.From(record.SubjectType),
-            SubjectKey = PermissionSubjectKey.From(record.SubjectKey),
-            Decision = (PermissionGrantDecision)record.Decision,
+            ScopeType = AuthorizationScopeTypeName.From(record.ScopeType),
+            ScopeKey = AuthorizationScopeKey.From(record.ScopeKey),
+            SubjectType = AuthorizationSubjectTypeName.From(record.SubjectType),
+            SubjectKey = AuthorizationSubjectKey.From(record.SubjectKey),
+            Decision = (AuthorizationGrantDecision)record.Decision,
         };
 }

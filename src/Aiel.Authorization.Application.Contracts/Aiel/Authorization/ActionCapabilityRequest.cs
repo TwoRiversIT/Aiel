@@ -31,8 +31,8 @@ public sealed class ActionCapabilityRequest
     private readonly IReadOnlyList<PermissionName> _requestedPermissions;
 
     private ActionCapabilityRequest(
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
         ActionCapabilityRequestMode mode,
         IEnumerable<PermissionName>? requestedPermissions,
         CapabilityContinuationToken continuationToken)
@@ -47,12 +47,12 @@ public sealed class ActionCapabilityRequest
     /// <summary>
     /// Gets the permission scope type the snapshot is bound to.
     /// </summary>
-    public PermissionScopeTypeName ScopeType { get; }
+    public AuthorizationScopeTypeName ScopeType { get; }
 
     /// <summary>
     /// Gets the permission scope key the snapshot is bound to.
     /// </summary>
-    public PermissionScopeKey ScopeKey { get; }
+    public AuthorizationScopeKey ScopeKey { get; }
 
     /// <summary>
     /// Gets the selection mode for this request.
@@ -77,8 +77,8 @@ public sealed class ActionCapabilityRequest
     /// <param name="continuationToken">The continuation token.</param>
     /// <returns>A request for all permissions in the supplied scope.</returns>
     public static ActionCapabilityRequest ForAllPermissions(
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
         CapabilityContinuationToken continuationToken)
         => new(scopeType, scopeKey, ActionCapabilityRequestMode.AllPermissions, EmptyRequestedPermissions, continuationToken);
 
@@ -91,8 +91,8 @@ public sealed class ActionCapabilityRequest
     /// <param name="continuationToken">The continuation token.</param>
     /// <returns>A request for the selected permissions.</returns>
     public static ActionCapabilityRequest ForSelectedPermissions(
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
         IEnumerable<PermissionName>? requestedPermissions,
         CapabilityContinuationToken continuationToken)
         => new(scopeType, scopeKey, ActionCapabilityRequestMode.SelectedPermissions, requestedPermissions, continuationToken);

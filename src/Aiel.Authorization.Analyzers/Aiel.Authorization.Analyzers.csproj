@@ -23,8 +23,10 @@
 			<TreatAsUsed>true</TreatAsUsed>
 		</PackageReference>
 	</ItemGroup>
-
+	
 	<!-- BEGIN: Analyzer specific settings -->
+	<Import Project="..\Aiel.Shared\Aiel.Shared.projitems" Label="Shared" />
+
 	<ItemGroup>
 		<Compile Remove="bin\**" />
 		<EmbeddedResource Remove="bin\**" />

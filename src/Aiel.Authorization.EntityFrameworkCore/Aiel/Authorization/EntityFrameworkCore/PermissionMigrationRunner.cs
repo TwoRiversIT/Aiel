@@ -34,7 +34,7 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// database is either fully updated or left untouched on failure.
 /// </remarks>
 public sealed class PermissionMigrationRunner(
-    PermissionsDbContext dbContext,
+    AuthorizationDbContext dbContext,
     TimeProvider timeProvider)
 {
     /// <summary>
@@ -55,7 +55,7 @@ public sealed class PermissionMigrationRunner(
                 RenamePermissionOperation rename => await ApplyRenameAsync(rename, cancellationToken),
                 DeprecatePermissionOperation deprecate => await ApplyDeprecateAsync(deprecate, cancellationToken),
                 _ => Result.Failure(new UnknownMigrationOperationError(
-                    PermissionsEfCoreErrorMessages.UnknownMigrationOperation(operation.GetType().Name))),
+                    AuthorizationEfCoreErrorMessages.UnknownMigrationOperation(operation.GetType().Name))),
             };
 
             if (!result.IsSuccess)
@@ -94,13 +94,13 @@ public sealed class PermissionMigrationRunner(
         if (catalog is null)
         {
             return Result.Failure(new MigrationCatalogEntryNotFoundError(
-                PermissionsEfCoreErrorMessages.MigrationCatalogEntryNotFound(operation.StableId.Value)));
+                AuthorizationEfCoreErrorMessages.MigrationCatalogEntryNotFound(operation.StableId.Value)));
         }
 
         if (catalog.PermissionName != operation.PreviousName.Value)
         {
             return Result.Failure(new MigrationCatalogNameMismatchError(
-                PermissionsEfCoreErrorMessages.MigrationCatalogNameMismatch(
+                AuthorizationEfCoreErrorMessages.MigrationCatalogNameMismatch(
                     operation.StableId.Value,
                     operation.PreviousName.Value,
                     catalog.PermissionName)));
@@ -140,7 +140,7 @@ public sealed class PermissionMigrationRunner(
         if (catalog is null)
         {
             return Result.Failure(new MigrationCatalogEntryNotFoundError(
-                PermissionsEfCoreErrorMessages.MigrationCatalogEntryNotFound(operation.StableId.Value)));
+                AuthorizationEfCoreErrorMessages.MigrationCatalogEntryNotFound(operation.StableId.Value)));
         }
 
         catalog.Lifecycle = (Int32)PermissionLifecycle.Deprecated;

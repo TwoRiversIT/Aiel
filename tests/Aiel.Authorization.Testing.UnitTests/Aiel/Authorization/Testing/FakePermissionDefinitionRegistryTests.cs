@@ -34,7 +34,7 @@ public sealed class FakePermissionDefinitionRegistryTests
     [Fact]
     public void WithManifests_GetAll_ReturnsRegisteredManifests()
     {
-        var manifest = PermissionTestData.CreateSampleManifest();
+        var manifest = AuthorizationTestData.CreateSampleManifest();
         var registry = new FakePermissionDefinitionRegistry([manifest]);
 
         registry.GetAll().Should().ContainSingle();
@@ -43,7 +43,7 @@ public sealed class FakePermissionDefinitionRegistryTests
     [Fact]
     public void TryGet_ForRegisteredName_ReturnsTrueAndManifest()
     {
-        var manifest = PermissionTestData.CreateSampleManifest();
+        var manifest = AuthorizationTestData.CreateSampleManifest();
         var registry = new FakePermissionDefinitionRegistry([manifest]);
 
         var found = registry.TryGet(manifest.PermissionName, out var result);
@@ -57,7 +57,7 @@ public sealed class FakePermissionDefinitionRegistryTests
     {
         var registry = new FakePermissionDefinitionRegistry();
 
-        var found = registry.TryGet(PermissionTestData.PermissionNameRead, out _);
+        var found = registry.TryGet(AuthorizationTestData.PermissionNameRead, out _);
 
         found.Should().BeFalse();
     }
@@ -65,10 +65,10 @@ public sealed class FakePermissionDefinitionRegistryTests
     [Fact]
     public void TryGet_ForDifferentName_ReturnsFalse()
     {
-        var manifest = PermissionTestData.CreateSampleManifest(); // uses PermissionNameRead
+        var manifest = AuthorizationTestData.CreateSampleManifest(); // uses PermissionNameRead
         var registry = new FakePermissionDefinitionRegistry([manifest]);
 
-        var found = registry.TryGet(PermissionTestData.PermissionNameWrite, out _);
+        var found = registry.TryGet(AuthorizationTestData.PermissionNameWrite, out _);
 
         found.Should().BeFalse();
     }
@@ -76,7 +76,7 @@ public sealed class FakePermissionDefinitionRegistryTests
     [Fact]
     public void TryGetForAction_ForRegisteredAction_ReturnsTrueAndManifest()
     {
-        var manifest = PermissionTestData.CreateSampleManifest<Fixtures.AlphaTestAction>();
+        var manifest = AuthorizationTestData.CreateSampleManifest<Fixtures.AlphaTestAction>();
         var registry = new FakePermissionDefinitionRegistry([manifest]);
 
         var found = registry.TryGetForAction<Fixtures.AlphaTestAction>(out var result);
@@ -98,7 +98,7 @@ public sealed class FakePermissionDefinitionRegistryTests
     [Fact]
     public void TryGetForAction_ForDifferentAction_ReturnsFalse()
     {
-        var manifest = PermissionTestData.CreateSampleManifest<Fixtures.AlphaTestAction>();
+        var manifest = AuthorizationTestData.CreateSampleManifest<Fixtures.AlphaTestAction>();
         var registry = new FakePermissionDefinitionRegistry([manifest]);
 
         var found = registry.TryGetForAction<Fixtures.BetaTestAction>(out _);
@@ -109,20 +109,20 @@ public sealed class FakePermissionDefinitionRegistryTests
     [Fact]
     public void WithMultipleManifests_TryGet_ReturnsCorrectManifest()
     {
-        var readManifest = PermissionTestData.CreateSampleManifest<Fixtures.AlphaTestAction>();
-        var writeManifest = new PermissionDefinitionManifest
+        var readManifest = AuthorizationTestData.CreateSampleManifest<Fixtures.AlphaTestAction>();
+        var writeManifest = new AuthorizationDefinitionManifest
         {
-            StableId = PermissionTestData.StableIdBeta,
-            PermissionName = PermissionTestData.PermissionNameWrite,
+            StableId = AuthorizationTestData.StableIdBeta,
+            PermissionName = AuthorizationTestData.PermissionNameWrite,
             ActionType = typeof(Fixtures.BetaTestAction),
-            ScopeType = PermissionTestData.ScopeTypeAlpha,
-            SubjectType = PermissionTestData.SubjectTypeAlpha,
+            ScopeType = AuthorizationTestData.ScopeTypeAlpha,
+            SubjectType = AuthorizationTestData.SubjectTypeAlpha,
             DisplayName = "Test write permission"
         };
 
         var registry = new FakePermissionDefinitionRegistry([readManifest, writeManifest]);
 
-        var found = registry.TryGet(PermissionTestData.PermissionNameWrite, out var result);
+        var found = registry.TryGet(AuthorizationTestData.PermissionNameWrite, out var result);
 
         found.Should().BeTrue();
         result.Should().Be(writeManifest);

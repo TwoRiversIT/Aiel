@@ -27,7 +27,7 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// </summary>
 /// <remarks>
 /// Pass the completed plan to <see cref="PermissionMigrationRunner.ApplyAsync"/> to execute it
-/// against a <see cref="PermissionsDbContext"/>.
+/// against a <see cref="AuthorizationDbContext"/>.
 /// </remarks>
 /// <example>
 /// <code>
@@ -62,7 +62,7 @@ public sealed class PermissionMigrationPlan
     public PermissionMigrationPlan Add(
         PermissionStableId stableId,
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType)
+        AuthorizationScopeTypeName scopeType)
     {
         _operations.Add(new AddPermissionOperation(stableId, permissionName, scopeType));
         return this;

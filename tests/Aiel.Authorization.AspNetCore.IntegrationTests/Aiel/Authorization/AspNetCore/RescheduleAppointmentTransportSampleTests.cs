@@ -38,7 +38,7 @@ public sealed class RescheduleAppointmentTransportSampleTests
     public async Task Endpoint_DelegatesOnceToApplicationService()
     {
         var applicationService = new RecordingAppointmentApplicationService(Result.Success());
-        await using var factory = new PermissionsAspNetCoreWebApplicationFactory(applicationService);
+        await using var factory = new AuthorizeAspNetCoreWebApplicationFactory(applicationService);
         using var client = factory.CreateClient();
         var request = CreateRequest();
 
@@ -59,7 +59,7 @@ public sealed class RescheduleAppointmentTransportSampleTests
     [Fact]
     public async Task Endpoint_DoesNotDuplicatePermissionMetadata()
     {
-        await using var factory = new PermissionsAspNetCoreWebApplicationFactory(new RecordingAppointmentApplicationService(Result.Success()));
+        await using var factory = new AuthorizeAspNetCoreWebApplicationFactory(new RecordingAppointmentApplicationService(Result.Success()));
 
         var endpointDataSource = factory.Services.GetRequiredService<EndpointDataSource>();
         var endpoint = endpointDataSource.Endpoints
@@ -72,13 +72,13 @@ public sealed class RescheduleAppointmentTransportSampleTests
         endpoint.Metadata.OfType<IAuthorizeData>().Should().BeEmpty();
         handlerMethod.Should().NotBeNull();
         handlerMethod!.GetCustomAttributes(inherit: false).OfType<AuthorizeAttribute>().Should().BeEmpty();
-        handlerMethod.GetCustomAttributes(inherit: false).OfType<DefinesPermissionAttribute>().Should().BeEmpty();
+        handlerMethod.GetCustomAttributes(inherit: false).OfType<AuthorizationDefinitionAttribute>().Should().BeEmpty();
     }
 
     [Fact]
     public async Task HttpClient_PreservesSuccessfulResultSemantics()
     {
-        await using var factory = new PermissionsAspNetCoreWebApplicationFactory(new RecordingAppointmentApplicationService(Result.Success()));
+        await using var factory = new AuthorizeAspNetCoreWebApplicationFactory(new RecordingAppointmentApplicationService(Result.Success()));
         using var httpClient = factory.CreateClient();
         var transportClient = new RescheduleAppointmentHttpClient(httpClient);
 
@@ -95,9 +95,9 @@ public sealed class RescheduleAppointmentTransportSampleTests
     public async Task HttpClient_PreservesFailedResultSemantics()
     {
         var failure = Result.Failure(
-            PermissionErrors.PermissionDenied(
-                PermissionName.From(RescheduleAppointmentPermissionMetadata.PermissionName)));
-        await using var factory = new PermissionsAspNetCoreWebApplicationFactory(new RecordingAppointmentApplicationService(failure));
+            AuthorizationErrors.PermissionDenied(
+                PermissionName.From(RescheduleAppointmentMetadata.PermissionName)));
+        await using var factory = new AuthorizeAspNetCoreWebApplicationFactory(new RecordingAppointmentApplicationService(failure));
         using var httpClient = factory.CreateClient();
         var transportClient = new RescheduleAppointmentHttpClient(httpClient);
 
@@ -107,25 +107,25 @@ public sealed class RescheduleAppointmentTransportSampleTests
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<PermissionDeniedError>();
+        result.Error.Should().BeOfType<AuthorizationDeniedError>();
     }
 
     private static RescheduleAppointmentRequest CreateRequest()
         => new()
         {
-            AppointmentId = PermissionTestData.AppointmentIdAlpha,
-            LocationScopeKey = PermissionTestData.ScopeKeyAlpha.Value,
+            AppointmentId = AuthorizationTestData.AppointmentIdAlpha,
+            LocationScopeKey = AuthorizationTestData.ScopeKeyAlpha.Value,
             StartsAtUtc = DateTimeOffset.Parse("2026-05-26T15:00:00Z"),
             EndsAtUtc = DateTimeOffset.Parse("2026-05-26T16:00:00Z")
         };
 
     private static RescheduleAppointment CreateAction()
         => new(
-            PermissionTestData.AppointmentIdAlpha,
-            PermissionTestData.ScopeKeyAlpha,
+            AuthorizationTestData.AppointmentIdAlpha,
+            AuthorizationTestData.ScopeKeyAlpha,
             DateTimeOffset.Parse("2026-05-26T15:00:00Z"),
             DateTimeOffset.Parse("2026-05-26T16:00:00Z"));
 
     private static DefaultExecutionContext CreateExecutionContext()
-        => DefaultExecutionContext.CreateRoot(new RescheduleAppointmentActor(PermissionTestData.SubjectKeyAlpha));
+        => DefaultExecutionContext.CreateRoot(new RescheduleAppointmentActor(AuthorizationTestData.SubjectKeyAlpha));
 }

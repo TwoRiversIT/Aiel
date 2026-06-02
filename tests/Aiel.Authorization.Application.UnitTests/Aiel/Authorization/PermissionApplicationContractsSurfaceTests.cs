@@ -32,12 +32,12 @@ public sealed class PermissionApplicationContractsSurfaceTests
         typeof(IActionGate<>).Namespace.Should().Be("Aiel.Authorization");
         typeof(IActionCapabilityService).Namespace.Should().Be("Aiel.Authorization");
         typeof(IActionValidator<>).Namespace.Should().Be("Aiel.Authorization");
-        typeof(IActionPermissionChecker<>).Namespace.Should().Be("Aiel.Authorization");
-        typeof(IPermissionDefinitionRegistry).Namespace.Should().Be("Aiel.Authorization");
-        typeof(IPermissionGrantEvaluator).Namespace.Should().Be("Aiel.Authorization");
-        typeof(IPermissionScopeResolver<>).Namespace.Should().Be("Aiel.Authorization");
-        typeof(IPermissionStore).Namespace.Should().Be("Aiel.Authorization");
-        typeof(IPermissionManager).Namespace.Should().Be("Aiel.Authorization");
+        typeof(IActionAuthorizationChecker<>).Namespace.Should().Be("Aiel.Authorization");
+        typeof(IAuthorizationDefinitionRegistry).Namespace.Should().Be("Aiel.Authorization");
+        typeof(IAuthorizationGrantEvaluator).Namespace.Should().Be("Aiel.Authorization");
+        typeof(IAuthorizationScopeResolver<>).Namespace.Should().Be("Aiel.Authorization");
+        typeof(IAuthorizationGrantStore).Namespace.Should().Be("Aiel.Authorization");
+        typeof(IAuthorizationManager).Namespace.Should().Be("Aiel.Authorization");
         typeof(IResourceAuthorizationService).Namespace.Should().Be("Aiel.Authorization");
     }
 
@@ -48,12 +48,12 @@ public sealed class PermissionApplicationContractsSurfaceTests
         typeof(ActionCapabilitySnapshot).Namespace.Should().Be("Aiel.Authorization");
         typeof(ActionCapabilityRequestMode).Namespace.Should().Be("Aiel.Authorization");
         typeof(CapabilityContinuationToken).Namespace.Should().Be("Aiel.Authorization");
-        typeof(PermissionDefinitionManifest).Namespace.Should().Be("Aiel.Authorization");
-        typeof(PermissionGrantSummary).Namespace.Should().Be("Aiel.Authorization");
-        typeof(PermissionScopeResolution).Namespace.Should().Be("Aiel.Authorization");
+        typeof(AuthorizationDefinitionManifest).Namespace.Should().Be("Aiel.Authorization");
+        typeof(AuthorizationGrantSummary).Namespace.Should().Be("Aiel.Authorization");
+        typeof(AuthorizationScopeResolution).Namespace.Should().Be("Aiel.Authorization");
         typeof(GrantPermissionRequest).Namespace.Should().Be("Aiel.Authorization");
-        typeof(RevokePermissionRequest).Namespace.Should().Be("Aiel.Authorization");
-        typeof(ClientPermissionCapability).Namespace.Should().Be("Aiel.Authorization");
+        typeof(RevokeAuthorizationRequest).Namespace.Should().Be("Aiel.Authorization");
+        typeof(ClientAuthorizationCapability).Namespace.Should().Be("Aiel.Authorization");
     }
 
     [Fact]
@@ -61,8 +61,8 @@ public sealed class PermissionApplicationContractsSurfaceTests
     {
         var permission = PermissionName.From("documents.read");
         var request = ActionCapabilityRequest.ForSelectedPermissions(
-            PermissionScopeTypeName.From("Tenant"),
-            PermissionScopeKey.From("tenant-1"),
+            AuthorizationScopeTypeName.From("Tenant"),
+            AuthorizationScopeKey.From("tenant-1"),
             [permission],
             CapabilityContinuationToken.Empty);
 
@@ -75,18 +75,18 @@ public sealed class PermissionApplicationContractsSurfaceTests
     [Fact]
     public void PermissionDefinitionManifest_RequiresActionType()
     {
-        typeof(PermissionDefinitionManifest).GetProperty(nameof(PermissionDefinitionManifest.ActionType)).Should().NotBeNull();
-        typeof(PermissionDefinitionManifest).GetProperty(nameof(PermissionDefinitionManifest.ActionType))!.PropertyType.Should().Be<Type>();
+        typeof(AuthorizationDefinitionManifest).GetProperty(nameof(AuthorizationDefinitionManifest.ActionType)).Should().NotBeNull();
+        typeof(AuthorizationDefinitionManifest).GetProperty(nameof(AuthorizationDefinitionManifest.ActionType))!.PropertyType.Should().Be<Type>();
     }
 
     [Fact]
     public void PermissionDefinitionManifest_ExposesLifecycleAndPreviousNames()
     {
-        typeof(PermissionDefinitionManifest).GetProperty(nameof(PermissionDefinitionManifest.Lifecycle)).Should().NotBeNull();
-        typeof(PermissionDefinitionManifest).GetProperty(nameof(PermissionDefinitionManifest.Lifecycle))!.PropertyType.Should().Be<PermissionLifecycle>();
+        typeof(AuthorizationDefinitionManifest).GetProperty(nameof(AuthorizationDefinitionManifest.Lifecycle)).Should().NotBeNull();
+        typeof(AuthorizationDefinitionManifest).GetProperty(nameof(AuthorizationDefinitionManifest.Lifecycle))!.PropertyType.Should().Be<PermissionLifecycle>();
 
-        typeof(PermissionDefinitionManifest).GetProperty(nameof(PermissionDefinitionManifest.PreviousNames)).Should().NotBeNull();
-        typeof(PermissionDefinitionManifest).GetProperty(nameof(PermissionDefinitionManifest.PreviousNames))!.PropertyType
+        typeof(AuthorizationDefinitionManifest).GetProperty(nameof(AuthorizationDefinitionManifest.PreviousNames)).Should().NotBeNull();
+        typeof(AuthorizationDefinitionManifest).GetProperty(nameof(AuthorizationDefinitionManifest.PreviousNames))!.PropertyType
             .Should().Be<IReadOnlyList<PermissionName>>();
     }
 
@@ -94,15 +94,15 @@ public sealed class PermissionApplicationContractsSurfaceTests
     public void PermissionApplicationErrors_ExposesExpectedErrorTypes()
     {
         typeof(MissingAuthorizationStoryError).Should().BeAssignableTo<Error>();
-        typeof(PermissionDeniedError).Should().BeAssignableTo<Error>();
-        typeof(PermissionValidationError).Should().BeAssignableTo<Error>();
+        typeof(AuthorizationDeniedError).Should().BeAssignableTo<Error>();
+        typeof(AuthorizationValidationError).Should().BeAssignableTo<Error>();
     }
 
     [Fact]
     public void PermissionErrors_MissingAuthorizationStory_ReturnsCorrectType()
     {
         var permission = PermissionName.From("test.permission");
-        var error = PermissionErrors.MissingAuthorizationStory(permission);
+        var error = AuthorizationErrors.MissingAuthorizationStory(permission);
         error.Should().BeOfType<MissingAuthorizationStoryError>();
     }
 
@@ -110,23 +110,23 @@ public sealed class PermissionApplicationContractsSurfaceTests
     public void PermissionErrors_PermissionDenied_ReturnsCorrectType()
     {
         var permission = PermissionName.From("test.permission");
-        var error = PermissionErrors.PermissionDenied(permission);
-        error.Should().BeOfType<PermissionDeniedError>();
+        var error = AuthorizationErrors.PermissionDenied(permission);
+        error.Should().BeOfType<AuthorizationDeniedError>();
     }
 
     [Fact]
     public void PermissionErrors_ValidationFailed_ReturnsCorrectType()
     {
         var permission = PermissionName.From("test.permission");
-        var error = PermissionErrors.ValidationFailed(permission, "field is required");
-        error.Should().BeOfType<PermissionValidationError>();
+        var error = AuthorizationErrors.ValidationFailed(permission, "field is required");
+        error.Should().BeOfType<AuthorizationValidationError>();
     }
 
     [Fact]
     public void PermissionErrors_MissingAuthorizationStory_MessageContainsPermissionName()
     {
         var permission = PermissionName.From("documents.read");
-        var error = PermissionErrors.MissingAuthorizationStory(permission);
+        var error = AuthorizationErrors.MissingAuthorizationStory(permission);
         error.Message.Should().Contain("documents.read");
     }
 
@@ -134,7 +134,7 @@ public sealed class PermissionApplicationContractsSurfaceTests
     public void PermissionErrors_PermissionDenied_MessageContainsPermissionName()
     {
         var permission = PermissionName.From("documents.write");
-        var error = PermissionErrors.PermissionDenied(permission);
+        var error = AuthorizationErrors.PermissionDenied(permission);
         error.Message.Should().Contain("documents.write");
     }
 }

@@ -41,7 +41,7 @@ public static class ActionCapabilitySnapshotExtensions
         {
             if (capability.PermissionName == permission)
             {
-                return capability.Decision == PermissionGrantDecision.Granted;
+                return capability.Decision == AuthorizationGrantDecision.Granted;
             }
         }
 

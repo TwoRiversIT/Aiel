@@ -28,6 +28,6 @@ public sealed class PermissionDomainSurfaceTests
     public void DomainAssembly_ExposesTask4Types()
     {
         typeof(PermissionCatalogEntry).Namespace.Should().Be("Aiel.Authorization");
-        typeof(PermissionGrant).Namespace.Should().Be("Aiel.Authorization");
+        typeof(AuthorizationGrant).Namespace.Should().Be("Aiel.Authorization");
     }
 }

@@ -55,7 +55,7 @@ public class Program
                 return TypedResults.Text(tenantIdentity.TenantId.Value.ToString("D"));
             });
 
-        app.Run();
+        await app.RunAsync();
     }
 }
 

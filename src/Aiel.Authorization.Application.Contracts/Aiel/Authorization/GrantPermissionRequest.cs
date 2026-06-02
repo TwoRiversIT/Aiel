@@ -31,17 +31,17 @@ public sealed class GrantPermissionRequest
     public required PermissionName PermissionName { get; init; }
 
     /// <summary>Gets the scope type this grant applies to.</summary>
-    public required PermissionScopeTypeName ScopeType { get; init; }
+    public required AuthorizationScopeTypeName ScopeType { get; init; }
 
     /// <summary>Gets the specific scope key this grant is bound to.</summary>
-    public required PermissionScopeKey ScopeKey { get; init; }
+    public required AuthorizationScopeKey ScopeKey { get; init; }
 
     /// <summary>Gets the subject type this grant targets.</summary>
-    public required PermissionSubjectTypeName SubjectType { get; init; }
+    public required AuthorizationSubjectTypeName SubjectType { get; init; }
 
     /// <summary>Gets the specific subject key this grant is bound to.</summary>
-    public required PermissionSubjectKey SubjectKey { get; init; }
+    public required AuthorizationSubjectKey SubjectKey { get; init; }
 
     /// <summary>Gets whether this grant allows or explicitly prohibits the permission.</summary>
-    public required PermissionGrantDecision Decision { get; init; }
+    public required AuthorizationGrantDecision Decision { get; init; }
 }

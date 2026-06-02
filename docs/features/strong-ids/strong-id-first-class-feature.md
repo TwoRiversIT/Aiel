@@ -114,7 +114,7 @@ The desired direction is:
 Aiel.Domain -> Aiel.StrongIds
 Aiel.Application -> Aiel.Domain -> Aiel.StrongIds
 Aiel.EntityFrameworkCore -> Aiel.StrongIds.EntityFrameworkCore -> Aiel.StrongIds
-Aiel.Permissions.* -> Aiel.StrongIds
+Aiel.Authorization.* -> Aiel.StrongIds
 ```
 
 `Aiel.StrongIds` MUST NOT depend on `Aiel.Domain`. Otherwise Strong ID remains a domain-owned

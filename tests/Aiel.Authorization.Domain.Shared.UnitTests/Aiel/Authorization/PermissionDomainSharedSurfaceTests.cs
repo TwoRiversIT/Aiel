@@ -46,23 +46,23 @@ public sealed class PermissionDomainSharedSurfaceTests
     [Fact]
     public void PermissionScopeAndSubjectTypeNames_RejectInvalidValues()
     {
-        PermissionScopeTypeName.TryCreate(null, out _).Should().BeFalse();
-        PermissionScopeTypeName.TryCreate("Clinic.Scope", out _).Should().BeFalse();
-        PermissionScopeTypeName.TryCreate("Clinic Scope", out _).Should().BeFalse();
+        AuthorizationScopeTypeName.TryCreate(null, out _).Should().BeFalse();
+        AuthorizationScopeTypeName.TryCreate("Clinic.Scope", out _).Should().BeFalse();
+        AuthorizationScopeTypeName.TryCreate("Clinic Scope", out _).Should().BeFalse();
 
-        PermissionSubjectTypeName.TryCreate(null, out _).Should().BeFalse();
-        PermissionSubjectTypeName.TryCreate("Tenant.User", out _).Should().BeFalse();
-        PermissionSubjectTypeName.TryCreate("Tenant User", out _).Should().BeFalse();
+        AuthorizationSubjectTypeName.TryCreate(null, out _).Should().BeFalse();
+        AuthorizationSubjectTypeName.TryCreate("Tenant.User", out _).Should().BeFalse();
+        AuthorizationSubjectTypeName.TryCreate("Tenant User", out _).Should().BeFalse();
     }
 
     [Fact]
     public void PermissionScopeAndSubjectKeys_TrimAndRejectWhitespaceOnlyValues()
     {
-        PermissionScopeKey.TryCreate("   ", out _).Should().BeFalse();
-        PermissionSubjectKey.TryCreate("   ", out _).Should().BeFalse();
+        AuthorizationScopeKey.TryCreate("   ", out _).Should().BeFalse();
+        AuthorizationSubjectKey.TryCreate("   ", out _).Should().BeFalse();
 
-        PermissionScopeKey.TryCreate("  clinic:west  ", out var scopeKey).Should().BeTrue();
-        PermissionSubjectKey.TryCreate("  user:42  ", out var subjectKey).Should().BeTrue();
+        AuthorizationScopeKey.TryCreate("  clinic:west  ", out var scopeKey).Should().BeTrue();
+        AuthorizationSubjectKey.TryCreate("  user:42  ", out var subjectKey).Should().BeTrue();
 
         scopeKey.Value.Should().Be("clinic:west");
         subjectKey.Value.Should().Be("user:42");
@@ -71,7 +71,7 @@ public sealed class PermissionDomainSharedSurfaceTests
     [Fact]
     public void StrongIds_AreGeneratedAndUsable()
     {
-        PermissionGrantId.TryFrom(Guid.NewGuid(), out var grantId).Should().BeTrue();
+        AuthorizationGrantId.TryFrom(Guid.NewGuid(), out var grantId).Should().BeTrue();
         PermissionStableId.TryFrom("  perm_01jz9p58d6d8m8n7x3t9q2a4bc  ", out var stableId).Should().BeTrue();
         CapabilitySnapshotVersion.TryFrom("  capability-snapshot-v1  ", out var snapshotVersion).Should().BeTrue();
 
@@ -83,7 +83,7 @@ public sealed class PermissionDomainSharedSurfaceTests
     [Fact]
     public void StrongIds_RejectDefaultOrWhitespaceValues()
     {
-        PermissionGrantId.TryFrom(Guid.Empty, out _).Should().BeFalse();
+        AuthorizationGrantId.TryFrom(Guid.Empty, out _).Should().BeFalse();
         PermissionStableId.TryFrom("   ", out _).Should().BeFalse();
         CapabilitySnapshotVersion.TryFrom(String.Empty, out _).Should().BeFalse();
     }
@@ -92,6 +92,6 @@ public sealed class PermissionDomainSharedSurfaceTests
     public void PermissionEnums_ExposeTheInitialContractSurface()
     {
         Enum.GetNames<PermissionLifecycle>().Should().Equal("Active", "Deprecated", "Removed");
-        Enum.GetNames<PermissionGrantDecision>().Should().Equal("Granted", "Prohibited");
+        Enum.GetNames<AuthorizationGrantDecision>().Should().Equal("Granted", "Prohibited");
     }
 }

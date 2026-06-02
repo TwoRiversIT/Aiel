@@ -7,6 +7,11 @@
 		<IsPackable>false</IsPackable>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<StartupObject>Aiel.StrongIds.AspNetCore.IntegrationTests.Program</StartupObject>
+
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -16,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
 	</ItemGroup>
 
 	<ItemGroup>

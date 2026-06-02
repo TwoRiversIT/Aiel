@@ -34,12 +34,12 @@ namespace Aiel.Authorization;
 /// <para>The gate follows this sequence:</para>
 /// <list type="number">
 ///   <item><description>Run <see cref="IActionValidator{TAction}"/> — fail fast on invalid input.</description></item>
-///   <item><description>Run <see cref="IActionPermissionChecker{TAction}"/> — fail fast on denied permission.</description></item>
+///   <item><description>Run <see cref="IActionAuthorizationChecker{TAction}"/> — fail fast on denied permission.</description></item>
 ///   <item><description>Return a bound <see cref="IActionExecutionContext{TAction}"/> on success.</description></item>
 /// </list>
 /// <para>
 /// If no <see cref="IActionValidator{TAction}"/> is registered, the gate proceeds to the permission check.
-/// If no <see cref="IActionPermissionChecker{TAction}"/> is registered, the gate returns a
+/// If no <see cref="IActionAuthorizationChecker{TAction}"/> is registered, the gate returns a
 /// <see cref="MissingAuthorizationStoryError"/>.
 /// </para>
 /// </remarks>

@@ -34,22 +34,22 @@ namespace Aiel.Authorization;
 /// <param name="capabilities">The capability entries in the snapshot.</param>
 public sealed class ActionCapabilitySnapshot(
     CapabilitySnapshotVersion version,
-    PermissionScopeTypeName scopeType,
-    PermissionScopeKey scopeKey,
-    IEnumerable<ClientPermissionCapability>? capabilities)
+    AuthorizationScopeTypeName scopeType,
+    AuthorizationScopeKey scopeKey,
+    IEnumerable<ClientAuthorizationCapability>? capabilities)
 {
-    private static readonly IReadOnlyList<ClientPermissionCapability> EmptyCapabilities = [];
+    private static readonly IReadOnlyList<ClientAuthorizationCapability> EmptyCapabilities = [];
 
     /// <summary>
     /// Gets an empty snapshot suitable for default UI state.
     /// </summary>
     public static ActionCapabilitySnapshot Empty { get; } = new(
         CapabilitySnapshotVersion.From("empty"),
-        PermissionScopeTypeName.From("Unknown"),
-        PermissionScopeKey.From("empty"),
+        AuthorizationScopeTypeName.From("Unknown"),
+        AuthorizationScopeKey.From("empty"),
         EmptyCapabilities);
 
-    private readonly IReadOnlyList<ClientPermissionCapability> _capabilities = capabilities?.ToArray() ?? EmptyCapabilities;
+    private readonly IReadOnlyList<ClientAuthorizationCapability> _capabilities = capabilities?.ToArray() ?? EmptyCapabilities;
 
     /// <summary>
     /// Gets the snapshot version.
@@ -59,15 +59,15 @@ public sealed class ActionCapabilitySnapshot(
     /// <summary>
     /// Gets the permission scope type represented by this snapshot.
     /// </summary>
-    public PermissionScopeTypeName ScopeType { get; } = scopeType;
+    public AuthorizationScopeTypeName ScopeType { get; } = scopeType;
 
     /// <summary>
     /// Gets the permission scope key represented by this snapshot.
     /// </summary>
-    public PermissionScopeKey ScopeKey { get; } = scopeKey;
+    public AuthorizationScopeKey ScopeKey { get; } = scopeKey;
 
     /// <summary>
     /// Gets the permission capability entries included in the snapshot.
     /// </summary>
-    public IReadOnlyList<ClientPermissionCapability> Capabilities => _capabilities;
+    public IReadOnlyList<ClientAuthorizationCapability> Capabilities => _capabilities;
 }

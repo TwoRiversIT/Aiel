@@ -26,93 +26,93 @@ public sealed class PermissionTestDataTests
 {
     [Fact]
     public void GrantIdAlpha_IsNonDefault()
-        => PermissionTestData.GrantIdAlpha.Value.Should().NotBe(Guid.Empty);
+        => AuthorizationTestData.GrantIdAlpha.Value.Should().NotBe(Guid.Empty);
 
     [Fact]
     public void GrantIdBeta_IsNonDefault_AndDiffersFromAlpha()
     {
-        PermissionTestData.GrantIdBeta.Value.Should().NotBe(Guid.Empty);
-        PermissionTestData.GrantIdBeta.Should().NotBe(PermissionTestData.GrantIdAlpha);
+        AuthorizationTestData.GrantIdBeta.Value.Should().NotBe(Guid.Empty);
+        AuthorizationTestData.GrantIdBeta.Should().NotBe(AuthorizationTestData.GrantIdAlpha);
     }
 
     [Fact]
     public void StableIdAlpha_IsNonEmpty()
-        => PermissionTestData.StableIdAlpha.Value.Should().NotBeNullOrEmpty();
+        => AuthorizationTestData.StableIdAlpha.Value.Should().NotBeNullOrEmpty();
 
     [Fact]
     public void StableIdBeta_IsNonEmpty_AndDiffersFromAlpha()
     {
-        PermissionTestData.StableIdBeta.Value.Should().NotBeNullOrEmpty();
-        PermissionTestData.StableIdBeta.Should().NotBe(PermissionTestData.StableIdAlpha);
+        AuthorizationTestData.StableIdBeta.Value.Should().NotBeNullOrEmpty();
+        AuthorizationTestData.StableIdBeta.Should().NotBe(AuthorizationTestData.StableIdAlpha);
     }
 
     [Fact]
     public void AppointmentIdAlpha_IsNonDefault()
-        => PermissionTestData.AppointmentIdAlpha.Should().NotBe(Guid.Empty);
+        => AuthorizationTestData.AppointmentIdAlpha.Should().NotBe(Guid.Empty);
 
     [Fact]
     public void AppointmentIdBeta_IsNonDefault_AndDiffersFromAlpha()
     {
-        PermissionTestData.AppointmentIdBeta.Should().NotBe(Guid.Empty);
-        PermissionTestData.AppointmentIdBeta.Should().NotBe(PermissionTestData.AppointmentIdAlpha);
+        AuthorizationTestData.AppointmentIdBeta.Should().NotBe(Guid.Empty);
+        AuthorizationTestData.AppointmentIdBeta.Should().NotBe(AuthorizationTestData.AppointmentIdAlpha);
     }
 
     [Fact]
     public void PermissionNameRead_IsNonEmpty()
-        => PermissionTestData.PermissionNameRead.Value.Should().NotBeNullOrEmpty();
+        => AuthorizationTestData.PermissionNameRead.Value.Should().NotBeNullOrEmpty();
 
     [Fact]
     public void PermissionNameWrite_IsNonEmpty_AndDiffersFromRead()
     {
-        PermissionTestData.PermissionNameWrite.Value.Should().NotBeNullOrEmpty();
-        PermissionTestData.PermissionNameWrite.Should().NotBe(PermissionTestData.PermissionNameRead);
+        AuthorizationTestData.PermissionNameWrite.Value.Should().NotBeNullOrEmpty();
+        AuthorizationTestData.PermissionNameWrite.Should().NotBe(AuthorizationTestData.PermissionNameRead);
     }
 
     [Fact]
     public void ScopeTypeAlpha_IsNonEmpty()
-        => PermissionTestData.ScopeTypeAlpha.Value.Should().NotBeNullOrEmpty();
+        => AuthorizationTestData.ScopeTypeAlpha.Value.Should().NotBeNullOrEmpty();
 
     [Fact]
     public void ScopeKeyAlpha_IsNonEmpty()
-        => PermissionTestData.ScopeKeyAlpha.Value.Should().NotBeNullOrEmpty();
+        => AuthorizationTestData.ScopeKeyAlpha.Value.Should().NotBeNullOrEmpty();
 
     [Fact]
     public void ScopeKeyBeta_IsNonEmpty_AndDiffersFromAlpha()
     {
-        PermissionTestData.ScopeKeyBeta.Value.Should().NotBeNullOrEmpty();
-        PermissionTestData.ScopeKeyBeta.Should().NotBe(PermissionTestData.ScopeKeyAlpha);
+        AuthorizationTestData.ScopeKeyBeta.Value.Should().NotBeNullOrEmpty();
+        AuthorizationTestData.ScopeKeyBeta.Should().NotBe(AuthorizationTestData.ScopeKeyAlpha);
     }
 
     [Fact]
     public void AppointmentResourceScopeKeyAlpha_IsNonEmpty()
-        => PermissionTestData.AppointmentResourceScopeKeyAlpha.Value.Should().NotBeNullOrEmpty();
+        => AuthorizationTestData.AppointmentResourceScopeKeyAlpha.Value.Should().NotBeNullOrEmpty();
 
     [Fact]
     public void AppointmentResourceScopeKeyBeta_IsNonEmpty_AndDiffersFromAlpha()
     {
-        PermissionTestData.AppointmentResourceScopeKeyBeta.Value.Should().NotBeNullOrEmpty();
-        PermissionTestData.AppointmentResourceScopeKeyBeta.Should().NotBe(PermissionTestData.AppointmentResourceScopeKeyAlpha);
+        AuthorizationTestData.AppointmentResourceScopeKeyBeta.Value.Should().NotBeNullOrEmpty();
+        AuthorizationTestData.AppointmentResourceScopeKeyBeta.Should().NotBe(AuthorizationTestData.AppointmentResourceScopeKeyAlpha);
     }
 
     [Fact]
     public void SubjectTypeAlpha_IsNonEmpty()
-        => PermissionTestData.SubjectTypeAlpha.Value.Should().NotBeNullOrEmpty();
+        => AuthorizationTestData.SubjectTypeAlpha.Value.Should().NotBeNullOrEmpty();
 
     [Fact]
     public void SubjectKeyAlpha_IsNonEmpty()
-        => PermissionTestData.SubjectKeyAlpha.Value.Should().NotBeNullOrEmpty();
+        => AuthorizationTestData.SubjectKeyAlpha.Value.Should().NotBeNullOrEmpty();
 
     [Fact]
     public void SubjectKeyBeta_IsNonEmpty_AndDiffersFromAlpha()
     {
-        PermissionTestData.SubjectKeyBeta.Value.Should().NotBeNullOrEmpty();
-        PermissionTestData.SubjectKeyBeta.Should().NotBe(PermissionTestData.SubjectKeyAlpha);
+        AuthorizationTestData.SubjectKeyBeta.Value.Should().NotBeNullOrEmpty();
+        AuthorizationTestData.SubjectKeyBeta.Should().NotBe(AuthorizationTestData.SubjectKeyAlpha);
     }
 
     [Fact]
     public void CreateSampleManifest_ReturnsNonNullManifest()
     {
-        var manifest = PermissionTestData.CreateSampleManifest();
+        var manifest = AuthorizationTestData.CreateSampleManifest();
         manifest.Should().NotBeNull();
         manifest.DisplayName.Should().NotBeNullOrEmpty();
         manifest.ActionType.Should().NotBeNull();
@@ -123,18 +123,18 @@ public sealed class PermissionTestDataTests
     [Fact]
     public void CreateSampleManifest_Generic_UsesSpecifiedActionType()
     {
-        var manifest = PermissionTestData.CreateSampleManifest<Fixtures.BetaTestAction>();
+        var manifest = AuthorizationTestData.CreateSampleManifest<Fixtures.BetaTestAction>();
         manifest.ActionType.Should().Be<Fixtures.BetaTestAction>();
     }
 
     [Fact]
     public void CreateRescheduleAppointmentManifest_UsesPreviousNameMetadata()
     {
-        var manifest = PermissionTestData.CreateRescheduleAppointmentManifest();
+        var manifest = AuthorizationTestData.CreateRescheduleAppointmentManifest();
 
-        manifest.StableId.Should().Be(PermissionTestData.StableIdAppointment);
-        manifest.PermissionName.Should().Be(PermissionTestData.PermissionNameRescheduleAppointment);
+        manifest.StableId.Should().Be(AuthorizationTestData.StableIdAppointment);
+        manifest.PermissionName.Should().Be(AuthorizationTestData.PermissionNameRescheduleAppointment);
         manifest.ActionType.Should().Be<Fixtures.RescheduleAppointmentTestAction>();
-        manifest.PreviousNames.Should().ContainSingle().Which.Should().Be(PermissionTestData.PermissionNameChangeAppointment);
+        manifest.PreviousNames.Should().ContainSingle().Which.Should().Be(AuthorizationTestData.PermissionNameChangeAppointment);
     }
 }

@@ -33,7 +33,7 @@ public sealed class PermissionCatalogEntry : StateBasedAggregateRoot<PermissionS
     private PermissionCatalogEntry(
         PermissionStableId stableId,
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
+        AuthorizationScopeTypeName scopeType,
         PermissionLifecycle lifecycle)
         : base(stableId)
     {
@@ -57,7 +57,7 @@ public sealed class PermissionCatalogEntry : StateBasedAggregateRoot<PermissionS
     /// <summary>
     /// Gets the scope type required by this permission definition.
     /// </summary>
-    public PermissionScopeTypeName ScopeType { get; private set; }
+    public AuthorizationScopeTypeName ScopeType { get; private set; }
 
     /// <summary>
     /// Gets the published lifecycle state for this permission definition.
@@ -80,31 +80,31 @@ public sealed class PermissionCatalogEntry : StateBasedAggregateRoot<PermissionS
     public static Result<PermissionCatalogEntry> Create(
         PermissionStableId stableId,
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
+        AuthorizationScopeTypeName scopeType,
         PermissionLifecycle lifecycle = PermissionLifecycle.Active)
     {
         if (stableId == default)
         {
             return Result<PermissionCatalogEntry>.Failure(
-                new InvalidPermissionCatalogEntryError(PermissionDomainErrorMessages.CatalogStableIdRequired));
+                new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogStableIdRequired));
         }
 
         if (String.IsNullOrEmpty(permissionName.Value))
         {
             return Result<PermissionCatalogEntry>.Failure(
-                new InvalidPermissionCatalogEntryError(PermissionDomainErrorMessages.CatalogPermissionNameRequired));
+                new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogPermissionNameRequired));
         }
 
         if (String.IsNullOrEmpty(scopeType.Value))
         {
             return Result<PermissionCatalogEntry>.Failure(
-                new InvalidPermissionCatalogEntryError(PermissionDomainErrorMessages.CatalogScopeTypeRequired));
+                new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogScopeTypeRequired));
         }
 
         if (!Enum.IsDefined(lifecycle))
         {
             return Result<PermissionCatalogEntry>.Failure(
-                new InvalidPermissionCatalogEntryError(PermissionDomainErrorMessages.CatalogLifecycleRequired));
+                new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogLifecycleRequired));
         }
 
         return Result<PermissionCatalogEntry>.Success(
@@ -121,19 +121,19 @@ public sealed class PermissionCatalogEntry : StateBasedAggregateRoot<PermissionS
         if (!Enum.IsDefined(lifecycle))
         {
             return Result.Failure(
-                new InvalidPermissionLifecycleTransitionError(PermissionDomainErrorMessages.CatalogLifecycleRequired));
+                new InvalidAuthorizationLifecycleTransitionError(AuthorizationDomainErrorMessages.CatalogLifecycleRequired));
         }
 
         if (lifecycle < Lifecycle)
         {
             return Result.Failure(
-                new InvalidPermissionLifecycleTransitionError(PermissionDomainErrorMessages.LifecycleCanOnlyAdvanceForward));
+                new InvalidAuthorizationLifecycleTransitionError(AuthorizationDomainErrorMessages.LifecycleCanOnlyAdvanceForward));
         }
 
         if ((Int32)lifecycle - (Int32)Lifecycle > 1)
         {
             return Result.Failure(
-                new InvalidPermissionLifecycleTransitionError(PermissionDomainErrorMessages.LifecycleCanOnlyAdvanceForward));
+                new InvalidAuthorizationLifecycleTransitionError(AuthorizationDomainErrorMessages.LifecycleCanOnlyAdvanceForward));
         }
 
         Lifecycle = lifecycle;

@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Authorization.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Aiel.Authorization.Analyzers;
 using System.Collections.Immutable;
 
 namespace Aiel.Authorization.Generators;
@@ -33,7 +33,7 @@ public class PermissionDefinitionSourceGeneratorTests
     /// <summary>
     /// Minimal stubs for the types the generator and checker reference.
     /// All are compiled into the same <see cref="CSharpCompilation"/> so that
-    /// <c>ForAttributeWithMetadataName</c> can resolve <c>DefinesPermissionAttribute</c>
+    /// <c>ForAttributeWithMetadataName</c> can resolve <c>AuthorizationDefinitionAttribute</c>
     /// and the generated checker source compiles cleanly.
     /// </summary>
     private const String PermissionStub = """
@@ -78,36 +78,36 @@ public class PermissionDefinitionSourceGeneratorTests
         {
             public interface IAction : global::Aiel.Actions.IAction { }
 
-            public interface IActionPermissionChecker<TAction>
+            public interface IActionAuthorizationChecker<TAction>
                 where TAction : global::Aiel.Actions.IAction { }
 
-            public interface IPermissionGrantEvaluator
+            public interface IAuthorizationGrantEvaluator
             {
-                Task<global::Aiel.Results.Result<PermissionGrantDecision?>> EvaluateAsync(
+                Task<global::Aiel.Results.Result<AuthorizationGrantDecision?>> EvaluateAsync(
                     PermissionName permissionName,
-                    PermissionScopeTypeName scopeType,
-                    PermissionScopeKey scopeKey,
-                    PermissionSubjectTypeName subjectType,
-                    PermissionSubjectKey subjectKey,
+                    AuthorizationScopeTypeName scopeType,
+                    AuthorizationScopeKey scopeKey,
+                    AuthorizationSubjectTypeName subjectType,
+                    AuthorizationSubjectKey subjectKey,
                     CancellationToken cancellationToken = default);
             }
 
-            public interface IPermissionScopeResolver<TAction>
+            public interface IAuthorizationScopeResolver<TAction>
                 where TAction : global::Aiel.Actions.IAction
             {
-                Task<global::Aiel.Results.Result<PermissionScopeResolution>> ResolveAsync(
+                Task<global::Aiel.Results.Result<AuthorizationScopeResolution>> ResolveAsync(
                     global::Aiel.Execution.IActionExecutionContext<TAction> context,
                     CancellationToken cancellationToken = default);
             }
 
-            public interface IPermissionSubjectResolver<TAction>
+            public interface IAuthorizationSubjectResolver<TAction>
                 where TAction : global::Aiel.Actions.IAction
             {
-                PermissionSubjectKey ResolveSubjectKey(
+                AuthorizationSubjectKey ResolveSubjectKey(
                     global::Aiel.Execution.IActionExecutionContext<TAction> context);
             }
 
-            public enum PermissionGrantDecision { Granted = 0, Prohibited = 1 }
+            public enum AuthorizationGrantDecision { Granted = 0, Prohibited = 1 }
 
             public enum PermissionLifecycle { Active = 0, Deprecated = 1 }
 
@@ -116,38 +116,38 @@ public class PermissionDefinitionSourceGeneratorTests
                 public static PermissionName From(string value) => default;
             }
 
-            public readonly struct PermissionScopeTypeName
+            public readonly struct AuthorizationScopeTypeName
             {
-                public static PermissionScopeTypeName From(string value) => default;
+                public static AuthorizationScopeTypeName From(string value) => default;
             }
 
-            public readonly struct PermissionScopeKey { }
+            public readonly struct AuthorizationScopeKey { }
 
-            public readonly struct PermissionSubjectTypeName
+            public readonly struct AuthorizationSubjectTypeName
             {
-                public static PermissionSubjectTypeName From(string value) => default;
+                public static AuthorizationSubjectTypeName From(string value) => default;
             }
 
-            public readonly struct PermissionSubjectKey { }
+            public readonly struct AuthorizationSubjectKey { }
 
             public readonly struct PermissionStableId
             {
                 public static PermissionStableId From(string value) => default;
             }
 
-            public readonly struct PermissionScopeResolution
+            public readonly struct AuthorizationScopeResolution
             {
-                public PermissionScopeTypeName ScopeType { get; }
-                public PermissionScopeKey ScopeKey { get; }
+                public AuthorizationScopeTypeName ScopeType { get; }
+                public AuthorizationScopeKey ScopeKey { get; }
             }
 
-            public sealed record PermissionDefinitionManifest
+            public sealed record AuthorizationDefinitionManifest
             {
                 public required PermissionName PermissionName { get; init; }
                 public required PermissionStableId StableId { get; init; }
                 public required Type ActionType { get; init; }
-                public required PermissionScopeTypeName ScopeType { get; init; }
-                public required PermissionSubjectTypeName SubjectType { get; init; }
+                public required AuthorizationScopeTypeName ScopeType { get; init; }
+                public required AuthorizationSubjectTypeName SubjectType { get; init; }
                 public required string DisplayName { get; init; }
                 public string Description { get; init; } = string.Empty;
                 public PermissionLifecycle Lifecycle { get; init; } = PermissionLifecycle.Active;
@@ -155,9 +155,9 @@ public class PermissionDefinitionSourceGeneratorTests
             }
 
             [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-            public sealed class DefinesPermissionAttribute : Attribute
+            public sealed class AuthorizationDefinitionAttribute : Attribute
             {
-                public DefinesPermissionAttribute(
+                public AuthorizationDefinitionAttribute(
                     string permissionName, string scopeType, string subjectType, string displayName)
                 {
                     PermissionName = permissionName;
@@ -181,7 +181,7 @@ public class PermissionDefinitionSourceGeneratorTests
                 public string Reason { get; init; } = "";
             }
 
-            public static class PermissionErrors
+            public static class AuthorizationErrors
             {
                 public static global::Aiel.Results.Error PermissionDenied(PermissionName name) => default;
             }
@@ -193,7 +193,7 @@ public class PermissionDefinitionSourceGeneratorTests
 
         namespace Sample;
 
-        [DefinesPermission(
+        [AuthorizationDefinition(
             "scheduling.RescheduleAppointment",
             "Location",
             "User",
@@ -210,7 +210,7 @@ public class PermissionDefinitionSourceGeneratorTests
         Assert.NotNull(checkerTree);
         var text = checkerTree.GetText(TestContext.Current.CancellationToken).ToString();
         Assert.Contains("RescheduleAppointmentPermissionChecker", text);
-        Assert.Contains("IActionPermissionChecker<", text);
+        Assert.Contains("IActionAuthorizationChecker<", text);
     }
 
     [Fact]
@@ -221,7 +221,7 @@ public class PermissionDefinitionSourceGeneratorTests
         var aggregateTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("GeneratedPermissions"));
         Assert.NotNull(aggregateTree);
         var text = aggregateTree.GetText(TestContext.Current.CancellationToken).ToString();
-        Assert.Contains("GeneratedPermissionNames", text);
+        Assert.Contains("GeneratedAuthorizationNames", text);
         Assert.Contains("scheduling.RescheduleAppointment", text);
     }
 
@@ -233,7 +233,7 @@ public class PermissionDefinitionSourceGeneratorTests
         var aggregateTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("GeneratedPermissions"));
         Assert.NotNull(aggregateTree);
         var text = aggregateTree.GetText(TestContext.Current.CancellationToken).ToString();
-        Assert.Contains("GeneratedPermissionManifests", text);
+        Assert.Contains("GeneratedAuthorizationManifests", text);
         Assert.Contains("GetManifests()", text);
     }
 
@@ -245,7 +245,7 @@ public class PermissionDefinitionSourceGeneratorTests
 
             namespace Sample;
 
-            [DefinesPermission(
+            [AuthorizationDefinition(
                 "scheduling.RescheduleAppointment",
                 "Location",
                 "User",
@@ -288,7 +288,7 @@ public class PermissionDefinitionSourceGeneratorTests
 
             namespace Sample;
 
-            [DefinesPermission(
+            [AuthorizationDefinition(
                 "scheduling.RescheduleAppointment",
                 "Location",
                 "User",
@@ -368,8 +368,8 @@ public class PermissionDefinitionSourceGeneratorTests
         var compilationWithAnalyzers = compilationWithGeneratedCode.WithAnalyzers(analyzers);
         var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync(TestContext.Current.CancellationToken);
 
-        // The generated checker satisfies condition 1 — no TRAF01001 diagnostic
-        Assert.Empty(diagnostics.Where(d => d.Id == "TRAF01001"));
+        // The generated checker satisfies condition 1 — no AIEL20001 diagnostic
+        Assert.Empty(diagnostics.Where(d => d.Id == "AIEL20001"));
     }
 
     [Fact]

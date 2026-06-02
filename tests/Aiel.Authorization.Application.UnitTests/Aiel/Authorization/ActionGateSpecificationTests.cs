@@ -38,13 +38,13 @@ public sealed class ActionGateSpecificationTests
     {
         var callOrder = new List<String>();
         var gate = CreateGate(
-            validator: new RecordingValidator(callOrder, Result.Failure(PermissionErrors.ValidationFailed(DocumentsRead, "required"))),
+            validator: new RecordingValidator(callOrder, Result.Failure(AuthorizationErrors.ValidationFailed(DocumentsRead, "required"))),
             checker: new RecordingChecker(callOrder, Result.Success()));
 
         var result = await gate.AuthorizeAsync(CreateContext(), new TestAction(), TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<PermissionValidationError>();
+        result.Error.Should().BeOfType<AuthorizationValidationError>();
         callOrder.Should().Equal("validate");
     }
 
@@ -64,12 +64,12 @@ public sealed class ActionGateSpecificationTests
     {
         var gate = CreateGate(
             validator: new RecordingValidator([], Result.Success()),
-            checker: new RecordingChecker([], Result.Failure(PermissionErrors.PermissionDenied(DocumentsRead))));
+            checker: new RecordingChecker([], Result.Failure(AuthorizationErrors.PermissionDenied(DocumentsRead))));
 
         var result = await gate.AuthorizeAsync(CreateContext(), new TestAction(), TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<PermissionDeniedError>();
+        result.Error.Should().BeOfType<AuthorizationDeniedError>();
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public sealed class ActionGateSpecificationTests
 
     private static DefaultActionGate<TestAction> CreateGate(
         IActionValidator<TestAction>? validator = null,
-        IActionPermissionChecker<TestAction>? checker = null)
+        IActionAuthorizationChecker<TestAction>? checker = null)
     {
         var serviceProvider = new TestServiceProvider();
         serviceProvider.Add(validator);
@@ -113,7 +113,7 @@ public sealed class ActionGateSpecificationTests
         }
     }
 
-    private sealed class RecordingChecker(List<String> callOrder, Result result) : IActionPermissionChecker<TestAction>
+    private sealed class RecordingChecker(List<String> callOrder, Result result) : IActionAuthorizationChecker<TestAction>
     {
         public Task<Result> CheckPermissionAsync(
             IActionExecutionContext<TestAction> context,

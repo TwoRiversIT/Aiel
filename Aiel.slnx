@@ -16,32 +16,120 @@
   <Folder Name="/docs/">
     <File Path="docs/ArchitectureOverview.md" />
     <File Path="docs/ConceptualOverview.md" />
-    <File Path="docs/DomainPrimitives-AggregateRoot.md" />
-    <File Path="docs/DomainPrimitives-DomainEvent.md" />
-    <File Path="docs/DomainPrimitives-Entity.md" />
-    <File Path="docs/DomainPrimitives-StrongID.md" />
-    <File Path="docs/DomainPrimitives-ValueObject.md" />
-    <File Path="docs/DomainPrimitives.md" />
     <File Path="docs/Framework.md" />
     <File Path="docs/TermsAndAbbreviations.md" />
   </Folder>
   <Folder Name="/docs/analyzers/">
+    <File Path="docs/analyzers/AIEL.md" />
+    <File Path="docs/analyzers/AIEL00001.md" />
     <File Path="docs/analyzers/AIEL00002.md" />
     <File Path="docs/analyzers/AIEL00003.md" />
+    <File Path="docs/analyzers/AIEL00004.md" />
+    <File Path="docs/analyzers/AIEL00005.md" />
+    <File Path="docs/analyzers/AIEL10001.md" />
+    <File Path="docs/analyzers/AIEL10002.md" />
+    <File Path="docs/analyzers/AIEL10003.md" />
+    <File Path="docs/analyzers/AIEL10004.md" />
+    <File Path="docs/analyzers/AIEL10005.md" />
+    <File Path="docs/analyzers/AIEL10006.md" />
+    <File Path="docs/analyzers/AIEL20001.md" />
+    <File Path="docs/analyzers/AIEL20002.md" />
   </Folder>
-  <Folder Name="/docs/Aiel.Gps.HP/">
-    <File Path="docs/Aiel.Gps.HP/benchmarks.md" />
-    <File Path="docs/Aiel.Gps.HP/BlogPost.md" />
-    <File Path="docs/Aiel.Gps.HP/implementation-plan.md" />
+  <Folder Name="/docs/features/" />
+  <Folder Name="/docs/features/authorization (2)/" />
+  <Folder Name="/docs/features/authorization (2)/disucssions/">
+    <File Path="docs/features/authorization (2)/disucssions/persissions-system-disucssion-01.md" />
+  </Folder>
+  <Folder Name="/docs/features/authorization/">
+    <File Path="docs/features/authorization/authorization-system-design.md" />
+    <File Path="docs/features/authorization/authorization-system-plan.md" />
+  </Folder>
+  <Folder Name="/docs/features/authorization/phases/">
+    <File Path="docs/features/authorization/phases/phase-04a-contract-boundary-validation-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-03-permission-domain-shared-validation-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-04-permission-domain-validation-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-05-06-permission-application-qa-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-07-authorization-testing-qa-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-08-authorization-analyzer-qa-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-09-authorization-generators-qa-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-10-authorization-efcore-qa-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-11-reschedule-appointment-qa-brief.md" />
+    <File Path="docs/features/authorization/phases/phase-04a-task-12-qa-brief.md" />
+  </Folder>
+  <Folder Name="/docs/features/authorization/reviews/">
+    <File Path="docs/features/authorization/reviews/authorization-review-01.md" />
+    <File Path="docs/features/authorization/reviews/authorization-review-02.md" />
+    <File Path="docs/features/authorization/reviews/authorization-review-03.md" />
+    <File Path="docs/features/authorization/reviews/authorization-review-04.md" />
+    <File Path="docs/features/authorization/reviews/authorization-review-05.md" />
+    <File Path="docs/features/authorization/reviews/authorization-review-06.md" />
+  </Folder>
+  <Folder Name="/docs/features/cqrs/">
+    <File Path="docs/features/cqrs/phase-02-cqrs-and-event-driven-foundation.md" />
+    <File Path="docs/features/cqrs/phase-05-mediator.md" />
+  </Folder>
+  <Folder Name="/docs/features/ddd/">
+    <File Path="docs/features/ddd/AggregateRootDiscussion.md" />
+    <File Path="docs/features/ddd/DomainPrimitives-AggregateRoot.md" />
+    <File Path="docs/features/ddd/DomainPrimitives-DomainEvent.md" />
+    <File Path="docs/features/ddd/DomainPrimitives-Entity.md" />
+    <File Path="docs/features/ddd/DomainPrimitives-StrongID.md" />
+    <File Path="docs/features/ddd/DomainPrimitives-ValueObject.md" />
+    <File Path="docs/features/ddd/DomainPrimitives.md" />
+  </Folder>
+  <Folder Name="/docs/features/dependencies/">
+    <File Path="docs/features/dependencies/phase-01-two-phase-configuration.md" />
+  </Folder>
+  <Folder Name="/docs/features/gps-nmea/">
+    <File Path="docs/features/gps-nmea/benchmarks.md" />
+    <File Path="docs/features/gps-nmea/BlogPost.md" />
+    <File Path="docs/features/gps-nmea/implementation-plan.md" />
+  </Folder>
+  <Folder Name="/docs/features/message-bus/">
+    <File Path="docs/features/message-bus/message-bus-abstraction.md" />
+  </Folder>
+  <Folder Name="/docs/features/message-bus/discussions/">
+    <File Path="docs/features/message-bus/discussions/message-bus-discussion-01.md" />
+  </Folder>
+  <Folder Name="/docs/features/message-bus/reviews/">
+    <File Path="docs/features/message-bus/reviews/message-bus-abstraction-review-01.md" />
+  </Folder>
+  <Folder Name="/docs/features/multitenancy/">
+    <File Path="docs/features/multitenancy/multitenancy-system-handoff.md" />
+    <File Path="docs/features/multitenancy/multitenancy-system.md" />
+    <File Path="docs/features/multitenancy/phase-03-aiel-aspnet-operational-plan.md" />
+  </Folder>
+  <Folder Name="/docs/features/settings/">
+    <File Path="docs/features/settings/setting-system.md" />
+  </Folder>
+  <Folder Name="/docs/features/strong-ids/">
+    <File Path="docs/features/strong-ids/strong-id-first-class-feature.md" />
+  </Folder>
+  <Folder Name="/docs/prompts/">
+    <File Path="docs/prompts/general.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Aiel.Analyzers/Aiel.Analyzers.csproj" Id="0b7bc240-ff3d-4322-9802-94b913e0e71d" />
+    <Project Path="src/Aiel.Application.Contracts/Aiel.Application.Contracts.csproj" />
+    <Project Path="src/Aiel.Application/Aiel.Application.csproj" />
     <Project Path="src/Aiel.AspNetCore.Blazor.WebAssembly/Aiel.AspNetCore.Blazor.WebAssembly.csproj" Id="b465f734-1d03-4d39-8fb9-11e78c1e83eb" />
     <Project Path="src/Aiel.AspNetCore.Blazor/Aiel.AspNetCore.Blazor.csproj" Id="5319b8a4-25c3-40ca-828b-0257628c768b" />
     <Project Path="src/Aiel.AspNetCore/Aiel.AspNetCore.csproj" Id="c624d3e8-2052-48bf-bd46-3232f071fa23" />
-    <Project Path="src/Aiel.Application.Contracts/Aiel.Application.Contracts.csproj" />
-    <Project Path="src/Aiel.Application/Aiel.Application.csproj" />
+    <Project Path="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
+    <Project Path="src/Aiel.Authorization.Application.Contracts/Aiel.Authorization.Application.Contracts.csproj">
+      <BuildDependency Project="src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj" />
+    </Project>
+    <Project Path="src/Aiel.Authorization.Application/Aiel.Authorization.Application.csproj" />
+    <Project Path="src/Aiel.Authorization.Client.Blazor/Aiel.Authorization.Client.Blazor.csproj" />
+    <Project Path="src/Aiel.Authorization.Client/Aiel.Authorization.Client.csproj" />
+    <Project Path="src/Aiel.Authorization.Domain.Shared/Aiel.Authorization.Domain.Shared.csproj" />
+    <Project Path="src/Aiel.Authorization.Domain/Aiel.Authorization.Domain.csproj" />
+    <Project Path="src/Aiel.Authorization.EntityFrameworkCore.PostgreSql/Aiel.Authorization.EntityFrameworkCore.PostgreSql.csproj" />
+    <Project Path="src/Aiel.Authorization.EntityFrameworkCore/Aiel.Authorization.EntityFrameworkCore.csproj" />
+    <Project Path="src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj" />
+    <Project Path="src/Aiel.Authorization.Testing/Aiel.Authorization.Testing.csproj" />
     <Project Path="src/Aiel.Data.Dapper/Aiel.Data.Dapper.csproj" />
+    <Project Path="src/Aiel.Domain/Aiel.Domain.csproj" />
     <Project Path="src/Aiel.Emailing/Aiel.Emailing.csproj" />
     <Project Path="src/Aiel.EntityFrameworkCore/Aiel.EntityFrameworkCore.csproj" />
     <Project Path="src/Aiel.Generators/Aiel.Generators.csproj" Id="0ccfbdc8-66d8-4900-a758-fcff918fe84d" />
@@ -52,46 +140,44 @@
     <Project Path="src/Aiel.Gps/Aiel.Gps.csproj" />
     <Project Path="src/Aiel.IdGeneration/Aiel.IdGeneration.csproj" />
     <Project Path="src/Aiel.InternetTypes/Aiel.InternetTypes.csproj" />
+    <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
     <Project Path="src/Aiel.Mediator/Aiel.Mediator.csproj" />
     <Project Path="src/Aiel.MultiTenancy/Aiel.MultiTenancy.csproj" />
-    <Project Path="src/Aiel.Authorization.Application.Contracts/Aiel.Authorization.Application.Contracts.csproj">
-      <BuildDependency Project="src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj" />
-    </Project>
-    <Project Path="src/Aiel.Authorization.Application/Aiel.Authorization.Application.csproj" />
-    <Project Path="src/Aiel.Authorization.Client/Aiel.Authorization.Client.csproj" />
-    <Project Path="src/Aiel.Authorization.Client.Blazor/Aiel.Authorization.Client.Blazor.csproj" />
-    <Project Path="src/Aiel.Authorization.Domain.Shared/Aiel.Authorization.Domain.Shared.csproj" />
-    <Project Path="src/Aiel.Authorization.EntityFrameworkCore/Aiel.Authorization.EntityFrameworkCore.csproj" />
-    <Project Path="src/Aiel.Authorization.EntityFrameworkCore.PostgreSql/Aiel.Authorization.EntityFrameworkCore.PostgreSql.csproj" />
-    <Project Path="src/Aiel.Authorization.Domain/Aiel.Authorization.Domain.csproj" />
-    <Project Path="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
-    <Project Path="src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj" />
-    <Project Path="src/Aiel.Authorization.Testing/Aiel.Authorization.Testing.csproj" />
-    <Project Path="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
-    <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj">
-      <BuildDependency Project="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
-    </Project>
-    <Project Path="src/Aiel.StrongIds.EntityFrameworkCore/Aiel.StrongIds.EntityFrameworkCore.csproj" />
-    <Project Path="src/Aiel.StrongIds.AspNetCore/Aiel.StrongIds.AspNetCore.csproj" />
     <Project Path="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
     <Project Path="src/Aiel.Results/Aiel.Results.csproj">
       <BuildDependency Project="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
     </Project>
     <Project Path="src/Aiel.Security/Aiel.Security.csproj" />
     <Project Path="src/Aiel.Shared/Aiel.Shared.shproj" Id="7cd6e1f8-b53f-4c4c-9699-8b2d3e34d8e5" />
+    <Project Path="src/Aiel.StrongIds.AspNetCore/Aiel.StrongIds.AspNetCore.csproj" />
+    <Project Path="src/Aiel.StrongIds.EntityFrameworkCore/Aiel.StrongIds.EntityFrameworkCore.csproj" />
+    <Project Path="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
+    <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj">
+      <BuildDependency Project="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
+    </Project>
     <Project Path="src/Aiel.Testing/Aiel.Testing.csproj" />
     <Project Path="src/Aiel/Aiel.csproj" />
-    <Project Path="src/Aiel.Domain/Aiel.Domain.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Aiel.Analyzers.UnitTests/Aiel.Analyzers.UnitTests.csproj" Id="97943d6d-c93b-49ba-8f0a-862708ebb581" />
-    <Project Path="tests/Aiel.AspNetCore.IntegrationTests.WebApplication/Aiel.AspNetCore.IntegrationTests.WebApplication.csproj" />
-    <Project Path="tests/Aiel.AspNetCore.IntegrationTests/Aiel.AspNetCore.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.Application.Contracts.UnitTests/Aiel.Application.Contracts.UnitTests.csproj" />
     <Project Path="tests/Aiel.Application.Specifications.IntegrationTests/Aiel.Application.Specifications.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.Application.Specifications.UnitTests/Aiel.Application.Specifications.UnitTests.csproj" />
     <Project Path="tests/Aiel.Application.UnitTests/Aiel.Application.UnitTests.csproj" />
+    <Project Path="tests/Aiel.AspNetCore.IntegrationTests.WebApplication/Aiel.AspNetCore.IntegrationTests.WebApplication.csproj" />
+    <Project Path="tests/Aiel.AspNetCore.IntegrationTests/Aiel.AspNetCore.IntegrationTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Analyzers.UnitTests/Aiel.Authorization.Analyzers.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Application.UnitTests/Aiel.Authorization.Application.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication/Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication.csproj" />
+    <Project Path="tests/Aiel.Authorization.AspNetCore.IntegrationTests/Aiel.Authorization.AspNetCore.IntegrationTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Client.Blazor.UnitTests/Aiel.Authorization.Client.Blazor.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Client.UnitTests/Aiel.Authorization.Client.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Domain.Shared.UnitTests/Aiel.Authorization.Domain.Shared.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Domain.UnitTests/Aiel.Authorization.Domain.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Generators.UnitTests/Aiel.Authorization.Generators.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Authorization.Testing.UnitTests/Aiel.Authorization.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.Data.Dapper.UnitTests/Aiel.Data.Dapper.UnitTests.csproj" />
     <Project Path="tests/Aiel.Emailing.UnitTests/Aiel.Emailing.UnitTests.csproj" />
     <Project Path="tests/Aiel.EntityFrameworkCore.IntegrationTests/Aiel.EntityFrameworkCore.IntegrationTests.csproj" />
@@ -102,19 +188,9 @@
     <Project Path="tests/Aiel.Gps.UnitTests/Aiel.Gps.UnitTests.csproj" />
     <Project Path="tests/Aiel.IdGeneration.UnitTests/Aiel.IdGeneration.UnitTests.csproj" />
     <Project Path="tests/Aiel.InternetTypes.UnitTests/Aiel.InternetTypes.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Application.UnitTests/Aiel.Authorization.Application.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Client.UnitTests/Aiel.Authorization.Client.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Client.Blazor.UnitTests/Aiel.Authorization.Client.Blazor.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication/Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication.csproj" />
-    <Project Path="tests/Aiel.Authorization.AspNetCore.IntegrationTests/Aiel.Authorization.AspNetCore.IntegrationTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Domain.Shared.UnitTests/Aiel.Authorization.Domain.Shared.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Domain.UnitTests/Aiel.Authorization.Domain.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.Analyzers.UnitTests/Aiel.Mediator.Analyzers.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Mediator.UnitTests/Aiel.Mediator.UnitTests.csproj" />
     <Project Path="tests/Aiel.MultiTenancy.UnitTests/Aiel.MultiTenancy.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Analyzers.UnitTests/Aiel.Authorization.Analyzers.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Generators.UnitTests/Aiel.Authorization.Generators.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Authorization.Testing.UnitTests/Aiel.Authorization.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.Results.Fixtures/Aiel.Results.Fixtures.csproj" />
     <Project Path="tests/Aiel.Results.GeneratedErrors/Aiel.Results.GeneratedErrors.csproj">
       <BuildDependency Project="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
@@ -127,47 +203,10 @@
     <Project Path="tests/Aiel.StrongIds.AspNetCore.IntegrationTests.WebApplication/Aiel.StrongIds.AspNetCore.IntegrationTests.WebApplication.csproj" />
     <Project Path="tests/Aiel.StrongIds.AspNetCore.IntegrationTests/Aiel.StrongIds.AspNetCore.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.StrongIds.SystemTextJson.UnitTests/Aiel.StrongIds.SystemTextJson.UnitTests.csproj" />
+    <Project Path="tests/Aiel.StrongIds.UnitTests/Aiel.StrongIds.UnitTests.csproj" />
     <Project Path="tests/Aiel.UnitTests/Aiel.UnitTests.csproj" />
     <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
     <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />
-    <Project Path="tests/Aiel.Mediator.UnitTests/Aiel.Mediator.UnitTests.csproj" />
-    <Project Path="tests/Aiel.StrongIds.UnitTests/Aiel.StrongIds.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/docs/phases/">
-    <File Path="docs/phases/phase-01-two-phase-configuration.md" />
-    <File Path="docs/phases/phase-02-cqrs-and-event-driven-foundation.md" />
-    <File Path="docs/phases/phase-03-aiel-aspnet-operational-plan.md" />
-    <File Path="docs/phases/phase-04-aiel-permission-system.md" />
-  </Folder>
-  <Folder Name="/docs/Historical/">
-    <File Path="docs/Historical/AggregateRootDiscussion.md" />
-  </Folder>
-  <Folder Name="/docs/planning/">
-    <File Path="docs/planning/multitenancy-system-handoff.md" />
-    <File Path="docs/planning/multitenancy-system.md" />
-    <File Path="docs/planning/permission-system-review-03.md" />
-    <File Path="docs/planning/permission-system-review-04.md" />
-    <File Path="docs/planning/permission-system-review-05.md" />
-    <File Path="docs/planning/permission-system-review-06.md" />
-    <File Path="docs/planning/permission-system.md" />
-    <File Path="docs/planning/strong-id-first-class-feature.md" />
-  </Folder>
-  <Folder Name="/docs/progress/">
-    <File Path="docs/progress/review-pass-02.md" />
-  </Folder>
-  <Folder Name="/docs/reviews/">
-    <File Path="docs/reviews/phase-04-aiel-permission-system-review-01.md" />
-    <File Path="docs/reviews/phase-04-aiel-permission-system-review-02.md" />
-    <File Path="docs/reviews/phase-04a-contract-boundary-validation-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-03-permission-domain-shared-validation-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-04-permission-domain-validation-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-05-06-permission-application-qa-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-07-permissions-testing-qa-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-08-permissions-analyzer-qa-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-09-permissions-generators-qa-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-10-permissions-efcore-qa-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-11-reschedule-appointment-qa-brief.md" />
-    <File Path="docs/reviews/phase-04a-task-12-qa-brief.md" />
   </Folder>
   <Folder Name="/tests/Aiel.Testing.Examples/">
     <Project Path="tests/Aiel.Testing.Examples/Aiel.Testing.UnitTests.csproj" />

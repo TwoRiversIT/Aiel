@@ -26,8 +26,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace Aiel.Authorization.Testing;
 
 /// <summary>
-/// A test-only implementation of <see cref="IPermissionDefinitionRegistry"/> backed by an explicit
-/// list of <see cref="PermissionDefinitionManifest"/> instances.
+/// A test-only implementation of <see cref="IAuthorizationDefinitionRegistry"/> backed by an explicit
+/// list of <see cref="AuthorizationDefinitionManifest"/> instances.
 /// </summary>
 /// <remarks>
 /// Use this in unit tests to provide a controlled set of registered permissions without relying on
@@ -38,9 +38,9 @@ namespace Aiel.Authorization.Testing;
 /// Initializes a registry pre-populated with the specified <paramref name="manifests"/>.
 /// </remarks>
 /// <param name="manifests">The manifests to register.</param>
-public sealed class FakePermissionDefinitionRegistry(IEnumerable<PermissionDefinitionManifest> manifests) : IPermissionDefinitionRegistry
+public sealed class FakePermissionDefinitionRegistry(IEnumerable<AuthorizationDefinitionManifest> manifests) : IAuthorizationDefinitionRegistry
 {
-    private readonly IReadOnlyList<PermissionDefinitionManifest> _manifests = [.. manifests];
+    private readonly IReadOnlyList<AuthorizationDefinitionManifest> _manifests = [.. manifests];
 
     /// <summary>
     /// Initializes an empty registry with no registered manifests.
@@ -49,12 +49,12 @@ public sealed class FakePermissionDefinitionRegistry(IEnumerable<PermissionDefin
         : this([]) { }
 
     /// <inheritdoc />
-    public IReadOnlyList<PermissionDefinitionManifest> GetAll() => _manifests;
+    public IReadOnlyList<AuthorizationDefinitionManifest> GetAll() => _manifests;
 
     /// <inheritdoc />
     public Boolean TryGet(
         PermissionName permissionName,
-        [NotNullWhen(true)] out PermissionDefinitionManifest manifest)
+        [NotNullWhen(true)] out AuthorizationDefinitionManifest manifest)
     {
         foreach (var m in _manifests)
         {
@@ -70,7 +70,7 @@ public sealed class FakePermissionDefinitionRegistry(IEnumerable<PermissionDefin
     }
 
     /// <inheritdoc />
-    public Boolean TryGetForAction<TAction>([NotNullWhen(true)] out PermissionDefinitionManifest manifest)
+    public Boolean TryGetForAction<TAction>([NotNullWhen(true)] out AuthorizationDefinitionManifest manifest)
         where TAction : IAction
     {
         foreach (var m in _manifests)

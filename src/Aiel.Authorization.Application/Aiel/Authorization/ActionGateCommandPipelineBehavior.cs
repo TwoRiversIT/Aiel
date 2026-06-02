@@ -24,7 +24,7 @@ using Aiel.Commands;
 using Aiel.Execution;
 using Aiel.Results;
 
-namespace Aiel.Permissions;
+namespace Aiel.Authorization;
 
 /// <summary>
 /// Pre-execution authorization gate for command dispatch.

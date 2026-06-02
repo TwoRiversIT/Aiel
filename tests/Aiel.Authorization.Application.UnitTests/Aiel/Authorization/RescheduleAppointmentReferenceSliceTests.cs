@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Authorization.Testing;
 using Aiel.Commands;
 using Aiel.Execution;
-using Aiel.Authorization.Testing;
 using Aiel.Results;
 
 namespace Aiel.Authorization;
@@ -35,12 +35,12 @@ public sealed class RescheduleAppointmentReferenceSliceTests
         var log = new List<String>();
         var services = CreateSliceServices(
             log,
-            grantDecision: PermissionGrantDecision.Granted,
+            grantDecision: AuthorizationGrantDecision.Granted,
             resourceAuthorizationResult: Result.Success());
         var applicationService = CreateApplicationService(services);
         var command = new RescheduleAppointment(
             Guid.Empty,
-            PermissionTestData.ScopeKeyAlpha,
+            AuthorizationTestData.ScopeKeyAlpha,
             DateTimeOffset.Parse("2026-05-26T15:00:00Z"),
             DateTimeOffset.Parse("2026-05-26T16:00:00Z"));
 
@@ -50,7 +50,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<PermissionValidationError>();
+        result.Error.Should().BeOfType<AuthorizationValidationError>();
         services.GrantEvaluator.CallCount.Should().Be(0);
         log.Should().Equal("validate");
     }
@@ -61,7 +61,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
         var log = new List<String>();
         var services = CreateSliceServices(
             log,
-            grantDecision: PermissionGrantDecision.Prohibited,
+            grantDecision: AuthorizationGrantDecision.Prohibited,
             resourceAuthorizationResult: Result.Success());
         var applicationService = CreateApplicationService(services);
         var command = CreateValidCommand();
@@ -72,7 +72,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<PermissionDeniedError>();
+        result.Error.Should().BeOfType<AuthorizationDeniedError>();
         services.Repository.LoadCallCount.Should().Be(0);
         log.Should().Equal("validate", "resolve-scope", "resolve-subject", "grant");
     }
@@ -83,9 +83,9 @@ public sealed class RescheduleAppointmentReferenceSliceTests
         var log = new List<String>();
         var services = CreateSliceServices(
             log,
-            grantDecision: PermissionGrantDecision.Granted,
+            grantDecision: AuthorizationGrantDecision.Granted,
             resourceAuthorizationResult: Result.Failure(
-                PermissionErrors.PermissionDenied(PermissionName.From(GeneratedPermissionNames.RescheduleAppointment))));
+                AuthorizationErrors.PermissionDenied(PermissionName.From(GeneratedAuthorizationNames.RescheduleAppointment))));
         var applicationService = CreateApplicationService(services);
         var command = CreateValidCommand();
 
@@ -95,7 +95,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();
-        result.Error.Should().BeOfType<PermissionDeniedError>();
+        result.Error.Should().BeOfType<AuthorizationDeniedError>();
         services.Repository.LoadCallCount.Should().Be(1);
         services.Repository.SaveCallCount.Should().Be(0);
         services.Repository.Appointment.RescheduleCallCount.Should().Be(0);
@@ -108,7 +108,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
         var log = new List<String>();
         var services = CreateSliceServices(
             log,
-            grantDecision: PermissionGrantDecision.Granted,
+            grantDecision: AuthorizationGrantDecision.Granted,
             resourceAuthorizationResult: Result.Success());
         var applicationService = CreateApplicationService(services);
         var command = CreateValidCommand();
@@ -129,25 +129,25 @@ public sealed class RescheduleAppointmentReferenceSliceTests
     [Fact]
     public void GeneratedPermissionManifests_ContainsRescheduleAppointmentMetadata()
     {
-        var manifest = GeneratedPermissionManifests.GetManifests()
+        var manifest = GeneratedAuthorizationManifests.GetManifests()
             .Single(item => item.ActionType == typeof(RescheduleAppointment));
 
-        manifest.PermissionName.Value.Should().Be(RescheduleAppointmentPermissionMetadata.PermissionName);
-        manifest.StableId.Value.Should().Be(RescheduleAppointmentPermissionMetadata.StableId);
-        manifest.ScopeType.Value.Should().Be(RescheduleAppointmentPermissionMetadata.GrantScopeType);
-        manifest.SubjectType.Value.Should().Be(RescheduleAppointmentPermissionMetadata.SubjectType);
+        manifest.PermissionName.Value.Should().Be(RescheduleAppointmentMetadata.ActionName);
+        manifest.StableId.Value.Should().Be(RescheduleAppointmentMetadata.StableId);
+        manifest.ScopeType.Value.Should().Be(RescheduleAppointmentMetadata.GrantScopeType);
+        manifest.SubjectType.Value.Should().Be(RescheduleAppointmentMetadata.SubjectType);
         manifest.PreviousNames.Should().BeEmpty();
     }
 
     private static RescheduleAppointment CreateValidCommand()
         => new(
-            PermissionTestData.AppointmentIdAlpha,
-            PermissionTestData.ScopeKeyAlpha,
+            AuthorizationTestData.AppointmentIdAlpha,
+            AuthorizationTestData.ScopeKeyAlpha,
             DateTimeOffset.Parse("2026-05-26T15:00:00Z"),
             DateTimeOffset.Parse("2026-05-26T16:00:00Z"));
 
     private static DefaultExecutionContext CreateExecutionContext()
-        => DefaultExecutionContext.CreateRoot(new RescheduleAppointmentActor(PermissionTestData.SubjectKeyAlpha));
+        => DefaultExecutionContext.CreateRoot(new RescheduleAppointmentActor(AuthorizationTestData.SubjectKeyAlpha));
 
     private static AppointmentApplicationService CreateApplicationService(SliceServices services)
     {
@@ -159,7 +159,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
 
     private static SliceServices CreateSliceServices(
         List<String> log,
-        PermissionGrantDecision grantDecision,
+        AuthorizationGrantDecision grantDecision,
         Result resourceAuthorizationResult)
     {
         var validator = new RescheduleAppointmentValidator(log);
@@ -181,9 +181,9 @@ public sealed class RescheduleAppointmentReferenceSliceTests
         RecordingResourceAuthorizationService ResourceAuthorization);
 }
 
-internal static class RescheduleAppointmentPermissionMetadata
+internal static class RescheduleAppointmentMetadata
 {
-    public const String PermissionName = "sample.Scheduling.RescheduleAppointment";
+    public const String ActionName = "sample.Scheduling.RescheduleAppointment";
     public const String GrantScopeType = "Location";
     public const String ResourceScopeType = "Appointment";
     public const String SubjectType = "User";
@@ -192,16 +192,16 @@ internal static class RescheduleAppointmentPermissionMetadata
     public const String StableId = "perm_test_sample_reschedule_appointment";
 }
 
-[DefinesPermission(
-    RescheduleAppointmentPermissionMetadata.PermissionName,
-    RescheduleAppointmentPermissionMetadata.GrantScopeType,
-    RescheduleAppointmentPermissionMetadata.SubjectType,
-    RescheduleAppointmentPermissionMetadata.DisplayName,
-    Description = RescheduleAppointmentPermissionMetadata.Description,
-    StableId = RescheduleAppointmentPermissionMetadata.StableId)]
+[AuthorizationDefinition(
+    RescheduleAppointmentMetadata.ActionName,
+    RescheduleAppointmentMetadata.GrantScopeType,
+    RescheduleAppointmentMetadata.SubjectType,
+    RescheduleAppointmentMetadata.DisplayName,
+    Description = RescheduleAppointmentMetadata.Description,
+    StableId = RescheduleAppointmentMetadata.StableId)]
 internal sealed record RescheduleAppointment(
     Guid AppointmentId,
-    PermissionScopeKey LocationScopeKey,
+    AuthorizationScopeKey LocationScopeKey,
     DateTimeOffset StartsAtUtc,
     DateTimeOffset EndsAtUtc) : ICommand;
 
@@ -237,8 +237,8 @@ internal sealed class AppointmentApplicationService(
 
         var resourceResult = await resourceAuthorizationService.AuthorizeAsync(
             gateResult.Value,
-            PermissionName.From(GeneratedPermissionNames.RescheduleAppointment),
-            PermissionScopeTypeName.From(RescheduleAppointmentPermissionMetadata.ResourceScopeType),
+            PermissionName.From(GeneratedAuthorizationNames.RescheduleAppointment),
+            AuthorizationScopeTypeName.From(RescheduleAppointmentMetadata.ResourceScopeType),
             appointmentResult.Value.ResourceScopeKey,
             cancellationToken).ConfigureAwait(false);
         if (!resourceResult.IsSuccess)
@@ -264,8 +264,8 @@ internal sealed class RescheduleAppointmentValidator(List<String> log)
         {
             return Task.FromResult(
                 Result.Failure(
-                    PermissionErrors.ValidationFailed(
-                        PermissionName.From(GeneratedPermissionNames.RescheduleAppointment),
+                    AuthorizationErrors.ValidationFailed(
+                        PermissionName.From(GeneratedAuthorizationNames.RescheduleAppointment),
                         "AppointmentId must not be empty.")));
         }
 
@@ -274,23 +274,23 @@ internal sealed class RescheduleAppointmentValidator(List<String> log)
 }
 
 internal sealed class RescheduleAppointmentScopeResolver(List<String> log)
-    : IPermissionScopeResolver<RescheduleAppointment>
+    : IAuthorizationScopeResolver<RescheduleAppointment>
 {
-    public Task<Result<PermissionScopeResolution>> ResolveAsync(
+    public Task<Result<AuthorizationScopeResolution>> ResolveAsync(
         IActionExecutionContext<RescheduleAppointment> context,
         CancellationToken cancellationToken = default)
     {
         log.Add("resolve-scope");
-        return Task.FromResult(Result.Success(new PermissionScopeResolution(
-            PermissionScopeTypeName.From(RescheduleAppointmentPermissionMetadata.GrantScopeType),
+        return Task.FromResult(Result.Success(new AuthorizationScopeResolution(
+            AuthorizationScopeTypeName.From(RescheduleAppointmentMetadata.GrantScopeType),
             context.Action.LocationScopeKey)));
     }
 }
 
 internal sealed class RescheduleAppointmentSubjectResolver(List<String> log)
-    : IPermissionSubjectResolver<RescheduleAppointment>
+    : IAuthorizationSubjectResolver<RescheduleAppointment>
 {
-    public PermissionSubjectKey ResolveSubjectKey(IActionExecutionContext<RescheduleAppointment> context)
+    public AuthorizationSubjectKey ResolveSubjectKey(IActionExecutionContext<RescheduleAppointment> context)
     {
         log.Add("resolve-subject");
         return ((RescheduleAppointmentActor)context.Actor).SubjectKey;
@@ -306,7 +306,7 @@ internal interface IAppointmentRepository
 
 internal sealed class RecordingAppointmentRepository(List<String> log) : IAppointmentRepository
 {
-    public TestAppointment Appointment { get; } = new(log, PermissionTestData.AppointmentResourceScopeKeyAlpha);
+    public TestAppointment Appointment { get; } = new(log, AuthorizationTestData.AppointmentResourceScopeKeyAlpha);
 
     public Int32 LoadCallCount { get; private set; }
 
@@ -327,22 +327,22 @@ internal sealed class RecordingAppointmentRepository(List<String> log) : IAppoin
     }
 }
 
-internal sealed class RecordingPermissionGrantEvaluator(List<String> log, PermissionGrantDecision decision)
-    : IPermissionGrantEvaluator
+internal sealed class RecordingPermissionGrantEvaluator(List<String> log, AuthorizationGrantDecision decision)
+    : IAuthorizationGrantEvaluator
 {
     public Int32 CallCount { get; private set; }
 
-    public Task<Result<PermissionGrantDecision?>> EvaluateAsync(
+    public Task<Result<AuthorizationGrantDecision?>> EvaluateAsync(
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
-        PermissionSubjectTypeName subjectType,
-        PermissionSubjectKey subjectKey,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
+        AuthorizationSubjectTypeName subjectType,
+        AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default)
     {
         CallCount++;
         log.Add("grant");
-        return Task.FromResult(Result.Success<PermissionGrantDecision?>(decision));
+        return Task.FromResult(Result.Success<AuthorizationGrantDecision?>(decision));
     }
 }
 
@@ -354,8 +354,8 @@ internal sealed class RecordingResourceAuthorizationService(List<String> log, Re
     public Task<Result> AuthorizeAsync(
         IExecutionContext context,
         PermissionName permissionName,
-        PermissionScopeTypeName scopeType,
-        PermissionScopeKey scopeKey,
+        AuthorizationScopeTypeName scopeType,
+        AuthorizationScopeKey scopeKey,
         CancellationToken cancellationToken = default)
     {
         CallCount++;
@@ -364,9 +364,9 @@ internal sealed class RecordingResourceAuthorizationService(List<String> log, Re
     }
 }
 
-internal sealed class TestAppointment(List<String> log, PermissionScopeKey resourceScopeKey)
+internal sealed class TestAppointment(List<String> log, AuthorizationScopeKey resourceScopeKey)
 {
-    public PermissionScopeKey ResourceScopeKey { get; } = resourceScopeKey;
+    public AuthorizationScopeKey ResourceScopeKey { get; } = resourceScopeKey;
 
     public Int32 RescheduleCallCount { get; private set; }
 
@@ -377,11 +377,11 @@ internal sealed class TestAppointment(List<String> log, PermissionScopeKey resou
     }
 }
 
-internal sealed record RescheduleAppointmentActor(PermissionSubjectKey SubjectKey) : IActor;
+internal sealed record RescheduleAppointmentActor(AuthorizationSubjectKey SubjectKey) : IActor;
 
 internal sealed class SliceServiceProvider(
     IActionValidator<RescheduleAppointment> validator,
-    IActionPermissionChecker<RescheduleAppointment> checker) : IServiceProvider
+    IActionAuthorizationChecker<RescheduleAppointment> checker) : IServiceProvider
 {
     public Object? GetService(Type serviceType)
     {
@@ -390,7 +390,7 @@ internal sealed class SliceServiceProvider(
             return validator;
         }
 
-        if (serviceType == typeof(IActionPermissionChecker<RescheduleAppointment>))
+        if (serviceType == typeof(IActionAuthorizationChecker<RescheduleAppointment>))
         {
             return checker;
         }

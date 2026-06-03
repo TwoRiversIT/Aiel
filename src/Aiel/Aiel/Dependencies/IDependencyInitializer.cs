@@ -25,6 +25,13 @@ namespace Aiel.Dependencies;
 /// <summary>
 /// Performs post-startup initialization work for a dependency.
 /// </summary>
+/// <remarks>
+/// If an assembly needs to perform custom initialization logic after the 
+/// dependency configuration phase, it can implement <see cref="IDependencyInitializer"/>.
+/// The Aiel framework will automatically discover and execute these initializers
+/// during application startup, allowing for modular and flexible dependency
+/// management across different assemblies.
+/// </remarks>
 public interface IDependencyInitializer
 {
     /// <summary>

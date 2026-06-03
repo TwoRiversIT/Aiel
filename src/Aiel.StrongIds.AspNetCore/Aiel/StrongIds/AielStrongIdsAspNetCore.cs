@@ -28,4 +28,4 @@ namespace Aiel.StrongIds;
 /// Ensures that the Aiel.StrongIds.AspNetCore participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielStrongIdsAspNetCore : AielDependency;
+public sealed class AielStrongIdsAspNetCore : AielDependencyConfigurator;

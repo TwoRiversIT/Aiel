@@ -5,6 +5,11 @@
 		<AssemblyName>Aiel.MultiTenancy</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>true</IsPackable>
+
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -13,6 +18,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Aiel\Aiel.csproj" />
 	</ItemGroup>
 

@@ -23,7 +23,7 @@ Both paths respect the same dependency ordering: a dependency is always configur
 
 ### Module Requirement (Critical for all Aiel Assemblies)
 
-Every assembly in the Aiel codebase — **including test assemblies** — that is not an analyzer or source generator MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from `AielDependency` (or `AielApplication` for the host). This class must include `[DependsOn(...)]` attributes that establish a direct or transitive path back to `AielAppFramework`.
+Every assembly in the Aiel codebase — **including test assemblies** — that is not an analyzer or source generator MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from `AielDependencyConfigurator` (or `AielApplication` for the host). This class must include `[DependsOn(...)]` attributes that establish a direct or transitive path back to `AielAppFramework`.
 
 This requirement ensures:
 - **Compile-time verifiability** of the module graph
@@ -35,18 +35,18 @@ The `AssemblyAnalyzer` enforces this rule at compile time and reports diagnostic
 
 ### Declarative Dependencies
 
-Every participating assembly MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from either `AielDependency` (libraries) or `AielApplication` (the host application).
+Every participating assembly MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from either `AielDependencyConfigurator` (libraries) or `AielApplication` (the host application).
 
-#### `AielDependency`
+#### `AielDependencyConfigurator`
 
-`AielDependency` is the abstract base class for every module in the dependency graph. Subclass it once per assembly to register services and declare upstream dependencies.
+`AielDependencyConfigurator` is the abstract base class for every module in the dependency graph. Subclass it once per assembly to register services and declare upstream dependencies.
 
 ```csharp
 // MyLibrary/MyLibraryDependency.cs
 using Aiel.Dependencies;
 
 [DependsOn(typeof(AielAppFramework))]   // declare upstream dependencies here
-public sealed class MyLibraryDependency : AielDependency
+public sealed class MyLibraryDependency : AielDependencyConfigurator
 {
     public override Task ConfigureAsync(
         DependencyConfigurationContext context,
@@ -58,11 +58,11 @@ public sealed class MyLibraryDependency : AielDependency
 }
 ```
 
-`AielDependency` implements `IDependencyConfigurator`, which defines two methods: `PreConfigureAsync` (phase 1) and `ConfigureAsync` (phase 2). See [Configuration](#configuration) below for the two-phase lifecycle.
+`AielDependencyConfigurator` implements `IDependencyConfigurator`, which defines two methods: `PreConfigureAsync` (phase 1) and `ConfigureAsync` (phase 2). See [Configuration](#configuration) below for the two-phase lifecycle.
 
 #### `AielApplication`
 
-`AielApplication` extends `AielDependency` and represents the **composition root** — the topmost node of the dependency graph. Define exactly one per application project.
+`AielApplication` extends `AielDependencyConfigurator` and represents the **composition root** — the topmost node of the dependency graph. Define exactly one per application project.
 
 ```csharp
 // MyApp/MyApplication.cs
@@ -90,23 +90,23 @@ public sealed class MyApplication : AielApplication
 
 #### `[DependsOn]`
 
-`DependsOnAttribute` is a repeatable class-level attribute that declares that one `AielDependency` depends on another. The graph engine (both paths) reads these attributes to determine configuration order.
+`DependsOnAttribute` is a repeatable class-level attribute that declares that one `AielDependencyConfigurator` depends on another. The graph engine (both paths) reads these attributes to determine configuration order.
 
 ```csharp
 [DependsOn(typeof(DependencyA))]
 [DependsOn(typeof(DependencyB))]
-public sealed class MyDependency : AielDependency { ... }
+public sealed class MyDependency : AielDependencyConfigurator { ... }
 ```
 
 Rules:
-- The target type MUST be a concrete, public `AielDependency` subclass with a public parameterless constructor.
+- The target type MUST be a concrete, public `AielDependencyConfigurator` subclass with a public parameterless constructor.
 - Circular dependencies are detected at startup and throw `CircularDependencyException`.
 - A type that appears in multiple branches of the graph is configured **once** (first encounter in reflection traversal order is reused; the generated graph also deduplicates).
 - Repeated `[DependsOn]` attributes that reference the same dependency type are deduplicated for execution.
 
 #### `AielAppFramework`
 
-The Aiel library itself is registered as a dependency via `AielAppFramework : AielDependency`. Applications that use any Aiel feature should transitively depend on it (most built-in `AielDependency` types already do).
+The Aiel library itself is registered as a dependency via `AielAppFramework : AielDependencyConfigurator`. Applications that use any Aiel feature should transitively depend on it (most built-in `AielDependencyConfigurator` types already do).
 
 #### Tooling
 
@@ -126,13 +126,13 @@ The Aiel library itself is registered as a dependency via `AielAppFramework : Ai
 
 The generated file contains a `AielDependencyGraph.Dependencies` property (`IReadOnlyCollection<DependencyDescriptor>`) and the `AddApplicationAsync()` extension. The extension calls `builder.RegisterDependenciesAsync(AielDependencyGraph.Dependencies)`, which creates a `DependencyManager`, registers it as `IDependencyManager`, and runs all configurators.
 
-Each generated `DependencyDescriptor` includes the dependency type itself in its `Configurators` list (since every `AielDependency` subclass implements `IDependencyConfigurator`). If the type also implements `IDependencyInitializer`, it is included in the `Initializers` list as well.
+Each generated `DependencyDescriptor` includes the dependency type itself in its `Configurators` list (since every `AielDependencyConfigurator` subclass implements `IDependencyConfigurator`). If the type also implements `IDependencyInitializer`, it is included in the `Initializers` list as well.
 
 The generator requires that the `AielApplication` subclass be `sealed` and non-abstract; open types are ignored.
 
 ##### Analyzer — `AssemblyAnalyzer` (`AIEL00001`)
 
-`Aiel.Analyzers` ships a Roslyn diagnostic analyzer. It reports `AIEL00001` (error) when a compilation that references Aiel contains zero or more than one public, sealed, parameterless-constructor `AielDependency` or `AielApplication` subclass. Add it as an analyzer-only project reference:
+`Aiel.Analyzers` ships a Roslyn diagnostic analyzer. It reports `AIEL00001` (error) when a compilation that references Aiel contains zero or more than one public, sealed, parameterless-constructor `AielDependencyConfigurator` or `AielApplication` subclass. Add it as an analyzer-only project reference:
 
 ```xml
 <ProjectReference Include="..\path\to\Aiel.Analyzers.csproj"
@@ -194,12 +194,12 @@ string connStr = context.GetConnectionStringOrDefault("MyDatabase");
 
 #### `PreConfigureAsync`
 
-`AielDependency` exposes a `PreConfigureAsync` virtual method as part of the `IDependencyConfigurator` contract. It is called during **Phase 1** — a complete pass over the entire dependency graph that finishes before **Phase 2** (`ConfigureAsync`) begins for any module.
+`AielDependencyConfigurator` exposes a `PreConfigureAsync` virtual method as part of the `IDependencyConfigurator` contract. It is called during **Phase 1** — a complete pass over the entire dependency graph that finishes before **Phase 2** (`ConfigureAsync`) begins for any module.
 
 Use `PreConfigureAsync` to establish shared state that other modules will read during their own `ConfigureAsync`: registering options builders, setting global switches, configuring integration extension points, etc.
 
 ```csharp
-public sealed class MyLibraryDependency : AielDependency
+public sealed class MyLibraryDependency : AielDependencyConfigurator
 {
     public override Task PreConfigureAsync(
         DependencyConfigurationContext context,
@@ -238,7 +238,7 @@ context.Services.OnAdding(descriptor =>
 
 #### `IDependencyConfigurator`
 
-`AielDependency` implements this interface, exposing both `PreConfigureAsync` and `ConfigureAsync`. You can also provide **separate configurator classes** and reference them via `DependencyDescriptor.Configurators` when building descriptors manually. The `DependencyManager` instantiates each configurator type (via `Activator.CreateInstance`), calls both phase methods in order, then disposes the instance. Configurators are called in the same topological order as the graph.
+`AielDependencyConfigurator` implements this interface, exposing both `PreConfigureAsync` and `ConfigureAsync`. You can also provide **separate configurator classes** and reference them via `DependencyDescriptor.Configurators` when building descriptors manually. The `DependencyManager` instantiates each configurator type (via `Activator.CreateInstance`), calls both phase methods in order, then disposes the instance. Configurators are called in the same topological order as the graph.
 
 ---
 
@@ -264,12 +264,12 @@ host.InitializeApplicationAsync()
 
 #### `IDependencyInitializer`
 
-Implement this interface on a `AielDependency` subclass to participate in the initialisation phase.
+Implement this interface on a `AielDependencyConfigurator` subclass to participate in the initialisation phase.
 
 Using a separate initializer class is supported only when `DependencyDescriptor.Initializers` is explicitly populated (manual descriptor registration). The default reflection and source-generated discovery paths do not scan for standalone `IDependencyInitializer` types.
 
 ```csharp
-public sealed class MyLibraryDependency : AielDependency, IDependencyInitializer
+public sealed class MyLibraryDependency : AielDependencyConfigurator, IDependencyInitializer
 {
     public async Task InitializeAsync(
         DependencyInitializationContext context,

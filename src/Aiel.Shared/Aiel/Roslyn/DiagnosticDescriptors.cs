@@ -29,7 +29,7 @@ namespace Aiel.Roslyn;
 internal static class DiagnosticDescriptors
 {
     /// <summary>
-    /// Rule identifier for enforcing a single root AielDependency type per assembly.
+    /// Rule identifier for enforcing a single root AielDependencyConfigurator type per assembly.
     /// </summary>
     public const String RootDependencyRequiredId = "AIEL00001";
     public const String ErrorTypesMustHaveSingleStringConstructorId = "AIEL00002";
@@ -67,19 +67,19 @@ internal static class DiagnosticDescriptors
 
     /// <summary>
     /// Any assembly that references Aiel must declare exactly one public,
-    /// non-abstract <see cref="Dependencies.AielDependency"/> subclass with a
+    /// non-abstract <see cref="Dependencies.AielDependencyConfigurator"/> subclass with a
     /// public parameterless constructor. This type serves as the logical root for the
     /// assembly's participation in application configuration, initialization, and
     /// dependency resolution.
     /// </summary>
     public static readonly DiagnosticDescriptor RootDependencyRequired = new(
         id: RootDependencyRequiredId,
-        title: "Assemblies referencing the `Aiel` NuGet package directly or transitively must declare their dependency type, either `AielDependency` or `AielApplication`",
-        messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplication` or `AielDependency`",
+        title: "Assemblies referencing the `Aiel` NuGet package directly or transitively must declare their dependency type, either `AielDependencyConfigurator` or `AielApplication`",
+        messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplication` or `AielDependencyConfigurator`",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Dependencies.AielDependency` or `Aiel.Dependencies.AielApplication`. These types serve as the root for the dependency graph.",
+        description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Dependencies.AielDependencyConfigurator` or `Aiel.Dependencies.AielApplication`. These types serve as the root for the dependency graph.",
         customTags: []);
 
     public static readonly DiagnosticDescriptor DerivedErrorTypesMustHaveSingleStringConstructor = new(

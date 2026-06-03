@@ -32,7 +32,7 @@ Examples:
 This declaration shape is attractive but is not a good source-generator contract:
 
 ```csharp
-public readonly partial record struct OrderId(Guid Value) : IStrongId<Guid>;
+public readonly partial record struct OrderId(Guid Value);
 ```
 
 Why it fails as the authoring model:
@@ -51,7 +51,7 @@ Recommended authoring shape for a struct-backed strong ID:
 
 ```csharp
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct OrderId : IStrongId<Guid>;
+public readonly partial record struct OrderId;
 ```
 
 Generated implementation shape:
@@ -106,7 +106,7 @@ If Aiel ever needs an ID type where invalid construction must be impossible rath
 
 ```csharp
 [StrongId<Guid>(DisallowDefault = true, BackingKind = StrongIdBackingKind.Reference)]
-public sealed partial record OrderId : IStrongId<Guid>;
+public sealed partial record OrderId;
 ```
 
 That allows the generator to expose only factory methods and a private constructor, which gives a stricter invariant at the cost of allocation and slightly more ceremony.
@@ -178,7 +178,7 @@ Supported authoring shape:
 
 ```csharp
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct OrderId : IStrongId<Guid>;
+public readonly partial record struct OrderId;
 ```
 
 Authoring rules:
@@ -280,7 +280,7 @@ Authoring input:
 
 ```csharp
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct OrderId : IStrongId<Guid>;
+public readonly partial record struct OrderId;
 ```
 
 Generated shape:
@@ -324,7 +324,7 @@ Authoring input:
 
 ```csharp
 [StrongId<string>(DisallowDefault = true)]
-public readonly partial record struct ExternalSystemId : IStrongId<string>;
+public readonly partial record struct ExternalSystemId;
 ```
 
 Generated shape:

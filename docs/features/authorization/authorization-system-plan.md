@@ -353,7 +353,7 @@ The generator may emit a fluent registration extension, but the consuming depend
 it explicitly. Runtime service registration must not be hidden behind a module initializer.
 
 ```csharp
-public sealed class AviendhaApplicationContracts : AielDependency
+public sealed class AviendhaApplicationContracts : AielDependencyConfigurator
 {
     public override Task PreConfigureAsync(
         DependencyConfigurationContext context,
@@ -372,7 +372,7 @@ public sealed class AviendhaApplicationContracts : AielDependency
 ```
 
 The analyzer should warn locally and fail in CI if generated permission registration is not reachable
-from a `AielDependency`.
+from a `AielDependencyConfigurator`.
 
 ---
 
@@ -804,10 +804,10 @@ public sealed record RoleName
 }
 
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct RoleDefinitionId : IStrongId<Guid>;
+public readonly partial record struct RoleDefinitionId;
 
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct RoleAssignmentId : IStrongId<Guid>;
+public readonly partial record struct RoleAssignmentId;
 ```
 
 A role definition should include:
@@ -967,10 +967,10 @@ strong IDs and value objects from the first implementation.
 
 ```csharp
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct PermissionGrantId : IStrongId<Guid>;
+public readonly partial record struct PermissionGrantId;
 
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct TenantId : IStrongId<Guid>;
+public readonly partial record struct TenantId;
 
 public sealed record PermissionName
 {

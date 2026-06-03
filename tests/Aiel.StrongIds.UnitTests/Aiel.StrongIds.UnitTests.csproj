@@ -6,6 +6,11 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
+
+		<!-- Analyzer/Source Generator settings -->
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -18,12 +23,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" />
-	  <ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
+		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
 	</ItemGroup>
 
 </Project>

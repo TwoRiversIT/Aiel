@@ -30,4 +30,4 @@ namespace Aiel.Mediator;
 /// </summary>
 [DependsOn(typeof(AielMediatorAbstractions))]
 [DependsOn(typeof(AielResults))]
-public sealed class AielMediator : AielDependency;
+public sealed class AielMediator : AielDependencyConfigurator;

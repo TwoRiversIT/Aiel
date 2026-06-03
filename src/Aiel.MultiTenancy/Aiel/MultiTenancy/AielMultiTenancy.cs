@@ -30,4 +30,4 @@ namespace Aiel.MultiTenancy;
 /// </summary>
 [DependsOn(typeof(AielAppFramework))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielMultiTenancy : AielDependency;
+public sealed class AielMultiTenancy : AielDependencyConfigurator;

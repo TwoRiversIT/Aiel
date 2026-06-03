@@ -46,7 +46,7 @@ public class Program
 public sealed record StrongIdBindingResponse(OrderId Id, CustomerId? CustomerId);
 
 [StrongId<Guid>]
-public readonly partial record struct OrderId : IStrongId<Guid>;
+public readonly partial record struct OrderId;
 
 [StrongId<Guid>]
-public readonly partial record struct CustomerId : IStrongId<Guid>;
+public readonly partial record struct CustomerId;

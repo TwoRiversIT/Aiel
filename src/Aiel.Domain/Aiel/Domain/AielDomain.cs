@@ -27,4 +27,4 @@ namespace Aiel.Domain;
 
 [DependsOn(typeof(AielAppFramework))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielDomain : AielDependency;
+public sealed class AielDomain : AielDependencyConfigurator;

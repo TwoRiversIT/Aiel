@@ -22,9 +22,26 @@
 
 namespace Aiel.StrongIds;
 
-public interface IStrongId;
+public interface IStrongId
+{
+    Boolean IsDefault { get; }
+}
 
 public interface IStrongId<TValue> : IStrongId
 {
     TValue Value { get; }
+}
+
+public static class StrongIdExtensions
+{
+    public static T ThrowIfDefault<T>(this T value, String parameterName)
+        where T : IStrongId
+    {
+        if (value.IsDefault)
+        {
+            throw new ArgumentException("The StrongId is empty or default.", parameterName);
+        }
+
+        return value;
+    }
 }

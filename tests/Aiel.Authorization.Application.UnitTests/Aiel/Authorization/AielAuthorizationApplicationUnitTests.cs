@@ -27,5 +27,5 @@ namespace Aiel.Authorization;
 [DependsOn(typeof(AielAuthorizationApplicationContracts))]
 [DependsOn(typeof(AielAuthorizationApplication))]
 [DependsOn(typeof(Testing.AielAuthorizationTesting))]
-public sealed class AielAuthorizationApplicationUnitTests : AielDependency;
+public sealed class AielAuthorizationApplicationUnitTests : AielDependencyConfigurator;
 

@@ -14,7 +14,7 @@ The Aiel codebase (contracts, implementations, and tests) is the authoritative s
 
 ## Problem Statement (Historical Context)
 
-This phase addressed a critical lifecycle gap. Initially, `AielDependency` declared a virtual `PreConfigureAsync` method alongside `ConfigureAsync`, but neither startup path (source-generated nor reflection-based) invoked it, causing any module override to be silently ignored.
+This phase addressed a critical lifecycle gap. Initially, `AielDependencyConfigurator` declared a virtual `PreConfigureAsync` method alongside `ConfigureAsync`, but neither startup path (source-generated nor reflection-based) invoked it, causing any module override to be silently ignored.
 
 The two-phase configuration lifecycle has now been implemented across both orchestration paths. The runtime now guarantees that all modules' `PreConfigureAsync` completes — in topological order across the entire dependency graph — before any module's `ConfigureAsync` begins.
 
@@ -40,7 +40,7 @@ A functional two-phase configuration lifecycle for all dependency modules:
 **Options:**
 
 - **Wire it.** Implement the two-phase model in both orchestration paths so the method works as documented.
-- **Remove it.** Delete `PreConfigureAsync` from `AielDependency` until the full design is settled and the implementation is ready.
+- **Remove it.** Delete `PreConfigureAsync` from `AielDependencyConfigurator` until the full design is settled and the implementation is ready.
 
 **Decision: Wire it.**
 
@@ -57,7 +57,7 @@ A functional two-phase configuration lifecycle for all dependency modules:
 
 **Decision: Add to `IDependencyConfigurator`.**
 
-**Rationale:** The framework's stated philosophy is explicit, predictable contracts — not optional duck-typed behaviour. A hidden secondary interface creates a discoverable gap: a developer reading `IDependencyConfigurator` would see only `ConfigureAsync` and have no signal that `PreConfigureAsync` exists. Adding it to the primary interface makes the full lifecycle visible at the point of implementation. Since `AielDependency` already provides a virtual no-op implementation of `PreConfigureAsync`, this is non-breaking for all `AielDependency` subclasses. Only classes that directly implement `IDependencyConfigurator` (currently limited to test stubs) require a trivial update.
+**Rationale:** The framework's stated philosophy is explicit, predictable contracts — not optional duck-typed behaviour. A hidden secondary interface creates a discoverable gap: a developer reading `IDependencyConfigurator` would see only `ConfigureAsync` and have no signal that `PreConfigureAsync` exists. Adding it to the primary interface makes the full lifecycle visible at the point of implementation. Since `AielDependencyConfigurator` already provides a virtual no-op implementation of `PreConfigureAsync`, this is non-breaking for all `AielDependencyConfigurator` subclasses. Only classes that directly implement `IDependencyConfigurator` (currently limited to test stubs) require a trivial update.
 
 ---
 
@@ -147,12 +147,12 @@ Run full test suite. All new tests must now pass. All 698 pre-existing tests mus
 
 ### Task 6 — Correct `Framework.md` naming drift and update `PreConfigureAsync` description
 
-Update `Framework.md` to replace `TrDependency`/`TrApplication` with `AielDependency`/`AielApplication` and revise the `PreConfigureAsync` note to describe the now-implemented two-phase lifecycle.
+Update `Framework.md` to replace `TrDependency`/`TrApplication` with `AielDependencyConfigurator`/`AielApplication` and revise the `PreConfigureAsync` note to describe the now-implemented two-phase lifecycle.
 
 ---
 
 ## Notes
 
-The `AssemblyAnalyzer` enforces that each assembly declares exactly one `AielDependency` subclass. It does not need updating for this phase — the pre-configure lifecycle is fully inside the existing module contract.
+The `AssemblyAnalyzer` enforces that each assembly declares exactly one `AielDependencyConfigurator` subclass. It does not need updating for this phase — the pre-configure lifecycle is fully inside the existing module contract.
 
 The source generator (`DependencyGraphSourceGenerator`) emits `DependencyDescriptor` objects whose `Configurators` list is consumed by `DependencyManager`. The generator itself does not need updating — the `DependencyManager` change is sufficient for the source-generated path.

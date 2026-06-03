@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.Emailing;
 
 [DependsOn(typeof(AielEmailing))]
-public sealed class AielEmailingUnitTests : AielDependency;
+public sealed class AielEmailingUnitTests : AielDependencyConfigurator;

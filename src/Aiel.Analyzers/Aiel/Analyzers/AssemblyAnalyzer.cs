@@ -20,27 +20,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Aiel.Roslyn;
 using System.Collections.Immutable;
 
 namespace Aiel.Analyzers;
 
 /// <summary>
 /// Ensures that any assembly that references Aiel defines exactly one public,
-/// non-abstract <c>AielDependency</c> subclass with a public parameterless constructor.
+/// non-abstract <c>AielDependencyConfigurator</c> subclass with a public parameterless constructor.
 /// </summary>
 /// <remarks>
 /// If the assembly is a library, it must define a single class that inherits from
-/// <c>AielDependency</c>. If the assembly is the host application, it is the
+/// <c>AielDependencyConfigurator</c>. If the assembly is the host application, it is the
 /// composition root for the dependency graph, and must define a single class that
 /// inherits from <c>AielApplication</c>.
 /// </remarks>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
 {
-    private const String DependencyName = "Aiel.Dependencies.AielDependency";
+    private const String DependencyName = "Aiel.Dependencies.AielDependencyConfigurator";
     private const String ApplicationName = "Aiel.Dependencies.AielApplication";
 
     /// <inheritdoc />
@@ -80,7 +80,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
 
         if (candidates.Count == 1)
         {
-            // Exactly one AielDependency type is present; rule is satisfied.
+            // Exactly one AielDependencyConfigurator type is present; rule is satisfied.
             return;
         }
 
@@ -89,7 +89,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
 
         if (count == 0)
         {
-            // No AielDependency type found
+            // No AielDependencyConfigurator type found
             // inside AnalyzeCompilation when count == 0
             var location = Location.None;
 
@@ -137,7 +137,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // More than one AielDependency type found. Report a diagnostic on each candidate
+        // More than one AielDependencyConfigurator type found. Report a diagnostic on each candidate
         // so that it is clear which types are participating in the violation.
         foreach (var symbol in candidates)
         {

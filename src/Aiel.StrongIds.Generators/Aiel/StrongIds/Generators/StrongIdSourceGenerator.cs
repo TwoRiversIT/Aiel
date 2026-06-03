@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Aiel.Roslyn;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -101,15 +101,6 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
                 displayName));
         }
 
-        if (valueType is null || !ImplementsMatchingStrongIdInterface(symbol, valueType))
-        {
-            diagnostics.Add(Diagnostic.Create(
-                DiagnosticDescriptors.StrongIdMustImplementMatchingInterface,
-                symbol.Locations.FirstOrDefault(),
-                displayName,
-                valueType?.ToDisplayString(TypeNameFormat) ?? "TValue"));
-        }
-
         if (DeclaresValueMember(symbol))
         {
             diagnostics.Add(Diagnostic.Create(
@@ -165,6 +156,9 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             builder.AppendLine();
         }
 
+        builder.AppendLine("using Aiel.StrongIds;");
+        builder.AppendLine();
+
         builder.AppendLine(GetTypeDeclaration(model));
         builder.AppendLine("{");
         builder.AppendLine($"    public {model.BackingTypeName} Value {{ get; }}");
@@ -198,7 +192,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine("    }");
 
         builder.AppendLine();
-        builder.AppendLine($"    public static bool TryParse(string? value, out {model.TypeSymbol.Name} id) => TryParse(value, null, out id);");
+        builder.AppendLine($"    public static bool TryParse(string value, out {model.TypeSymbol.Name} id) => TryParse(value, null, out id);");
 
         builder.AppendLine();
         builder.AppendLine($"    public bool IsDefault => {model.IsDefaultExpression};");
@@ -211,12 +205,24 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 
     private static void EmitValidation(StringBuilder builder, StrongIdModel model, Int32 indentLevel)
     {
+        var indent = new String(' ', indentLevel * 4);
+
         if (!model.DisallowDefault)
         {
+            // For string types, we must disallow null
+            if (String.Equals(model.BackingTypeName, "global::System.String", StringComparison.Ordinal))
+            {
+                // String.Empty is considered a default value for string-based strong IDs, so we check for that as well as null or whitespace.
+                builder.AppendLine($"{indent}if (string.IsNullOrWhiteSpace(value))");
+                builder.AppendLine($"{indent}{{");
+                builder.AppendLine($"{indent}    value = string.Empty;");
+                builder.AppendLine($"{indent}}}");
+                builder.AppendLine();
+            }
+
             return;
         }
 
-        var indent = new String(' ', indentLevel * 4);
         builder.AppendLine($"{indent}if ({model.InvalidValueExpression})");
         builder.AppendLine($"{indent}{{");
         builder.AppendLine($"{indent}    throw new global::System.ArgumentException(\"{model.ValidationErrorMessage}\", nameof(value));");
@@ -296,11 +302,11 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         if (model.TypeSymbol.TypeKind == TypeKind.Struct)
         {
             var readOnlyModifier = model.IsReadOnlyRecordStruct ? "readonly " : String.Empty;
-            return $"{accessibility}{readOnlyModifier}partial record struct {model.TypeSymbol.Name}";
+            return $"{accessibility}{readOnlyModifier}partial record struct {model.TypeSymbol.Name} : IStrongId<{model.BackingTypeName}>";
         }
 
         var sealedModifier = model.TypeSymbol.IsSealed ? "sealed " : String.Empty;
-        return $"{accessibility}{sealedModifier}partial record {model.TypeSymbol.Name}";
+        return $"{accessibility}{sealedModifier}partial record {model.TypeSymbol.Name} : IStrongId<{model.BackingTypeName}>";
     }
 
     private static String GetDefaultAssignment(StrongIdModel model)
@@ -365,15 +371,6 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             .Select(static syntaxReference => syntaxReference.GetSyntax())
             .OfType<RecordDeclarationSyntax>()
             .Any(static declaration => declaration.ParameterList is not null);
-    }
-
-    private static Boolean ImplementsMatchingStrongIdInterface(INamedTypeSymbol symbol, ITypeSymbol valueType)
-    {
-        return symbol.AllInterfaces.Any(interfaceSymbol =>
-            String.Equals(interfaceSymbol.OriginalDefinition.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat), StrongIdInterfaceMetadataName, StringComparison.Ordinal)
-            && interfaceSymbol is INamedTypeSymbol namedInterface
-            && namedInterface.TypeArguments.Length == 1
-            && SymbolEqualityComparer.Default.Equals(namedInterface.TypeArguments[0], valueType));
     }
 
     private static Boolean DeclaresValueMember(INamedTypeSymbol symbol)
@@ -478,15 +475,19 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 
         public String BackingTypeName => ValueType.ToDisplayString(TypeNameFormat);
 
-        public String GetInvalidValueExpression(String valueExpression) => ValueType.SpecialType switch
-        {
-            SpecialType.System_Int32 => $"{valueExpression} == 0",
-            SpecialType.System_Int64 => $"{valueExpression} == 0",
-            SpecialType.System_String => $"global::System.String.IsNullOrWhiteSpace({valueExpression})",
-            _ => $"{valueExpression} == global::System.Guid.Empty",
-        };
+        public String GetInvalidValueExpression(String valueExpression)
+            => ValueType.SpecialType switch
+            {
+                SpecialType.System_Int32 => $"{valueExpression} == 0",
+                SpecialType.System_Int64 => $"{valueExpression} == 0",
+                SpecialType.System_String => $"string.IsNullOrWhiteSpace({valueExpression})",
+                _ => $"{valueExpression} == global::System.Guid.Empty",
+            };
 
-        public String GetStoredValueExpression(String valueExpression) => ValueType.SpecialType == SpecialType.System_String ? $"{valueExpression}.Trim()" : valueExpression;
+        public String GetStoredValueExpression(String valueExpression)
+            => ValueType.SpecialType == SpecialType.System_String
+                ? $"{valueExpression}.Trim()"
+                : valueExpression;
 
         public String InvalidValueExpression => GetInvalidValueExpression("value");
 
@@ -494,7 +495,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         {
             SpecialType.System_Int32 => "Value == 0",
             SpecialType.System_Int64 => "Value == 0",
-            SpecialType.System_String => "global::System.String.IsNullOrWhiteSpace(Value)",
+            SpecialType.System_String => "Value == string.Empty",
             _ => "Value == global::System.Guid.Empty",
         };
 

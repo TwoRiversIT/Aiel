@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel;
 
 [DependsOn(typeof(AielApplicationContracts))]
-public sealed class AielApplicationContractsUnitTests : AielDependency;
+public sealed class AielApplicationContractsUnitTests : AielDependencyConfigurator;
 

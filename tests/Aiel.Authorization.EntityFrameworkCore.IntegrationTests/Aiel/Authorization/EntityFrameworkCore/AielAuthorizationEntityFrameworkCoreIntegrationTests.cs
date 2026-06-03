@@ -29,5 +29,5 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 [DependsOn(typeof(Testing.AielAuthorizationTesting))]
 [DependsOn(typeof(Aiel.Testing.AielTesting))]
 [DependsOn(typeof(AielAuthorizationEntityFrameworkCorePostgreSql))]
-public sealed class AielAuthorizationEntityFrameworkCoreIntegrationTests : AielDependency;
+public sealed class AielAuthorizationEntityFrameworkCoreIntegrationTests : AielDependencyConfigurator;
 

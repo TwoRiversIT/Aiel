@@ -26,5 +26,5 @@ namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(MultiTenancy.AielMultiTenancy))]
 [DependsOn(typeof(AielAspNetCoreIntegrationTestsWebApplication))]
-public sealed class AielAspNetCoreIntegrationTests : AielDependency;
+public sealed class AielAspNetCoreIntegrationTests : AielDependencyConfigurator;
 

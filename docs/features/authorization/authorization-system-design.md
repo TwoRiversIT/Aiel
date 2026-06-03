@@ -401,7 +401,7 @@ not exist yet.
 **Generator output:**
 - permission constants
 - manifest items with stable ID, permission name, action type name, lifecycle, scope type, and previous names
-- registration helper invoked explicitly from a `AielDependency`
+- registration helper invoked explicitly from a `AielDependencyConfigurator`
 
 Follow the existing Aiel packaging pattern used by `Aiel.Results` and `Aiel.StrongIds`: runtime
 packages that require generation must deliver the generator DLL under `analyzers/dotnet/cs` and use

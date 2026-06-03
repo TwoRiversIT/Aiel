@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.Testing;
 
 [DependsOn(typeof(AielAppFramework))]
-public sealed class AielTesting : AielDependency;
+public sealed class AielTesting : AielDependencyConfigurator;

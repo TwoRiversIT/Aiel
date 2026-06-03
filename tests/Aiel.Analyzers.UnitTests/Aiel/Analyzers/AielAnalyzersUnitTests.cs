@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.Analyzers;
 
 [DependsOn(typeof(AielAppFramework))]
-public sealed class AielAnalyzersUnitTests : AielDependency;
+public sealed class AielAnalyzersUnitTests : AielDependencyConfigurator;
 

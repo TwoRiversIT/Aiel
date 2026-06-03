@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.Results;
 
 [DependsOn(typeof(AielAppFramework))]
-public sealed class AielResults : AielDependency;
+public sealed class AielResults : AielDependencyConfigurator;

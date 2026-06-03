@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.Authorization.EntityFrameworkCore;
 
 [DependsOn(typeof(AielAuthorizationEntityFrameworkCore))]
-public sealed class AielAuthorizationEntityFrameworkCorePostgreSql : AielDependency;
+public sealed class AielAuthorizationEntityFrameworkCorePostgreSql : AielDependencyConfigurator;
 

@@ -27,5 +27,5 @@ namespace Aiel.Testing;
 [DependsOn(typeof(AielAppFramework))]
 [DependsOn(typeof(Results.AielResults))]
 [DependsOn(typeof(AielTesting))]
-public sealed class AielTestingIntegrationUnitTests : AielDependency;
+public sealed class AielTestingIntegrationUnitTests : AielDependencyConfigurator;
 

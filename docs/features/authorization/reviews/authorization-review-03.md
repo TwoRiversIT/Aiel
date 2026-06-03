@@ -22,7 +22,7 @@
 `Aiel.Results` uses the ` [ModuleInitializer]` attribute to automatically register the generated code thereby establishing a framework precedent. We could use the same approach here, or is that too "magical" and the Analyzer is sufficient? Having the consumer manually call the registration does provide an extension point for configuration and/or customization:
 
 ```csharp
-public sealed class AviendhaApplicationContracts : AielDependency
+public sealed class AviendhaApplicationContracts : AielDependencyConfigurator
 {
     public override Task PreConfigureAsync(
         DependencyConfigurationContext context,

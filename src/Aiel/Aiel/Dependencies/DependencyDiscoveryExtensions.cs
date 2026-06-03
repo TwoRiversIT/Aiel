@@ -34,7 +34,7 @@ public static class DependencyDiscoveryExtensions
     /// </remarks>
 	/// <exception cref="CircularDependencyException">Thrown when a circular dependency is detected in the assembly dependency hierarchy.</exception>
 	public static DependencyRoot BuildDependencyTree<TDependency>(this DependencyConfigurationContext _)
-        where TDependency : AielDependency, new()
+        where TDependency : AielDependencyConfigurator, new()
     {
         // Tracks the assemblies we've already processed by Type.
         var processed = new HashSet<Type>();
@@ -70,12 +70,12 @@ public static class DependencyDiscoveryExtensions
                     throw new CircularDependencyException($"Circular dependency detected: {cycle}");
                 }
 
-                // We are strict about the assembly types, so we throw an exception if the dependency type does not inherit from AielDependency.
+                // We are strict about the assembly types, so we throw an exception if the dependency type does not inherit from AielDependencyConfigurator.
                 // This ensures that the dependency hierarchy is well-formed and that we can safely configure the assemblies later.
                 if (!nodesByType.TryGetValue(dependencyType, out var dependencyAssemblyInfo))
                 {
-                    var instance = Activator.CreateInstance(dependencyType) as AielDependency
-                        ?? throw new InvalidOperationException($"Type {dependencyType.FullName} does not inherit from AielDependency.");
+                    var instance = Activator.CreateInstance(dependencyType) as AielDependencyConfigurator
+                        ?? throw new InvalidOperationException($"Type {dependencyType.FullName} does not inherit from AielDependencyConfigurator.");
 
                     dependencyAssemblyInfo = new DependencyNode(dependencyType, assemblyInfo.Depth + 1, instance);
                     nodesByType[dependencyType] = dependencyAssemblyInfo;

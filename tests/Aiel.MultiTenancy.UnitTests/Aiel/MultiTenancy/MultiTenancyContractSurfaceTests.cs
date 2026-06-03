@@ -43,6 +43,7 @@ public sealed class MultiTenancyContractSurfaceTests
         exportedTypeNames.Should().Contain("TenantResolution");
         exportedTypeNames.Should().Contain("ITenantAccessor");
         exportedTypeNames.Should().Contain("ITenantResolver");
+        exportedTypeNames.Should().Contain("ICurrentTenant");
         exportedTypeNames.Should().NotContain("TenantContext");
         exportedTypeNames.Should().NotContain("ITenantProvider");
     }

@@ -20,44 +20,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.StrongIds.Generators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Immutable;
 using System.Reflection;
 
-namespace Aiel.StrongIds.Generators;
+namespace Aiel.StrongIds;
 
 public class StrongIdSourceGeneratorTests
 {
-    [Fact]
-    public void Generate_EmitsGuidBackedRecordStructMembers_FromStrongIdsNamespace()
-    {
-        const String source = """
-            using System;
-            using Aiel.StrongIds;
-
-            namespace Test;
-
-            [StrongId<Guid>]
-            public readonly partial record struct OrderId : IStrongId<Guid>;
-            """;
-
-        var result = RunGenerator(source, "Aiel.StrongIds");
-
-        result.GeneratorDiagnostics.Should().BeEmpty();
-        result.CompilationDiagnostics.Should().NotContain(d => d.Severity == DiagnosticSeverity.Error);
-        result.GeneratedSources.Should().ContainSingle();
-
-        var generatedSource = result.GeneratedSources[0].SourceText.ToString();
-        generatedSource.Should().Contain("public global::System.Guid Value { get; }");
-        generatedSource.Should().Contain("public OrderId(global::System.Guid value)");
-        generatedSource.Should().Contain("public static OrderId From(global::System.Guid value) => new(value);");
-        generatedSource.Should().Contain("public static bool TryFrom(global::System.Guid value, out OrderId id)");
-        generatedSource.Should().Contain("public static bool TryParse(string? value, global::System.IFormatProvider? provider, out OrderId id)");
-        generatedSource.Should().Contain("public bool IsDefault => Value == global::System.Guid.Empty;");
-        generatedSource.Should().Contain("public override string ToString() => Value.ToString();");
-    }
-
     [Fact]
     public void Generate_EmitsGuidBackedRecordStructMembers()
     {
@@ -68,7 +40,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<Guid>]
-            public readonly partial record struct OrderId : IStrongId<Guid>;
+            public readonly partial record struct OrderId;
             """;
 
         var result = RunGenerator(source);
@@ -97,7 +69,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<Guid>(GenerateTryFrom = false)]
-            public readonly partial record struct OrderId : IStrongId<Guid>;
+            public readonly partial record struct OrderId;
             """;
 
         var result = RunGenerator(source);
@@ -117,7 +89,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<string>]
-            public readonly partial record struct ExternalSystemId : IStrongId<string>;
+            public readonly partial record struct ExternalSystemId;
             """;
 
         var result = RunGenerator(source);
@@ -127,10 +99,10 @@ public class StrongIdSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
 
         var generatedSource = result.GeneratedSources[0].SourceText.ToString();
-        generatedSource.Should().Contain("global::System.String.IsNullOrWhiteSpace(value)");
+        generatedSource.Should().Contain("string.IsNullOrWhiteSpace(value)");
         generatedSource.Should().Contain("throw new global::System.ArgumentException(\"ExternalSystemId cannot be null, empty, or whitespace.\", nameof(value));");
         generatedSource.Should().Contain("Value = value.Trim();");
-        generatedSource.Should().Contain("public bool IsDefault => global::System.String.IsNullOrWhiteSpace(Value);");
+        generatedSource.Should().Contain("public bool IsDefault => Value == string.Empty;");
         generatedSource.Should().Contain("public override string ToString() => Value;");
     }
 
@@ -143,7 +115,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<string>]
-            public readonly partial record struct ExternalSystemId : IStrongId<string>;
+            public readonly partial record struct ExternalSystemId;
             """;
 
         var result = RunGenerator(source);
@@ -171,7 +143,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<string>]
-            public readonly partial record struct ExternalSystemId : IStrongId<string>;
+            public readonly partial record struct ExternalSystemId;
             """;
 
         var result = RunGenerator(source);
@@ -211,7 +183,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<Guid>(BackingKind = StrongIdBackingKind.Reference)]
-            public sealed partial record OrderId : IStrongId<Guid>;
+            public sealed partial record OrderId;
             """;
 
         var result = RunGenerator(source);
@@ -232,7 +204,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<Guid>]
-            public readonly record struct OrderId : IStrongId<Guid>;
+            public readonly record struct OrderId;
             """;
 
         var result = RunGenerator(source);
@@ -251,32 +223,13 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<Guid>]
-            public readonly partial record struct OrderId(Guid Value) : IStrongId<Guid>;
+            public readonly partial record struct OrderId(Guid Value);
             """;
 
         var result = RunGenerator(source);
 
         result.GeneratedSources.Should().BeEmpty();
         result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL10002" && d.Severity == DiagnosticSeverity.Error);
-    }
-
-    [Fact]
-    public void Generate_ReportsError_WhenIStrongIdTypeDoesNotMatchAttribute()
-    {
-        const String source = """
-            using System;
-            using Aiel.StrongIds;
-
-            namespace Test;
-
-            [StrongId<Guid>]
-            public readonly partial record struct OrderId : IStrongId<int>;
-            """;
-
-        var result = RunGenerator(source);
-
-        result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL10003" && d.Severity == DiagnosticSeverity.Error);
     }
 
     [Fact]
@@ -335,7 +288,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<decimal>]
-            public readonly partial record struct OrderId : IStrongId<decimal>;
+            public readonly partial record struct OrderId;
             """;
 
         var result = RunGenerator(source);

@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.Results.IntegrationTests;
 
 [DependsOn(typeof(AielResultsGeneratedErrors))]
-public sealed class AielResultsIntegrationTestsWebApplication : AielDependency;
+public sealed class AielResultsIntegrationTestsWebApplication : AielDependencyConfigurator;
 

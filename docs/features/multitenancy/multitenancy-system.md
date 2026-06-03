@@ -30,6 +30,12 @@ Aiel provides a flexible, extensible multitenancy framework designed to support 
 
 ---
 
+## Host vs Tenant
+
+- **Host**: The platform or service provider that owns and operates the multitenant application. The host is responsible for provisioning tenant environments, managing the tenant catalog, and defining resolution policies. The host IS NOT an instance of the application, nor is it the default tenant.
+
+- **Tenant**: An individual customer or client of the multitenant application. Each tenant operates within its own isolated context, as defined by the tenancy model in use.
+
 ## Goals and Non‑Goals
 
 ### Goals (Framework Layer)
@@ -194,11 +200,14 @@ The Aiel framework supplies a reusable tenant-identity contract surface that app
 
 ### Service Interfaces
 
+- **`ITenantAccessor`**: `GetCurrentTenantAsync(CancellationToken) → ValueTask<TenantIdentity>`
+  Registered by Aiel.AspNetCore; returns the current request's resolved tenant. Only callable on resolved-tenant paths.
+
 - **`ITenantResolver`**: `ResolveAsync(CancellationToken) → ValueTask<TenantResolution>`
   Application-implemented; runs once per HTTP request to compute resolution outcome.
 
-- **`ITenantAccessor`**: `GetCurrentTenantAsync(CancellationToken) → ValueTask<TenantIdentity>`
-  Registered by Aiel.AspNetCore; returns the current request's resolved tenant. Only callable on resolved-tenant paths.
+- **`ICurrentTenant`**: `Current -> TenantIdentity?`
+  Synchronous accessor for tenant identity; returns null if not resolved. Useful in non-Async contexts. Also allows temporarily changing the current tenant (e.g., for background jobs or impersonation).
 
 ### HTTP Pipeline Integration
 

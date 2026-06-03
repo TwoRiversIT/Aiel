@@ -26,5 +26,5 @@ namespace Aiel;
 
 [DependsOn(typeof(Domain.AielDomain))]
 [DependsOn(typeof(Results.AielResults))]
-public sealed class AielApplicationContracts : AielDependency;
+public sealed class AielApplicationContracts : AielDependencyConfigurator;
 

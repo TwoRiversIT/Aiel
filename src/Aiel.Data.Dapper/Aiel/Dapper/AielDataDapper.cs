@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.Dapper;
 
 [DependsOn(typeof(AielAppFramework))]
-public sealed class AielDataDapper : AielDependency;
+public sealed class AielDataDapper : AielDependencyConfigurator;

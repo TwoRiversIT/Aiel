@@ -25,5 +25,5 @@ using Aiel.Dependencies;
 namespace Aiel.Security;
 
 [DependsOn(typeof(AielSecurity))]
-public sealed class AielSecurityUnitTests : AielDependency;
+public sealed class AielSecurityUnitTests : AielDependencyConfigurator;
 

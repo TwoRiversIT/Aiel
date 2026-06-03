@@ -89,7 +89,7 @@ public class DependencyGraphSourceGeneratorTests
             namespace Test;
             using Aiel.Dependencies;
 
-            public sealed class MyApplication : AielDependency
+            public sealed class MyApplication : AielDependencyConfigurator
             {
             }
             """;
@@ -755,12 +755,12 @@ public class DependencyGraphSourceGeneratorTests
                     public Type Type { get; }
                 }
 
-                public abstract class AielDependency : IDependencyConfigurator
+                public abstract class AielDependencyConfigurator : IDependencyConfigurator
                 {
                     public virtual Task ConfigureAsync(DependencyConfigurationContext context) => Task.CompletedTask;
                 }
 
-                public abstract class AielApplication : AielDependency
+                public abstract class AielApplication : AielDependencyConfigurator
                 {
                     public virtual Task ConfigureAsync(DependencyConfigurationContext context) => Task.CompletedTask;
                 }

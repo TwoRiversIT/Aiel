@@ -28,4 +28,4 @@ namespace Aiel.StrongIds.EntityFrameworkCore;
 /// Ensures that the Aiel.StrongIds.EntityFrameworkCore participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielStrongIdsEntityFrameworkCore : AielDependency;
+public sealed class AielStrongIdsEntityFrameworkCore : AielDependencyConfigurator;

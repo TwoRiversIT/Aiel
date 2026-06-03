@@ -36,8 +36,8 @@ public sealed class DependencyDescriptor
 	/// <param name="dependencies">The dependency types this dependency depends on.</param>
 	/// <param name="configurators">Types that implement <see cref="IDependencyConfigurator"/> for this dependency.</param>
 	/// <param name="initializers">Types that implement <see cref="IDependencyInitializer"/> for this dependency.</param>
-    /// <param name="displayName">An optional user friendly display name for the AielDependency.</param>
-    /// <param name="version">An optional version for the AielDependency.</param>
+    /// <param name="displayName">An optional user friendly display name for the AielDependencyConfigurator.</param>
+    /// <param name="version">An optional version for the AielDependencyConfigurator.</param>
 	public DependencyDescriptor(
         String name,
         Type dependencyType,
@@ -92,12 +92,12 @@ public sealed class DependencyDescriptor
     public IReadOnlyCollection<Type> Initializers { get; }
 
     /// <summary>
-    /// Gets the optional user friendly display name for the AielDependency.
+    /// Gets the optional user friendly display name for the AielDependencyConfigurator.
     /// </summary>
     public String? DisplayName { get; }
 
     /// <summary>
-    /// Gets the optional version for the AielDependency.
+    /// Gets the optional version for the AielDependencyConfigurator.
     /// </summary>
     public Version? Version { get; }
 }

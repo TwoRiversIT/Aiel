@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Aiel.Roslyn;
 using System.Collections.Immutable;
 using System.Text;
 
@@ -422,7 +422,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
                 builder.Append("\t\t\t}");
             }
 
-            // Configurators: AielDependency implements IDependencyConfigurator, so include the type itself.
+            // Configurators: AielDependencyConfigurator implements IDependencyConfigurator, so include the type itself.
             builder.Append($", new Type[] {{ typeof({dependencyTypeName}) }}");
 
             // Initializers: include the type only when it also implements IDependencyInitializer.

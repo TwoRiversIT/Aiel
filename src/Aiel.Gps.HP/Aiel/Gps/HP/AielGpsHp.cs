@@ -25,4 +25,4 @@ using Aiel.Dependencies;
 namespace Aiel.Gps.HP;
 
 [DependsOn(typeof(AielAppFramework))]
-public sealed class AielGpsHp : AielDependency;
+public sealed class AielGpsHp : AielDependencyConfigurator;

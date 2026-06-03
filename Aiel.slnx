@@ -17,6 +17,7 @@
     <File Path="docs/ArchitectureOverview.md" />
     <File Path="docs/ConceptualOverview.md" />
     <File Path="docs/Framework.md" />
+    <File Path="docs/LoggingAnalyzer.md" />
     <File Path="docs/TermsAndAbbreviations.md" />
   </Folder>
   <Folder Name="/docs/analyzers/">
@@ -140,6 +141,9 @@
     <Project Path="src/Aiel.Gps/Aiel.Gps.csproj" />
     <Project Path="src/Aiel.IdGeneration/Aiel.IdGeneration.csproj" />
     <Project Path="src/Aiel.InternetTypes/Aiel.InternetTypes.csproj" />
+    <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
+    <Project Path="src/Aiel.Logging.CodeFixes/Aiel.Logging.CodeFixes.csproj" />
+    <Project Path="src/Aiel.Logging.Template/Aiel.Logging.Template.csproj" />
     <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
     <Project Path="src/Aiel.Mediator/Aiel.Mediator.csproj" />
@@ -191,6 +195,7 @@
     <Project Path="tests/Aiel.Gps.UnitTests/Aiel.Gps.UnitTests.csproj" />
     <Project Path="tests/Aiel.IdGeneration.UnitTests/Aiel.IdGeneration.UnitTests.csproj" />
     <Project Path="tests/Aiel.InternetTypes.UnitTests/Aiel.InternetTypes.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Logging.Analyzers.Tests/Aiel.Logging.Analyzers.Tests.csproj" />
     <Project Path="tests/Aiel.Mediator.Analyzers.UnitTests/Aiel.Mediator.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.UnitTests/Aiel.Mediator.UnitTests.csproj" />
     <Project Path="tests/Aiel.MessageBus.Sagas.UnitTests/Aiel.MessageBus.Sagas.UnitTests.csproj" />

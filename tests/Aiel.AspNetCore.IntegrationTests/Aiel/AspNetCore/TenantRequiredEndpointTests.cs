@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Net;
 using Aiel.MultiTenancy;
+using System.Net;
 
 namespace Aiel.AspNetCore;
 
@@ -34,7 +34,7 @@ public sealed class TenantRequiredEndpointTests
     [Fact]
     public async Task Resolved_TenantResolution_Returns200()
     {
-        var outcome = new TenantResolution.Resolved(new TenantIdentity(TenantId.NewTenantId()));
+        var outcome = new TenantResolution.Resolved(new TenantIdentity(new TenantId(Guid.NewGuid())));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
 

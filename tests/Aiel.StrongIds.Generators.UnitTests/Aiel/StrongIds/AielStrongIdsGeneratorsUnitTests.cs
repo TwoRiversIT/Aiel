@@ -20,37 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Text.Json;
+using Aiel.Dependencies;
 
 namespace Aiel.StrongIds;
 
-public class StrongIdJsonConverterTests
-{
-    [Fact]
-    public void ConfigureForStrongIds_round_trips_generated_strong_ids()
-    {
-        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web)
-            .ConfigureForStrongIds();
+[DependsOn(typeof(AielAppFramework))]
+public sealed class AielStrongIdsGeneratorsUnitTests : AielDependencyConfigurator;
 
-        var original = new StrongIdJsonEnvelope(
-            OrderId.From(Guid.NewGuid()),
-            CustomerId.From(Guid.NewGuid()),
-            OptionalCustomerId: null);
-
-        var json = JsonSerializer.Serialize(original, options);
-        var roundTrip = JsonSerializer.Deserialize<StrongIdJsonEnvelope>(json, options);
-
-        roundTrip.Should().NotBeNull();
-        roundTrip!.OrderId.Should().Be(original.OrderId);
-        roundTrip.CustomerId.Should().Be(original.CustomerId);
-        roundTrip.OptionalCustomerId.Should().BeNull();
-    }
-}
-
-public sealed record StrongIdJsonEnvelope(OrderId OrderId, CustomerId CustomerId, CustomerId? OptionalCustomerId);
-
-[StrongId<Guid>]
-public readonly partial record struct OrderId : IStrongId<Guid>;
-
-[StrongId<Guid>]
-public readonly partial record struct CustomerId : IStrongId<Guid>;

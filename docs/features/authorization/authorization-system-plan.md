@@ -804,10 +804,10 @@ public sealed record RoleName
 }
 
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct RoleDefinitionId : IStrongId<Guid>;
+public readonly partial record struct RoleDefinitionId;
 
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct RoleAssignmentId : IStrongId<Guid>;
+public readonly partial record struct RoleAssignmentId;
 ```
 
 A role definition should include:
@@ -967,10 +967,10 @@ strong IDs and value objects from the first implementation.
 
 ```csharp
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct PermissionGrantId : IStrongId<Guid>;
+public readonly partial record struct PermissionGrantId;
 
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct TenantId : IStrongId<Guid>;
+public readonly partial record struct TenantId;
 
 public sealed record PermissionName
 {

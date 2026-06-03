@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Net;
 using Aiel.MultiTenancy;
+using System.Net;
 
 namespace Aiel.AspNetCore;
 
@@ -34,7 +34,7 @@ public sealed class TenantResolutionAccessTests
     [Fact]
     public async Task Resolved_TenantResolution_IsReadableFromHttpContext()
     {
-        var tenantId = TenantId.NewTenantId();
+        var tenantId = new TenantId(Guid.NewGuid());
         var outcome = new TenantResolution.Resolved(new TenantIdentity(tenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
@@ -63,7 +63,7 @@ public sealed class TenantResolutionAccessTests
     [Fact]
     public async Task Resolved_TenantIdentity_IsReadableFromTenantAccessor()
     {
-        var tenantId = TenantId.NewTenantId();
+        var tenantId = new TenantId(Guid.NewGuid());
         var outcome = new TenantResolution.Resolved(new TenantIdentity(tenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();

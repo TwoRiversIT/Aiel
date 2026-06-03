@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.EntityFrameworkCore;
 using Aiel.StrongIds;
 using Aiel.StrongIds.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.EntityFrameworkCore;
 
@@ -152,7 +152,7 @@ public class StrongIdValueConverterTests
 }
 
 [StrongId<Guid>]
-public readonly partial record struct OrderId : IStrongId<Guid>;
+public readonly partial record struct OrderId;
 
 [StrongId<Guid>]
-public readonly partial record struct CustomerId : IStrongId<Guid>;
+public readonly partial record struct CustomerId;

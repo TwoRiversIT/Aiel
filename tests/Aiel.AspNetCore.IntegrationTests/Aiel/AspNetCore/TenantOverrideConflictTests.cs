@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Net;
 using Aiel.MultiTenancy;
+using System.Net;
 
 namespace Aiel.AspNetCore;
 
@@ -36,8 +36,8 @@ public sealed class TenantOverrideConflictTests
     [Fact]
     public async Task XTenantId_ConflictsWithResolvedTenant_Returns409()
     {
-        var resolvedTenantId = TenantId.NewTenantId();
-        var differentTenantId = TenantId.NewTenantId();
+        var resolvedTenantId = new TenantId(Guid.NewGuid());
+        var differentTenantId = new TenantId(Guid.NewGuid());
         var outcome = new TenantResolution.Resolved(new TenantIdentity(resolvedTenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
@@ -53,7 +53,7 @@ public sealed class TenantOverrideConflictTests
     [Fact]
     public async Task XTenantId_MatchesResolvedTenant_Returns200()
     {
-        var resolvedTenantId = TenantId.NewTenantId();
+        var resolvedTenantId = new TenantId(Guid.NewGuid());
         var outcome = new TenantResolution.Resolved(new TenantIdentity(resolvedTenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();

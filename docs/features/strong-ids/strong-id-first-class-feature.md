@@ -48,7 +48,7 @@ The feature should make this shape the normal path:
 using Aiel.StrongIds;
 
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct AppointmentId : IStrongId<Guid>;
+public readonly partial record struct AppointmentId;
 ```
 
 The consumer should receive the required generator and analyzers by referencing the Strong ID package.
@@ -194,7 +194,7 @@ The existing generator contract remains the foundation:
 
 ```csharp
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct OrderId : IStrongId<Guid>;
+public readonly partial record struct OrderId;
 ```
 
 The generator emits:

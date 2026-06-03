@@ -27,30 +27,5 @@ namespace Aiel.MultiTenancy;
 /// <summary>
 /// Identifies a tenant. Guid-backed strong identifier; never exposed as a raw <see cref="Guid"/>.
 /// </summary>
-public readonly record struct TenantId : IStrongId<Guid>
-{
-    /// <inheritdoc />
-    public Guid Value { get; }
-
-    /// <summary>Initializes a <see cref="TenantId"/> from a <see cref="Guid"/>.</summary>
-    public TenantId(Guid value) => Value = value;
-
-    /// <summary>Creates a new random <see cref="TenantId"/>.</summary>
-    public static TenantId NewTenantId() => new(Guid.NewGuid());
-
-    /// <summary>
-    /// Attempts to create a <see cref="TenantId"/> from <paramref name="value"/>.
-    /// Returns <see langword="false"/> when <paramref name="value"/> is <see cref="Guid.Empty"/>.
-    /// </summary>
-    public static Boolean TryFrom(Guid value, out TenantId tenantId)
-    {
-        if (value == Guid.Empty)
-        {
-            tenantId = default;
-            return false;
-        }
-
-        tenantId = new TenantId(value);
-        return true;
-    }
-}
+[StrongId<Guid>(DisallowDefault = false, GenerateTryFrom = true)]
+public readonly partial record struct TenantId;

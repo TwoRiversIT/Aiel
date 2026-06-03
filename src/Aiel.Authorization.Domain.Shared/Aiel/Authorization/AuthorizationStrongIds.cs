@@ -28,16 +28,16 @@ namespace Aiel.Authorization;
 /// Identifies a published permission definition across renames.
 /// </summary>
 [StrongId<String>(DisallowDefault = true)]
-public readonly partial record struct PermissionStableId : IStrongId<String>;
+public readonly partial record struct PermissionStableId;
 
 /// <summary>
 /// Identifies a concrete persisted authorization grant.
 /// </summary>
 [StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct AuthorizationGrantId : IStrongId<Guid>;
+public readonly partial record struct AuthorizationGrantId;
 
 /// <summary>
 /// Identifies a client capability snapshot version token.
 /// </summary>
 [StrongId<String>(DisallowDefault = true)]
-public readonly partial record struct CapabilitySnapshotVersion : IStrongId<String>;
+public readonly partial record struct CapabilitySnapshotVersion;

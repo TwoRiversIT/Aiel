@@ -976,7 +976,7 @@ Then your ID types are:
 
 ```csharp
 [StrongId<Guid>]
-public partial record struct OrderId : IStrongId<Guid>;
+public partial record struct OrderId;
 ```
 The generator emits:
 ```

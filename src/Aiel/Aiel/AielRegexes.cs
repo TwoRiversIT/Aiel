@@ -27,7 +27,7 @@ namespace Aiel;
 /// <summary>
 /// Provides pre-compiled regular expressions for common patterns.
 /// </summary>
-public static partial class Rgx
+public static partial class AielRegexes
 {
     /// <summary>
     /// Pattern for matching valid port numbers (0-65535).

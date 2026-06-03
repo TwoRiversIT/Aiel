@@ -167,7 +167,7 @@ Mirror `Aiel.Generators.csproj` exactly:
 - Any `Aiel.*` project or package reference. The generator identifies the `[DefinePermission]` attribute by fully qualified metadata name string — no compile-time dependency on the contracts package is permitted.
 - Any `net*` `TargetFramework`. Must be `netstandard2.0`.
 
-The project MUST include `AnalyzerReleases.Shipped.md` and `AnalyzerReleases.Unshipped.md` as `<AdditionalFiles>`. It MUST import `Aiel.Shared.projitems`.
+The project MUST include `AnalyzerReleases.Shipped.md` and `AnalyzerReleases.Unshipped.md` as `<AdditionalFiles>`. It MUST import `Aiel.Roslyn.projitems`.
 
 ### Runtime package wiring — `Aiel.Authorization.Application.Contracts.csproj`
 

@@ -22,26 +22,14 @@
 
 namespace Aiel.StrongIds;
 
-public interface IStrongId
-{
-    Boolean IsDefault { get; }
-}
+[StrongId<Guid>(DisallowDefault = true)]
+public readonly partial record struct GuidDisallowDefaultId;
 
-public interface IStrongId<TValue> : IStrongId
-{
-    TValue Value { get; }
-}
+[StrongId<Int32>(DisallowDefault = false)]
+public readonly partial record struct Int32AllowDefaultId;
 
-public static class StrongIdExtensions
-{
-    public static T ThrowIfDefault<T>(this T value, String parameterName)
-        where T : IStrongId
-    {
-        if (value.IsDefault)
-        {
-            throw new ArgumentException("The StrongId is empty or default.", parameterName);
-        }
+[StrongId<String>(DisallowDefault = true)]
+public readonly partial record struct StringDisallowDefaultId;
 
-        return value;
-    }
-}
+[StrongId<String>(DisallowDefault = false)]
+public readonly partial record struct StringAllowDefaultId;

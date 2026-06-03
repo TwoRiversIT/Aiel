@@ -22,25 +22,24 @@
 
 namespace Aiel.StrongIds;
 
-[StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct MyGuidId;
-
-[StrongId<Int32>(DisallowDefault = false)]
-public readonly partial record struct MyInt32Id;
-
-[StrongId<String>(DisallowDefault = true)]
-public readonly partial record struct DisallowDefaultStringId;
-
-[StrongId<String>(DisallowDefault = false)]
-public readonly partial record struct AllowDefaultStringId;
-
 public class StrongIdTests
 {
+    [Fact]
+    public void StrongId_WithSameValue_AreEqual()
+    {
+        // The only real value of this test is as a shape/smoke test confirming
+        // the generated type is a record struct and not accidentally a class.
+
+        var id1 = new GuidDisallowDefaultId(Guid.NewGuid());
+        var id2 = new GuidDisallowDefaultId(id1.Value);
+        id1.Should().Be(id2);
+        id1.GetHashCode().Should().Be(id2.GetHashCode());
+    }
 
     [Fact]
     public void StrongId_DoesNotAllowDefault_WhenDisallowDefaultIsTrue()
     {
-        Action act = () => new MyGuidId(Guid.Empty);
+        Action act = () => new GuidDisallowDefaultId(Guid.Empty);
 
         act.Should().Throw<ArgumentException>();
     }
@@ -48,7 +47,7 @@ public class StrongIdTests
     [Fact]
     public void StrongId_AllowsDefault_WhenDisallowDefaultIsFalse()
     {
-        Action act = () => new MyInt32Id(0);
+        Action act = () => new Int32AllowDefaultId(0);
 
         act.Should().NotThrow();
     }
@@ -56,42 +55,42 @@ public class StrongIdTests
     [Fact]
     public void StrongId_GivenDisallowDefaultIsTrue_WhenStringIsNull_ThrowsArgumentException()
     {
-        Action act = () => new DisallowDefaultStringId(null!);
+        Action act = () => new StringDisallowDefaultId(null!);
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void StrongId_GivenDisallowDefaultIsTrue_WhenStringIsWhitespace_ThrowsArgumentException()
     {
-        Action act = () => new DisallowDefaultStringId("   ");
+        Action act = () => new StringDisallowDefaultId("   ");
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsNull_DoesNotThrow()
     {
-        Action act = () => new AllowDefaultStringId(null!);
+        Action act = () => new StringAllowDefaultId(null!);
         act.Should().NotThrow();
     }
 
     [Fact]
     public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsEmpty_DoesNotThrow()
     {
-        Action act = () => new AllowDefaultStringId(String.Empty);
+        Action act = () => new StringAllowDefaultId(String.Empty);
         act.Should().NotThrow();
     }
 
     [Fact]
     public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsWhitespace_DoesNotThrow()
     {
-        Action act = () => new AllowDefaultStringId("   ");
+        Action act = () => new StringAllowDefaultId("   ");
         act.Should().NotThrow();
     }
 
     [Fact]
     public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsNull_ValueIsEmpty()
     {
-        var id = new AllowDefaultStringId(null!);
+        var id = new StringAllowDefaultId(null!);
         id.Value.Should().NotBeNull();
         id.Value.Should().BeEmpty();
     }
@@ -99,7 +98,7 @@ public class StrongIdTests
     [Fact]
     public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsWhitespace_ValueIsEmpty()
     {
-        var id = new AllowDefaultStringId("   ");
+        var id = new StringAllowDefaultId("   ");
         id.Value.Should().NotBeNull();
         id.Value.Should().BeEmpty();
     }
@@ -107,7 +106,7 @@ public class StrongIdTests
     [Fact]
     public void StrongId_IsEmpty_ReturnsTrue_WhenValueIsDefault()
     {
-        var id = new MyInt32Id(0);
+        var id = new Int32AllowDefaultId(0);
         id.IsDefault.Should().BeTrue();
     }
 }

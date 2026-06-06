@@ -20,7 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// MissingEventIdParameterAnalyzer.cs  –  AIEL00009
+//
+// Reports when a [LoggerMessage]-decorated method does NOT include an
+// optional parameter of the configured EventIds type named "eventId".
+//
+// The EventIds enum type is resolved from AnalyzerConfiguration so that
+// teams using a custom enum (e.g. AcmeEventIds) get the same enforcement.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -46,72 +56,68 @@ public sealed class MissingEventIdParameterAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        context.RegisterSymbolAction(AnalyzeMethod, SymbolKind.Method);
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            compilationCtx.RegisterSymbolAction(
+                ctx => AnalyzeSymbol(ctx),
+                SymbolKind.Method);
+        });
     }
 
     // ── Core analysis ────────────────────────────────────────────────────
 
-    private static void AnalyzeMethod(SymbolAnalysisContext ctx)
+    private static void AnalyzeSymbol(SymbolAnalysisContext context)
     {
-        var method = (IMethodSymbol)ctx.Symbol;
-
-        // Only inspect [LoggerMessage]-decorated methods.
-        if (!AnalyzerHelpers.HasLoggerMessageAttribute(method, ctx.Compilation))
+        var config = AnalyzerConfiguration.Resolve(context.Options);
+        var eventIdsType = config.GetTypeSymbol(context.Compilation);
+        if (eventIdsType is null)
         {
             return;
         }
 
-        // Retrieve the AielEventIds type; if the framework is not referenced we
-        // skip silently (avoids noise in non-Aiel projects that happen to use the analyzer).
-        var aielType = AnalyzerHelpers.GetAielEventIdsType(ctx.Compilation);
-        if (aielType is null)
+        var method = (IMethodSymbol)context.Symbol;
+        if (!AnalyzerHelpers.HasLoggerMessageAttribute(method, context.Compilation))
         {
             return;
         }
 
-        // Look for an optional parameter whose type IS AielEventIds.
-        var eventIdParam = FindEventIdParameter(method, aielType);
-        if (eventIdParam is not null)
+        if (FindEventIdParameter(method, eventIdsType) is not null)
         {
-            return; // ← compliant
+            return;
         }
 
-        // Determine the expected default member name from the attribute.
-        var attrData = AnalyzerHelpers.GetLoggerMessageAttribute(method, ctx.Compilation);
-        var suggestedMember = TrySuggestMember(attrData, aielType);
+        var attrData = AnalyzerHelpers.GetLoggerMessageAttribute(method, context.Compilation);
+        var suggestedMember = TrySuggestMember(attrData, eventIdsType);
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+        var location = method.Locations.FirstOrDefault() ?? Location.None;
 
-        // Report on the [LoggerMessage] attribute when possible.
-        var location = attrData?.ApplicationSyntaxReference?.GetSyntax(ctx.CancellationToken)
-            .GetLocation()
-            ?? method.Locations.FirstOrDefault()
-            ?? Location.None;
-
-        ctx.ReportDiagnostic(Diagnostic.Create(
+        context.ReportDiagnostic(Diagnostic.Create(
             DiagnosticDescriptors.MissingEventIdParameter,
             location,
+            properties: props,
             method.Name,
-            suggestedMember ?? "SomeMember"));
+            suggestedMember ?? AnalyzerConfiguration.DefaultMemberName));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
     /// <summary>
     /// Finds a parameter that:
-    ///   1. Has type <c>AielEventIds</c>.
-    ///   2. Is named <c>eventId</c> (case-insensitive).
-    ///   3. Has a default value (i.e. is optional).
+    ///   1. Has the configured EventIds enum type.
+    ///   2. Is named "eventId" (case-insensitive).
+    ///   3. Has an explicit default value.
     /// </summary>
     private static IParameterSymbol? FindEventIdParameter(
-        IMethodSymbol method, INamedTypeSymbol aielType)
+        IMethodSymbol method, INamedTypeSymbol eventIdsType)
     {
         foreach (var param in method.Parameters)
         {
-            if (!SymbolEqualityComparer.Default.Equals(param.Type, aielType))
+            if (!SymbolEqualityComparer.Default.Equals(param.Type, eventIdsType))
             {
                 continue;
             }
 
-            if (!string.Equals(param.Name, WellKnownTypes.EventIdParamName,
+            if (!String.Equals(param.Name, WellKnownTypes.EventIdParamName,
                     StringComparison.OrdinalIgnoreCase))
             {
                 continue;
@@ -126,26 +132,19 @@ public sealed class MissingEventIdParameterAnalyzer : DiagnosticAnalyzer
         return null;
     }
 
-    private static string? TrySuggestMember(AttributeData? attrData, INamedTypeSymbol aielType)
+    private static String? TrySuggestMember(AttributeData? attrData, INamedTypeSymbol eventIdsType)
     {
         if (attrData is null)
         {
             return null;
         }
 
-        // Try named arg first: EventId = (int)AielEventIds.X  →  integer constant
         var arg = AnalyzerHelpers.GetNamedArgument(attrData, WellKnownTypes.EventIdArgName);
-        if (arg is null)
+        if (arg?.Value is Int32 intVal)
         {
-            return null;
-        }
-
-        if (arg.Value.Value is int intVal)
-        {
-            return AnalyzerHelpers.TryResolveEventIdMemberName(intVal, aielType);
+            return AnalyzerHelpers.TryResolveMemberName(intVal, eventIdsType);
         }
 
         return null;
     }
 }
-

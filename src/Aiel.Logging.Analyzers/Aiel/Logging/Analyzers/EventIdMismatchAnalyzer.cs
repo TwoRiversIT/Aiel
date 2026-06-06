@@ -20,7 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// EventIdMismatchAnalyzer.cs  –  AIEL00012
+//
+// Reports when the integer EventId in [LoggerMessage] does not match the
+// default value of the method's optional <ConfiguredType> eventId parameter.
+//
+// Uses AnalyzerConfiguration so the check works with any EventIds enum,
+// not just Aiel.Logging.AielEventIds.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -46,42 +56,47 @@ public sealed class EventIdMismatchAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        context.RegisterSymbolAction(AnalyzeMethod, SymbolKind.Method);
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSymbolAction(
+                ctx => AnalyzeMethod(ctx, config),
+                SymbolKind.Method);
+        });
     }
 
     // ── Core analysis ────────────────────────────────────────────────────
 
-    private static void AnalyzeMethod(SymbolAnalysisContext ctx)
+    private static void AnalyzeMethod(SymbolAnalysisContext ctx, EventIdsTypeConfig config)
     {
         var method = (IMethodSymbol)ctx.Symbol;
 
-        // Only inspect [LoggerMessage]-decorated methods.
         var attrData = AnalyzerHelpers.GetLoggerMessageAttribute(method, ctx.Compilation);
         if (attrData is null)
         {
             return;
         }
 
-        // We need the AielEventIds type to inspect parameter default values.
-        var aielType = AnalyzerHelpers.GetAielEventIdsType(ctx.Compilation);
-        if (aielType is null)
+        var eventIdsType = config.GetTypeSymbol(ctx.Compilation);
+        if (eventIdsType is null)
         {
             return;
         }
 
         // ── 1. Read EventId from the attribute ───────────────────────────
-        var attrEventIdArg = AnalyzerHelpers.GetNamedArgument(attrData, WellKnownTypes.EventIdArgName);
-        if (attrEventIdArg is null || attrEventIdArg.Value.Value is not int attrEventIdValue)
+        var attrArg = AnalyzerHelpers.GetNamedArgument(attrData, WellKnownTypes.EventIdArgName);
+        if (attrArg?.Value is not Int32 attrEventIdValue)
         {
-            return; // Attribute EventId not resolvable – let AIEL001 handle it
+            return;
         }
 
-        // ── 2. Read default value of the "eventId" parameter ────────────
+        // ── 2. Find the optional eventId parameter ───────────────────────
         IParameterSymbol? eventIdParam = null;
         foreach (var p in method.Parameters)
         {
-            if (SymbolEqualityComparer.Default.Equals(p.Type, aielType)
-                && string.Equals(p.Name, WellKnownTypes.EventIdParamName,
+            if (SymbolEqualityComparer.Default.Equals(p.Type, eventIdsType)
+                && String.Equals(p.Name, WellKnownTypes.EventIdParamName,
                     StringComparison.OrdinalIgnoreCase)
                 && p.HasExplicitDefaultValue)
             {
@@ -96,33 +111,33 @@ public sealed class EventIdMismatchAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // The default value of an enum parameter is its underlying integer.
-        if (eventIdParam.ExplicitDefaultValue is not int paramDefaultValue)
+        if (eventIdParam.ExplicitDefaultValue is not Int32 paramDefault)
         {
             return;
         }
 
         // ── 3. Compare ───────────────────────────────────────────────────
-        if (attrEventIdValue == paramDefaultValue)
+        if (attrEventIdValue == paramDefault)
         {
-            return; // ← all good
+            return;
         }
 
-        // Resolve display names for the diagnostic message.
-        var attrMember = AnalyzerHelpers.TryResolveEventIdMemberName(attrEventIdValue, aielType)
-                           ?? attrEventIdValue.ToString();
-        var paramMember = AnalyzerHelpers.TryResolveEventIdMemberName(paramDefaultValue, aielType)
-                           ?? paramDefaultValue.ToString();
+        var attrMember = AnalyzerHelpers.TryResolveMemberName(attrEventIdValue, eventIdsType)
+                          ?? attrEventIdValue.ToString();
+        var paramMember = AnalyzerHelpers.TryResolveMemberName(paramDefault, eventIdsType)
+                          ?? paramDefault.ToString();
 
         var location = eventIdParam.Locations.FirstOrDefault()
                        ?? method.Locations.FirstOrDefault()
                        ?? Location.None;
 
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+
         ctx.ReportDiagnostic(Diagnostic.Create(
             DiagnosticDescriptors.EventIdMismatch,
             location,
-            $"AielEventIds.{attrMember}",
-            $"AielEventIds.{paramMember}"));
+            properties: props,
+            $"{config.ShortName}.{attrMember}",
+            $"{config.ShortName}.{paramMember}"));
     }
 }
-

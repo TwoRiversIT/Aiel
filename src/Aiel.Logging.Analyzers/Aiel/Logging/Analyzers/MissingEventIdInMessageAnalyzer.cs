@@ -20,7 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// MissingEventIdInMessageAnalyzer.cs  –  AIEL00010
+//
+// Reports when a [LoggerMessage] message template does not contain the
+// "[{EventId}]" placeholder.  This rule does not inspect the EventIds
+// enum type — the placeholder is fixed regardless of configuration.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -33,7 +41,6 @@ namespace Aiel.Logging.Analyzers;
 /// <summary>
 /// AIEL00010 – The <c>Message</c> argument of every <c>[LoggerMessage]</c>
 /// attribute must contain the <c>[{EventId}]</c> placeholder.
-/// structured log consumers can correlate events by ID.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
@@ -48,16 +55,24 @@ public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        context.RegisterSyntaxNodeAction(AnalyzeAttribute, SyntaxKind.Attribute);
+        // Wrap in CompilationStart so configuration is resolved consistently
+        // with the other analyzers, even though AIEL00010 doesn't need it.
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSyntaxNodeAction(
+                ctx => AnalyzeAttribute(ctx, config),
+                SyntaxKind.Attribute);
+        });
     }
 
     // ── Core analysis ────────────────────────────────────────────────────
 
-    private static void AnalyzeAttribute(SyntaxNodeAnalysisContext ctx)
+    private static void AnalyzeAttribute(SyntaxNodeAnalysisContext ctx, EventIdsTypeConfig config)
     {
         var attrNode = (AttributeSyntax)ctx.Node;
 
-        // Only interested in [LoggerMessage] attributes.
         var attrSymbol = ctx.SemanticModel
             .GetSymbolInfo(attrNode, ctx.CancellationToken)
             .Symbol?.ContainingType;
@@ -72,33 +87,32 @@ public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Find the Message argument (named wins; positional at index 2 for the
-        // common overload: LoggerMessage(eventId, level, message)).
         var messageArg = FindMessageArgument(attrNode);
         if (messageArg is null)
         {
             return;
         }
 
-        // Resolve the string constant value of the message expression.
         var constant = ctx.SemanticModel
             .GetConstantValue(messageArg.Expression, ctx.CancellationToken);
 
-        if (!constant.HasValue || constant.Value is not string messageText)
+        if (!constant.HasValue || constant.Value is not String messageText)
         {
-            return; // Can't evaluate – skip rather than raise false positives
+            return;
         }
 
-        // Check for the required placeholder (case-sensitive per Aiel convention).
-        if (messageText.Contains(WellKnownTypes.EventIdPlaceholder,
-                StringComparison.Ordinal))
+        if (messageText.StartsWith(WellKnownTypes.EventIdPlaceholder, StringComparison.Ordinal))
         {
-            return; // ← compliant
+            return; // compliant
         }
+
+        // Attach config props so the code fix can echo them back if needed.
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
 
         ctx.ReportDiagnostic(Diagnostic.Create(
             DiagnosticDescriptors.MissingEventIdInMessage,
             messageArg.Expression.GetLocation(),
+            properties: props,
             messageText));
     }
 
@@ -113,7 +127,6 @@ public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
 
         var args = attr.ArgumentList.Arguments;
 
-        // Named argument: Message = "..."
         foreach (var arg in args)
         {
             if (arg.NameEquals?.Name.Identifier.ValueText == WellKnownTypes.MessageArgName)
@@ -122,8 +135,7 @@ public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
             }
         }
 
-        // Positional: index 2 in the (eventId, level, message) constructor overload.
-        // Guard: only treat it as the message slot when it's a string literal.
+        // Positional index 2: (eventId, level, message)
         if (args.Count >= 3)
         {
             var candidate = args[2];
@@ -138,4 +150,3 @@ public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
         return null;
     }
 }
-

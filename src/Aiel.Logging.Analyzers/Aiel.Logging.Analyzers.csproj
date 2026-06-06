@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 
@@ -20,6 +20,7 @@
 		<NoPackageAnalysis>true</NoPackageAnalysis>
 		<NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
 
+		<AielEventIdsType>Barney.Miller.EventIds</AielEventIdsType>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -52,15 +53,16 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
 		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="build\Aiel.Logging.Analyzers.props" Pack="true" PackagePath="build" Visible="true" />
 	</ItemGroup>
 	<!-- END: Analyzer specific settings -->
 

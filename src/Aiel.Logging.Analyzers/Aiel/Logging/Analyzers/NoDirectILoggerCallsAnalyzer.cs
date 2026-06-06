@@ -20,7 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// NoDirectILoggerCallsAnalyzer.cs  –  AIEL00011
+//
+// Reports direct calls to ILogger extension methods (LogInformation, etc.)
+// that occur outside a [LoggerMessage]-decorated method.
+//
+// Does not depend on the configured EventIds type — AIEL00011 fires whenever
+// ILogger is called directly, regardless of which enum is in use.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -47,31 +57,32 @@ public sealed class NoDirectILoggerCallsAnalyzer : DiagnosticAnalyzer
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.EnableConcurrentExecution();
 
-        context.RegisterSyntaxNodeAction(
-            AnalyzeInvocation, SyntaxKind.InvocationExpression);
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSyntaxNodeAction(
+                ctx => AnalyzeInvocation(ctx, config),
+                SyntaxKind.InvocationExpression);
+        });
     }
 
     // ── Core analysis ────────────────────────────────────────────────────
 
-    private static void AnalyzeInvocation(SyntaxNodeAnalysisContext ctx)
+    private static void AnalyzeInvocation(SyntaxNodeAnalysisContext ctx, EventIdsTypeConfig config)
     {
         var invocation = (InvocationExpressionSyntax)ctx.Node;
 
-        // We only care about member-access invocations: receiver.MethodName(...)
         if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess)
         {
             return;
         }
 
         var methodName = memberAccess.Name.Identifier.ValueText;
-
-        // Quick name check before doing full symbol resolution (performance).
         if (!WellKnownTypes.DirectLoggerMethods.Contains(methodName))
         {
             return;
         }
-
-        // Resolve the invoked method symbol.
 
         if (ctx.SemanticModel
             .GetSymbolInfo(invocation, ctx.CancellationToken)
@@ -80,11 +91,8 @@ public sealed class NoDirectILoggerCallsAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // The first parameter of the extension method or the receiver type
-        // must be ILogger / ILogger<T>.
         var receiverType = methodSymbol.IsExtensionMethod
-            ? (methodSymbol.ReducedFrom?.Parameters.FirstOrDefault()?.Type
-                ?? methodSymbol.Parameters.FirstOrDefault()?.Type)
+            ? methodSymbol.Parameters.FirstOrDefault()?.Type
             : methodSymbol.ContainingType;
 
         if (receiverType is null)
@@ -97,33 +105,26 @@ public sealed class NoDirectILoggerCallsAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        // Exclude calls that are themselves inside a [LoggerMessage] partial
-        // method implementation (the source-generated body).
+        // Don't flag calls inside [LoggerMessage] implementations themselves.
         if (IsInsideLoggerMessageMethod(invocation, ctx.SemanticModel, ctx.Compilation))
         {
             return;
         }
 
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+
         ctx.ReportDiagnostic(Diagnostic.Create(
             DiagnosticDescriptors.NoDirectILoggerCalls,
             invocation.GetLocation(),
+            properties: props,
             methodName));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Returns <see langword="true"/> when the invocation node resides inside
-    /// a method that is itself decorated with <c>[LoggerMessage]</c>.
-    /// (We should not flag source-generator output or hand-written implementations
-    /// of the logging helpers themselves.)
-    /// </summary>
-    private static bool IsInsideLoggerMessageMethod(
-        SyntaxNode node,
-        SemanticModel model,
-        Compilation compilation)
+    private static Boolean IsInsideLoggerMessageMethod(
+        SyntaxNode node, SemanticModel model, Compilation compilation)
     {
-        // Walk up the syntax tree looking for a method declaration.
         var ancestor = node.Ancestors()
             .OfType<MethodDeclarationSyntax>()
             .FirstOrDefault();
@@ -133,13 +134,8 @@ public sealed class NoDirectILoggerCallsAnalyzer : DiagnosticAnalyzer
             return false;
         }
 
-        var enclosingMethod = model.GetDeclaredSymbol(ancestor);
-        if (enclosingMethod is null)
-        {
-            return false;
-        }
-
-        return AnalyzerHelpers.HasLoggerMessageAttribute(enclosingMethod, compilation);
+        var enclosing = model.GetDeclaredSymbol(ancestor);
+        return enclosing is not null
+            && AnalyzerHelpers.HasLoggerMessageAttribute(enclosing, compilation);
     }
 }
-

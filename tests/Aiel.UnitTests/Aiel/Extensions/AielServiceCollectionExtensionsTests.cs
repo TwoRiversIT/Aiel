@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.DependencyInjection;
 using Aiel.Dependencies;
+using Microsoft.Extensions.DependencyInjection;
 using static FluentAssertions.FluentActions;
 
 namespace Aiel.Extensions;

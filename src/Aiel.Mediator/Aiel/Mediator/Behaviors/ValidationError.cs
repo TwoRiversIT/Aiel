@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using FluentValidation.Results;
 using Aiel.Results;
+using FluentValidation.Results;
 
 namespace Aiel.Mediator.Behaviors;
 

@@ -20,13 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.EntityFrameworkCore;
 using Aiel.AspNetCore;
 using Aiel.Dependencies;
 using Aiel.EntityFrameworkCore;
 using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.Security;
 using Aiel.WorkerService.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.WorkerService;
 

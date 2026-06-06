@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.EntityFrameworkCore;
 using Aiel.Domain;
 using Aiel.Execution;
 using Aiel.MultiTenancy;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.EntityFrameworkCore;
 

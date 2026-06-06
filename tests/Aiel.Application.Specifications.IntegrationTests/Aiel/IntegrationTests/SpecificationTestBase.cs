@@ -20,11 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.EntityFrameworkCore.Queries;
+using Aiel.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Aiel.EntityFrameworkCore.Queries;
-using Aiel.Testing;
 
 namespace Aiel.IntegrationTests;
 

@@ -20,12 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.DependencyInjection;
 using Aiel.Collections;
 using Aiel.Dependencies;
 using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.EntityFrameworkCore.Seeding;
 using Aiel.MultiTenancy;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore;
 

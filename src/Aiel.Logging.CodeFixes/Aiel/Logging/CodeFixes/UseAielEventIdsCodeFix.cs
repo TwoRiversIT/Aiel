@@ -123,7 +123,7 @@ public sealed class UseAielEventIdsCodeFix : CodeFixProvider
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
-    private static String ExtractSuggestedMember(String msg, String shortName)
+    private static String? ExtractSuggestedMember(String msg, String shortName)
     {
         // messageFormat: "Use '(int)EnumType.{member}' instead."
         var prefix = $"(int){shortName}.";

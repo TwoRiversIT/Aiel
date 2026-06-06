@@ -31,7 +31,7 @@ namespace Aiel.MessageBus;
 /// </summary>
 public readonly record struct ActorKind(String Value)
 {
-    public static readonly ActorKind User    = new("user");
+    public static readonly ActorKind User = new("user");
     public static readonly ActorKind Service = new("service");
-    public static readonly ActorKind System  = new("system");
+    public static readonly ActorKind System = new("system");
 }

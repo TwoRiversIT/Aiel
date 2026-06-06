@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.AspNetCore.Mvc.Testing;
 using Aiel.StrongIds.AspNetCore.IntegrationTests;
+using Microsoft.AspNetCore.Mvc.Testing;
 using System.Text.Json;
 
 namespace Aiel.StrongIds.AspNetCore;

@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Logging;
 using Aiel.Actions;
 using Aiel.Results;
+using Microsoft.Extensions.Logging;
 
 namespace Aiel.Mediator.Behaviors;
 

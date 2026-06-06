@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.AspNetCore.Mvc.Testing;
 using Aiel.Results.IntegrationTests;
 using Aiel.Results.Models;
 using Aiel.Results.TestErrors;
+using Microsoft.AspNetCore.Mvc.Testing;
 using System.Text.Json;
 
 namespace Aiel.Results;

@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.AspNetCore.Http.HttpResults;
 using Aiel.Results;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Aiel.Authorization.AspNetCore;
 

@@ -27,13 +27,13 @@ namespace Aiel.Execution;
 /// </summary>
 public interface IActor
 {
-	/// <summary>
-	/// Gets a stable identifier suitable for audit stamping.
-	/// </summary>
-	/// <remarks>
-	/// Concrete actor types may override this when they can supply a domain-specific
-	/// identifier. The default falls back to the runtime type name so audit metadata
-	/// remains populated even for marker-style test actors.
-	/// </remarks>
-	String AuditIdentity => GetType().FullName ?? GetType().Name;
+    /// <summary>
+    /// Gets a stable identifier suitable for audit stamping.
+    /// </summary>
+    /// <remarks>
+    /// Concrete actor types may override this when they can supply a domain-specific
+    /// identifier. The default falls back to the runtime type name so audit metadata
+    /// remains populated even for marker-style test actors.
+    /// </remarks>
+    String AuditIdentity => GetType().FullName ?? GetType().Name;
 }

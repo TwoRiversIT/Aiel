@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using FluentValidation.Validators;
 using Aiel.Emailing;
+using FluentValidation.Validators;
 
 namespace FluentValidation;
 

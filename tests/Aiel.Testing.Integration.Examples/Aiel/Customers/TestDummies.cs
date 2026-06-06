@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.EntityFrameworkCore;
 using Aiel.Results;
+using Microsoft.EntityFrameworkCore;
 using Riok.Mapperly.Abstractions;
 using System.Diagnostics.CodeAnalysis;
 

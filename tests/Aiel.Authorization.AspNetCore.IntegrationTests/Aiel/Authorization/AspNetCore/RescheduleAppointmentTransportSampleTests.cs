@@ -20,12 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Authorization.Testing;
+using Aiel.Execution;
+using Aiel.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Aiel.Execution;
-using Aiel.Authorization.Testing;
-using Aiel.Results;
 using System.Net;
 using System.Net.Http.Json;
 using System.Reflection;

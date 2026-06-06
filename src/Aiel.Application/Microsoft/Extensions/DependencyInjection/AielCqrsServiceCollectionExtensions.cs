@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Aiel.Commands;
 using Aiel.Domain;
 using Aiel.Queries;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;

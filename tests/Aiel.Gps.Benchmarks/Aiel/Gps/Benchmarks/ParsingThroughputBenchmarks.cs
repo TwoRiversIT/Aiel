@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using BenchmarkDotNet.Attributes;
 using Aiel.Gps.Parsing;
+using BenchmarkDotNet.Attributes;
 
 namespace Aiel.Gps.Benchmarks;
 

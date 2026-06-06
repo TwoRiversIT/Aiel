@@ -210,7 +210,7 @@ public class StrongIdSourceGeneratorTests
         var result = RunGenerator(source);
 
         result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL10001" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00013" && d.Severity == DiagnosticSeverity.Error);
     }
 
     [Fact]
@@ -229,7 +229,7 @@ public class StrongIdSourceGeneratorTests
         var result = RunGenerator(source);
 
         result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL10002" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00014" && d.Severity == DiagnosticSeverity.Error);
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class StrongIdSourceGeneratorTests
         var result = RunGenerator(source);
 
         result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL10004" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00016" && d.Severity == DiagnosticSeverity.Error);
     }
 
     [Fact]
@@ -276,7 +276,7 @@ public class StrongIdSourceGeneratorTests
         var result = RunGenerator(source);
 
         result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL10005" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00017" && d.Severity == DiagnosticSeverity.Error);
     }
 
     [Fact]
@@ -294,7 +294,7 @@ public class StrongIdSourceGeneratorTests
         var result = RunGenerator(source);
 
         result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL10006" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00018" && d.Severity == DiagnosticSeverity.Error);
     }
 
     private static GeneratorRunResult RunGenerator(String source, String strongIdNamespace = "Aiel.StrongIds")

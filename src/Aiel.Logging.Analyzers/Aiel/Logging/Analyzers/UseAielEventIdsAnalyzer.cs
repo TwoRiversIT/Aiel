@@ -31,9 +31,9 @@ using System.Collections.Immutable;
 namespace Aiel.Logging.Analyzers;
 
 /// <summary>
-/// AIEL001 – Detects raw integer literals used as the <c>EventId</c> argument
-/// in <c>[LoggerMessage]</c> attributes and suggests using the
-/// <c>AielEventIds</c> enum instead.
+/// AIEL00008 – Detects raw integer literals used as the <c>EventId</c> argument
+/// in <c>[LoggerMessage]</c> attributes and suggests the configured EventIds
+/// enum cast instead.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class UseAielEventIdsAnalyzer : DiagnosticAnalyzer

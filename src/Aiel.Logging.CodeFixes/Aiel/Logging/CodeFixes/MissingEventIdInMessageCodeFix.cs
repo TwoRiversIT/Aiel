@@ -33,8 +33,9 @@ using System.Composition;
 namespace Aiel.Logging.CodeFixes;
 
 /// <summary>
-/// Fixes AIEL003 by prepending <c>[{EventId}] </c> to the message template
-/// string literal in a <c>[LoggerMessage]</c> attribute.
+/// Code fix for AIEL00010 — inserts <c>[{EventId}] </c> at the beginning of the
+/// <see cref="Microsoft.Extensions.Logging.LoggerMessageAttribute"/> <c>Message</c>
+/// argument when the <c>[{EventId}]</c> placeholder is missing.
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MissingEventIdInMessageCodeFix))]
 [Shared]

@@ -34,7 +34,7 @@ namespace Aiel.Authorization.Analyzers;
 /// </summary>
 /// <remarks>
 /// <para>This analyzer is fail-closed: the absence of an authorization story is a compile-time error
-/// (AIEL20001). An empty or whitespace <c>Reason</c> on the marker attribute is also an error (AIEL20002).</para>
+/// (AIEL00006). An empty or whitespace <c>Reason</c> on the marker attribute is also an error (AIEL00007).</para>
 /// <para>
 /// Task 9 will add a third passing condition — a generated permission definition — without changing
 /// the diagnostic IDs or existing passing behavior.
@@ -112,7 +112,7 @@ public sealed class ActionAuthorizationAnalyzer : DiagnosticAnalyzer
                     actionType.Name));
             }
 
-            // Do NOT also report AIEL20001 when the marker is present, regardless of Reason validity.
+            // Do NOT also report AIEL00006 when the marker is present, regardless of Reason validity.
             return;
         }
 

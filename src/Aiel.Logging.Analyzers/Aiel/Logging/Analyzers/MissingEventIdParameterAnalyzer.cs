@@ -29,9 +29,9 @@ using System.Collections.Immutable;
 namespace Aiel.Logging.Analyzers;
 
 /// <summary>
-/// AIEL002 – Every <c>[LoggerMessage]</c>-decorated method must expose an
-/// optional <c>AielEventIds eventId = AielEventIds.X</c> parameter so that
-/// callers can override the default event ID at the call site.
+/// AIEL00009 – Every <c>[LoggerMessage]</c>-decorated method must expose an
+/// optional <c>&lt;EventIdsType&gt; eventId = &lt;EventIdsType&gt;.X</c>
+/// parameter so that callers can override the default event ID.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class MissingEventIdParameterAnalyzer : DiagnosticAnalyzer

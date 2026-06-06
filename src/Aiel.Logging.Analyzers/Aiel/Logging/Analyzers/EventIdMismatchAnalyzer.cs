@@ -29,8 +29,8 @@ using System.Collections.Immutable;
 namespace Aiel.Logging.Analyzers;
 
 /// <summary>
-/// AIEL005 – Ensures the numeric <c>EventId</c> in <c>[LoggerMessage]</c>
-/// matches the integer value of the default for the <c>AielEventIds eventId</c>
+/// AIEL00012 – The numeric <c>EventId</c> in <c>[LoggerMessage]</c> must match
+/// the integer value of the default for the <c>&lt;EventIdsType&gt; eventId</c>
 /// parameter on the same method.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
@@ -90,7 +90,7 @@ public sealed class EventIdMismatchAnalyzer : DiagnosticAnalyzer
             }
         }
 
-        // If the parameter is absent, AIEL002 covers that – we don't double-report.
+        // AIEL00009 covers the missing-parameter case; we don't double-report.
         if (eventIdParam is null)
         {
             return;

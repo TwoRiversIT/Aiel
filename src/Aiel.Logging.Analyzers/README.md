@@ -1,128 +1,187 @@
 # Aiel Logging Analyzers
 
-[![CI](https://github.com/your-org/aiel-analyzers/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/aiel-analyzers/actions/workflows/ci.yml)
-[![NuGet](https://img.shields.io/nuget/v/Aiel.Logging.Analyzers.svg)](https://www.nuget.org/packages/Aiel.Logging.Analyzers)
+[![CI](https://github.com/TwoRiversIT/Aiel/actions/workflows/ci.yml/badge.svg)](https://github.com/TwoRiversIT/Aiel/actions)
+[![NuGet](https://img.shields.io/nuget/v/Aiel.Logging.Analyzers.svg)](https://nuget.org/packages/Aiel.Logging.Analyzers)
 
-Roslyn source analyzers and code fixes that enforce the **Aiel framework structured-logging contract** at compile time — zero runtime overhead, IDE-native feedback, and one-click fixes.
-
----
-
-## Rules at a glance
-
-| Rule | Severity | Title |
-|---|---|---|
-| AIEL001 | ⚠ Warning | Use `AielEventIds` enum — no raw integer literals in `[LoggerMessage]` |
-| AIEL002 | ⚠ Warning | Every `[LoggerMessage]` helper must expose `AielEventIds eventId = …` |
-| AIEL003 | ⚠ Warning | Message template must contain `[{EventId}]` placeholder |
-| AIEL004 | ⚠ Warning | Do not call `ILogger` methods directly — use `[LoggerMessage]` helpers |
-| AIEL005 | 🔴 Error  | `EventId` in attribute and `eventId` parameter default must agree |
-
-Every rule ships with a **code fix** (including FixAll support).
+Roslyn source analyzers + code fixes that enforce the **Aiel structured-logging convention**
+at compile time — zero runtime overhead, IDE-integrated, `FixAll`-capable.
 
 ---
 
-## Quick start
-
-```xml
-<!-- In your .csproj -->
-<ItemGroup>
-  <PackageReference Include="Aiel.Logging.Analyzers" Version="1.0.0" />
-  <PackageReference Include="Aiel.Logging.CodeFixes"  Version="1.0.0" />
-</ItemGroup>
-```
-
-The packages are compile-time only (`PrivateAssets="all"`) and never become transitive dependencies.
-
----
-
-## The compliant logging pattern
-
-```csharp
-// 1. Define your helpers ──────────────────────────────────────────────
-internal static partial class MyModuleLog
-{
-    [LoggerMessage(
-        EventId = (int)AielEventIds.ModuleStart,   // ← AIEL001: must use enum cast
-        Level   = LogLevel.Information,
-        Message = "[{EventId}] Module started: {Name}")]  // ← AIEL003: must have [{EventId}]
-    public static partial void LogModuleStart(
-        this ILogger logger,
-        string name,
-        AielEventIds eventId = AielEventIds.ModuleStart);  // ← AIEL002 + AIEL005: must match
-}
-
-// 2. Call helpers — never ILogger directly ────────────────────────────
-public class MyModule
-{
-    private readonly ILogger<MyModule> _logger;
-
-    public void Start(string name)
-    {
-        _logger.LogModuleStart(name);  // ← AIEL004: correct — uses helper
-        // _logger.LogInformation(...)  // ← AIEL004: would fire here
-    }
-}
-```
-
-## Running locally
+## Quick Start
 
 ```bash
-# Build everything
-dotnet build Aiel.Logging.sln
-
-# Run all tests
-dotnet test Aiel.Logging.sln --logger "console;verbosity=normal"
-
-# Run tests for a specific rule (e.g. AIEL003)
-dotnet test tests/Aiel.Logging.Analyzers.Tests \
-  --filter "FullyQualifiedName~AIEL003"
-
-# Pack NuGet packages
-dotnet pack src/Aiel.Logging.Analyzers --configuration Release --output ./artifacts
-dotnet pack src/Aiel.Logging.CodeFixes --configuration Release --output ./artifacts
+dotnet add package Aiel.Logging.Analyzers
 ```
 
-Open `src/Aiel.Logging.Template/SampleViolations.cs` in Visual Studio or
-Rider to see all five rules light up with underlines and lightbulb fixes.
+After installation every `[LoggerMessage]`-decorated partial method in the project is checked
+against the five rules below.  Violations appear as compiler errors/warnings with one-click
+code fixes in Visual Studio, VS Code, and Rider.
 
 ---
 
-## Configuring severity via `.editorconfig`
+## Rules
+
+| ID      | Rule                    | Severity | Description                                                                                                                   |
+| ------- | ----------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| AIEL00008 | UseAielEventIds         | Error    | `EventId` must use `(int)<EventIdsEnum>.Member`, not a raw integer or a cast from a foreign enum                              |
+| AIEL00009 | MissingEventIdParameter | Error    | Every `[LoggerMessage]` partial method must declare `<EventIdsEnum> eventId = <EventIdsEnum>.Member` as an optional parameter |
+| AIEL00010 | MissingEventIdInMessage | Error    | The `Message` string must contain the `[{EventId}]` placeholder                                                               |
+| AIEL00011 | NoDirectILoggerCalls    | Warning  | Do not call `ILogger.LogXxx(…)` directly; use `[LoggerMessage]` partial methods                                               |
+| AIEL00012 | EventIdMismatch         | Error    | The `EventId` in the attribute and the default of the `eventId` parameter must refer to the same enum member                  |
+
+### Compliant example
+
+```csharp
+[LoggerMessage(
+    EventId = (int)AielEventIds.ServiceStart,    // AIEL00008 ✅
+    Level   = LogLevel.Information,
+    Message = "[{EventId}] Service started")]     // AIEL00010 ✅
+public static partial void ServiceStarted(
+    this ILogger logger,
+    AielEventIds eventId = AielEventIds.ServiceStart); // AIEL00009 + AIEL00012 ✅
+```
+
+---
+
+## Configuration — Custom EventIds Enum
+
+By default the analyzers look for `Aiel.Logging.AielEventIds`.  You can substitute **any**
+enum by setting a single MSBuild property or `.editorconfig` key — no code changes needed.
+
+### Option 1: MSBuild property *(recommended)*
+
+Add to your `.csproj` or a shared `Directory.Build.props`:
+
+```xml
+<PropertyGroup>
+  <AielEventIdsType>Acme.Logging.AcmeEventIds</AielEventIdsType>
+</PropertyGroup>
+```
+
+> The `Aiel.Logging.Analyzers.props` file (shipped inside the NuGet package) automatically
+> declares this property as compiler-visible — no manual import required.
+
+### Option 2: `.editorconfig`
 
 ```ini
 [*.cs]
-dotnet_diagnostic.AIEL001.severity = warning
-dotnet_diagnostic.AIEL002.severity = warning
-dotnet_diagnostic.AIEL003.severity = warning
-dotnet_diagnostic.AIEL004.severity = warning
-dotnet_diagnostic.AIEL005.severity = error
+aiel_event_ids_type = Acme.Logging.AcmeEventIds
 ```
 
-Suppress a rule per-file with the standard `#pragma warning disable AIEL00x` or
-per-project via `<NoWarn>AIEL004</NoWarn>`.
+Useful for per-folder overrides in a monorepo.
+
+### Priority order
+
+```text
+MSBuild <AielEventIdsType>   (highest)
+  ↓ fallback
+.editorconfig aiel_event_ids_type
+  ↓ fallback
+Aiel.Logging.AielEventIds    (built-in default)
+```
+
+The resolved type name is stamped into every reported `Diagnostic.Properties` entry so that
+code fixes reconstruct the correct enum name without re-reading configuration independently.
 
 ---
 
-## Adding a new event ID
+## Code Fixes
 
-1. Add a member to `AielEventIds.cs` with a unique value in the correct module range.
-2. Create a `[LoggerMessage]`-decorated helper.
-3. The analyzer immediately understands the new member — no changes to the
-   analyzer code are needed.
+All five rules have IDE code fixes.  AIEL00011 and AIEL00012 each offer **two fix alternatives**.
+Every fix supports **Fix All in Document / Project / Solution** via the Batch fixer.
 
-For full extension guidance see [docs/LoggingAnalyzer.md](docs/LoggingAnalyzer.md).
+| Fix                              | Rule    | What it does                                                   |
+| -------------------------------- | ------- | -------------------------------------------------------------- |
+| `UseAielEventIdsCodeFix`         | AIEL00008 | Replaces raw int / wrong cast with `(int)<Enum>.FirstMember`   |
+| `MissingEventIdParameterCodeFix` | AIEL00009 | Appends `<Enum> eventId = <Enum>.Member` to the parameter list |
+| `MissingEventIdInMessageCodeFix` | AIEL00010 | Prepends `[{EventId}]` to the message literal                  |
+| `NoDirectILoggerCallsCodeFix`    | AIEL00011 | ① Replace with TODO comment, or ② Remove the statement         |
+| `EventIdMismatchCodeFix`         | AIEL00012 | ① Sync attribute → parameter, or ② Sync parameter → attribute  |
 
 ---
 
-## Contributing
+## Severity Overrides
 
-Pull requests welcome. Please:
-- Add tests for any new rule or fix.
-- Run `dotnet format` before committing.
-- Ensure CI passes (build → test → format check).
+Configure per project in `.editorconfig`:
+
+```ini
+[*.cs]
+dotnet_diagnostic.AIEL00008.severity = error
+dotnet_diagnostic.AIEL00009.severity = error
+dotnet_diagnostic.AIEL00010.severity = error
+dotnet_diagnostic.AIEL00011.severity = warning
+dotnet_diagnostic.AIEL00012.severity = error
+```
+
+---
+
+## Building & Testing
+
+```bash
+# Clone
+git clone https://github.com/TwoRiversIT/Aiel
+cd Aiel
+
+# Build
+dotnet restore Aiel.Logging.sln
+dotnet build   Aiel.Logging.sln -c Release
+
+# Test
+dotnet test Aiel.Logging.sln --logger "console;verbosity=normal"
+
+# Pack
+dotnet pack src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj -c Release
+```
+
+### Repository layout
+
+```text
+aiel-analyzers/
+├── src/
+│   ├── Aiel.Logging.Analyzers/        # Analyzer library (netstandard2.0)
+│   │   ├── Analyzers/                 # DiagnosticDescriptors + 5 analyzers
+│   │   ├── Configuration/             # AnalyzerConfiguration + EventIdsTypeConfig
+│   │   ├── Helpers/                   # WellKnownTypes, AnalyzerHelpers
+│   │   └── build/                     # .props (CompilerVisibleProperty)
+│   ├── Aiel.Logging.CodeFixes/        # Code-fix library (netstandard2.0)
+│   │   └── CodeFixes/                 # 5 code-fix providers
+│   └── Aiel.Logging.Template/         # Sample project (net10.0)
+│       ├── AielEventIds.cs            # Full event-id enum example
+│       ├── SampleCompliant.cs         # ✅ All rules satisfied
+│       └── SampleViolations.cs        # ❌ One violation per rule
+├── tests/
+│   └── Aiel.Logging.Analyzers.Tests/  # xUnit tests (net10.0)
+│       ├── Tests/                     # Per-rule analyzer + code-fix tests
+│       │   └── AnalyzerConfigurationTests.cs  # Config unit + custom-enum integration tests
+│       └── Verifiers/                 # AielAnalyzerVerifier + AielCodeFixVerifier
+├── docs/
+│   └── LoggingAnalyzer.md             # Full developer reference
+├── .github/workflows/ci.yml           # Build + test + pack on every push
+└── .editorconfig                      # Severity overrides + code style
+```
+
+---
+
+## CI / CD
+
+GitHub Actions runs on every push and pull request:
+
+- **Build** — `dotnet build`  
+- **Test** — `dotnet test` with JUnit results uploaded as an artifact  
+- **Pack** *(Release branch only)* — `dotnet pack` → NuGet artifact  
+
+See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+---
+
+## Extending
+
+See [docs/LoggingAnalyzer.md](docs/LoggingAnalyzer.md#extending-the-analyzers) for a
+step-by-step guide to adding new rules and wiring them into the configuration system.
+
+---
 
 ## License
 
-MIT © Aiel Framework Contributors
-
-
+MIT — see `LICENSE`.

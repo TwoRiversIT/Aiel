@@ -33,12 +33,12 @@ using System.Composition;
 namespace Aiel.Logging.CodeFixes;
 
 /// <summary>
-/// Fixes AIEL004.
-/// <list type="bullet">
-///   <item>When a matching <c>[LoggerMessage]</c> helper exists in the same
-///     compilation the invocation is replaced with a call to that helper.</item>
-///   <item>Otherwise a <c>// TODO (AIEL004)</c> comment is prepended to draw
-///     developer attention.</item>
+/// Code fix for AIEL00011 — offers two remediation strategies when a direct
+/// <c>ILogger</c> extension call is found inside a <c>[LoggerMessage]</c> method:
+/// <list type="number">
+///   <item>Replace the statement with a <c>// TODO:</c> comment so the developer
+///   can wire it to an Aiel-aware helper manually.</item>
+///   <item>Delete the statement outright.</item>
 /// </list>
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NoDirectILoggerCallsCodeFix))]

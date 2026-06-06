@@ -234,12 +234,12 @@ The analyzer and generator should fail fast with explicit diagnostics.
 
 Suggested initial diagnostics:
 
-- `AIEL10001`: Strong ID declarations must be partial record types.
-- `AIEL10002`: Strong ID declarations must not use positional record syntax.
-- `AIEL10003`: Strong ID declarations must implement `IStrongId<TValue>` with the same `TValue` as the attribute.
-- `AIEL10004`: Strong ID declarations must not declare their own `Value` property.
-- `AIEL10005`: Strong ID declarations must not declare instance constructors.
-- `AIEL10006`: Unsupported strong ID backing type.
+- `AIEL00013`: Strong ID declarations must be partial record types.
+- `AIEL00014`: Strong ID declarations must not use positional record syntax.
+- `AIEL00015`: Strong ID declarations must implement `IStrongId<TValue>` with the same `TValue` as the attribute.
+- `AIEL00016`: Strong ID declarations must not declare their own `Value` property.
+- `AIEL00017`: Strong ID declarations must not declare instance constructors.
+- `AIEL00018`: Unsupported strong ID backing type.
 - `TRSG0007`: `default(TStrongId)` usage detected.
 - `TRSG0008`: Strong ID backing value access is not allowed from domain code.
 

@@ -31,8 +31,8 @@ using System.Collections.Immutable;
 namespace Aiel.Logging.Analyzers;
 
 /// <summary>
-/// AIEL003 – The <c>Message</c> argument of every <c>[LoggerMessage]</c>
-/// attribute must contain the <c>[{EventId}]</c> placeholder so that
+/// AIEL00010 – The <c>Message</c> argument of every <c>[LoggerMessage]</c>
+/// attribute must contain the <c>[{EventId}]</c> placeholder.
 /// structured log consumers can correlate events by ID.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]

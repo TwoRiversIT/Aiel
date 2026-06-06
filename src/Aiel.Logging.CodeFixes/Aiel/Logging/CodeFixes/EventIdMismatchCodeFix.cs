@@ -34,8 +34,8 @@ using System.Composition;
 namespace Aiel.Logging.CodeFixes;
 
 /// <summary>
-/// Fixes AIEL005 by synchronising the <c>AielEventIds</c> parameter default
-/// with the <c>[LoggerMessage]</c> attribute's <c>EventId</c> value (or
+/// Fixes AIEL00012 by synchronising the <c>eventId</c> parameter default with
+/// the <c>[LoggerMessage]</c> attribute's <c>EventId</c> value, or vice-versa.
 /// vice-versa).
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(EventIdMismatchCodeFix))]

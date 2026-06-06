@@ -34,9 +34,9 @@ using System.Composition;
 namespace Aiel.Logging.CodeFixes;
 
 /// <summary>
-/// Fixes AIEL002 by appending an optional
-/// <c>AielEventIds eventId = AielEventIds.MemberName</c> parameter to the
-/// method signature.
+/// Fixes AIEL00009 by appending an optional
+/// <c>&lt;EventIdsType&gt; eventId = &lt;EventIdsType&gt;.MemberName</c>
+/// parameter to the method signature.
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MissingEventIdParameterCodeFix))]
 [Shared]

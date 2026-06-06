@@ -4,7 +4,7 @@
 - **Author:** Verin
 - **Scope:** Task 9 only. Add `Aiel.Authorization.Generators` (src) and `Aiel.Authorization.Generators.UnitTests` (tests). Add `[DefinePermission]` and `[GeneratedPermission]` to `Aiel.Authorization.Application.Contracts`. Extend `PermissionDefinitionManifest` with `Lifecycle` and `PreviousNames`. Extend `ActionAuthorizationAnalyzer` with the third passing condition. Wire the generator DLL into `Aiel.Authorization.Application.Contracts`.
 - **Layer:** Roslyn source generator (compile-time only) + application contract extensions + analyzer extension. No EF Core. No persistence. No runtime service registration beyond the emitted registration helper.
-- **Baseline:** Task 8 committed and all tests passing. `ActionAuthorizationAnalyzer` fires `AIEL20001` on any concrete `IAction` with no checker and no `[DoesNotRespectAuthority]`. Task 9 closes the explicit gap documented in that diagnostic.
+- **Baseline:** Task 8 committed and all tests passing. `ActionAuthorizationAnalyzer` fires `AIEL00006` on any concrete `IAction` with no checker and no `[DoesNotRespectAuthority]`. Task 9 closes the explicit gap documented in that diagnostic.
 
 ---
 
@@ -43,7 +43,7 @@ Applied by the developer to a concrete `IAction` class to instruct the generator
 /// The generator emits a constants class, a manifest registration helper, and a
 /// <c>[GeneratedPermission]</c>-annotated marker class for the annotated action type.
 /// The <see cref="ActionAuthorizationAnalyzer"/> recognizes the generated marker and suppresses
-/// <c>AIEL20001</c> for the annotated action.
+/// <c>AIEL00006</c> for the annotated action.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public sealed class DefinePermissionAttribute : Attribute
@@ -94,7 +94,7 @@ Emitted by the generator on the generated constants class. Recognized by the ext
 /// <summary>
 /// Applied by <c>Aiel.Authorization.Generators</c> to the generated constants class.
 /// Signals to <c>ActionAuthorizationAnalyzer</c> that a permission definition exists for
-/// the specified action type, suppressing <c>AIEL20001</c>.
+/// the specified action type, suppressing <c>AIEL00006</c>.
 /// </summary>
 /// <remarks>
 /// This attribute MUST NOT be applied manually. It is exclusively for generator output.
@@ -333,9 +333,9 @@ The analyzer MUST NOT reference `Aiel.Authorization.Application.Contracts` at co
 
 ### Diagnostic behavior — must be unchanged
 
-- `AIEL20001` MUST still fire for actions with none of the three conditions.
-- `AIEL20001` MUST NOT fire for actions covered by the generated marker.
-- `AIEL20002` behavior is entirely unchanged.
+- `AIEL00006` MUST still fire for actions with none of the three conditions.
+- `AIEL00006` MUST NOT fire for actions covered by the generated marker.
+- `AIEL00007` behavior is entirely unchanged.
 - No new diagnostic IDs are introduced in Task 9 (exception: the optional malformed-Name warning below).
 
 ### Optional diagnostic for malformed `[DefinePermission]` input

@@ -368,8 +368,8 @@ public class PermissionDefinitionSourceGeneratorTests
         var compilationWithAnalyzers = compilationWithGeneratedCode.WithAnalyzers(analyzers);
         var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync(TestContext.Current.CancellationToken);
 
-        // The generated checker satisfies condition 1 — no AIEL20001 diagnostic
-        Assert.Empty(diagnostics.Where(d => d.Id == "AIEL20001"));
+        // The generated checker satisfies condition 1 — no AIEL00006 diagnostic
+        Assert.Empty(diagnostics.Where(d => d.Id == "AIEL00006"));
     }
 
     [Fact]

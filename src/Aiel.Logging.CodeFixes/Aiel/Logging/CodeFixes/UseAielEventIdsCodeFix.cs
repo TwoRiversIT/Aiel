@@ -34,8 +34,8 @@ using System.Composition;
 namespace Aiel.Logging.CodeFixes;
 
 /// <summary>
-/// Fixes AIEL001 by replacing a raw integer literal with
-/// <c>(int)AielEventIds.MemberName</c>.
+/// Fixes AIEL00008 by replacing a raw integer literal with
+/// <c>(int)&lt;ConfiguredEventIdsType&gt;.MemberName</c>.
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UseAielEventIdsCodeFix))]
 [Shared]

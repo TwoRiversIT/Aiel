@@ -38,7 +38,7 @@ namespace Aiel.Authorization;
 ///         for registration with <see cref="IAuthorizationDefinitionRegistry"/> at startup.</item>
 /// </list>
 /// <para>
-/// The <c>ActionAuthorizationAnalyzer</c> (AIEL20001) treats the generated
+/// The <c>ActionAuthorizationAnalyzer</c> (AIEL00006) treats the generated
 /// <see cref="IActionAuthorizationChecker{TAction}"/> as a valid authorization story for this action.
 /// </para>
 /// </remarks>

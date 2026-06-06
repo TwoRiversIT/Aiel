@@ -31,7 +31,7 @@ using System.Collections.Immutable;
 namespace Aiel.Logging.Analyzers;
 
 /// <summary>
-/// AIEL004 – Detects direct calls to <c>ILogger</c> extension methods
+/// AIEL00011 – Detects direct calls to <c>ILogger</c> extension methods
 /// and requires callers to use <c>[LoggerMessage]</c>-decorated helpers instead.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]

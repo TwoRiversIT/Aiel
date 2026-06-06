@@ -45,7 +45,7 @@ public abstract class DatabaseMigratorBase
 
             await task(cancellationToken);
 
-            Logger.LogInformation("Migration completed in {ElapsedMilliseconds}ms", sw.ElapsedMilliseconds);
+            Logger.LogMigrationCompleted(sw.ElapsedMilliseconds);
         }
         catch (Exception ex)
         {

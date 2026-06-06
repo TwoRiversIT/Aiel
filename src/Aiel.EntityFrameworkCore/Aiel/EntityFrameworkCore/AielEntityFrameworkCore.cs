@@ -29,7 +29,7 @@ using Aiel.MultiTenancy;
 
 namespace Aiel.EntityFrameworkCore;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielApplication))]
 [DependsOn(typeof(AielMultiTenancy))]
 public class AielEntityFrameworkCore : AielDependencyConfigurator

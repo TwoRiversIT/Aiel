@@ -25,6 +25,6 @@ using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielStrongIds))]
 public sealed class AielDomain : AielDependencyConfigurator;

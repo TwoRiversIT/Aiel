@@ -22,4 +22,4 @@
 
 namespace Aiel.Dependencies;
 
-public sealed class AielAppFramework : AielDependencyConfigurator;
+public sealed class AielFramework : AielDependencyConfigurator;

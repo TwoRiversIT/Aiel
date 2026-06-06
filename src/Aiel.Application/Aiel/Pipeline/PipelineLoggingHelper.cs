@@ -27,20 +27,14 @@ namespace Aiel.Pipeline;
 /// <summary>
 /// Shared structured-logging helpers for command and query pipeline behaviors.
 /// </summary>
-internal static class PipelineLoggingHelper
+internal static partial class PipelineLoggingHelper
 {
-    internal static void LogDispatching(ILogger logger, String inputTypeName, Guid correlationId)
-        => logger.LogInformation(
-            "Dispatching {InputType} [CorrelationId={CorrelationId}]",
-            inputTypeName, correlationId);
+    [LoggerMessage(EventId = (Int32)AielEvent.PipelineDispatching, Level = LogLevel.Information, Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
+    internal static partial void LogDispatching(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.PipelineDispatching);
 
-    internal static void LogSuccess(ILogger logger, String inputTypeName, Guid correlationId)
-        => logger.LogInformation(
-            "{InputType} dispatched successfully [CorrelationId={CorrelationId}]",
-            inputTypeName, correlationId);
+    [LoggerMessage(EventId = (Int32)AielEvent.PipelineSuccess, Level = LogLevel.Information, Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
+    internal static partial void LogSuccess(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.PipelineSuccess);
 
-    internal static void LogFailure(ILogger logger, String inputTypeName, Guid correlationId)
-        => logger.LogWarning(
-            "{InputType} dispatch failed [CorrelationId={CorrelationId}]",
-            inputTypeName, correlationId);
+    [LoggerMessage(EventId = (Int32)AielEvent.PipelineFailure, Level = LogLevel.Warning, Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
+    internal static partial void LogFailure(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.PipelineFailure);
 }

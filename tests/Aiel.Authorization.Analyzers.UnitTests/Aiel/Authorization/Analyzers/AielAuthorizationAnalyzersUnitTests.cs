@@ -24,6 +24,6 @@ using Aiel.Dependencies;
 
 namespace Aiel.Authorization.Analyzers;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 public sealed class AielAuthorizationAnalyzersUnitTests : AielDependencyConfigurator;
 

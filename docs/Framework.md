@@ -23,7 +23,7 @@ Both paths respect the same dependency ordering: a dependency is always configur
 
 ### Module Requirement (Critical for all Aiel Assemblies)
 
-Every assembly in the Aiel codebase — **including test assemblies** — that is not an analyzer or source generator MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from `AielDependencyConfigurator` (or `AielApplication` for the host). This class must include `[DependsOn(...)]` attributes that establish a direct or transitive path back to `AielAppFramework`.
+Every assembly in the Aiel codebase — **including test assemblies** — that is not an analyzer or source generator MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from `AielDependencyConfigurator` (or `AielApplication` for the host). This class must include `[DependsOn(...)]` attributes that establish a direct or transitive path back to `AielFramework`.
 
 This requirement ensures:
 - **Compile-time verifiability** of the module graph
@@ -45,7 +45,7 @@ Every participating assembly MUST declare **exactly one** public, `sealed` class
 // MyLibrary/MyLibraryDependency.cs
 using Aiel.Dependencies;
 
-[DependsOn(typeof(AielAppFramework))]   // declare upstream dependencies here
+[DependsOn(typeof(AielFramework))]   // declare upstream dependencies here
 public sealed class MyLibraryDependency : AielDependencyConfigurator
 {
     public override Task ConfigureAsync(
@@ -69,7 +69,7 @@ public sealed class MyLibraryDependency : AielDependencyConfigurator
 using Aiel.Dependencies;
 
 [DependsOn(typeof(MyLibraryDependency))]
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 public sealed class MyApplication : AielApplication
 {
     public override String ApplicationName    => ThisAssembly.AssemblyName;
@@ -104,9 +104,9 @@ Rules:
 - A type that appears in multiple branches of the graph is configured **once** (first encounter in reflection traversal order is reused; the generated graph also deduplicates).
 - Repeated `[DependsOn]` attributes that reference the same dependency type are deduplicated for execution.
 
-#### `AielAppFramework`
+#### `AielFramework`
 
-The Aiel library itself is registered as a dependency via `AielAppFramework : AielDependencyConfigurator`. Applications that use any Aiel feature should transitively depend on it (most built-in `AielDependencyConfigurator` types already do).
+The Aiel library itself is registered as a dependency via `AielFramework : AielDependencyConfigurator`. Applications that use any Aiel feature should transitively depend on it (most built-in `AielDependencyConfigurator` types already do).
 
 #### Tooling
 
@@ -329,6 +329,263 @@ InitializeApplicationAsync()           Initialise phase: use resolved services
   └─► per dependency, topological order:
         InitializeAsync()              ← implement post-build work here
 ```
+
+Here is **end‑developer–facing documentation** for your logging approach — written as if it belongs in the Aiel developer guide. It explains the *why*, the *how*, and the *rules* clearly enough that any contributor can follow it without asking you for clarification.
+
+It is structured, explicit, and successor‑friendly.
+
+---
+
+Here is **end‑developer–facing documentation** for your logging approach — written as if it belongs in the Aiel developer guide. It explains the *why*, the *how*, and the *rules* clearly enough that any contributor can follow it without asking you for clarification.
+
+It is structured, explicit, and successor‑friendly.
+
+---
+
+# **Aiel Logging Guidelines**  
+### *Structured, Typed, and Collision‑Free Logging for All Framework Modules*
+
+Aiel uses a **strongly‑typed, compile‑time‑safe logging pattern** built on top of the `LoggerMessage` source generator. This pattern ensures:
+
+- Zero event‑ID collisions across the entire framework  
+- High‑performance logging with no boxing or string interpolation overhead  
+- Consistent, discoverable log messages  
+- Clear, predictable event identifiers visible in both structured logs and human‑readable output  
+
+This document explains how to define event IDs, how to write logging helpers, and how to use them correctly.
+
+---
+
+## **1. Event IDs (`AielEventIds`)**
+
+All log events in Aiel use a single shared enum:
+
+```csharp
+public enum AielEventIds
+{
+    // Pipeline (1000–1999)
+    PipelineDispatching = 1000,
+    PipelineSuccess     = 1001,
+    PipelineFailure     = 1002,
+
+    // Additional modules reserve their own numeric ranges...
+}
+```
+
+### **Rules for event IDs**
+1. **Every event ID must be unique across the entire framework.**  
+2. **Each module owns a numeric range** (e.g., Pipeline = 1000–1999).  
+3. **New events must be added to the enum**, never inline as raw integers.  
+4. **Values must be explicitly assigned** — no implicit auto‑incrementing.  
+5. **Event IDs must never change once published**, to preserve log history integrity.
+
+### **Why an enum?**
+- Provides compile‑time safety  
+- Prevents accidental reuse  
+- Makes event IDs self‑documenting  
+- Allows default parameters in logging methods  
+
+---
+
+## **2. Logging Helper Methods**
+
+Each module defines a static partial class containing its logging helpers.  
+These helpers use the `LoggerMessage` attribute to generate high‑performance logging code.
+
+Example (Pipeline module):
+
+```csharp
+internal static partial class PipelineLoggingHelper
+{
+    [LoggerMessage(
+        EventId = (int)AielEventIds.PipelineDispatching,
+        Level = LogLevel.Information,
+        Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
+    internal static partial void LogDispatching(
+        this ILogger logger,
+        string inputType,
+        Guid correlationId,
+        AielEventIds eventId = AielEventIds.PipelineDispatching);
+
+    [LoggerMessage(
+        EventId = (int)AielEventIds.PipelineSuccess,
+        Level = LogLevel.Information,
+        Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
+    internal static partial void LogSuccess(
+        this ILogger logger,
+        string inputType,
+        Guid correlationId,
+        AielEventIds eventId = AielEventIds.PipelineSuccess);
+
+    [LoggerMessage(
+        EventId = (int)AielEventIds.PipelineFailure,
+        Level = LogLevel.Warning,
+        Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
+    internal static partial void LogFailure(
+        this ILogger logger,
+        string inputType,
+        Guid correlationId,
+        AielEventIds eventId = AielEventIds.PipelineFailure);
+}
+```
+
+### **Key characteristics of this pattern**
+
+#### **2.1. Event ID is baked into the attribute**
+`LoggerMessage` requires a compile‑time constant.  
+Casting the enum value satisfies this requirement:
+
+```csharp
+EventId = (int)AielEventIds.PipelineDispatching
+```
+
+#### **2.2. Event ID is also included as a structured property**
+The message template includes:
+
+```
+[{EventId}]
+```
+
+This ensures:
+
+- Seq shows the ID in the rendered message  
+- Serilog captures it as a structured property  
+- Humans scanning logs see it immediately  
+
+#### **2.3. The method includes an optional `eventId` parameter**
+This is intentional:
+
+```csharp
+AielEventIds eventId = AielEventIds.PipelineDispatching
+```
+
+It allows:
+
+- Clean call sites (no need to pass the ID manually)  
+- The ability to override the ID in advanced scenarios  
+- The event ID to appear as a structured property in the log payload  
+
+---
+
+## **3. Calling the Logging Methods**
+
+Usage is intentionally simple:
+
+```csharp
+logger.LogDispatching("UserRegistered", correlationId);
+logger.LogSuccess("UserRegistered", correlationId);
+logger.LogFailure("UserRegistered", correlationId);
+```
+
+### **What developers do NOT need to do**
+- No string formatting  
+- No manual event ID passing  
+- No worrying about collisions  
+- No remembering numeric values  
+
+The helper methods handle everything.
+
+---
+
+## **4. Adding New Log Events**
+
+When adding a new log event:
+
+### **Step 1 — Assign an event ID**
+Add a new value to `AielEventIds` inside the correct module range:
+
+```csharp
+// Pipeline (1000–1999)
+PipelineValidationError = 1003,
+```
+
+### **Step 2 — Add a logging helper**
+Follow the established pattern:
+
+```csharp
+[LoggerMessage(
+    EventId = (int)AielEventIds.PipelineValidationError,
+    Level = LogLevel.Error,
+    Message = "[{EventId}] Validation error: {Reason} [CorrelationId={CorrelationId}]")]
+internal static partial void LogValidationError(
+    this ILogger logger,
+    string reason,
+    Guid correlationId,
+    AielEventIds eventId = AielEventIds.PipelineValidationError);
+```
+
+### **Step 3 — Use it**
+```csharp
+logger.LogValidationError("Missing required field", correlationId);
+```
+
+---
+
+## **5. Design Principles Behind the Approach**
+
+### **5.1. Deterministic**
+Every event ID is stable and predictable.
+
+### **5.2. Discoverable**
+Developers can browse the enum to see all available events.
+
+### **5.3. High‑performance**
+`LoggerMessage` generates optimized IL with:
+
+- No boxing  
+- No allocations  
+- No string interpolation  
+
+### **5.4. Structured**
+Every log entry includes:
+
+- Event ID  
+- Input type  
+- Correlation ID  
+- Severity level  
+- Message template  
+
+### **5.5. Successor‑friendly**
+Future maintainers can extend the system without breaking anything.
+
+---
+
+# **Summary for Developers**
+
+- Use the logging helpers — never log raw strings.  
+- Add new event IDs to `AielEventIds` using the correct numeric range.  
+- Follow the established pattern when creating new logging methods.  
+- Do not reuse or renumber event IDs.  
+- Keep messages structured and consistent.  
+
+This approach ensures Aiel’s logging remains **predictable, high‑performance, and easy to maintain** as the framework evolves.
+
+---
+
+If you want, I can also produce:
+
+- A “How to add logging to your module” quick‑start  
+- Aiel‑wide event‑ID allocation table  
+- A Roslyn analyzer to enforce the rules automatically
+
+---
+
+| Module / Area            | Range       |
+| ------------------------ | ----------- |
+| Consuming Applications   | 00000–09999 |
+| Aiel (General)           | 10000–10999 |
+| Aiel.Application         | 11000–11999 |
+| Aiel.AspNetCore          | 12000–12999 |
+| Aiel.Authorization       | 13000–13999 |
+| Aiel.Domain              | 14000–14999 |
+| Aiel.Emailing            | 15000–15999 |
+| Aiel.EntityFrameworkCore | 16000–16999 |
+| Aiel.Gps                 | 17000–17999 |
+| Aiel.Mediator            | 18000–18999 |
+| Aiel.MessageBus          | 19000–19999 |
+| Aiel.MultiTenancy        | 20000–20999 |
+| Aiel.MultiTenancy        | 21000–21999 |
+
 
 ## Execution
 

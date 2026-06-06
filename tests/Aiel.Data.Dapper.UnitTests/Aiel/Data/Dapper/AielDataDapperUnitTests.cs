@@ -24,7 +24,7 @@ using Aiel.Dependencies;
 
 namespace Aiel.Data.Dapper;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(Aiel.Dapper.AielDataDapper))]
 [DependsOn(typeof(Testing.AielTesting))]
 public sealed class AielDataDapperUnitTests : AielDependencyConfigurator;

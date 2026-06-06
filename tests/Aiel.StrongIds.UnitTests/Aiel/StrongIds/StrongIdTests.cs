@@ -24,7 +24,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.StrongIds;
 
-[SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
+[SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "Its freaking unit tests!")]
 public class StrongIdTests
 {
     [Fact]

@@ -24,7 +24,7 @@ using Aiel.Dependencies;
 
 namespace Aiel.Testing;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(Results.AielResults))]
 [DependsOn(typeof(AielTesting))]
 public sealed class AielTestingIntegrationUnitTests : AielDependencyConfigurator;

@@ -24,6 +24,6 @@ using Aiel.Dependencies;
 
 namespace Aiel.Generators;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 public sealed class AielGeneratorsUnitTests : AielDependencyConfigurator;
 

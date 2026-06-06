@@ -24,5 +24,5 @@ using Aiel.Dependencies;
 
 namespace Aiel.Security;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 public sealed class AielSecurity : AielDependencyConfigurator;

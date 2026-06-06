@@ -24,6 +24,6 @@ using Aiel.Dependencies;
 
 namespace Aiel.StrongIds;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 public sealed class AielStrongIdsGeneratorsUnitTests : AielDependencyConfigurator;
 

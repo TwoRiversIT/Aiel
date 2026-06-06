@@ -28,6 +28,6 @@ namespace Aiel.Authorization;
 /// <summary>
 /// Ensures that the Aiel.Authorization.Domain.Shared participates in the dependency graph.
 /// </summary>
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielStrongIds))]
 public sealed class AielAuthorizationDomainShared : AielDependencyConfigurator;

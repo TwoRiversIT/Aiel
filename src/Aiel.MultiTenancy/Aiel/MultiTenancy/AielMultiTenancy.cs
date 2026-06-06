@@ -28,6 +28,6 @@ namespace Aiel.MultiTenancy;
 /// <summary>
 /// Ensures that the Aiel.MultiTenancy participates in the dependency graph.
 /// </summary>
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielStrongIds))]
 public sealed class AielMultiTenancy : AielDependencyConfigurator;

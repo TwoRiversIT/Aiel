@@ -429,7 +429,7 @@ This verifies the other half of the rule:
 These tests collectively prove:
 
 | Behavior | Verified |
-|---------|----------|
+| -------- | -------- |
 | AsyncLocal flows across `await` | ✔️ |
 | AsyncLocal isolates parallel tasks | ✔️ |
 | Nested `Change()` scopes restore correctly | ✔️ |

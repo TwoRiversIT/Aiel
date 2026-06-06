@@ -41,7 +41,7 @@ public sealed class ActionGateCommandPipelineBehavior<TCommand>(IActionGate<TCom
     where TCommand : ICommand
 {
     // Cached at generic type instantiation time — one reflection call per command type, not per dispatch.
-    private static readonly Boolean _doesNotRespectAuthority =
+    private static readonly Boolean DoesNotRespectAuthority =
         typeof(TCommand).IsDefined(typeof(DoesNotRespectAuthorityAttribute), inherit: false);
 
     /// <inheritdoc />
@@ -51,7 +51,7 @@ public sealed class ActionGateCommandPipelineBehavior<TCommand>(IActionGate<TCom
         CommandPipelineHandlerDelegate next,
         CancellationToken cancellationToken = default)
     {
-        if (_doesNotRespectAuthority)
+        if (DoesNotRespectAuthority)
         {
             return await next(cancellationToken);
         }

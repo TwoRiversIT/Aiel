@@ -19,12 +19,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Update="coverlet.collector" Version="10.0.1" />
-		<PackageReference Update="FluentAssertions" Version="8.10.0" />
-		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\..\src\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" />
 		<ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
 	</ItemGroup>

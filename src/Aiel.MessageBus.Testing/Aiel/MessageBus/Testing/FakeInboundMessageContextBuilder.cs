@@ -55,10 +55,14 @@ public sealed class FakeInboundMessageContextBuilder<TMessage>
     public InboundMessageContext<TMessage> Build()
     {
         if (_envelope is null)
+        {
             throw new InvalidOperationException("Envelope is required. Call WithEnvelope() before Build().");
+        }
 
         if (_executionContext is null)
+        {
             throw new InvalidOperationException("ExecutionContext is required. Call WithExecutionContext() before Build().");
+        }
 
         return new InboundMessageContext<TMessage>(_envelope, _executionContext, _transport);
     }

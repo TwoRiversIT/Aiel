@@ -29,20 +29,15 @@ namespace Aiel.MessageBus.Testing;
 /// In-memory <see cref="IMessagePublisher"/> that records all published envelopes for assertion.
 /// Designed for use in unit tests without a real broker or DI container.
 /// </summary>
-public sealed class RecordingMessagePublisher : IMessagePublisher
+/// <remarks>
+/// Initializes a new recording publisher. If <paramref name="factory"/> is not provided,
+/// a <see cref="DefaultMessageEnvelopeFactory"/> backed by <see cref="DefaultMessageTypeRegistry"/>
+/// is used for the convenience publish overload.
+/// </remarks>
+public sealed class RecordingMessagePublisher(IMessageEnvelopeFactory? factory = null) : IMessagePublisher
 {
-    private readonly IMessageEnvelopeFactory _factory;
+    private readonly IMessageEnvelopeFactory _factory = factory ?? new DefaultMessageEnvelopeFactory(new DefaultMessageTypeRegistry());
     private readonly List<Object> _published = [];
-
-    /// <summary>
-    /// Initializes a new recording publisher. If <paramref name="factory"/> is not provided,
-    /// a <see cref="DefaultMessageEnvelopeFactory"/> backed by <see cref="DefaultMessageTypeRegistry"/>
-    /// is used for the convenience publish overload.
-    /// </summary>
-    public RecordingMessagePublisher(IMessageEnvelopeFactory? factory = null)
-    {
-        _factory = factory ?? new DefaultMessageEnvelopeFactory(new DefaultMessageTypeRegistry());
-    }
 
     /// <summary>Returns all envelopes published as <typeparamref name="TMessage"/>.</summary>
     public IReadOnlyList<MessageEnvelope<TMessage>> GetPublished<TMessage>()

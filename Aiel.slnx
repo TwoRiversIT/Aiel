@@ -158,8 +158,8 @@
     <Project Path="src/Aiel.Results/Aiel.Results.csproj">
       <BuildDependency Project="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
     </Project>
-    <Project Path="src/Aiel.Security/Aiel.Security.csproj" />
     <Project Path="src/Aiel.Roslyn/Aiel.Roslyn.shproj" Id="7cd6e1f8-b53f-4c4c-9699-8b2d3e34d8e5" />
+    <Project Path="src/Aiel.Security/Aiel.Security.csproj" />
     <Project Path="src/Aiel.StrongIds.AspNetCore/Aiel.StrongIds.AspNetCore.csproj" />
     <Project Path="src/Aiel.StrongIds.EntityFrameworkCore/Aiel.StrongIds.EntityFrameworkCore.csproj" />
     <Project Path="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
@@ -198,9 +198,6 @@
     <Project Path="tests/Aiel.Gps.UnitTests/Aiel.Gps.UnitTests.csproj" />
     <Project Path="tests/Aiel.IdGeneration.UnitTests/Aiel.IdGeneration.UnitTests.csproj" />
     <Project Path="tests/Aiel.InternetTypes.UnitTests/Aiel.InternetTypes.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Logging.Analyzers.Examples/Aiel.Logging.Analyzers.Examples.csproj">
-      <Build Solution="Debug|*" Project="false" />
-    </Project>
     <Project Path="tests/Aiel.Logging.Analyzers.UnitTests/Aiel.Logging.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.Analyzers.UnitTests/Aiel.Mediator.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.UnitTests/Aiel.Mediator.UnitTests.csproj" />

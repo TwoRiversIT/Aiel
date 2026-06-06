@@ -91,9 +91,12 @@ public sealed class NoDirectILoggerCallsAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var receiverType = methodSymbol.IsExtensionMethod
-            ? methodSymbol.Parameters.FirstOrDefault()?.Type
-            : methodSymbol.ContainingType;
+        var receiverType = methodSymbol.MethodKind == MethodKind.ReducedExtension || methodSymbol.ReducedFrom is not null
+            ? (methodSymbol.ReducedFrom?.Parameters.FirstOrDefault()?.Type
+                ?? methodSymbol.Parameters.FirstOrDefault()?.Type)
+            : methodSymbol.IsExtensionMethod
+                ? methodSymbol.Parameters.FirstOrDefault()?.Type
+                : methodSymbol.ContainingType;
 
         if (receiverType is null)
         {

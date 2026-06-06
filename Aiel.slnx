@@ -9,6 +9,7 @@
     <File Path="Directory.Build.targets" />
     <File Path="Directory.Packages.props" />
     <File Path="LICENSE.md" />
+    <File Path="NuGet.config" />
     <File Path="README.md" />
     <File Path="test_output.txt" />
     <File Path="version.json" />
@@ -100,6 +101,9 @@
     <File Path="docs/features/multitenancy/multitenancy-system.md" />
     <File Path="docs/features/multitenancy/phase-03-aiel-aspnet-operational-plan.md" />
   </Folder>
+  <Folder Name="/docs/features/multitenancy/discussions/">
+    <File Path="docs/features/multitenancy/discussions/current-tenant-discussion.md" />
+  </Folder>
   <Folder Name="/docs/features/settings/">
     <File Path="docs/features/settings/setting-system.md" />
   </Folder>
@@ -143,7 +147,6 @@
     <Project Path="src/Aiel.InternetTypes/Aiel.InternetTypes.csproj" />
     <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
     <Project Path="src/Aiel.Logging.CodeFixes/Aiel.Logging.CodeFixes.csproj" />
-    <Project Path="src/Aiel.Logging.Template/Aiel.Logging.Template.csproj" />
     <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
     <Project Path="src/Aiel.Mediator/Aiel.Mediator.csproj" />
@@ -195,6 +198,9 @@
     <Project Path="tests/Aiel.Gps.UnitTests/Aiel.Gps.UnitTests.csproj" />
     <Project Path="tests/Aiel.IdGeneration.UnitTests/Aiel.IdGeneration.UnitTests.csproj" />
     <Project Path="tests/Aiel.InternetTypes.UnitTests/Aiel.InternetTypes.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Logging.Analyzers.Examples/Aiel.Logging.Analyzers.Examples.csproj">
+      <Build Solution="Debug|*" Project="false" />
+    </Project>
     <Project Path="tests/Aiel.Logging.Analyzers.UnitTests/Aiel.Logging.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.Analyzers.UnitTests/Aiel.Mediator.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.UnitTests/Aiel.Mediator.UnitTests.csproj" />

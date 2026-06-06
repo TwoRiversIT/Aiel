@@ -68,7 +68,10 @@ public sealed class EventIdMismatchAnalyzerTests
 
         var expected = new[]
         {
-            DiagnosticResult.CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id).WithLocation(0)
+            DiagnosticResult
+                .CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
+                .WithSpan(6, 69, 6, 76)
+                .WithArguments("AcmeEventIds.ServiceStart", "AcmeEventIds.ServiceStop")
         };
 
         await AielAnalyzerVerifier<EventIdMismatchAnalyzer>

@@ -20,7 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// MissingEventIdInMessageCodeFix.cs  (AIEL00010)
+//
+// Inserts "[{EventId}]" at the start of the LoggerMessage.Message string
+// when the placeholder is absent.
+//
+// Config note: AIEL00010 deals only with message template text — it does not
+// reference the EventIds enum — but the fix still reads config from the
+// diagnostic properties for consistency (future-proofing if the message
+// format ever becomes configurable).
+// -----------------------------------------------------------------------
+
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -41,17 +52,14 @@ namespace Aiel.Logging.CodeFixes;
 [Shared]
 public sealed class MissingEventIdInMessageCodeFix : CodeFixProvider
 {
-    private const string Title = "Prepend [{EventId}] to message template";
+    private const String EventIdPlaceholder = "[{EventId}]";
 
-    /// <inheritdoc />
-    public override ImmutableArray<string> FixableDiagnosticIds
+    public override ImmutableArray<String> FixableDiagnosticIds
         => [DiagnosticDescriptors.MissingEventIdInMessage.Id];
 
-    /// <inheritdoc />
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;
 
-    /// <inheritdoc />
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var root = await context.Document
@@ -64,61 +72,98 @@ public sealed class MissingEventIdInMessageCodeFix : CodeFixProvider
         }
 
         var diagnostic = context.Diagnostics[0];
-        var span = diagnostic.Location.SourceSpan;
-        var node = root.FindNode(span);
 
-        // The reported node is the string literal expression.
-        if (node is not LiteralExpressionSyntax literal
-            || !literal.IsKind(SyntaxKind.StringLiteralExpression))
+        // The diagnostic span points at the Message literal argument.
+        var node = root.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true);
+
+        // Walk up to find the AttributeArgumentSyntax whose expression is
+        // either a string literal or an interpolated string.
+        var argSyntax = node.AncestorsAndSelf()
+            .OfType<AttributeArgumentSyntax>()
+            .FirstOrDefault();
+
+        if (argSyntax is null)
         {
             return;
         }
 
         context.RegisterCodeFix(
             CodeAction.Create(
-                title: Title,
+                title: $"Prepend \"{EventIdPlaceholder}\" to message",
                 createChangedDocument: ct =>
-                    PrependPlaceholderAsync(context.Document, literal, ct),
-                equivalenceKey: Title),
+                    PrependPlaceholderAsync(context.Document, argSyntax, ct),
+                equivalenceKey: nameof(MissingEventIdInMessageCodeFix)),
             diagnostic);
     }
 
-    // ── Transformation ───────────────────────────────────────────────────
+    // ── Implementation ───────────────────────────────────────────────────
 
     private static async Task<Document> PrependPlaceholderAsync(
         Document document,
-        LiteralExpressionSyntax literal,
-        CancellationToken ct)
+        AttributeArgumentSyntax argSyntax,
+        CancellationToken cancellationToken)
     {
-        var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
+        var root = await document
+            .GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         if (root is null)
         {
             return document;
         }
 
-        var originalText = literal.Token.ValueText;
-        var newText = WellKnownTypes.EventIdPlaceholder + " " + originalText;
-
-        // Reconstruct the string token, preserving the quote style (regular vs verbatim).
-        var originalToken = literal.Token;
-        SyntaxToken newToken;
-
-        if (originalToken.IsKind(SyntaxKind.StringLiteralToken))
+        ExpressionSyntax? newExpression = argSyntax.Expression switch
         {
-            // Regular string – rebuild with escaped content.
-            newToken = SyntaxFactory.Literal(newText)
-                .WithTriviaFrom(originalToken);
-        }
-        else
+            // Simple string literal: "My message" → "[{EventId}] My message"
+            LiteralExpressionSyntax lit
+                when lit.IsKind(SyntaxKind.StringLiteralExpression) =>
+                    BuildPrependedStringLiteral(lit),
+
+            // Verbatim string literal: @"My message" → "[{EventId}] My message" (regular)
+            LiteralExpressionSyntax lit
+                when lit.IsKind(SyntaxKind.StringLiteralExpression) &&
+                     lit.Token.IsVerbatimStringLiteral() =>
+                    BuildPrependedStringLiteral(lit),
+
+            // Raw string literal or interpolated string — convert to regular literal
+            _ => BuildFallbackLiteral(argSyntax.Expression)
+        };
+
+        if (newExpression is null)
         {
-            // Verbatim or interpolated – safest is a regular string here.
-            newToken = SyntaxFactory.Literal(newText)
-                .WithTriviaFrom(originalToken);
+            return document;
         }
 
-        var newLiteral = literal.WithToken(newToken);
-        var newRoot = root.ReplaceNode(literal, newLiteral);
+        var newArg = argSyntax.WithExpression(newExpression.WithTriviaFrom(argSyntax.Expression));
+        var newRoot = root.ReplaceNode(argSyntax, newArg);
         return document.WithSyntaxRoot(newRoot);
     }
-}
 
+    /// <summary>
+    /// Prepends <c>[{EventId}] </c> to the text of an existing string literal.
+    /// Preserves the verbatim / non-verbatim style of the original.
+    /// </summary>
+    private static LiteralExpressionSyntax BuildPrependedStringLiteral(
+        LiteralExpressionSyntax original)
+    {
+        var originalText = original.Token.ValueText; // already unescaped
+        var newText = $"{EventIdPlaceholder} {originalText}";
+
+        // Always emit as a regular (non-verbatim) string because "[{EventId}]"
+        // contains no characters that need verbatim treatment.
+        var newToken = SyntaxFactory.Literal(newText);
+        return SyntaxFactory.LiteralExpression(
+            SyntaxKind.StringLiteralExpression,
+            newToken);
+    }
+
+    /// <summary>
+    /// Fallback for interpolated / raw strings — emits a plain string literal
+    /// containing only the placeholder (the developer can merge the rest manually).
+    /// </summary>
+    private static LiteralExpressionSyntax BuildFallbackLiteral(ExpressionSyntax _)
+    {
+        var token = SyntaxFactory.Literal($"{EventIdPlaceholder} <original message>");
+        return SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, token);
+    }
+}

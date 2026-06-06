@@ -20,7 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// MissingEventIdParameterCodeFix.cs  –  Fix for AIEL00009
+//
+// Appends an optional  "<ConfiguredType> eventId = <ConfiguredType>.X"
+// parameter to a [LoggerMessage]-decorated method that is missing it.
+// The configured type name is read from Diagnostic.Properties.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -42,10 +50,10 @@ namespace Aiel.Logging.CodeFixes;
 [Shared]
 public sealed class MissingEventIdParameterCodeFix : CodeFixProvider
 {
-    private const string Title = "Add optional AielEventIds eventId parameter";
+    private const String Title = "Add optional EventIds eventId parameter";
 
     /// <inheritdoc />
-    public override ImmutableArray<string> FixableDiagnosticIds
+    public override ImmutableArray<String> FixableDiagnosticIds
         => [DiagnosticDescriptors.MissingEventIdParameter.Id];
 
     /// <inheritdoc />
@@ -58,33 +66,41 @@ public sealed class MissingEventIdParameterCodeFix : CodeFixProvider
         var root = await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
-
         if (root is null)
         {
             return;
         }
 
         var diagnostic = context.Diagnostics[0];
-        var span = diagnostic.Location.SourceSpan;
-        var node = root.FindNode(span);
-
-        // Walk up to find the enclosing method declaration.
+        var node = root.FindNode(diagnostic.Location.SourceSpan);
         var methodDecl = node.AncestorsAndSelf()
             .OfType<MethodDeclarationSyntax>()
             .FirstOrDefault();
-
         if (methodDecl is null)
         {
             return;
         }
 
-        var memberName = ExtractSuggestedMember(diagnostic);
+        var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
+        if (semanticModel is null)
+        {
+            return;
+        }
+
+        var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)
+                     ?? EventIdsTypeConfig.FromFullTypeName(
+                            AnalyzerConfiguration.DefaultFullTypeName);
+
+        var memberName = TryResolveSuggestedMember(methodDecl, semanticModel, config)
+            ?? ExtractSuggestedMember(diagnostic.GetMessage(), config.ShortName)
+            ?? AnalyzerConfiguration.DefaultMemberName;
 
         context.RegisterCodeFix(
             CodeAction.Create(
-                title: Title,
+                title: $"Add optional {config.ShortName} eventId = {config.ShortName}.{memberName}",
                 createChangedDocument: ct =>
-                    AddEventIdParameterAsync(context.Document, methodDecl, memberName, ct),
+                    AddEventIdParameterAsync(context.Document, methodDecl,
+                        config.ShortName, memberName, ct),
                 equivalenceKey: Title),
             diagnostic);
     }
@@ -94,7 +110,8 @@ public sealed class MissingEventIdParameterCodeFix : CodeFixProvider
     private static async Task<Document> AddEventIdParameterAsync(
         Document document,
         MethodDeclarationSyntax methodDecl,
-        string memberName,
+        String enumShortName,
+        String memberName,
         CancellationToken ct)
     {
         var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
@@ -103,38 +120,67 @@ public sealed class MissingEventIdParameterCodeFix : CodeFixProvider
             return document;
         }
 
-        // Build:  AielEventIds eventId = AielEventIds.MemberName
+        // Build:  EnumType eventId = EnumType.MemberName
         var defaultValue = SyntaxFactory.EqualsValueClause(
             SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
-                SyntaxFactory.IdentifierName(WellKnownTypes.AielEventIdsShort),
+                SyntaxFactory.IdentifierName(enumShortName),
                 SyntaxFactory.IdentifierName(memberName)));
 
         var newParam = SyntaxFactory.Parameter(
                 SyntaxFactory.List<AttributeListSyntax>(),
                 SyntaxFactory.TokenList(),
-                SyntaxFactory.IdentifierName(WellKnownTypes.AielEventIdsShort),
+                SyntaxFactory.IdentifierName(enumShortName),
                 SyntaxFactory.Identifier(WellKnownTypes.EventIdParamName),
                 defaultValue)
             .WithAdditionalAnnotations(Formatter.Annotation);
 
-        // Append after the last existing parameter.
         var newParams = methodDecl.ParameterList.Parameters.Add(newParam);
         var newParamList = methodDecl.ParameterList.WithParameters(newParams);
         var newMethod = methodDecl.WithParameterList(newParamList);
 
-        var newRoot = root.ReplaceNode(methodDecl, newMethod);
-        return document.WithSyntaxRoot(newRoot);
+        return document.WithSyntaxRoot(root.ReplaceNode(methodDecl, newMethod));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
-    private static string ExtractSuggestedMember(Diagnostic diagnostic)
+    private static String? TryResolveSuggestedMember(
+        MethodDeclarationSyntax methodDecl,
+        SemanticModel semanticModel,
+        EventIdsTypeConfig config)
     {
-        // messageFormat: "Method '{0}' … missing an optional 'AielEventIds eventId = AielEventIds.{1}' parameter."
-        var msg = diagnostic.GetMessage();
-        const string prefix = "AielEventIds eventId = AielEventIds.";
-        const string suffix = "' parameter.";
+        var method = semanticModel.GetDeclaredSymbol(methodDecl) as IMethodSymbol;
+        if (method is null)
+        {
+            return null;
+        }
+
+        var attrData = AnalyzerHelpers.GetLoggerMessageAttribute(method, semanticModel.Compilation);
+        if (attrData is null)
+        {
+            return null;
+        }
+
+        var arg = AnalyzerHelpers.GetNamedArgument(attrData, WellKnownTypes.EventIdArgName);
+        if (arg?.Value is not Int32 intVal)
+        {
+            return null;
+        }
+
+        var eventIdsType = config.GetTypeSymbol(semanticModel.Compilation);
+        if (eventIdsType is null)
+        {
+            return null;
+        }
+
+        return AnalyzerHelpers.TryResolveMemberName(intVal, eventIdsType);
+    }
+
+    private static String ExtractSuggestedMember(String msg, String shortName)
+    {
+        // messageFormat: "…missing an optional '<ShortName> eventId = <ShortName>.{member}' parameter."
+        var prefix = $"{shortName} eventId = {shortName}.";
+        const String suffix = "' parameter.";
 
         var start = msg.IndexOf(prefix, StringComparison.Ordinal);
         if (start >= 0)
@@ -147,7 +193,6 @@ public sealed class MissingEventIdParameterCodeFix : CodeFixProvider
             }
         }
 
-        return "SomeMember";
+        return AnalyzerConfiguration.DefaultMemberName;
     }
 }
-

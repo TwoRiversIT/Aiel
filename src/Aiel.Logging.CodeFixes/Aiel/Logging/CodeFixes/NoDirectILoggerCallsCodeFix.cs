@@ -20,13 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// NoDirectILoggerCallsCodeFix.cs  (AIEL00011)
+//
+// When the analyzer detects a direct ILogger.Log* call inside a method
+// that is itself decorated with [LoggerMessage], the fix offers to remove
+// the offending call (leaving a TODO comment) because a safe automatic
+// replacement requires domain knowledge the fix cannot supply.
+//
+// A second, more aggressive fix is also offered that removes the entire
+// statement unconditionally.
+//
+// Config note: AIEL00011 does not reference the EventIds enum, but the fix
+// reads AnalyzerConfiguration from the diagnostic properties for
+// consistency with the rest of the fix layer.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
 using System.Collections.Immutable;
 using System.Composition;
 
@@ -45,176 +62,118 @@ namespace Aiel.Logging.CodeFixes;
 [Shared]
 public sealed class NoDirectILoggerCallsCodeFix : CodeFixProvider
 {
-    private const string TitleReplace = "Replace with [LoggerMessage] helper";
-    private const string TitleComment = "Add TODO comment (manual refactor required)";
-
-    /// <inheritdoc />
-    public override ImmutableArray<string> FixableDiagnosticIds
+    public override ImmutableArray<String> FixableDiagnosticIds
         => [DiagnosticDescriptors.NoDirectILoggerCalls.Id];
 
-    /// <inheritdoc />
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;
 
-    /// <inheritdoc />
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        var document = context.Document;
-        var root = await document.GetSyntaxRootAsync(context.CancellationToken)
-                                     .ConfigureAwait(false);
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false);
+
         if (root is null)
         {
             return;
         }
 
         var diagnostic = context.Diagnostics[0];
-        var span = diagnostic.Location.SourceSpan;
-        var node = root.FindNode(span);
 
-        var invocation = node as InvocationExpressionSyntax
-                         ?? node.AncestorsAndSelf().OfType<InvocationExpressionSyntax>().FirstOrDefault();
-        if (invocation is null)
+        // AnalyzerConfiguration is resolved for property-stamping consistency;
+        // AIEL00011 does not use the EventIds type name in the fix itself.
+        var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic);
+
+        var node = root.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true);
+
+        // Walk up to the enclosing ExpressionStatement (the invocation call).
+        var statement = node.AncestorsAndSelf()
+            .OfType<ExpressionStatementSyntax>()
+            .FirstOrDefault();
+
+        if (statement is null)
         {
             return;
         }
 
-        // ── Try to find a matching [LoggerMessage] helper ────────────────
-        var model = await document.GetSemanticModelAsync(context.CancellationToken)
-                                    .ConfigureAwait(false);
-        if (model is null)
-        {
-            return;
-        }
-
-        var helperMethod = FindMatchingHelper(invocation, model, context.CancellationToken);
-
-        if (helperMethod is not null)
-        {
-            context.RegisterCodeFix(
-                CodeAction.Create(
-                    title: TitleReplace,
-                    createChangedDocument: ct =>
-                        ReplaceWithHelperAsync(document, invocation, helperMethod, ct),
-                    equivalenceKey: TitleReplace),
-                diagnostic);
-        }
-
-        // Always offer the TODO-comment fix as a fallback.
+        // Fix 1 — replace with TODO comment
         context.RegisterCodeFix(
             CodeAction.Create(
-                title: TitleComment,
+                title: "Replace with TODO comment (manual migration needed)",
                 createChangedDocument: ct =>
-                    AddTodoCommentAsync(document, invocation, ct),
-                equivalenceKey: TitleComment),
+                    ReplaceWithTodoCommentAsync(context.Document, statement, ct),
+                equivalenceKey: $"{nameof(NoDirectILoggerCallsCodeFix)}_Todo"),
+            diagnostic);
+
+        // Fix 2 — remove the statement entirely
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title: "Remove direct ILogger call",
+                createChangedDocument: ct =>
+                    RemoveStatementAsync(context.Document, statement, ct),
+                equivalenceKey: $"{nameof(NoDirectILoggerCallsCodeFix)}_Remove"),
             diagnostic);
     }
 
-    // ── Transformation: replace with helper call ─────────────────────────
+    // ── Fix 1: replace with TODO comment ────────────────────────────────
 
-    private static async Task<Document> ReplaceWithHelperAsync(
+    private static async Task<Document> ReplaceWithTodoCommentAsync(
         Document document,
-        InvocationExpressionSyntax original,
-        IMethodSymbol helper,
-        CancellationToken ct)
+        ExpressionStatementSyntax statement,
+        CancellationToken cancellationToken)
     {
-        var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
+        var root = await document
+            .GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         if (root is null)
         {
             return document;
         }
 
-        // Determine the receiver expression (the ILogger variable).
-        ExpressionSyntax? receiver = null;
-        if (original.Expression is MemberAccessExpressionSyntax ma)
-        {
-            receiver = ma.Expression;
-        }
+        // Build:  // TODO: replace with the appropriate Aiel logging helper (AIEL00011)
+        // Emit as an empty statement with a leading comment so formatting is preserved.
+        var originalCall = statement.Expression.ToString().Trim();
+        var comment = SyntaxFactory.Comment(
+            $"// TODO (AIEL00011): replace with Aiel logging helper — was: {TruncateSafe(originalCall, 80)}");
 
-        // Build helper call:  receiver.HelperName(args...)
-        // We forward all original arguments after the logger (extension method style).
-        var originalArgs = original.ArgumentList.Arguments;
+        // An empty statement (just a semicolon) with the comment attached.
+        var placeholder = SyntaxFactory
+            .EmptyStatement()
+            .WithLeadingTrivia(
+                statement.GetLeadingTrivia()
+                    .Add(comment)
+                    .Add(SyntaxFactory.ElasticCarriageReturnLineFeed))
+            .WithTrailingTrivia(statement.GetTrailingTrivia())
+            .WithAdditionalAnnotations(Formatter.Annotation);
 
-        // Extension methods: arg[0] is the logger itself – skip if the helper
-        // already takes the logger as its first explicit parameter.
-        ExpressionSyntax helperExpr = receiver is not null
-            ? SyntaxFactory.MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                receiver,
-                SyntaxFactory.IdentifierName(helper.Name))
-            : SyntaxFactory.IdentifierName(helper.Name);
-
-        // Pass through original arguments (excluding the logger if extension method).
-        var argList = SyntaxFactory.ArgumentList(
-            SyntaxFactory.SeparatedList(originalArgs));
-
-        var newCall = SyntaxFactory.InvocationExpression(helperExpr, argList)
-            .WithTriviaFrom(original);
-
-        var newRoot = root.ReplaceNode(original, newCall);
+        var newRoot = root.ReplaceNode(statement, placeholder);
         return document.WithSyntaxRoot(newRoot);
     }
 
-    // ── Transformation: TODO comment ─────────────────────────────────────
+    // ── Fix 2: remove statement ──────────────────────────────────────────
 
-    private static async Task<Document> AddTodoCommentAsync(
+    private static async Task<Document> RemoveStatementAsync(
         Document document,
-        InvocationExpressionSyntax invocation,
-        CancellationToken ct)
+        ExpressionStatementSyntax statement,
+        CancellationToken cancellationToken)
     {
-        var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
+        var root = await document
+            .GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false);
+
         if (root is null)
         {
             return document;
         }
 
-        // Get the statement containing the invocation.
-        var stmt = invocation.Ancestors().OfType<StatementSyntax>().FirstOrDefault();
-        if (stmt is null)
-        {
-            return document;
-        }
-
-        var todoTrivia = SyntaxFactory.Comment(
-            "// TODO (AIEL004): Replace this direct ILogger call with a [LoggerMessage] helper.\r\n");
-        var leading = stmt.GetLeadingTrivia().Insert(0, todoTrivia);
-        var newStmt = stmt.WithLeadingTrivia(leading);
-        var newRoot = root.ReplaceNode(stmt, newStmt);
+        var newRoot = root.RemoveNode(statement, SyntaxRemoveOptions.KeepNoTrivia)!;
         return document.WithSyntaxRoot(newRoot);
     }
 
-    // ── Helper detection ─────────────────────────────────────────────────
+    // ── Utility ──────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Searches the compilation for a <c>[LoggerMessage]</c>-decorated method
-    /// whose name plausibly corresponds to the direct ILogger method being called.
-    /// Matching is intentionally loose (any [LoggerMessage] helper in scope).
-    /// </summary>
-    private static IMethodSymbol? FindMatchingHelper(
-        InvocationExpressionSyntax invocation,
-        SemanticModel model,
-        CancellationToken ct)
-    {
-        // Determine the containing type so we can search its members.
-        var containingType = invocation.Ancestors()
-            .OfType<TypeDeclarationSyntax>()
-            .FirstOrDefault();
-
-        if (containingType is null)
-        {
-            return null;
-        }
-
-        if (model.GetDeclaredSymbol(containingType, ct) is not INamedTypeSymbol typeSymbol)
-        {
-            return null;
-        }
-
-        var compilation = model.Compilation;
-
-        // Look for any [LoggerMessage] static partial method in the same type.
-        return typeSymbol.GetMembers()
-            .OfType<IMethodSymbol>()
-            .FirstOrDefault(m => AnalyzerHelpers.HasLoggerMessageAttribute(m, compilation));
-    }
+    private static String TruncateSafe(String s, Int32 maxLen)
+        => s.Length <= maxLen ? s : String.Concat(s.Substring(0, maxLen - 3), "...");
 }
-

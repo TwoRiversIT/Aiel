@@ -246,7 +246,7 @@ public sealed class UseAielEventIdsAnalyzerTests
                 .WithLocation(0)
         };
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -255,6 +255,7 @@ public sealed class UseAielEventIdsAnalyzerTests
     public async Task DirectLogError_RaisesAIEL00011()
     {
         const String source = """
+            using System;
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
@@ -272,7 +273,7 @@ public sealed class UseAielEventIdsAnalyzerTests
                 .WithLocation(0)
         };
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -298,7 +299,7 @@ public sealed class UseAielEventIdsAnalyzerTests
                 .WithLocation(0)
         };
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -320,10 +321,11 @@ public sealed class UseAielEventIdsAnalyzerTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
-                .WithLocation(0)
+                .WithSpan(5, 81, 5, 88)
+                .WithArguments("AielEventIds.ServiceStart", "AielEventIds.ServiceStop")
         };
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<EventIdMismatchAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -345,10 +347,11 @@ public sealed class UseAielEventIdsAnalyzerTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
-                .WithLocation(0)
+                .WithSpan(5, 81, 5, 88)
+                .WithArguments("AielEventIds.RequestStart", "AielEventIds.ServiceStart")
         };
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<EventIdMismatchAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }

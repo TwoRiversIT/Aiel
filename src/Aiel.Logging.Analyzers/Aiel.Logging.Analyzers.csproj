@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 
@@ -20,7 +20,6 @@
 		<NoPackageAnalysis>true</NoPackageAnalysis>
 		<NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
 
-		<AielEventIdsType>Barney.Miller.EventIds</AielEventIdsType>
 	</PropertyGroup>
 
 	<ItemGroup>

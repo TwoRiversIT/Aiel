@@ -9,10 +9,14 @@
     <Import_RootNamespace>Aiel.Roslyn</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Logging\Configuration\AnalyzerConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\AnalyzerHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\DiagnosticDescriptors.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\EventIdsTypeConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\GeneratorConsts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\WellKnownTypes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\DiagnosticDescriptors.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Roslyn\GeneratorConsts.cs" />
+    <Folder Include="$(MSBuildThisFileDirectory)Aiel\Logging\" />
   </ItemGroup>
 </Project>

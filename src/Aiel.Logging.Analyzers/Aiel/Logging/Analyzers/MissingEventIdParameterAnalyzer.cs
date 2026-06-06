@@ -69,14 +69,17 @@ public sealed class MissingEventIdParameterAnalyzer : DiagnosticAnalyzer
     private static void AnalyzeSymbol(SymbolAnalysisContext context)
     {
         var config = AnalyzerConfiguration.Resolve(context.Options);
-        var eventIdsType = config.GetTypeSymbol(context.Compilation);
-        if (eventIdsType is null)
+
+        var method = (IMethodSymbol)context.Symbol;
+        if (!AnalyzerHelpers.HasLoggerMessageAttribute(method, context.Compilation))
         {
             return;
         }
 
-        var method = (IMethodSymbol)context.Symbol;
-        if (!AnalyzerHelpers.HasLoggerMessageAttribute(method, context.Compilation))
+        config = context.ResolveConfigForSymbol(method, config);
+
+        var eventIdsType = config.GetTypeSymbol(context.Compilation);
+        if (eventIdsType is null)
         {
             return;
         }

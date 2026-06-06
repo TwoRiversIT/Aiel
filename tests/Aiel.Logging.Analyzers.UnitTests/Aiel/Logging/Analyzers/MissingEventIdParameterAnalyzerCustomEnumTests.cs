@@ -65,7 +65,10 @@ public sealed class MissingEventIdParameterAnalyzerCustomEnumTests
 
         var expected = new[]
         {
-            DiagnosticResult.CompilerWarning(DiagnosticDescriptors.MissingEventIdParameter.Id).WithLocation(0)
+            DiagnosticResult
+                .CompilerWarning(DiagnosticDescriptors.MissingEventIdParameter.Id)
+                .WithSpan(6, 32, 6, 34)
+                .WithArguments("Ok", "ServiceStart")
         };
 
         await AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>

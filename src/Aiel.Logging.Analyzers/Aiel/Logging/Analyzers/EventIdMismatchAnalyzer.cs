@@ -78,6 +78,8 @@ public sealed class EventIdMismatchAnalyzer : DiagnosticAnalyzer
             return;
         }
 
+        config = ctx.ResolveConfigForSymbol(method, config);
+
         var eventIdsType = config.GetTypeSymbol(ctx.Compilation);
         if (eventIdsType is null)
         {

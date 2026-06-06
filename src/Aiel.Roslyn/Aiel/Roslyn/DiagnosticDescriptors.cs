@@ -178,12 +178,12 @@ internal static class DiagnosticDescriptors
     /// </summary>
     public static readonly DiagnosticDescriptor MissingEventIdParameter = new(
         id: AIEL00009_MissingEventIdParameterId,
-        title: "Logging helper missing AielEventIds parameter",
-        messageFormat: "Method '{0}' is a logging helper but is missing an optional 'AielEventIds eventId = AielEventIds.{1}' parameter",
+        title: "Logging helper missing EventId parameter",
+        messageFormat: "Method '{0}' is a logging helper but is missing an  'AielEventIds eventId = AielEventIds.{1}' parameter",
         category: LoggingCategory,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Every Aiel logging helper method must accept an optional AielEventIds parameter so callers can override the default event ID at call sites.",
+        description: "Every Aiel logging helper method must have an optional AielEventIds parameter so callers can override the default event ID at call sites.",
         helpLinkUri: HelpBase + "AIEL00009");
 
     /// <summary>

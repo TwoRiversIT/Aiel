@@ -20,7 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// EventIdMismatchCodeFix.cs  –  Fix for AIEL00012
+//
+// Offers two code actions when [LoggerMessage] EventId and the eventId
+// parameter default disagree:
+//   1. Trust the attribute  → update the parameter default
+//   2. Trust the parameter  → update the attribute EventId expression
+//
+// The configured EventIds type name is read from Diagnostic.Properties
+// so the fix generates syntax for whatever enum the project uses.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -36,17 +48,16 @@ namespace Aiel.Logging.CodeFixes;
 /// <summary>
 /// Fixes AIEL00012 by synchronising the <c>eventId</c> parameter default with
 /// the <c>[LoggerMessage]</c> attribute's <c>EventId</c> value, or vice-versa.
-/// vice-versa).
 /// </summary>
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(EventIdMismatchCodeFix))]
 [Shared]
 public sealed class EventIdMismatchCodeFix : CodeFixProvider
 {
-    private const string TitleSyncParam = "Sync parameter default to match [LoggerMessage] EventId";
-    private const string TitleSyncAttr = "Sync [LoggerMessage] EventId to match parameter default";
+    private const String TitleSyncParam = "Sync parameter default to match [LoggerMessage] EventId";
+    private const String TitleSyncAttr = "Sync [LoggerMessage] EventId to match parameter default";
 
     /// <inheritdoc />
-    public override ImmutableArray<string> FixableDiagnosticIds
+    public override ImmutableArray<String> FixableDiagnosticIds
         => [DiagnosticDescriptors.EventIdMismatch.Id];
 
     /// <inheritdoc />
@@ -57,83 +68,62 @@ public sealed class EventIdMismatchCodeFix : CodeFixProvider
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var document = context.Document;
-        var root = await document.GetSyntaxRootAsync(context.CancellationToken)
-                                     .ConfigureAwait(false);
+        var root = await document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
         if (root is null)
         {
             return;
         }
 
-        var model = await document.GetSemanticModelAsync(context.CancellationToken)
-                                  .ConfigureAwait(false);
+        var model = await document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
         if (model is null)
         {
             return;
         }
 
         var diagnostic = context.Diagnostics[0];
-        var span = diagnostic.Location.SourceSpan;
-        var node = root.FindNode(span);
-
-        // Walk up to find the method declaration.
-        var methodDecl = node.AncestorsAndSelf()
-            .OfType<MethodDeclarationSyntax>()
-            .FirstOrDefault();
+        var node = root.FindNode(diagnostic.Location.SourceSpan);
+        var methodDecl = node.AncestorsAndSelf().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         if (methodDecl is null)
         {
             return;
         }
 
-        // Locate attribute and parameter nodes for the two fix directions.
-        if (model.GetDeclaredSymbol(methodDecl, context.CancellationToken) is not IMethodSymbol methodSymbol)
-        {
-            return;
-        }
+        var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)
+                     ?? EventIdsTypeConfig.FromFullTypeName(AnalyzerConfiguration.DefaultFullTypeName);
 
-        var aielType = AnalyzerHelpers.GetAielEventIdsType(model.Compilation);
-        if (aielType is null)
-        {
-            return;
-        }
-
-        var attrData = AnalyzerHelpers.GetLoggerMessageAttribute(methodSymbol, model.Compilation);
-        if (attrData is null)
-        {
-            return;
-        }
-
-        // Get both member names from the diagnostic message.
-        var (attrMember, paramMember) = ExtractMembers(diagnostic);
+        var (attrMember, paramMember) = ExtractMembers(diagnostic.GetMessage(), config.ShortName);
         if (attrMember is null || paramMember is null)
         {
             return;
         }
 
-        // ── Fix 1: update parameter default to match attribute ──────────
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: TitleSyncParam,
-                createChangedDocument: ct =>
-                    SyncParameterToAttributeAsync(document, methodDecl, attrMember, ct),
-                equivalenceKey: TitleSyncParam),
-            diagnostic);
-
-        // ── Fix 2: update attribute EventId to match parameter ──────────
+        // Fix 1: sync attribute → parameter (trust parameter)
         context.RegisterCodeFix(
             CodeAction.Create(
                 title: TitleSyncAttr,
                 createChangedDocument: ct =>
-                    SyncAttributeToParameterAsync(document, methodDecl, paramMember, aielType, ct),
+                    SyncAttributeToParameterAsync(document, methodDecl, model,
+                        config, paramMember, ct),
                 equivalenceKey: TitleSyncAttr),
+            diagnostic);
+
+        // Fix 2: sync parameter → attribute (trust attribute)
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title: TitleSyncParam,
+                createChangedDocument: ct =>
+                    SyncParameterToAttributeAsync(document, methodDecl, config.ShortName, attrMember, ct),
+                equivalenceKey: TitleSyncParam),
             diagnostic);
     }
 
-    // ── Transformation: sync parameter default → attribute value ─────────
+    // ── Fix 1: update parameter default ──────────────────────────────────
 
     private static async Task<Document> SyncParameterToAttributeAsync(
         Document document,
         MethodDeclarationSyntax methodDecl,
-        string targetMember,   // from attribute – the correct member
+        String enumShortName,
+        String targetMember,
         CancellationToken ct)
     {
         var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
@@ -142,38 +132,35 @@ public sealed class EventIdMismatchCodeFix : CodeFixProvider
             return document;
         }
 
-        // Find the optional AielEventIds parameter.
         var param = methodDecl.ParameterList.Parameters
             .FirstOrDefault(p =>
                 p.Identifier.ValueText.Equals(
                     WellKnownTypes.EventIdParamName, StringComparison.OrdinalIgnoreCase)
                 && p.Default is not null);
-
         if (param is null)
         {
             return document;
         }
 
-        // Build new default: = AielEventIds.targetMember
         var newDefault = SyntaxFactory.EqualsValueClause(
             SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
-                SyntaxFactory.IdentifierName(WellKnownTypes.AielEventIdsShort),
+                SyntaxFactory.IdentifierName(enumShortName),
                 SyntaxFactory.IdentifierName(targetMember)))
             .WithAdditionalAnnotations(Formatter.Annotation);
 
-        var newParam = param.WithDefault(newDefault);
-        var newRoot = root.ReplaceNode(param, newParam);
-        return document.WithSyntaxRoot(newRoot);
+        return document.WithSyntaxRoot(
+            root.ReplaceNode(param, param.WithDefault(newDefault)));
     }
 
-    // ── Transformation: sync attribute EventId → parameter default ───────
+    // ── Fix 2: update attribute EventId expression ───────────────────────
 
     private static async Task<Document> SyncAttributeToParameterAsync(
         Document document,
         MethodDeclarationSyntax methodDecl,
-        string targetMember,   // from parameter – the correct member
-        INamedTypeSymbol aielType,
+        SemanticModel model,
+        EventIdsTypeConfig config,
+        String targetMember,
         CancellationToken ct)
     {
         var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
@@ -182,13 +169,6 @@ public sealed class EventIdMismatchCodeFix : CodeFixProvider
             return document;
         }
 
-        var model = await document.GetSemanticModelAsync(ct).ConfigureAwait(false);
-        if (model is null)
-        {
-            return document;
-        }
-
-        // Find the [LoggerMessage] attribute on the method.
         var loggerMsgAttr = AnalyzerHelpers.FindAttributeSyntax(
             methodDecl.AttributeLists, model, WellKnownTypes.LoggerMessageAttr);
         if (loggerMsgAttr?.ArgumentList is null)
@@ -196,7 +176,6 @@ public sealed class EventIdMismatchCodeFix : CodeFixProvider
             return document;
         }
 
-        // Find the EventId named argument.
         var eventIdArg = loggerMsgAttr.ArgumentList.Arguments
             .FirstOrDefault(a =>
                 a.NameEquals?.Name.Identifier.ValueText == WellKnownTypes.EventIdArgName);
@@ -205,44 +184,43 @@ public sealed class EventIdMismatchCodeFix : CodeFixProvider
             return document;
         }
 
-        // Get integer value of targetMember from the enum.
-        var memberField = aielType.GetMembers()
-            .OfType<IFieldSymbol>()
-            .FirstOrDefault(f =>
-                f.Name.Equals(targetMember, StringComparison.Ordinal));
+        // Resolve the integer value for targetMember from the compiled type.
+        var eventIdsType = config.GetTypeSymbol(model.Compilation);
+        if (eventIdsType is null)
+        {
+            return document;
+        }
 
+        var memberField = eventIdsType.GetMembers()
+            .OfType<IFieldSymbol>()
+            .FirstOrDefault(f => f.Name.Equals(targetMember, StringComparison.Ordinal));
         if (memberField?.HasConstantValue != true)
         {
             return document;
         }
 
-        // Build: (int)AielEventIds.targetMember
+        // Build:  (int)EnumType.targetMember
         var newExpr = SyntaxFactory.CastExpression(
             SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
             SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
-                SyntaxFactory.IdentifierName(WellKnownTypes.AielEventIdsShort),
+                SyntaxFactory.IdentifierName(config.ShortName),
                 SyntaxFactory.IdentifierName(targetMember)))
             .WithAdditionalAnnotations(Formatter.Annotation);
 
-        var newArg = eventIdArg.WithExpression(newExpr);
-        var newRoot = root.ReplaceNode(eventIdArg, newArg);
-        return document.WithSyntaxRoot(newRoot);
+        return document.WithSyntaxRoot(
+            root.ReplaceNode(eventIdArg, eventIdArg.WithExpression(newExpr)));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Parses the diagnostic message to extract attribute and parameter member names.
-    /// messageFormat: "The [LoggerMessage] EventId ({0}) does not match the default value of parameter 'eventId' ({1}). They must agree."
-    /// where {0} = "AielEventIds.AttrMember" and {1} = "AielEventIds.ParamMember".
-    /// </summary>
-    private static (string? attrMember, string? paramMember) ExtractMembers(Diagnostic diagnostic)
+    private static (String? attrMember, String? paramMember) ExtractMembers(
+        String msg, String shortName)
     {
-        var msg = diagnostic.GetMessage();
+        // messageFormat: "The [LoggerMessage] EventId ({ShortName}.AttrMember) does not
+        //                 match the default value of parameter 'eventId' ({ShortName}.ParamMember)."
+        var prefix = $"{shortName}.";
 
-        // Extract first AielEventIds.X occurrence
-        const string prefix = "AielEventIds.";
         var idx1 = msg.IndexOf(prefix, StringComparison.Ordinal);
         if (idx1 < 0)
         {
@@ -258,7 +236,6 @@ public sealed class EventIdMismatchCodeFix : CodeFixProvider
 
         var attrMember = msg.Substring(start1, end1 - start1);
 
-        // Extract second occurrence
         var idx2 = msg.IndexOf(prefix, end1, StringComparison.Ordinal);
         if (idx2 < 0)
         {

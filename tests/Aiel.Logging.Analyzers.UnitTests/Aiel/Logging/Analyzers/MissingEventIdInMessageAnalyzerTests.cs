@@ -45,7 +45,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             }
             """;
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -78,7 +78,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             }
             """;
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -131,7 +131,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
                 .WithArguments("{EventId} started")
         };
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -157,7 +157,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
                 .WithArguments("Started service [{EventId}]")
         };
 
-        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }

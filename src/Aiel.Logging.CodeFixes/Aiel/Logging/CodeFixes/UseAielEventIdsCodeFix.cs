@@ -20,7 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.Helpers;
+// -----------------------------------------------------------------------
+// UseAielEventIdsCodeFix.cs  –  Fix for AIEL00008
+//
+// Replaces a raw integer EventId literal with (int)<ConfiguredType>.Member.
+// The configured type name is read from Diagnostic.Properties so the fix
+// always generates syntax that matches whatever enum the project uses.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Configuration;
 using Aiel.Roslyn;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -41,10 +49,10 @@ namespace Aiel.Logging.CodeFixes;
 [Shared]
 public sealed class UseAielEventIdsCodeFix : CodeFixProvider
 {
-    private const string Title = "Replace with (int)AielEventIds member";
+    private const String Title = "Replace with (int)<EventIds> member";
 
     /// <inheritdoc />
-    public override ImmutableArray<string> FixableDiagnosticIds
+    public override ImmutableArray<String> FixableDiagnosticIds
         => [DiagnosticDescriptors.UseAielEventIds.Id];
 
     /// <inheritdoc />
@@ -57,39 +65,31 @@ public sealed class UseAielEventIdsCodeFix : CodeFixProvider
         var root = await context.Document
             .GetSyntaxRootAsync(context.CancellationToken)
             .ConfigureAwait(false);
-
         if (root is null)
         {
             return;
         }
 
         var diagnostic = context.Diagnostics[0];
-        var span = diagnostic.Location.SourceSpan;
-        var node = root.FindNode(span);
-
-        // The reported node should be the expression used as EventId value.
-        var expr = node as ExpressionSyntax
-            ?? node.DescendantNodesAndSelf().OfType<ExpressionSyntax>()
-                .FirstOrDefault(e => e.Span == span)
-            ?? root.FindToken(span.Start).Parent?.AncestorsAndSelf()
-                .OfType<ExpressionSyntax>()
-                .FirstOrDefault(e => e.Span.Contains(span));
-
-        if (expr is null)
+        var node = root.FindNode(diagnostic.Location.SourceSpan);
+        if (node is not ExpressionSyntax expr)
         {
             return;
         }
 
-        // Extract the suggested member name from the diagnostic message args.
-        // messageFormat: "EventId '{0}' is a raw integer. Use '(int)AielEventIds.{1}' instead."
-        var props = diagnostic.Properties;
-        var memberName = GetSuggestedMember(diagnostic, context.Document, expr);
+        // Read the EventIds type name that was resolved at analysis time.
+        // Falls back to the Aiel default when the property is absent.
+        var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)
+            ?? EventIdsTypeConfig.FromFullTypeName(AnalyzerConfiguration.DefaultFullTypeName);
+
+        var memberName = ExtractSuggestedMember(diagnostic.GetMessage(), config.ShortName)
+            ?? AnalyzerConfiguration.DefaultMemberName;
 
         context.RegisterCodeFix(
             CodeAction.Create(
-                title: Title,
+                title: $"Replace with (int){config.ShortName}.{memberName}",
                 createChangedDocument: ct =>
-                    ReplaceWithEnumCastAsync(context.Document, expr, memberName, ct),
+                    ReplaceWithEnumCastAsync(context.Document, expr, config.ShortName, memberName, ct),
                 equivalenceKey: Title),
             diagnostic);
     }
@@ -99,7 +99,8 @@ public sealed class UseAielEventIdsCodeFix : CodeFixProvider
     private static async Task<Document> ReplaceWithEnumCastAsync(
         Document document,
         ExpressionSyntax expr,
-        string memberName,
+        String enumShortName,
+        String memberName,
         CancellationToken ct)
     {
         var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
@@ -108,33 +109,26 @@ public sealed class UseAielEventIdsCodeFix : CodeFixProvider
             return document;
         }
 
-        // Build:  (int)AielEventIds.MemberName
+        // Build:  (int)EnumType.MemberName
         var castExpr = SyntaxFactory.CastExpression(
             SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
             SyntaxFactory.MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
-                SyntaxFactory.IdentifierName(WellKnownTypes.AielEventIdsShort),
+                SyntaxFactory.IdentifierName(enumShortName),
                 SyntaxFactory.IdentifierName(memberName)))
             .WithAdditionalAnnotations(Formatter.Annotation);
 
-        var newRoot = root.ReplaceNode(expr, castExpr);
-        return document.WithSyntaxRoot(newRoot);
+        return document.WithSyntaxRoot(root.ReplaceNode(expr, castExpr));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────────
 
-    private static string GetSuggestedMember(
-        Diagnostic diagnostic,
-        Document document,
-        ExpressionSyntax expr)
+    private static String ExtractSuggestedMember(String msg, String shortName)
     {
-        // The second message argument is the suggested member name;
-        // try to recover it from the formatted message.
-        var msg = diagnostic.GetMessage();
+        // messageFormat: "Use '(int)EnumType.{member}' instead."
+        var prefix = $"(int){shortName}.";
+        const String suffix = "' instead.";
 
-        // Pattern: "Use '(int)AielEventIds.{member}' instead."
-        const string prefix = "(int)AielEventIds.";
-        const string suffix = "' instead.";
         var start = msg.IndexOf(prefix, StringComparison.Ordinal);
         if (start >= 0)
         {
@@ -146,7 +140,6 @@ public sealed class UseAielEventIdsCodeFix : CodeFixProvider
             }
         }
 
-        return "SomeMember";
+        return null;
     }
 }
-

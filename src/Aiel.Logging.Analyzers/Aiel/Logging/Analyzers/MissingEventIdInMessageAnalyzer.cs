@@ -29,7 +29,8 @@
 // -----------------------------------------------------------------------
 
 using Aiel.Logging.Configuration;
-using Aiel.Roslyn;
+using Aiel.Logging.Internal;
+using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

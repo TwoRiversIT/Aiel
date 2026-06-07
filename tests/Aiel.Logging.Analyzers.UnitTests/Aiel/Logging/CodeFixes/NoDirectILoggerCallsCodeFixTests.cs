@@ -20,12 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Logging.CodeFixes;
-using Aiel.Roslyn;
+using Aiel.Logging.Analyzers;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis.Testing;
 using Verifiers;
 
-namespace Aiel.Logging.Analyzers;
+namespace Aiel.Logging.CodeFixes;
 
 public sealed class NoDirectILoggerCallsCodeFixTests
 {

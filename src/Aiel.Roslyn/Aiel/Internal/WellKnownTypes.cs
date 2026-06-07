@@ -30,9 +30,9 @@
 //       defaults to "Aiel.Logging.AielEventIds".
 // -----------------------------------------------------------------------
 
-namespace Aiel.Roslyn;
+namespace Aiel.Internal;
 
-internal static class WellKnownTypes
+public static class WellKnownTypes
 {
     // ── Microsoft.Extensions.Logging ────────────────────────────────────
     public const String ILogger = "Microsoft.Extensions.Logging.ILogger";

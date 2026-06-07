@@ -21,76 +21,78 @@
 // DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------
-// AIEL00008_CodeFix_Tests.cs — AIEL00008 code-fix
+// AIEL00012_CodeFix_Tests.cs — AIEL00012 code-fix
 // -----------------------------------------------------------------------
-using Aiel.Logging.CodeFixes;
-using Aiel.Roslyn;
+using Aiel.Logging.Analyzers;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis.Testing;
 using Verifiers;
 
-namespace Aiel.Logging.Analyzers;
+namespace Aiel.Logging.CodeFixes;
 
-public sealed class UseAielEventIdsCodeFixTests
+public sealed class EventIdMismatchCodeFixTests
 {
+    // Fix index 0 = "Update attribute EventId to match parameter default"
+    // Fix index 1 = "Update parameter default to match attribute EventId"
+
     [Fact]
-    public async Task RawInt_ShouldBe_ReplacedWithMatchingMember()
+    public async Task Mismatch_Fix0_UpdatesAttributeToMatchParameter()
     {
         const String source = """
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage({|#0:EventId = 1001|}, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger);
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
             }
             """;
 
+        // Fix 0: attribute EventId updated to match the parameter default (ServiceStop).
         const String fixedSource = """
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
                 [LoggerMessage(EventId = (int)AielEventIds.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger);
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
             }
             """;
 
-        var expected = new[]
+        var expected = new DiagnosticResult[]
         {
-            DiagnosticResult.CompilerWarning(DiagnosticDescriptors.UseAielEventIds.Id).WithSpan(4, 30, 4, 34)
+            DiagnosticResult.CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id).WithSpan(5, 81, 5, 88),
         };
 
-        await AielCodeFixVerifier<UseAielEventIdsAnalyzer, UseAielEventIdsCodeFix>
-            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+        await AielCodeFixVerifier<EventIdMismatchAnalyzer, EventIdMismatchCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 0, expected: expected);
     }
 
     [Fact]
-    public async Task OtherEnumCast_FixedToAielEventIdsCast()
+    public async Task Mismatch_Fix1_UpdatesParameterToMatchAttribute()
     {
         const String source = """
             using Microsoft.Extensions.Logging;
-            public enum SomeOtherEnum { Foo = 1001 }
             public static partial class Log
             {
-                [LoggerMessage({|#0:EventId = (int)SomeOtherEnum.Foo|}, Level = LogLevel.Information, Message = "[{EventId}] msg")]
-                public static partial void Foo(this ILogger logger);
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
             }
             """;
 
+        // Fix 1: parameter default updated to match the attribute EventId (ServiceStart).
         const String fixedSource = """
             using Microsoft.Extensions.Logging;
-            public enum SomeOtherEnum { Foo = 1001 }
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] msg")]
-                public static partial void Foo(this ILogger logger);
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
             }
             """;
 
-        var expected = new[]
-        {
-            DiagnosticResult.CompilerWarning(DiagnosticDescriptors.UseAielEventIds.Id).WithSpan(5, 30, 5, 52)
-        };
+        var expected = DiagnosticResult
+            .CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
+            .WithSpan(5, 81, 5, 88);
 
-        await AielCodeFixVerifier<UseAielEventIdsAnalyzer, UseAielEventIdsCodeFix>
-            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+        await AielCodeFixVerifier<EventIdMismatchAnalyzer, EventIdMismatchCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 1, expected: expected);
     }
 }

@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Roslyn;
+using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
@@ -69,7 +69,7 @@ public class AssemblyAnalyzerTests
         // Test0.cs (AielStub) and Test1.cs (consumerSource).
         // The compilation-level code in the analyzer uses the first syntax tree,
         // so we expect the diagnostic on /0/Test0.cs line 1 column 1.
-        var expected = Verify.Diagnostic(DiagnosticDescriptors.AIEL00001_RootDependencyRequiredId)
+        var expected = Verify.Diagnostic(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId)
             .WithSpan("/0/Test0.cs", 1, 1, 1, 10)
             .WithArguments("TestProject", 0);
 
@@ -106,7 +106,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticDescriptors.AIEL00001_RootDependencyRequiredId, diagnostic.Id);
+        Assert.Equal(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId, diagnostic.Id);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticDescriptors.AIEL00001_RootDependencyRequiredId, diagnostic.Id);
+        Assert.Equal(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId, diagnostic.Id);
     }
 
     [Fact]
@@ -174,7 +174,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
 
         Assert.Equal(2, diagnostics.Length);
-        Assert.All(diagnostics, d => Assert.Equal(DiagnosticDescriptors.AIEL00001_RootDependencyRequiredId, d.Id));
+        Assert.All(diagnostics, d => Assert.Equal(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId, d.Id));
     }
 
     [Fact]
@@ -192,7 +192,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
 
         Assert.Equal(2, diagnostics.Length);
-        Assert.All(diagnostics, d => Assert.Equal(DiagnosticDescriptors.AIEL00001_RootDependencyRequiredId, d.Id));
+        Assert.All(diagnostics, d => Assert.Equal(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId, d.Id));
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(source, referenceAielCore: true);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticDescriptors.AIEL00001_RootDependencyRequiredId, diagnostic.Id);
+        Assert.Equal(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId, diagnostic.Id);
     }
 
     private static async Task<ImmutableArray<Diagnostic>> AnalyzeAsync(String source, Boolean referenceAielCore)

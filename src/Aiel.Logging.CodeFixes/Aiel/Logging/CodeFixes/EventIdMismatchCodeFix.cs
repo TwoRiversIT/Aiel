@@ -32,8 +32,9 @@
 // so the fix generates syntax for whatever enum the project uses.
 // -----------------------------------------------------------------------
 
+using Aiel.Internal;
 using Aiel.Logging.Configuration;
-using Aiel.Roslyn;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;

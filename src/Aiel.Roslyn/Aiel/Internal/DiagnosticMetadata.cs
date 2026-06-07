@@ -20,6 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-global using System;
-global using System.Threading.Tasks;
-global using Xunit;
+namespace Aiel.Internal;
+
+public static class DiagnosticMetadata
+{
+    // Common category and help link base for Aiel logging analyzers
+    public const String HelpBase = "https://docs.aiel.ca/analyzers/";
+    public const String LoggingCategory = "AielLogging";
+    public const String StrongIdCategory = "AielStrongId";
+    public const String UsageCategory = "AielUsage";
+}

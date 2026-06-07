@@ -32,7 +32,7 @@
 // format ever becomes configurable).
 // -----------------------------------------------------------------------
 
-using Aiel.Roslyn;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;

@@ -23,7 +23,7 @@
 // -----------------------------------------------------------------------
 // AIEL00009_Analyzer_Tests.cs — AIEL00009
 // -----------------------------------------------------------------------
-using Aiel.Roslyn;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis.Testing;
 using Verifiers;
 

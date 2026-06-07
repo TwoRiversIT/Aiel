@@ -56,7 +56,7 @@
 //   // Use config.ShortName, config.FullTypeName, config.GetTypeSymbol(compilation)
 // -----------------------------------------------------------------------
 
-using Aiel.Roslyn;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
@@ -72,7 +72,7 @@ namespace Aiel.Logging.Configuration;
 /// helpers for stamping / reading that config in <see cref="Diagnostic"/>
 /// property bags (so code fixes don't need to independently re-read options).
 /// </summary>
-internal static class AnalyzerConfiguration
+public static class AnalyzerConfiguration
 {
     // ── Public constants ─────────────────────────────────────────────────
 
@@ -120,7 +120,7 @@ internal static class AnalyzerConfiguration
             msBuildValue = null;
         }
 
-        if (!String.IsNullOrWhiteSpace(msBuildValue))
+        if (msBuildValue is not null && !String.IsNullOrWhiteSpace(msBuildValue))
         {
             return EventIdsTypeConfig.FromFullTypeName(msBuildValue.Trim());
         }
@@ -133,7 +133,7 @@ internal static class AnalyzerConfiguration
             editorConfigValue = null;
         }
 
-        if (!String.IsNullOrWhiteSpace(editorConfigValue))
+        if (editorConfigValue is not null && !String.IsNullOrWhiteSpace(editorConfigValue))
         {
             return EventIdsTypeConfig.FromFullTypeName(editorConfigValue.Trim());
         }

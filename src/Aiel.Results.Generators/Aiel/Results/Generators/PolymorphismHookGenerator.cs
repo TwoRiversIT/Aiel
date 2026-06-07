@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Roslyn;
+using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 using System.Text;

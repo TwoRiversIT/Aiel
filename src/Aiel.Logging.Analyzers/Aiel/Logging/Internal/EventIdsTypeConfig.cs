@@ -24,7 +24,7 @@ using Aiel.Logging.Configuration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Aiel.Roslyn;
+namespace Aiel.Logging.Internal;
 
 // ════════════════════════════════════════════════════════════════════════
 // EventIdsTypeConfig  — immutable value-type for resolved config
@@ -34,7 +34,7 @@ namespace Aiel.Roslyn;
 /// Holds the resolved EventIds type name, split into fully-qualified and
 /// short forms.  Produced by <see cref="AnalyzerConfiguration.Resolve"/>.
 /// </summary>
-internal sealed class EventIdsTypeConfig
+public sealed class EventIdsTypeConfig
 {
     /// <summary>Fully-qualified type name, e.g. <c>Acme.Logging.AcmeEventIds</c>.</summary>
     public String FullTypeName { get; }

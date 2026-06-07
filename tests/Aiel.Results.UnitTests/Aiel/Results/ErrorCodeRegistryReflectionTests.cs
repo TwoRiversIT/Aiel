@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results.TestErrors;
-using Aiel.Roslyn;
+using Aiel.Internal;
 using System.Reflection;
 
 namespace Aiel.Results;

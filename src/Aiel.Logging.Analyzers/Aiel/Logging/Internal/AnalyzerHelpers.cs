@@ -29,12 +29,13 @@
 //       the EventIdsTypeConfig resolved by AnalyzerConfiguration.Resolve().
 // -----------------------------------------------------------------------
 
+using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Aiel.Roslyn;
+namespace Aiel.Logging.Internal;
 
-internal static class AnalyzerHelpers
+public static class AnalyzerHelpers
 {
     // ── ILogger helpers ──────────────────────────────────────────────────
 

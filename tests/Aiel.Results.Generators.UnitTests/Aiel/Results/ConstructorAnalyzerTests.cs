@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results.Analyzers;
-using Aiel.Roslyn;
+using Aiel.Results.Internal;
 using Microsoft.CodeAnalysis.Testing;
 
 namespace Aiel.Results;

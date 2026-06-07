@@ -28,8 +28,9 @@
 // The configured type name is read from Diagnostic.Properties.
 // -----------------------------------------------------------------------
 
+using Aiel.Internal;
 using Aiel.Logging.Configuration;
-using Aiel.Roslyn;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -149,8 +150,7 @@ public sealed class MissingEventIdParameterCodeFix : CodeFixProvider
         SemanticModel semanticModel,
         EventIdsTypeConfig config)
     {
-        var method = semanticModel.GetDeclaredSymbol(methodDecl) as IMethodSymbol;
-        if (method is null)
+        if (semanticModel.GetDeclaredSymbol(methodDecl) is not IMethodSymbol method)
         {
             return null;
         }

@@ -23,12 +23,12 @@
 // -----------------------------------------------------------------------
 // AIEL00010_CodeFix_Tests.cs — AIEL00010 code-fix
 // -----------------------------------------------------------------------
-using Aiel.Logging.CodeFixes;
-using Aiel.Roslyn;
+using Aiel.Logging.Analyzers;
+using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis.Testing;
 using Verifiers;
 
-namespace Aiel.Logging.Analyzers;
+namespace Aiel.Logging.CodeFixes;
 
 public sealed class MissingEventIdInMessageCodeFixTests
 {

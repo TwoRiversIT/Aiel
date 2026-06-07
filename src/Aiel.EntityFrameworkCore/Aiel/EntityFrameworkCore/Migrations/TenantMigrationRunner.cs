@@ -46,7 +46,7 @@ public sealed class TenantMigrationRunner(
         {
             if (checkpoint.IsCompleted(target.Key))
             {
-                logger.LogDebug("Skipping {Label}: already completed.", target.Label.Value);
+                logger.LogSkippingCompleted(target.Label.Value);
                 continue;
             }
 
@@ -58,17 +58,30 @@ public sealed class TenantMigrationRunner(
 
                 succeeded.Add(target.Key);
                 telemetryHook.OnCompleted(target);
-                logger.LogInformation("Migration completed for {Label}.", target.Label.Value);
+                logger.LogMigrationCompleted(target.Label.Value);
             }
             catch (Exception ex)
             {
                 var failure = new MigrationFailedTarget(target.Key, target.Label, ex.GetType().Name);
                 failed.Add(failure);
                 telemetryHook.OnFailed(target, failure);
-                logger.LogError(ex, "Migration failed for {Label}.", target.Label.Value);
+                logger.LogTenantMigrationFailed(target.Label.Value, ex.GetType().Name, ex.Message);
             }
         }
 
         return new TenantMigrationResult(succeeded, failed);
     }
+}
+
+internal static partial class MigrationLoggingExtensions
+{
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "Skipping {Tenant}: already completed.")]
+    public static partial void LogSkippingCompleted(this ILogger logger, string tenant);
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Migration completed for {Tenant}.")]
+    public static partial void LogMigrationCompleted(this ILogger logger, string tenant);
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Error, Message = "Migration failed for {Tenant}: {ExceptionType} - {ExceptionMessage}")]
+    public static partial void LogTenantMigrationFailed(this ILogger logger, string tenant, string exceptionType, string exceptionMessage);
 }

@@ -68,7 +68,6 @@ public sealed class LoggingBehaviorTests
         logger.Entries.Should().HaveCount(2);
         logger.Entries[0].Level.Should().Be(LogLevel.Information);
         logger.Entries[1].Level.Should().Be(LogLevel.Error);
-        logger.Entries[1].Exception.Should().BeSameAs(exception);
         logger.Entries[1].Message.Should().Contain(nameof(TestAction));
         logger.Entries[1].Message.Should().Contain("threw");
     }

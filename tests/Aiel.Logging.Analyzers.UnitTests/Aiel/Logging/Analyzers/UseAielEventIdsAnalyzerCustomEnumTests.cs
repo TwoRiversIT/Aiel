@@ -35,7 +35,7 @@ public sealed class UseAielEventIdsAnalyzerCustomEnumTests
     [Fact]
     public async Task AcmeEventIdsCast_NoDiagnostic()
     {
-        const string source = """
+        const String source = """
             using Microsoft.Extensions.Logging;
             using Acme.Logging;
             public static partial class Log
@@ -53,7 +53,7 @@ public sealed class UseAielEventIdsAnalyzerCustomEnumTests
     [Fact]
     public async Task RawInt_WithCustomEnum_RaisesAIEL00008()
     {
-        const string source = """
+        const String source = """
             using Microsoft.Extensions.Logging;
             using Acme.Logging;
             public static partial class Log

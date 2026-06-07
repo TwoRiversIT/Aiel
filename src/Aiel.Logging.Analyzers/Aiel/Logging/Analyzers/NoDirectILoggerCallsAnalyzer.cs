@@ -30,9 +30,9 @@
 // ILogger is called directly, regardless of which enum is in use.
 // -----------------------------------------------------------------------
 
+using Aiel.Internal;
 using Aiel.Logging.Configuration;
 using Aiel.Logging.Internal;
-using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

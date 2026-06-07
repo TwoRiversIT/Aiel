@@ -51,9 +51,10 @@ public partial class DbContextMigrator<TDbContext>(IServiceProvider serviceProvi
             .Database
             .GetPendingMigrationsAsync(cancellationToken: cancellationToken);
 
-        if (pendingMigrations.Any())
+        var count = pendingMigrations.Count();
+        if (count > 0)
         {
-            Logger.LogMigrationsFound(pendingMigrations.Count());
+            Logger.LogMigrationsFound(count);
 
             try
             {
@@ -64,7 +65,8 @@ public partial class DbContextMigrator<TDbContext>(IServiceProvider serviceProvi
             }
             catch (Exception ex)
             {
-                Logger.LogMigrationFailed(name, ex.GetType().Name, ex.Message);
+                var exName = ex.GetType().Name;
+                Logger.LogMigrationFailed(name, exName, ex.Message);
                 throw;
             }
         }

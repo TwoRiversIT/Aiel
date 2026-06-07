@@ -32,7 +32,7 @@ public sealed class DecoratorExtensionsTests
     {
         IServiceCollection services = null!;
 
-        Assert.Throws<ArgumentNullException>(() => services.DecorateCollection<String>());
+        Assert.Throws<ArgumentNullException>(services.DecorateCollection<String>);
     }
 
     [Fact]

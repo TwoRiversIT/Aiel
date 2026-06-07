@@ -120,7 +120,7 @@ public abstract class IntegrationTestBase<TSut, TFixture>
     protected IntegrationTestBase(TFixture fixture, ITestOutputHelper output)
         : base(fixture, output)
     {
-        _lazySut = new Lazy<TSut>(() => Fixture.Services.GetRequiredService<TSut>());
+        _lazySut = new Lazy<TSut>(Fixture.Services.GetRequiredService<TSut>);
     }
 
     /// <summary>

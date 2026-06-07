@@ -60,7 +60,7 @@ public class KeyGeneratorTests : IDisposable
     {
         var key = _generator.Generate(100);
 
-        Assert.DoesNotContain(key, c => Char.IsLower(c));
+        Assert.DoesNotContain(key, Char.IsLower);
     }
 
     [Fact]

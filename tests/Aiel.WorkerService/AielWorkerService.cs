@@ -27,6 +27,11 @@ using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.Security;
 using Aiel.WorkerService.Shared;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Aiel.WorkerService;
 

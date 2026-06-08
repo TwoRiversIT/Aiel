@@ -151,7 +151,7 @@ public class StrongIdValueConverterTests
     }
 }
 
-[StrongId<Guid>]
+[StrongId<Guid>(GenerateTryFrom = true)]
 public readonly partial record struct OrderId;
 
 [StrongId<Guid>]

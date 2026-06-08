@@ -39,7 +39,7 @@ public class StrongIdSourceGeneratorTests
 
             namespace Test;
 
-            [StrongId<Guid>]
+            [StrongId<Guid>(GenerateTryFrom = true)]
             public readonly partial record struct OrderId;
             """;
 
@@ -242,7 +242,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<Guid>]
-            public readonly partial record struct OrderId : IStrongId<Guid>
+            public readonly partial record struct OrderId
             {
                 public Guid Value { get; }
             }
@@ -264,7 +264,7 @@ public class StrongIdSourceGeneratorTests
             namespace Test;
 
             [StrongId<Guid>]
-            public readonly partial record struct OrderId : IStrongId<Guid>
+            public readonly partial record struct OrderId
             {
                 public OrderId(Guid value)
                 {

@@ -458,7 +458,13 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
         builder.AppendLine("}");
 
-        context.AddSource($"{GeneratedClassName}.g.cs", builder.ToString().Replace("\r\n", "\n"));
+        var code = builder.ToString();
+        if (code.IndexOf("\r\n") < 0)
+        {
+            code = code.Replace("\n", "\r\n");
+        }
+
+        context.AddSource($"{GeneratedClassName}.g.cs", code);
     }
 
     private static void EmitAddApplicationAsyncExtensionMethod(StringBuilder builder, ProjectType projectType, INamedTypeSymbol rootNamedTypeSymbol, Int32 count)

@@ -144,8 +144,8 @@ public sealed class NoDirectILoggerCallsCodeFix : CodeFixProvider
             .WithLeadingTrivia(
                 statement.GetLeadingTrivia()
                     .Add(comment)
-                    .Add(SyntaxFactory.ElasticCarriageReturnLineFeed))
-            .WithTrailingTrivia(statement.GetTrailingTrivia())
+                    .Add(SyntaxFactory.CarriageReturnLineFeed))
+            .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed)
             .WithAdditionalAnnotations(Formatter.Annotation);
 
         var newRoot = root.ReplaceNode(statement, placeholder);

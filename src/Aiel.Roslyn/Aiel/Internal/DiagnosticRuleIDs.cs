@@ -44,4 +44,5 @@ public static partial class DiagnosticRuleIDs
     public const String AIEL00016_MustNotDeclareValueMemberId = "AIEL00016";
     public const String AIEL00017_MustNotDeclareInstanceConstructorsId = "AIEL00017";
     public const String AIEL00018_BackingTypeUnsupportedId = "AIEL00018";
+    public const String AIEL00019_NoNmeaMessageTypesDiscoveredId = "AIEL00019";
 }

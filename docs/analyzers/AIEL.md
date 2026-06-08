@@ -15,11 +15,12 @@
 | AIEL00003     | PreferResultHttpClientExtensionsId                  |
 | AIEL00004     | AmbiguousProjectTypeDiagnosticId                    |
 | AIEL00005     | MultipleDispatchCallsInMethodId                     |
+| AIEL00006     | ActionHasNoAuthorizationStoryId                     |
+| AIEL00007     | DoesNotRespectAuthorityReasonIsEmptyId              |
 | AIEL00013     | StrongIdMustBePartialRecordTypeId                   |
 | AIEL00014     | StrongIdMustNotUsePositionalRecordSyntaxId          |
 | AIEL00015     | StrongIdMustImplementMatchingInterfaceId            |
 | AIEL00016     | StrongIdMustNotDeclareValueMemberId                 |
 | AIEL00017     | StrongIdMustNotDeclareInstanceConstructorsId        |
 | AIEL00018     | StrongIdBackingTypeUnsupportedId                    |
-| AIEL00006     | ActionHasNoAuthorizationStoryId                     |
-| AIEL00007     | DoesNotRespectAuthorityReasonIsEmptyId              |
+| AIEL00019     | NoNmeaMessageTypesDiscoveredId                      |

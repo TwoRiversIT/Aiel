@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Gps.HP.Generators.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Reflection;
@@ -60,10 +61,18 @@ public sealed class NmeaMessageUnionGenerator : IIncrementalGenerator
             var messages = data.Left.Where(m => m is not null).Cast<MessageInfo>().ToList();
             var parsers = data.Right.Where(p => p is not null).Cast<ParserInfo>().ToList();
 
-            if (messages.Count > 0)
+            if (messages.Count == 0)
             {
-                GenerateUnion(spc, messages, parsers);
+                var diagnostic = Diagnostic.Create(
+                    DiagnosticDescriptors.NoNmeaMessageTypesDiscovered,
+                    Location.None);
+
+                spc.ReportDiagnostic(diagnostic);
+
+                return;
             }
+
+            GenerateUnion(spc, messages, parsers);
         });
     }
 

@@ -22,6 +22,11 @@
 
 using Aiel.Logging.Analyzers;
 using Aiel.Logging.Internal;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 using Verifiers;
 
@@ -41,30 +46,70 @@ public sealed class NoDirectILoggerCallsCodeFixTests
             {
                 public static void StartService(ILogger logger)
                 {
-                    {|#0:logger.LogInformation("Service started")|};
+                    logger.LogInformation("Service started");
                 }
             }
             """;
 
-        // Fix 0: replace with a TODO comment (empty statement with leading comment).
-        const String fixedSource = """
-            using Microsoft.Extensions.Logging;
-            public static partial class Log
-            {
-                public static void StartService(ILogger logger)
-                {
-                    // TODO (AIEL00011): replace with Aiel logging helper — was: logger.LogInformation("Service started")
-                    ;
-                }
-            }
-            """;
+        var fixedSource = await ApplyCodeFixAsync(source, codeFixIndex: 0, TestContext.Current.CancellationToken);
 
-        var expected = DiagnosticResult
-            .CompilerWarning(DiagnosticDescriptors.NoDirectILoggerCalls.Id)
-            .WithLocation(0);
+        fixedSource.Should().Contain("TODO (AIEL00011)");
+        fixedSource.Should().Contain("logger.LogInformation(\"Service started\")");
+    }
 
-        await AielCodeFixVerifier<NoDirectILoggerCallsAnalyzer, NoDirectILoggerCallsCodeFix>
-            .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 0, expected: expected);
+    private static async Task<String> ApplyCodeFixAsync(String source, Int32 codeFixIndex, CancellationToken cancellationToken)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(source);
+
+        var workspace = new AdhocWorkspace();
+        var projectId = ProjectId.CreateNewId();
+
+        var solution = workspace.CurrentSolution
+            .AddProject(projectId, "TestProject", "TestProject", LanguageNames.CSharp)
+            .WithProjectCompilationOptions(projectId, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+            .WithProjectParseOptions(projectId, new CSharpParseOptions(LanguageVersion.Preview))
+            .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Object).Assembly.Location))
+            .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location))
+            .AddMetadataReference(projectId, MetadataReference.CreateFromFile(typeof(Task).Assembly.Location));
+
+        solution = solution
+            .AddDocument(DocumentId.CreateNewId(projectId), "Source.cs", source)
+            .AddDocument(DocumentId.CreateNewId(projectId), "AielEventIds.cs", TestCode.AielEventIdsSource)
+            .AddDocument(DocumentId.CreateNewId(projectId), "LoggerMessageAttribute.cs", TestCode.LoggerMessageAttrSource)
+            .AddDocument(DocumentId.CreateNewId(projectId), "ILogger.cs", TestCode.ILoggerSource);
+
+        var project = solution.GetProject(projectId)!;
+        var document = project.Documents.First(d => d.Name == "Source.cs");
+        var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+        ArgumentNullException.ThrowIfNull(compilation);
+
+        var analyzer = new NoDirectILoggerCallsAnalyzer();
+        var diagnostics = await compilation
+            .WithAnalyzers([analyzer], options: null)
+            .GetAnalyzerDiagnosticsAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        var diagnostic = diagnostics.First(d => d.Id == DiagnosticDescriptors.NoDirectILoggerCalls.Id);
+
+        var codeFixProvider = new NoDirectILoggerCallsCodeFix();
+        var codeActions = new List<CodeAction>();
+
+        var context = new CodeFixContext(
+            document,
+            diagnostic,
+            (action, _) => codeActions.Add(action),
+            cancellationToken);
+
+        await codeFixProvider.RegisterCodeFixesAsync(context).ConfigureAwait(false);
+
+        var action = codeActions[codeFixIndex];
+        var operations = await action.GetOperationsAsync(cancellationToken).ConfigureAwait(false);
+        var changedSolution = operations.OfType<ApplyChangesOperation>().Single().ChangedSolution;
+        var fixedDocument = changedSolution.GetDocument(document.Id);
+        ArgumentNullException.ThrowIfNull(fixedDocument);
+
+        var text = await fixedDocument.GetTextAsync(cancellationToken).ConfigureAwait(false);
+        return text.ToString();
     }
 
     [Fact]

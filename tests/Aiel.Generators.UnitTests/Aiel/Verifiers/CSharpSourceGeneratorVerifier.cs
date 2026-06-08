@@ -25,6 +25,7 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Aiel.Verifiers;
@@ -38,6 +39,7 @@ public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
     public static readonly ImmutableArray<PackageIdentity> WebPackages = [new PackageIdentity("Microsoft.AspNetCore.App.Ref", "10.0.8")];
     public static readonly ImmutableArray<PackageIdentity> WebAssemblyPackages = [new PackageIdentity("Microsoft.AspNetCore.Components.WebAssembly", "10.0.8")];
 
+    [SuppressMessage("Style", "IDE0045:Convert to conditional expression", Justification = "Readbility")]
     public static async Task TestAsync(
         String sourceCode,
         String? expectedCode = null,
@@ -54,9 +56,8 @@ public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
             {
                 Sources = { Stubs.AielDependencies },
             },
+            TestCode = sourceCode
         };
-
-        test.TestCode = sourceCode;
 
         if (!String.IsNullOrWhiteSpace(expectedCode))
         {

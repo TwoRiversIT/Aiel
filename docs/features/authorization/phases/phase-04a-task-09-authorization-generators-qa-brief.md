@@ -384,7 +384,7 @@ Task 9 is NOT done until ALL of the following are true:
 
 **Phase 1 — stubs (tests RED):**
 
-- Create `Aiel.Authorization.Generators` with an empty `[Generator] PermissionDefinitionGenerator : IIncrementalGenerator` that registers nothing.
+- Create `Aiel.Authorization.Generators` with an empty `[Generator(LanguageNames.CSharp)] PermissionDefinitionGenerator : IIncrementalGenerator` that registers nothing.
 - Add `[DefinePermission]` and `[GeneratedPermission]` to `Aiel.Authorization.Application.Contracts`.
 - Add `Lifecycle` and `PreviousNames` to `PermissionDefinitionManifest`.
 - Write all tests in `Aiel.Authorization.Generators.UnitTests` (see below).

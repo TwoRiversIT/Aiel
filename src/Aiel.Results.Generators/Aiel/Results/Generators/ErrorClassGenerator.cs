@@ -27,7 +27,7 @@ using System.Text;
 
 namespace Aiel.Results.Generators;
 
-[Generator]
+[Generator(LanguageNames.CSharp)]
 public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncrementalGenerator
 {
     protected override void Generate(SourceProductionContext context, ImmutableArray<INamedTypeSymbol> symbols)

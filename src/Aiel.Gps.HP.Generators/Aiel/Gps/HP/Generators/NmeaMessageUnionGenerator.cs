@@ -30,7 +30,7 @@ namespace Aiel.Gps.HP.Generators;
 /// <summary>
 /// Source generator that creates a discriminated union for NMEA message types.
 /// </summary>
-[Generator]
+[Generator(LanguageNames.CSharp)]
 public sealed class NmeaMessageUnionGenerator : IIncrementalGenerator
 {
     private const String NmeaMessageAttributeName = "Aiel.Gps.HP.NmeaMessageAttribute";

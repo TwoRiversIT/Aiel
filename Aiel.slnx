@@ -224,10 +224,4 @@
     <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
     <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />
   </Folder>
-  <Folder Name="/tests/Aiel.Testing.Examples/">
-    <Project Path="tests/Aiel.Testing.Examples/Aiel.Testing.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/tests/Aiel.Testing.Integration.Examples/">
-    <Project Path="tests/Aiel.Testing.Integration.Examples/Aiel.Testing.Integration.UnitTests.csproj" />
-  </Folder>
 </Solution>

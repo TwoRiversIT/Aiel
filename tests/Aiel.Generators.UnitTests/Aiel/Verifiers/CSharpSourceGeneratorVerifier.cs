@@ -61,7 +61,7 @@ public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
         if (!String.IsNullOrWhiteSpace(expectedCode))
         {
             test.TestState.GeneratedSources.Add(
-                (typeof(TSourceGenerator), generatedFileName, SourceText.From(expectedCode, Encoding.UTF8, SourceHashAlgorithm.Sha256)));
+                (typeof(TSourceGenerator), generatedFileName, SourceText.From(expectedCode.Replace("\r\n", "\n"), Encoding.UTF8, SourceHashAlgorithm.Sha256)));
         }
 
         if (expectedDiagnostics != null)

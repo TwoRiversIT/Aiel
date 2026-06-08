@@ -105,7 +105,7 @@ public static class Stubs
             using System.Threading.Tasks;
             using System.Threading;
             using System;
-            
+
             namespace Microsoft.Extensions.DependencyInjection
             {
                 public static class ApplicationRegistrationExtensions
@@ -128,14 +128,23 @@ public static class Stubs
                 {
                 }
 
+                public class HostApplicationBuilderSettings
+                {
+                    public string? EnvironmentName { get; set; }
+                }
+
+                public class HostApplicationBuilder : IHostApplicationBuilder
+                {
+                }
+
                 public class FakeHostBuilder : IHostBuilder, IHostApplicationBuilder
                 {
                 }
 
                 public static class Host
                 {
-                    public static IHostApplicationBuilder CreateApplicationBuilder(string[] args) => new FakeHostBuilder();
-                    public static IHostApplicationBuilder CreateEmptyApplicationBuilder() => new FakeHostBuilder();
+                    public static HostApplicationBuilder CreateApplicationBuilder(string[] args) => new HostApplicationBuilder();
+                    public static HostApplicationBuilder CreateEmptyApplicationBuilder(HostApplicationBuilderSettings? settings = null) => new HostApplicationBuilder();
                     public static IHostBuilder CreateDefaultBuilder(string[] args) => new FakeHostBuilder();
                 }
             }
@@ -150,6 +159,7 @@ public static class Stubs
 
                 public static class WebApplication
                 {
+                    public static WebApplicationBuilder CreateBuilder() => new WebApplicationBuilder();
                     public static WebApplicationBuilder CreateBuilder(string[] args) => new WebApplicationBuilder();
                     public static WebApplicationBuilder CreateSlimBuilder(string[] args) => new WebApplicationBuilder();
                     public static WebApplicationBuilder CreateEmptyBuilder() => new WebApplicationBuilder();

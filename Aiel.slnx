@@ -218,6 +218,8 @@
     <Project Path="tests/Aiel.StrongIds.AspNetCore.IntegrationTests/Aiel.StrongIds.AspNetCore.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.StrongIds.Generators.UnitTests/Aiel.StrongIds.Generators.UnitTests.csproj" Id="9d139a09-dbb2-4c6a-84dd-dc95744c3892" />
     <Project Path="tests/Aiel.StrongIds.UnitTests/Aiel.StrongIds.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Testing.Integration.UnitTests/Aiel.Testing.Integration.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.UnitTests/Aiel.UnitTests.csproj" />
     <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
     <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />

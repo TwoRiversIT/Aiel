@@ -1,4 +1,4 @@
-﻿name: Aiel Logging Analyzers CI
+﻿name: CI
 
 on:
   push:
@@ -13,6 +13,11 @@ env:
   DOTNET_NOLOGO: true
   NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
 
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  
 jobs:
   # ─────────────────────────────────────────────────────────────────────
   # build-and-test
@@ -58,7 +63,7 @@ jobs:
             --results-directory ./TestResults
 
       - name: Publish test results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3
         if: always()            # publish even on test failure
         with:
           name: xUnit Test Results
@@ -86,7 +91,7 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v4
@@ -114,7 +119,7 @@ jobs:
             --output ./artifacts
 
       - name: Upload NuGet artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-packages
           path: ./artifacts/*.nupkg
@@ -140,7 +145,7 @@ jobs:
 
     steps:
       - name: Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET ${{ env.DOTNET_VERSION }}
         uses: actions/setup-dotnet@v4
@@ -156,4 +161,3 @@ jobs:
             --verify-no-changes \
             --no-restore \
             --severity warn
-

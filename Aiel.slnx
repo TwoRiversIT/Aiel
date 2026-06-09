@@ -1,4 +1,17 @@
 <Solution>
+  <Folder Name="/.github/">
+    <File Path=".github/copilot-instructions.md" />
+  </Folder>
+  <Folder Name="/.github/agents/">
+    <File Path=".github/agents/squad.agent.md" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/ci.yml" />
+    <File Path=".github/workflows/squad-heartbeat.yml" />
+    <File Path=".github/workflows/squad-issue-assign.yml" />
+    <File Path=".github/workflows/squad-triage.yml" />
+    <File Path=".github/workflows/sync-squad-labels.yml" />
+  </Folder>
   <Folder Name="/dev/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
@@ -13,12 +26,13 @@
     <File Path="README.md" />
     <File Path="test_output.txt" />
     <File Path="version.json" />
+    <File Path="virtual-folders.json" />
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs/ArchitectureOverview.md" />
     <File Path="docs/ConceptualOverview.md" />
     <File Path="docs/Framework.md" />
-    <File Path="docs/LoggingAnalyzer.md" />
+    <File Path="docs/interfaces.md" />
     <File Path="docs/TermsAndAbbreviations.md" />
   </Folder>
   <Folder Name="/docs/analyzers/">
@@ -37,7 +51,9 @@
     <File Path="docs/analyzers/AIEL20001.md" />
     <File Path="docs/analyzers/AIEL20002.md" />
   </Folder>
-  <Folder Name="/docs/features/" />
+  <Folder Name="/docs/features/">
+    <File Path="docs/features/DISCUSSION.md" />
+  </Folder>
   <Folder Name="/docs/features/authorization/">
     <File Path="docs/features/authorization/authorization-system-design.md" />
     <File Path="docs/features/authorization/authorization-system-plan.md" />
@@ -85,6 +101,9 @@
     <File Path="docs/features/gps-nmea/benchmarks.md" />
     <File Path="docs/features/gps-nmea/BlogPost.md" />
     <File Path="docs/features/gps-nmea/implementation-plan.md" />
+  </Folder>
+  <Folder Name="/docs/features/logging/">
+    <File Path="docs/features/logging/LoggingAnalyzer.md" />
   </Folder>
   <Folder Name="/docs/features/message-bus/">
     <File Path="docs/features/message-bus/message-bus-abstraction-plan.md" />

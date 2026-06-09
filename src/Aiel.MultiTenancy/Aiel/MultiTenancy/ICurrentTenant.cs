@@ -39,11 +39,9 @@ public sealed class AmbientTenantContext
     }
 }
 
-public class CurrentTenant : ICurrentTenant
+public class CurrentTenant(AmbientTenantContext context) : ICurrentTenant
 {
-    private readonly AmbientTenantContext _context;
-
-    public CurrentTenant(AmbientTenantContext context) => _context = context ?? throw new ArgumentNullException(nameof(context));
+    private readonly AmbientTenantContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
     public TenantIdentity Current => _context.Current;
 
@@ -55,10 +53,10 @@ public class CurrentTenant : ICurrentTenant
     }
 }
 
-internal sealed class TenantChangeContext : IDisposable
+internal sealed class TenantChangeContext(Action restore) : IDisposable
 {
-    private Action? _restore;
-    public TenantChangeContext(Action restore) => _restore = restore ?? throw new ArgumentNullException(nameof(restore));
+    private Action? _restore = restore ?? throw new ArgumentNullException(nameof(restore));
+
     public void Dispose()
     {
         var restore = Interlocked.Exchange(ref _restore, null);

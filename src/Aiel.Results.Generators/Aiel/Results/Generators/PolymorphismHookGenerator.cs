@@ -20,14 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Internal;
 using Microsoft.CodeAnalysis;
-using Aiel.Roslyn;
 using System.Collections.Immutable;
 using System.Text;
 
 namespace Aiel.Results.Generators;
 
-[Generator]
+[Generator(LanguageNames.CSharp)]
 public sealed class PolymorphismHookGenerator : SourceGeneratorBase, IIncrementalGenerator
 {
     protected override void Generate(SourceProductionContext context, ImmutableArray<INamedTypeSymbol> symbols)

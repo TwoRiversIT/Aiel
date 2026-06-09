@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.DependencyInjection;
 using Aiel.Authorization.EntityFrameworkCore;
 using Aiel.Authorization.Testing;
 using Aiel.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Authorization;
 

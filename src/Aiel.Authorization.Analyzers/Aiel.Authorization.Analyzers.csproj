@@ -25,7 +25,7 @@
 	</ItemGroup>
 	
 	<!-- BEGIN: Analyzer specific settings -->
-	<Import Project="..\Aiel.Shared\Aiel.Shared.projitems" Label="Shared" />
+	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 
 	<ItemGroup>
 		<Compile Remove="bin\**" />

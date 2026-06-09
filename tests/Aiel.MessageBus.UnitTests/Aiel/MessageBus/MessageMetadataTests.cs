@@ -24,8 +24,8 @@ namespace Aiel.MessageBus;
 
 public sealed class MessageMetadataTests
 {
-    private static MessageMetadata ValidMetadata(Guid? messageId = null, Guid? correlationId = null) =>
-        new(
+    private static MessageMetadata ValidMetadata(Guid? messageId = null, Guid? correlationId = null)
+        => new(
             MessageId: messageId ?? Guid.NewGuid(),
             CorrelationId: correlationId ?? Guid.NewGuid(),
             CausationMessageId: null,

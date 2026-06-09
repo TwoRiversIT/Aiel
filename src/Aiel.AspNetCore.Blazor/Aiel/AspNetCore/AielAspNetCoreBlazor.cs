@@ -24,5 +24,5 @@ using Aiel.Dependencies;
 
 namespace Aiel.AspNetCore;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 public sealed class AielAspNetCoreBlazor : AielDependencyConfigurator;

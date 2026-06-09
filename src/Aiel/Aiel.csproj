@@ -25,6 +25,7 @@
 	<!-- Include the analyzers and generators in the NuGet package to ensure they are available and used during compilation of consuming projects. -->
 	<ItemGroup>
 		<None Include="..\Aiel.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="..\Aiel.Logging.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,6 +36,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Aiel.Analyzers\Aiel.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>

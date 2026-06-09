@@ -1,18 +1,26 @@
 {
-    "solutionFolders": {
-        "/dev/": {
-            "path": ".",
-            "include": [],
-            "exclude": [
-                "*.slnx"
-            ]
-        },
-        "/docs/": {
-            "path": "docs",
-            "recurse": true,
-            "include": [
-                "**/*.md"
-            ]
-        }
+  "solutionFolders": {
+    "/dev/": {
+      "path": ".",
+      "include": [],
+      "exclude": [
+        "*.slnx"
+      ]
+    },
+    "/docs/": {
+      "path": "docs",
+      "recurse": true,
+      "include": [
+        "**/*.md"
+      ]
+    },
+    "/.github/": {
+      "path": ".github",
+      "recurse": true,
+      "include": [
+        "**/*.md",
+        "**/*.yml"
+      ]
     }
+  }
 }

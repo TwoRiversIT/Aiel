@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Gps.Parsing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Aiel.Gps.Parsing;
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
@@ -37,7 +37,7 @@ namespace Aiel.Gps;
 /// This class manages the parsing pipeline and coordinates registered message parsers to process NMEA sentences.
 /// It uses a pipeline-based architecture for efficient, zero-allocation parsing of GPS data streams.
 /// </remarks>
-public class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
+public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
 {
     /// <summary>
     /// The line feed byte used to delimit NMEA sentences.
@@ -254,8 +254,7 @@ public class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
 
             if (AbortAfterUnparsedLines != 0 && _unparsedSequenceLength >= AbortAfterUnparsedLines)
             {
-                _logger.LogTrace("ReadPipeAsync: Sequntial Unparsed Lines: {UnparsedLines}  Limit: {Limit}",
-                    _unparsedSequenceLength, AbortAfterUnparsedLines);
+                LogParsingLine(_logger, _unparsedSequenceLength, AbortAfterUnparsedLines);
 
                 _exitReason = ExitReason.TooManySequentialUnparsedLines;
                 break;
@@ -265,6 +264,9 @@ public class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
         // Mark the PipeReader as complete
         await reader.CompleteAsync();
     }
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Trace, Message = "ReadPipeAsync: Sequntial Unparsed Lines: {UnparsedLines}  Limit: {Limit}")]
+    private static partial void LogParsingLine(ILogger logger, int unparsedLines, int limit);
 
     private Boolean ParseSentence(ReadOnlySequence<Byte> payload, [NotNullWhen(true)] out NmeaMessage? message, out ParseError? error)
     {

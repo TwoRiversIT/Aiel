@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Gps.HP;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
-using Aiel.Gps.HP;
 using HpGFDTA = Aiel.Gps.HP.Sentences.GFDTA;
 using HpGfdtaParser = Aiel.Gps.HP.Sentences.GfdtaParser;
 using HpGLL = Aiel.Gps.HP.Sentences.GLL;

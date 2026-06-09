@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Roslyn;
+using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -70,7 +70,7 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticDescriptors.ActionHasNoAuthorizationStoryId, diagnostic.Id);
+        Assert.Equal(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId, diagnostic.Id);
         Assert.Contains("MyAction", diagnostic.GetMessage());
     }
 
@@ -129,7 +129,7 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
+        Assert.Equal(DiagnosticRuleIDs.AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
         Assert.Contains("MyAction", diagnostic.GetMessage());
     }
 
@@ -146,7 +146,7 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticDescriptors.DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
+        Assert.Equal(DiagnosticRuleIDs.AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
     }
 
     [Fact]
@@ -188,14 +188,14 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         Assert.Equal(2, diagnostics.Length);
-        Assert.All(diagnostics, d => Assert.Equal(DiagnosticDescriptors.ActionHasNoAuthorizationStoryId, d.Id));
+        Assert.All(diagnostics, d => Assert.Equal(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId, d.Id));
     }
 
     [Fact]
-    public async Task DoesNotReport_AIEL20001_WhenMarkerIsPresentEvenWithEmptyReason()
+    public async Task DoesNotReport_AIEL00006_WhenMarkerIsPresentEvenWithEmptyReason()
     {
-        // When [DoesNotRespectAuthority] is present with an empty Reason, only AIEL20002 fires,
-        // never AIEL20001. The marker's presence is the authorization story; the Reason quality is separate.
+        // When [DoesNotRespectAuthority] is present with an empty Reason, only AIEL00007 fires,
+        // never AIEL00006. The marker's presence is the authorization story; the Reason quality is separate.
         const String source = """
             using Aiel.Authorization;
             namespace Sample;
@@ -205,7 +205,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.DoesNotContain(diagnostics, d => d.Id == DiagnosticDescriptors.ActionHasNoAuthorizationStoryId);
+        Assert.DoesNotContain(diagnostics, d => d.Id == DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId);
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public class ActionAuthorizationAnalyzerTests
     }
 
     [Fact]
-    public async Task ReportsAIEL20001_WhenCheckerExistsForDifferentAction()
+    public async Task ReportsAIEL00006_WhenCheckerExistsForDifferentAction()
     {
         // Checker for A must not suppress the diagnostic for B.
         const String source = """
@@ -264,7 +264,7 @@ public class ActionAuthorizationAnalyzerTests
         var diagnostics = await AnalyzeAsync(source);
 
         var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticDescriptors.ActionHasNoAuthorizationStoryId, diagnostic.Id);
+        Assert.Equal(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId, diagnostic.Id);
         Assert.Contains("SampleActionB", diagnostic.GetMessage());
     }
 

@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Dapper;
 using Dapper;
 using Microsoft.Data.Sqlite;
-using Aiel.Dapper;
 
 namespace Aiel.Data.Dapper;
 

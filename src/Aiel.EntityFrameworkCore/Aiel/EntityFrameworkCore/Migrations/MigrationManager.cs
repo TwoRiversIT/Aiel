@@ -39,16 +39,16 @@ public class MigrationManager(
 
     public async Task MigrateAsync(CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Starting migrations...");
+        _logger.LogStartingMigrations();
 
         await MigrateDatabaseAsync("Host", cancellationToken);
 
-        _logger.LogInformation("Completed migrations.");
+        _logger.LogCompletedMigrations();
     }
 
     private async Task MigrateDatabaseAsync(String name, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Migrating {Name} database...", name);
+        _logger.LogMigratingDatabase(name);
         using (var scope = ServiceScopeFactory.CreateScope())
         {
             foreach (var migratorType in _options.Migrators)
@@ -59,4 +59,16 @@ public class MigrationManager(
             }
         }
     }
+}
+
+internal static partial class MigrationLoggingExtensions
+{
+    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Starting migrations...")]
+    public static partial void LogStartingMigrations(this ILogger logger);
+
+    [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Completed migrations.")]
+    public static partial void LogCompletedMigrations(this ILogger logger);
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Migrating {Name} database...")]
+    public static partial void LogMigratingDatabase(this ILogger logger, string name);
 }

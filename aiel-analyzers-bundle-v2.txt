@@ -1,0 +1,4343 @@
+================================================================================
+AIEL LOGGING ANALYZERS — Complete Repository Bundle
+38 files | .NET 10 | Roslyn AIEL001-AIEL005 | xUnit tests | GitHub Actions CI
+================================================================================
+
+HOW TO USE:
+  For each file block below, create the file at the shown path and paste the content.
+  Then run: dotnet restore Aiel.Logging.sln && dotnet test Aiel.Logging.sln
+
+================================================================================
+FILE: Aiel.Logging.sln
+================================================================================
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.0.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aiel.Logging.Analyzers", "src\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aiel.Logging.CodeFixes", "src\Aiel.Logging.CodeFixes\Aiel.Logging.CodeFixes.csproj", "{B2C3D4E5-F6A7-8901-BCDE-F12345678901}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aiel.Logging.Template", "src\Aiel.Logging.Template\Aiel.Logging.Template.csproj", "{C3D4E5F6-A7B8-9012-CDEF-123456789012}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aiel.Logging.Analyzers.Tests", "tests\Aiel.Logging.Analyzers.Tests\Aiel.Logging.Analyzers.Tests.csproj", "{D4E5F6A7-B8C9-0123-DEF0-234567890123}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.Build.0 = Release|Any CPU
+        {B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {B2C3D4E5-F6A7-8901-BCDE-F12345678901}.Release|Any CPU.Build.0 = Release|Any CPU
+        {C3D4E5F6-A7B8-9012-CDEF-123456789012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {C3D4E5F6-A7B8-9012-CDEF-123456789012}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {C3D4E5F6-A7B8-9012-CDEF-123456789012}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {C3D4E5F6-A7B8-9012-CDEF-123456789012}.Release|Any CPU.Build.0 = Release|Any CPU
+        {D4E5F6A7-B8C9-0123-DEF0-234567890123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {D4E5F6A7-B8C9-0123-DEF0-234567890123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {D4E5F6A7-B8C9-0123-DEF0-234567890123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {D4E5F6A7-B8C9-0123-DEF0-234567890123}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+EndGlobal
+
+
+================================================================================
+FILE: README.md
+================================================================================
+# Aiel Logging Analyzers
+
+[![CI](https://github.com/your-org/aiel-logging-analyzers/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/aiel-logging-analyzers/actions)
+[![NuGet](https://img.shields.io/nuget/v/Aiel.Logging.Analyzers.svg)](https://nuget.org/packages/Aiel.Logging.Analyzers)
+
+Roslyn source analyzers + code fixes that enforce the **Aiel structured-logging convention**
+at compile time — zero runtime overhead, IDE-integrated, `FixAll`-capable.
+
+---
+
+## Quick Start
+
+```bash
+dotnet add package Aiel.Logging.Analyzers
+```
+
+After installation every `[LoggerMessage]`-decorated partial method in the project is checked
+against the five rules below.  Violations appear as compiler errors/warnings with one-click
+code fixes in Visual Studio, VS Code, and Rider.
+
+---
+
+## Rules
+
+| ID      | Rule                    | Severity | Description |
+|---------|-------------------------|----------|-------------|
+| AIEL001 | UseAielEventIds         | Error    | `EventId` must use `(int)<EventIdsEnum>.Member`, not a raw integer or a cast from a foreign enum |
+| AIEL002 | MissingEventIdParameter | Error    | Every `[LoggerMessage]` partial method must declare `<EventIdsEnum> eventId = <EventIdsEnum>.Member` as an optional parameter |
+| AIEL003 | MissingEventIdInMessage | Error    | The `Message` string must contain the `[{EventId}]` placeholder |
+| AIEL004 | NoDirectILoggerCalls    | Warning  | Do not call `ILogger.LogXxx(…)` directly; use `[LoggerMessage]` partial methods |
+| AIEL005 | EventIdMismatch         | Error    | The `EventId` in the attribute and the default of the `eventId` parameter must refer to the same enum member |
+
+### Compliant example
+
+```csharp
+[LoggerMessage(
+    EventId = (int)AielEventIds.ServiceStart,    // AIEL001 ✅
+    Level   = LogLevel.Information,
+    Message = "[{EventId}] Service started")]     // AIEL003 ✅
+public static partial void ServiceStarted(
+    this ILogger logger,
+    AielEventIds eventId = AielEventIds.ServiceStart); // AIEL002 + AIEL005 ✅
+```
+
+---
+
+## Configuration — Custom EventIds Enum
+
+By default the analyzers look for `Aiel.Logging.AielEventIds`.  You can substitute **any**
+enum by setting a single MSBuild property or `.editorconfig` key — no code changes needed.
+
+### Option 1: MSBuild property *(recommended)*
+
+Add to your `.csproj` or a shared `Directory.Build.props`:
+
+```xml
+<PropertyGroup>
+  <AielEventIdsType>Acme.Logging.AcmeEventIds</AielEventIdsType>
+</PropertyGroup>
+```
+
+> The `Aiel.Logging.Analyzers.props` file (shipped inside the NuGet package) automatically
+> declares this property as compiler-visible — no manual import required.
+
+### Option 2: `.editorconfig`
+
+```ini
+[*.cs]
+aiel_event_ids_type = Acme.Logging.AcmeEventIds
+```
+
+Useful for per-folder overrides in a monorepo.
+
+### Priority order
+
+```
+MSBuild <AielEventIdsType>   (highest)
+  ↓ fallback
+.editorconfig aiel_event_ids_type
+  ↓ fallback
+Aiel.Logging.AielEventIds    (built-in default)
+```
+
+The resolved type name is stamped into every reported `Diagnostic.Properties` entry so that
+code fixes reconstruct the correct enum name without re-reading configuration independently.
+
+---
+
+## Code Fixes
+
+All five rules have IDE code fixes.  AIEL004 and AIEL005 each offer **two fix alternatives**.
+Every fix supports **Fix All in Document / Project / Solution** via the Batch fixer.
+
+| Fix                              | Rule    | What it does |
+|----------------------------------|---------|--------------|
+| `UseAielEventIdsCodeFix`         | AIEL001 | Replaces raw int / wrong cast with `(int)<Enum>.FirstMember` |
+| `MissingEventIdParameterCodeFix` | AIEL002 | Appends `<Enum> eventId = <Enum>.Member` to the parameter list |
+| `MissingEventIdInMessageCodeFix` | AIEL003 | Prepends `[{EventId}] ` to the message literal |
+| `NoDirectILoggerCallsCodeFix`    | AIEL004 | ① Replace with TODO comment, or ② Remove the statement |
+| `EventIdMismatchCodeFix`         | AIEL005 | ① Sync attribute → parameter, or ② Sync parameter → attribute |
+
+---
+
+## Severity Overrides
+
+Configure per project in `.editorconfig`:
+
+```ini
+[*.cs]
+dotnet_diagnostic.AIEL001.severity = error
+dotnet_diagnostic.AIEL002.severity = error
+dotnet_diagnostic.AIEL003.severity = error
+dotnet_diagnostic.AIEL004.severity = warning
+dotnet_diagnostic.AIEL005.severity = error
+```
+
+---
+
+## Building & Testing
+
+```bash
+# Clone
+git clone https://github.com/your-org/aiel-logging-analyzers
+cd aiel-logging-analyzers
+
+# Build
+dotnet restore Aiel.Logging.sln
+dotnet build   Aiel.Logging.sln -c Release
+
+# Test
+dotnet test Aiel.Logging.sln --logger "console;verbosity=normal"
+
+# Pack
+dotnet pack src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj -c Release
+```
+
+### Repository layout
+
+```
+aiel-analyzers/
+├── src/
+│   ├── Aiel.Logging.Analyzers/        # Analyzer library (netstandard2.0)
+│   │   ├── Analyzers/                 # DiagnosticDescriptors + 5 analyzers
+│   │   ├── Configuration/             # AnalyzerConfiguration + EventIdsTypeConfig
+│   │   ├── Helpers/                   # WellKnownTypes, AnalyzerHelpers
+│   │   └── build/                     # .props (CompilerVisibleProperty)
+│   ├── Aiel.Logging.CodeFixes/        # Code-fix library (netstandard2.0)
+│   │   └── CodeFixes/                 # 5 code-fix providers
+│   └── Aiel.Logging.Template/         # Sample project (net10.0)
+│       ├── AielEventIds.cs            # Full event-id enum example
+│       ├── SampleCompliant.cs         # ✅ All rules satisfied
+│       └── SampleViolations.cs        # ❌ One violation per rule
+├── tests/
+│   └── Aiel.Logging.Analyzers.Tests/  # xUnit tests (net10.0)
+│       ├── Tests/                     # Per-rule analyzer + code-fix tests
+│       │   └── AnalyzerConfigurationTests.cs  # Config unit + custom-enum integration tests
+│       └── Verifiers/                 # AielAnalyzerVerifier + AielCodeFixVerifier
+├── docs/
+│   └── LoggingAnalyzer.md             # Full developer reference
+├── .github/workflows/ci.yml           # Build + test + pack on every push
+└── .editorconfig                      # Severity overrides + code style
+```
+
+---
+
+## CI / CD
+
+GitHub Actions runs on every push and pull request:
+
+- **Build** — `dotnet build`  
+- **Test** — `dotnet test` with JUnit results uploaded as an artifact  
+- **Pack** *(Release branch only)* — `dotnet pack` → NuGet artifact  
+
+See [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+---
+
+## Extending
+
+See [docs/LoggingAnalyzer.md](docs/LoggingAnalyzer.md#extending-the-analyzers) for a
+step-by-step guide to adding new rules and wiring them into the configuration system.
+
+---
+
+## License
+
+MIT — see `LICENSE`.
+
+
+================================================================================
+FILE: docs/LoggingAnalyzer.md
+================================================================================
+# Aiel Logging Analyzers — Developer Reference
+
+> **Version:** 2.0 · **Target SDK:** .NET 10 · **Roslyn:** netstandard2.0
+
+---
+
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Rules at a Glance](#rules-at-a-glance)
+3. [Rule Details](#rule-details)
+4. [Configuration — Custom EventIds Enum](#configuration--custom-eventids-enum)
+5. [Code Fixes](#code-fixes)
+6. [Severity Overrides](#severity-overrides)
+7. [Running Locally](#running-locally)
+8. [Extending the Analyzers](#extending-the-analyzers)
+
+---
+
+## Overview
+
+The `Aiel.Logging.Analyzers` NuGet package ships a set of Roslyn source analyzers that
+enforce the Aiel structured-logging convention at compile time.  Every rule has a matching
+code fix so violations can be corrected with a single IDE action.
+
+### Logging pattern recap
+
+```csharp
+// ✅ Fully compliant Aiel logging method
+[LoggerMessage(
+    EventId = (int)AielEventIds.ServiceStart,   // AIEL001: must use enum cast
+    Level   = LogLevel.Information,
+    Message = "[{EventId}] Service started")]    // AIEL003: placeholder required
+public static partial void ServiceStarted(
+    this ILogger logger,
+    AielEventIds eventId = AielEventIds.ServiceStart);  // AIEL002 + AIEL005
+```
+
+---
+
+## Rules at a Glance
+
+| ID       | Title                       | Severity | Has Fix |
+|----------|-----------------------------|----------|---------|
+| AIEL001  | UseAielEventIds             | Error    | ✅      |
+| AIEL002  | MissingEventIdParameter     | Error    | ✅      |
+| AIEL003  | MissingEventIdInMessage     | Error    | ✅      |
+| AIEL004  | NoDirectILoggerCalls        | Warning  | ✅      |
+| AIEL005  | EventIdMismatch             | Error    | ✅      |
+
+---
+
+## Rule Details
+
+### AIEL001 — UseAielEventIds
+
+**The `EventId` argument of `[LoggerMessage]` must use `(int)<EventIdsEnum>.Member`.**
+
+| ❌ Violation | ✅ Compliant |
+|---|---|
+| `EventId = 1000` | `EventId = (int)AielEventIds.ServiceStart` |
+| `EventId = (int)SomeOther.Foo` | `EventId = (int)AielEventIds.ServiceStart` |
+
+Code fix: replaces the expression with `(int)<ConfiguredEnum>.FirstMember`.
+
+---
+
+### AIEL002 — MissingEventIdParameter
+
+**Every `[LoggerMessage]` partial method must declare an optional `<EventIdsEnum> eventId` parameter.**
+
+```csharp
+// ❌ Missing parameter
+[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+public static partial void ServiceStarted(this ILogger logger);
+
+// ✅ Parameter present
+[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+public static partial void ServiceStarted(this ILogger logger,
+    AielEventIds eventId = AielEventIds.ServiceStart);
+```
+
+Code fix: appends the parameter with the correct type and default.
+
+---
+
+### AIEL003 — MissingEventIdInMessage
+
+**The `Message` string must contain `[{EventId}]`.**
+
+```csharp
+// ❌ Placeholder missing
+Message = "Service started"
+
+// ✅ Placeholder present
+Message = "[{EventId}] Service started"
+```
+
+Code fix: prepends `[{EventId}] ` to the existing string literal.
+
+---
+
+### AIEL004 — NoDirectILoggerCalls
+
+**Do not call `ILogger.LogXxx(…)` extension methods directly.**  Use `[LoggerMessage]` partial
+methods instead for compile-time verified, allocation-free, structured logging.
+
+```csharp
+// ❌ Direct ILogger call
+public static void Foo(ILogger logger) => logger.LogInformation("msg");
+
+// ✅ [LoggerMessage] partial method
+[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information,
+               Message = "[{EventId}] msg")]
+public static partial void Foo(this ILogger logger,
+    AielEventIds eventId = AielEventIds.ServiceStart);
+```
+
+Code fixes (two options):
+1. **Replace with TODO comment** — preserves intent; developer migrates manually.
+2. **Remove the statement** — useful when the call is redundant.
+
+---
+
+### AIEL005 — EventIdMismatch
+
+**The `EventId` in the attribute and the default value of the `eventId` parameter must refer
+to the same enum member.**
+
+```csharp
+// ❌ Mismatch
+[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+public static partial void ServiceStarted(this ILogger logger,
+    AielEventIds eventId = AielEventIds.ServiceStop);  // ← different member
+
+// ✅ Consistent
+[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+public static partial void ServiceStarted(this ILogger logger,
+    AielEventIds eventId = AielEventIds.ServiceStart);
+```
+
+Code fixes (two options):
+1. **Update attribute** to match the parameter default.
+2. **Update parameter** to match the attribute `EventId`.
+
+---
+
+## Configuration — Custom EventIds Enum
+
+By default the analyzers expect `Aiel.Logging.AielEventIds`.  Any project can substitute its
+own enum via one of three mechanisms — evaluated in priority order:
+
+### Priority 1 — MSBuild property (recommended)
+
+Add to your project file or a shared `Directory.Build.props`:
+
+```xml
+<PropertyGroup>
+  <AielEventIdsType>Acme.Logging.AcmeEventIds</AielEventIdsType>
+</PropertyGroup>
+```
+
+The value must be the **fully-qualified type name** of your enum.
+
+### Priority 2 — `.editorconfig`
+
+```ini
+[*.cs]
+aiel_event_ids_type = Acme.Logging.AcmeEventIds
+```
+
+This is useful when you want per-folder overrides.
+
+### Priority 3 — Default
+
+If neither option is set the analyzers fall back to `Aiel.Logging.AielEventIds`.
+
+### Resolution order summary
+
+```
+build_property.AielEventIdsType   (MSBuild)
+        ↓ fallback
+aiel_event_ids_type               (.editorconfig)
+        ↓ fallback
+Aiel.Logging.AielEventIds         (built-in default)
+```
+
+### How it works internally
+
+The `AnalyzerConfiguration` class reads the property once per compilation in
+`RegisterCompilationStartAction`, resolves the enum `INamedTypeSymbol` via
+`EventIdsTypeConfig.GetTypeSymbol(compilation)`, and stamps the resolved names into
+every `Diagnostic.Properties` dictionary so code fixes can reconstruct the same type
+name without independently re-reading `AnalyzerConfigOptions`.
+
+| Diagnostic property key    | Example value               |
+|----------------------------|-----------------------------|
+| `EventIdsFullTypeName`     | `Acme.Logging.AcmeEventIds` |
+| `EventIdsShortName`        | `AcmeEventIds`              |
+
+Code fixes call `AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)` to obtain an
+`EventIdsTypeConfig` with `.FullTypeName` and `.ShortName` already resolved.
+
+---
+
+## Code Fixes
+
+All fixes implement `GetFixAllProvider()` returning `WellKnownFixAllProviders.BatchFixer`,
+so **Fix All in Document / Project / Solution** works out of the box.
+
+| Fix class                        | Fixes    | Description |
+|----------------------------------|----------|-------------|
+| `UseAielEventIdsCodeFix`         | AIEL001  | Replaces raw int / wrong cast with `(int)<Enum>.FirstMember` |
+| `MissingEventIdParameterCodeFix` | AIEL002  | Appends `<Enum> eventId = <Enum>.Member` parameter |
+| `MissingEventIdInMessageCodeFix` | AIEL003  | Prepends `[{EventId}] ` to the message string |
+| `NoDirectILoggerCallsCodeFix`    | AIEL004  | Replace with TODO comment **or** remove statement |
+| `EventIdMismatchCodeFix`         | AIEL005  | Sync attribute → parameter **or** parameter → attribute |
+
+---
+
+## Severity Overrides
+
+Override per-project in `.editorconfig`:
+
+```ini
+[*.cs]
+dotnet_diagnostic.AIEL001.severity = error
+dotnet_diagnostic.AIEL002.severity = error
+dotnet_diagnostic.AIEL003.severity = error
+dotnet_diagnostic.AIEL004.severity = warning   # downgrade if needed
+dotnet_diagnostic.AIEL005.severity = error
+```
+
+---
+
+## Running Locally
+
+```bash
+# Restore + build
+dotnet restore Aiel.Logging.sln
+dotnet build   Aiel.Logging.sln
+
+# Run all tests
+dotnet test Aiel.Logging.sln --logger "console;verbosity=normal"
+
+# Pack the analyzer NuGet
+dotnet pack src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj -c Release
+```
+
+The resulting `.nupkg` includes the `build/Aiel.Logging.Analyzers.props` file which
+automatically declares the `AielEventIdsType` MSBuild property as compiler-visible — no
+manual `.props` import is required by consuming projects.
+
+---
+
+## Extending the Analyzers
+
+### Adding a new diagnostic
+
+1. Add a `DiagnosticDescriptor` to `DiagnosticDescriptors.cs`.
+2. Create `MyNewAnalyzer.cs` implementing `DiagnosticAnalyzer`.
+3. Call `AnalyzerConfiguration.Resolve(context.Options)` in `RegisterCompilationStartAction`.
+4. Stamp `AnalyzerConfiguration.BuildDiagnosticProperties(config)` into every reported diagnostic.
+5. Add a matching `MyNewCodeFix.cs` that reads config via `AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)`.
+6. Add tests using `AielAnalyzerVerifier<T>` and `AielCodeFixVerifier<T, TFix>`.
+
+### Plugging in a different EventIds type
+
+See [Configuration — Custom EventIds Enum](#configuration--custom-eventids-enum) above.
+The configuration layer is entirely transparent to the analyzer logic — all you change is the
+property value; no code changes are needed.
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj
+================================================================================
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <!--
+      Analyzers must target netstandard2.0 so they run inside every IDE
+      regardless of which .NET SDK the consuming project targets.
+      This is a Roslyn requirement — NOT a limitation of the analyzer itself.
+    -->
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+
+    <!-- NuGet packaging -->
+    <PackageId>Aiel.Logging.Analyzers</PackageId>
+    <Version>2.0.0</Version>
+    <Authors>Aiel Framework</Authors>
+    <Description>
+      Roslyn analyzers enforcing Aiel logging conventions (AIEL001–AIEL005).
+      The EventIds enum type is configurable via MSBuild or .editorconfig —
+      set &lt;AielEventIdsType&gt; to plug in your own enum.
+    </Description>
+    <PackageTags>roslyn;analyzer;logging;aiel</PackageTags>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Roslyn SDK — private, not shipped as a transitive dep -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp"   Version="4.12.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- ── NuGet pack layout ──────────────────────────────────────────────
+       analyzers/dotnet/cs/  → the analyzer DLL (Roslyn loads it automatically)
+       build/               → the .props file that exposes CompilerVisibleProperty
+  -->
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs"
+          Visible="false" />
+
+    <None Include="build\Aiel.Logging.Analyzers.props"
+          Pack="true"
+          PackagePath="build"
+          Visible="false" />
+  </ItemGroup>
+
+</Project>
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Analyzers/DiagnosticDescriptors.cs
+================================================================================
+// -----------------------------------------------------------------------
+// DiagnosticDescriptors.cs
+// Single source-of-truth for all AIEL diagnostic rule definitions.
+// Every rule has a unique DiagnosticDescriptor that controls the id,
+// severity, title, message format, category, and help-link URL.
+// -----------------------------------------------------------------------
+
+using Microsoft.CodeAnalysis;
+
+namespace Aiel.Logging.Analyzers.Analyzers;
+
+internal static class DiagnosticDescriptors
+{
+    private const string Category  = "AielLogging";
+    private const string HelpBase  = "https://docs.aiel.io/analyzers/";
+
+    // ── AIEL001 – UseAielEventIds ────────────────────────────────────────
+    /// <summary>
+    /// Fired when a <c>[LoggerMessage]</c> attribute's <c>EventId</c> argument
+    /// is a raw integer literal rather than a cast of an <c>AielEventIds</c>
+    /// member (e.g. <c>(int)AielEventIds.ModuleStart</c>).
+    /// </summary>
+    public static readonly DiagnosticDescriptor UseAielEventIds = new(
+        id:                 "AIEL001",
+        title:              "Use AielEventIds enum for event IDs",
+        messageFormat:      "EventId '{0}' is a raw integer. Use '(int)AielEventIds.{1}' instead.",
+        category:           Category,
+        defaultSeverity:    DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description:        "All LoggerMessage event IDs must reference AielEventIds enum members " +
+                            "so that IDs remain consistent across the framework.",
+        helpLinkUri:        HelpBase + "AIEL001");
+
+    // ── AIEL002 – MissingEventIdParameter ───────────────────────────────
+    /// <summary>
+    /// Fired when an Aiel logging helper method does not include an optional
+    /// <c>AielEventIds eventId = AielEventIds.X</c> parameter.
+    /// </summary>
+    public static readonly DiagnosticDescriptor MissingEventIdParameter = new(
+        id:                 "AIEL002",
+        title:              "Logging helper missing AielEventIds parameter",
+        messageFormat:      "Method '{0}' is a logging helper but is missing an optional " +
+                            "'AielEventIds eventId = AielEventIds.{1}' parameter.",
+        category:           Category,
+        defaultSeverity:    DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description:        "Every Aiel logging helper method must accept an optional AielEventIds " +
+                            "parameter so callers can override the default event ID at call sites.",
+        helpLinkUri:        HelpBase + "AIEL002");
+
+    // ── AIEL003 – MissingEventIdInMessage ───────────────────────────────
+    /// <summary>
+    /// Fired when a <c>[LoggerMessage]</c> message template does not contain
+    /// the <c>[{EventId}]</c> placeholder.
+    /// </summary>
+    public static readonly DiagnosticDescriptor MissingEventIdInMessage = new(
+        id:                 "AIEL003",
+        title:              "Log message template missing [{EventId}] placeholder",
+        messageFormat:      "Message template '{0}' does not contain the '[{{EventId}}]' placeholder.",
+        category:           Category,
+        defaultSeverity:    DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description:        "Aiel log message templates must include '[{EventId}]' so structured " +
+                            "log consumers can filter and correlate events.",
+        helpLinkUri:        HelpBase + "AIEL003");
+
+    // ── AIEL004 – NoDirectILoggerCalls ──────────────────────────────────
+    /// <summary>
+    /// Fired when production code calls <c>ILogger</c> extension methods
+    /// (e.g. <c>LogInformation</c>) directly instead of going through an
+    /// Aiel logging helper decorated with <c>[LoggerMessage]</c>.
+    /// </summary>
+    public static readonly DiagnosticDescriptor NoDirectILoggerCalls = new(
+        id:                 "AIEL004",
+        title:              "Do not call ILogger methods directly",
+        messageFormat:      "Direct call to ILogger.{0}() bypasses Aiel logging conventions. " +
+                            "Use a [LoggerMessage]-decorated helper instead.",
+        category:           Category,
+        defaultSeverity:    DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description:        "Calling ILogger extension methods directly prevents structured " +
+                            "event-ID tracking and consistent message formatting.",
+        helpLinkUri:        HelpBase + "AIEL004");
+
+    // ── AIEL005 – EventIdMismatch ────────────────────────────────────────
+    /// <summary>
+    /// Fired when the numeric EventId in a <c>[LoggerMessage]</c> attribute
+    /// does not match the default value of the method's optional
+    /// <c>AielEventIds eventId</c> parameter.
+    /// </summary>
+    public static readonly DiagnosticDescriptor EventIdMismatch = new(
+        id:                 "AIEL005",
+        title:              "EventId mismatch between attribute and default parameter",
+        messageFormat:      "The [LoggerMessage] EventId ({0}) does not match the default value " +
+                            "of parameter 'eventId' ({1}). They must agree.",
+        category:           Category,
+        defaultSeverity:    DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description:        "The numeric EventId declared in [LoggerMessage] must match the " +
+                            "AielEventIds member used as the default for the 'eventId' parameter.",
+        helpLinkUri:        HelpBase + "AIEL005");
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Analyzers/EventIdMismatchAnalyzer.cs
+================================================================================
+// -----------------------------------------------------------------------
+// EventIdMismatchAnalyzer.cs  –  AIEL005
+//
+// Reports when the integer EventId in [LoggerMessage] does not match the
+// default value of the method's optional <ConfiguredType> eventId parameter.
+//
+// Uses AnalyzerConfiguration so the check works with any EventIds enum,
+// not just Aiel.Logging.AielEventIds.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
+
+namespace Aiel.Logging.Analyzers.Analyzers;
+
+/// <summary>
+/// AIEL005 – The numeric <c>EventId</c> in <c>[LoggerMessage]</c> must match
+/// the integer value of the default for the <c>&lt;EventIdsType&gt; eventId</c>
+/// parameter on the same method.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class EventIdMismatchAnalyzer : DiagnosticAnalyzer
+{
+    /// <inheritdoc />
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+        ImmutableArray.Create(DiagnosticDescriptors.EventIdMismatch);
+
+    /// <inheritdoc />
+    public override void Initialize(AnalysisContext context)
+    {
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.EnableConcurrentExecution();
+
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSymbolAction(
+                ctx => AnalyzeMethod(ctx, config),
+                SymbolKind.Method);
+        });
+    }
+
+    // ── Core analysis ────────────────────────────────────────────────────
+
+    private static void AnalyzeMethod(SymbolAnalysisContext ctx, EventIdsTypeConfig config)
+    {
+        var method = (IMethodSymbol)ctx.Symbol;
+
+        var attrData = AnalyzerHelpers.GetLoggerMessageAttribute(method, ctx.Compilation);
+        if (attrData is null) return;
+
+        var eventIdsType = config.GetTypeSymbol(ctx.Compilation);
+        if (eventIdsType is null) return;
+
+        // ── 1. Read EventId from the attribute ───────────────────────────
+        var attrArg = AnalyzerHelpers.GetNamedArgument(attrData, WellKnownTypes.EventIdArgName);
+        if (attrArg?.Value is not int attrEventIdValue) return;
+
+        // ── 2. Find the optional eventId parameter ───────────────────────
+        IParameterSymbol? eventIdParam = null;
+        foreach (var p in method.Parameters)
+        {
+            if (SymbolEqualityComparer.Default.Equals(p.Type, eventIdsType)
+                && string.Equals(p.Name, WellKnownTypes.EventIdParamName,
+                    StringComparison.OrdinalIgnoreCase)
+                && p.HasExplicitDefaultValue)
+            {
+                eventIdParam = p;
+                break;
+            }
+        }
+
+        // AIEL002 covers the missing-parameter case; we don't double-report.
+        if (eventIdParam is null) return;
+        if (eventIdParam.ExplicitDefaultValue is not int paramDefault) return;
+
+        // ── 3. Compare ───────────────────────────────────────────────────
+        if (attrEventIdValue == paramDefault) return;
+
+        var attrMember  = AnalyzerHelpers.TryResolveEventIdMemberName(attrEventIdValue, eventIdsType)
+                          ?? attrEventIdValue.ToString();
+        var paramMember = AnalyzerHelpers.TryResolveEventIdMemberName(paramDefault, eventIdsType)
+                          ?? paramDefault.ToString();
+
+        var location = eventIdParam.Locations.FirstOrDefault()
+                       ?? method.Locations.FirstOrDefault()
+                       ?? Location.None;
+
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+
+        ctx.ReportDiagnostic(Diagnostic.Create(
+            DiagnosticDescriptors.EventIdMismatch,
+            location,
+            properties: props,
+            $"{config.ShortName}.{attrMember}",
+            $"{config.ShortName}.{paramMember}"));
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Analyzers/MissingEventIdInMessageAnalyzer.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdInMessageAnalyzer.cs  –  AIEL003
+//
+// Reports when a [LoggerMessage] message template does not contain the
+// "[{EventId}]" placeholder.  This rule does not inspect the EventIds
+// enum type — the placeholder is fixed regardless of configuration.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
+
+namespace Aiel.Logging.Analyzers.Analyzers;
+
+/// <summary>
+/// AIEL003 – The <c>Message</c> argument of every <c>[LoggerMessage]</c>
+/// attribute must contain the <c>[{EventId}]</c> placeholder.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
+{
+    /// <inheritdoc />
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+        ImmutableArray.Create(DiagnosticDescriptors.MissingEventIdInMessage);
+
+    /// <inheritdoc />
+    public override void Initialize(AnalysisContext context)
+    {
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.EnableConcurrentExecution();
+
+        // Wrap in CompilationStart so configuration is resolved consistently
+        // with the other analyzers, even though AIEL003 doesn't need it.
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSyntaxNodeAction(
+                ctx => AnalyzeAttribute(ctx, config),
+                SyntaxKind.Attribute);
+        });
+    }
+
+    // ── Core analysis ────────────────────────────────────────────────────
+
+    private static void AnalyzeAttribute(SyntaxNodeAnalysisContext ctx, EventIdsTypeConfig config)
+    {
+        var attrNode = (AttributeSyntax)ctx.Node;
+
+        var attrSymbol = ctx.SemanticModel
+            .GetSymbolInfo(attrNode, ctx.CancellationToken)
+            .Symbol?.ContainingType;
+
+        if (attrSymbol?.ToDisplayString() != WellKnownTypes.LoggerMessageAttr)
+            return;
+
+        if (attrNode.ArgumentList is null) return;
+
+        var messageArg = FindMessageArgument(attrNode);
+        if (messageArg is null) return;
+
+        var constant = ctx.SemanticModel
+            .GetConstantValue(messageArg.Expression, ctx.CancellationToken);
+
+        if (!constant.HasValue || constant.Value is not string messageText)
+            return;
+
+        if (messageText.Contains(WellKnownTypes.EventIdPlaceholder, StringComparison.Ordinal))
+            return; // ← compliant
+
+        // Attach config props so the code fix can echo them back if needed.
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+
+        ctx.ReportDiagnostic(Diagnostic.Create(
+            DiagnosticDescriptors.MissingEventIdInMessage,
+            messageArg.Expression.GetLocation(),
+            properties: props,
+            messageText));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    private static AttributeArgumentSyntax? FindMessageArgument(AttributeSyntax attr)
+    {
+        if (attr.ArgumentList is null) return null;
+        var args = attr.ArgumentList.Arguments;
+
+        foreach (var arg in args)
+            if (arg.NameEquals?.Name.Identifier.ValueText == WellKnownTypes.MessageArgName)
+                return arg;
+
+        // Positional index 2: (eventId, level, message)
+        if (args.Count >= 3)
+        {
+            var candidate = args[2];
+            if (candidate.NameEquals is null
+                && candidate.Expression is LiteralExpressionSyntax lit
+                && lit.IsKind(SyntaxKind.StringLiteralExpression))
+                return candidate;
+        }
+
+        return null;
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Analyzers/MissingEventIdParameterAnalyzer.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdParameterAnalyzer.cs  –  AIEL002
+//
+// Reports when a [LoggerMessage]-decorated method does NOT include an
+// optional parameter of the configured EventIds type named "eventId".
+//
+// The EventIds enum type is resolved from AnalyzerConfiguration so that
+// teams using a custom enum (e.g. AcmeEventIds) get the same enforcement.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
+
+namespace Aiel.Logging.Analyzers.Analyzers;
+
+/// <summary>
+/// AIEL002 – Every <c>[LoggerMessage]</c>-decorated method must expose an
+/// optional <c>&lt;EventIdsType&gt; eventId = &lt;EventIdsType&gt;.X</c>
+/// parameter so that callers can override the default event ID.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class MissingEventIdParameterAnalyzer : DiagnosticAnalyzer
+{
+    /// <inheritdoc />
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+        ImmutableArray.Create(DiagnosticDescriptors.MissingEventIdParameter);
+
+    /// <inheritdoc />
+    public override void Initialize(AnalysisContext context)
+    {
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.EnableConcurrentExecution();
+
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSymbolAction(
+                ctx => AnalyzeMethod(ctx, config),
+                SymbolKind.Method);
+        });
+    }
+
+    // ── Core analysis ────────────────────────────────────────────────────
+
+    private static void AnalyzeMethod(SymbolAnalysisContext ctx, EventIdsTypeConfig config)
+    {
+        var method = (IMethodSymbol)ctx.Symbol;
+
+        if (!AnalyzerHelpers.HasLoggerMessageAttribute(method, ctx.Compilation))
+            return;
+
+        // If the configured EventIds type is not referenced, skip silently —
+        // the project doesn't use Aiel-style logging yet.
+        var eventIdsType = config.GetTypeSymbol(ctx.Compilation);
+        if (eventIdsType is null) return;
+
+        // Check for a compliant optional parameter.
+        if (FindEventIdParameter(method, eventIdsType) is not null) return;
+
+        var attrData      = AnalyzerHelpers.GetLoggerMessageAttribute(method, ctx.Compilation);
+        var suggestedMember = TrySuggestMember(attrData, eventIdsType);
+        var props           = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+        var location        = method.Locations.FirstOrDefault() ?? Location.None;
+
+        ctx.ReportDiagnostic(Diagnostic.Create(
+            DiagnosticDescriptors.MissingEventIdParameter,
+            location,
+            properties: props,
+            method.Name,
+            suggestedMember ?? "SomeMember"));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Finds a parameter that:
+    ///   1. Has the configured EventIds enum type.
+    ///   2. Is named "eventId" (case-insensitive).
+    ///   3. Has an explicit default value.
+    /// </summary>
+    private static IParameterSymbol? FindEventIdParameter(
+        IMethodSymbol method, INamedTypeSymbol eventIdsType)
+    {
+        foreach (var param in method.Parameters)
+        {
+            if (!SymbolEqualityComparer.Default.Equals(param.Type, eventIdsType)) continue;
+            if (!string.Equals(param.Name, WellKnownTypes.EventIdParamName,
+                    StringComparison.OrdinalIgnoreCase)) continue;
+            if (param.HasExplicitDefaultValue) return param;
+        }
+        return null;
+    }
+
+    private static string? TrySuggestMember(AttributeData? attrData, INamedTypeSymbol eventIdsType)
+    {
+        if (attrData is null) return null;
+        var arg = AnalyzerHelpers.GetNamedArgument(attrData, WellKnownTypes.EventIdArgName);
+        if (arg?.Value is int intVal)
+            return AnalyzerHelpers.TryResolveEventIdMemberName(intVal, eventIdsType);
+        return null;
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Analyzers/NoDirectILoggerCallsAnalyzer.cs
+================================================================================
+// -----------------------------------------------------------------------
+// NoDirectILoggerCallsAnalyzer.cs  –  AIEL004
+//
+// Reports direct calls to ILogger extension methods (LogInformation, etc.)
+// that occur outside a [LoggerMessage]-decorated method.
+//
+// Does not depend on the configured EventIds type — AIEL004 fires whenever
+// ILogger is called directly, regardless of which enum is in use.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
+
+namespace Aiel.Logging.Analyzers.Analyzers;
+
+/// <summary>
+/// AIEL004 – Detects direct calls to <c>ILogger</c> extension methods
+/// and requires callers to use <c>[LoggerMessage]</c>-decorated helpers instead.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class NoDirectILoggerCallsAnalyzer : DiagnosticAnalyzer
+{
+    /// <inheritdoc />
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+        ImmutableArray.Create(DiagnosticDescriptors.NoDirectILoggerCalls);
+
+    /// <inheritdoc />
+    public override void Initialize(AnalysisContext context)
+    {
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.EnableConcurrentExecution();
+
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSyntaxNodeAction(
+                ctx => AnalyzeInvocation(ctx, config),
+                SyntaxKind.InvocationExpression);
+        });
+    }
+
+    // ── Core analysis ────────────────────────────────────────────────────
+
+    private static void AnalyzeInvocation(SyntaxNodeAnalysisContext ctx, EventIdsTypeConfig config)
+    {
+        var invocation = (InvocationExpressionSyntax)ctx.Node;
+
+        if (invocation.Expression is not MemberAccessExpressionSyntax memberAccess)
+            return;
+
+        var methodName = memberAccess.Name.Identifier.ValueText;
+        if (!WellKnownTypes.DirectLoggerMethods.Contains(methodName))
+            return;
+
+        var methodSymbol = ctx.SemanticModel
+            .GetSymbolInfo(invocation, ctx.CancellationToken)
+            .Symbol as IMethodSymbol;
+
+        if (methodSymbol is null) return;
+
+        var receiverType = methodSymbol.IsExtensionMethod
+            ? methodSymbol.Parameters.FirstOrDefault()?.Type
+            : methodSymbol.ContainingType;
+
+        if (receiverType is null) return;
+        if (!AnalyzerHelpers.IsILogger(receiverType, ctx.Compilation)) return;
+
+        // Don't flag calls inside [LoggerMessage] implementations themselves.
+        if (IsInsideLoggerMessageMethod(invocation, ctx.SemanticModel, ctx.Compilation))
+            return;
+
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+
+        ctx.ReportDiagnostic(Diagnostic.Create(
+            DiagnosticDescriptors.NoDirectILoggerCalls,
+            invocation.GetLocation(),
+            properties: props,
+            methodName));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    private static bool IsInsideLoggerMessageMethod(
+        SyntaxNode node, SemanticModel model, Compilation compilation)
+    {
+        var ancestor = node.Ancestors()
+            .OfType<MethodDeclarationSyntax>()
+            .FirstOrDefault();
+
+        if (ancestor is null) return false;
+
+        var enclosing = model.GetDeclaredSymbol(ancestor);
+        return enclosing is not null
+            && AnalyzerHelpers.HasLoggerMessageAttribute(enclosing, compilation);
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Analyzers/UseAielEventIdsAnalyzer.cs
+================================================================================
+// -----------------------------------------------------------------------
+// UseAielEventIdsAnalyzer.cs  –  AIEL001
+//
+// Reports when the EventId argument of a [LoggerMessage] attribute is a
+// raw integer literal instead of (int)<ConfiguredEventIds>.SomeMember.
+//
+// The EventIds enum type is configurable (see AnalyzerConfiguration).
+// Default: Aiel.Logging.AielEventIds
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
+
+namespace Aiel.Logging.Analyzers.Analyzers;
+
+/// <summary>
+/// AIEL001 – Detects raw integer literals used as the <c>EventId</c> argument
+/// in <c>[LoggerMessage]</c> attributes and suggests the configured EventIds
+/// enum cast instead.
+/// </summary>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class UseAielEventIdsAnalyzer : DiagnosticAnalyzer
+{
+    /// <inheritdoc />
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+        ImmutableArray.Create(DiagnosticDescriptors.UseAielEventIds);
+
+    /// <inheritdoc />
+    public override void Initialize(AnalysisContext context)
+    {
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.EnableConcurrentExecution();
+
+        // Resolve the configured EventIds type once per compilation so all
+        // inner analysis callbacks share the same snapshot.
+        context.RegisterCompilationStartAction(compilationCtx =>
+        {
+            var config = AnalyzerConfiguration.Resolve(compilationCtx.Options);
+
+            compilationCtx.RegisterSyntaxNodeAction(
+                ctx => AnalyzeAttribute(ctx, config),
+                SyntaxKind.Attribute);
+        });
+    }
+
+    // ── Core analysis ────────────────────────────────────────────────────
+
+    private static void AnalyzeAttribute(SyntaxNodeAnalysisContext ctx, EventIdsTypeConfig config)
+    {
+        var attrNode = (AttributeSyntax)ctx.Node;
+
+        // 1. Must be [LoggerMessage].
+        var attrSymbol = ctx.SemanticModel
+            .GetSymbolInfo(attrNode, ctx.CancellationToken)
+            .Symbol?.ContainingType;
+
+        if (attrSymbol?.ToDisplayString() != WellKnownTypes.LoggerMessageAttr)
+            return;
+
+        // 2. Find the EventId argument.
+        var eventIdArg = FindEventIdArgument(attrNode);
+        if (eventIdArg is null) return;
+
+        // 3. Accept: (int)<ConfiguredType>.Member — reject everything else.
+        if (AnalyzerHelpers.IsConfiguredEventIdsCast(
+                eventIdArg.Expression, ctx.SemanticModel, config))
+            return;
+
+        // 4. Resolve the integer value and suggest the matching member name.
+        var constantOpt = ctx.SemanticModel
+            .GetConstantValue(eventIdArg.Expression, ctx.CancellationToken);
+
+        var rawValue   = constantOpt.HasValue ? Convert.ToString(constantOpt.Value) : "?";
+        var suggestion = TrySuggestMember(constantOpt, ctx.Compilation, config);
+
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+
+        ctx.ReportDiagnostic(Diagnostic.Create(
+            DiagnosticDescriptors.UseAielEventIds,
+            eventIdArg.Expression.GetLocation(),
+            properties: props,
+            rawValue,
+            suggestion ?? "SomeMember"));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    private static AttributeArgumentSyntax? FindEventIdArgument(AttributeSyntax attr)
+    {
+        if (attr.ArgumentList is null) return null;
+
+        foreach (var arg in attr.ArgumentList.Arguments)
+            if (arg.NameEquals?.Name.Identifier.ValueText == WellKnownTypes.EventIdArgName)
+                return arg;
+
+        // Positional: first argument when it looks like a numeric literal.
+        if (attr.ArgumentList.Arguments.Count > 0)
+        {
+            var first = attr.ArgumentList.Arguments[0];
+            if (first.NameEquals is null
+                && first.Expression is LiteralExpressionSyntax lit
+                && lit.IsKind(SyntaxKind.NumericLiteralExpression))
+                return first;
+        }
+
+        return null;
+    }
+
+    private static string? TrySuggestMember(
+        Optional<object?> constantOpt,
+        Compilation compilation,
+        EventIdsTypeConfig config)
+    {
+        if (!constantOpt.HasValue || constantOpt.Value is null) return null;
+
+        var enumType = config.GetTypeSymbol(compilation);
+        if (enumType is null) return null;
+
+        return AnalyzerHelpers.TryResolveEventIdMemberName(
+            Convert.ToInt32(constantOpt.Value), enumType);
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Configuration/AnalyzerConfiguration.cs
+================================================================================
+// -----------------------------------------------------------------------
+// AnalyzerConfiguration.cs
+//
+// 3-tier configuration resolution for the EventIds enum type:
+//
+//   Priority 1 — MSBuild CompilerVisibleProperty
+//                Key:   build_property.AielEventIdsType
+//                Set:   <AielEventIdsType>My.Namespace.MyEnum</AielEventIdsType>
+//
+//   Priority 2 — .editorconfig global key
+//                Key:   aiel_event_ids_type
+//                Value: My.Namespace.MyEnum
+//
+//   Priority 3 — Built-in default
+//                Aiel.Logging.AielEventIds
+//
+// Usage in an analyzer:
+//
+//   context.RegisterCompilationStartAction(ctx =>
+//   {
+//       var config = AnalyzerConfiguration.Resolve(ctx.Options);
+//       ctx.RegisterSyntaxNodeAction(nodeCtx =>
+//       {
+//           // ... analysis ...
+//           var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
+//           nodeCtx.ReportDiagnostic(Diagnostic.Create(descriptor,
+//               location, properties: props, ...));
+//       }, SyntaxKind.Attribute);
+//   });
+//
+// Usage in a code fix:
+//
+//   var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic);
+//   // Use config.ShortName, config.FullTypeName, config.GetTypeSymbol(compilation)
+// -----------------------------------------------------------------------
+
+using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+
+namespace Aiel.Logging.Analyzers.Configuration;
+
+// ════════════════════════════════════════════════════════════════════════
+// EventIdsTypeConfig  — immutable value-type for resolved config
+// ════════════════════════════════════════════════════════════════════════
+
+/// <summary>
+/// Holds the resolved EventIds type name, split into fully-qualified and
+/// short forms.  Produced by <see cref="AnalyzerConfiguration.Resolve"/>.
+/// </summary>
+public sealed class EventIdsTypeConfig
+{
+    /// <summary>Fully-qualified type name, e.g. <c>Acme.Logging.AcmeEventIds</c>.</summary>
+    public string FullTypeName { get; }
+
+    /// <summary>Simple (unqualified) type name, e.g. <c>AcmeEventIds</c>.</summary>
+    public string ShortName { get; }
+
+    private EventIdsTypeConfig(string fullTypeName, string shortName)
+    {
+        FullTypeName = fullTypeName;
+        ShortName    = shortName;
+    }
+
+    /// <summary>
+    /// Splits a fully-qualified type name into the full name and the unqualified short name.
+    /// Works for both namespaced (<c>A.B.C</c>) and top-level (<c>C</c>) names.
+    /// </summary>
+    public static EventIdsTypeConfig FromFullTypeName(string fullTypeName)
+    {
+        var lastDot = fullTypeName.LastIndexOf('.');
+        var shortName = lastDot >= 0
+            ? fullTypeName[(lastDot + 1)..]
+            : fullTypeName;
+
+        return new EventIdsTypeConfig(fullTypeName, shortName);
+    }
+
+    /// <summary>
+    /// Resolves this config's type to an <see cref="INamedTypeSymbol"/> in the
+    /// given <paramref name="compilation"/>.  Returns <see langword="null"/> if the
+    /// type cannot be found (e.g. it is not referenced by the project).
+    /// </summary>
+    public INamedTypeSymbol? GetTypeSymbol(Compilation compilation)
+        => compilation.GetTypeByMetadataName(FullTypeName);
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// AnalyzerConfiguration  — static resolution + diagnostic helpers
+// ════════════════════════════════════════════════════════════════════════
+
+/// <summary>
+/// Provides 3-tier resolution of the configured EventIds enum type and
+/// helpers for stamping / reading that config in <see cref="Diagnostic"/>
+/// property bags (so code fixes don't need to independently re-read options).
+/// </summary>
+public static class AnalyzerConfiguration
+{
+    // ── Public constants ─────────────────────────────────────────────────
+
+    /// <summary>MSBuild CompilerVisibleProperty key read by the analyzer.</summary>
+    public const string MsBuildPropertyKey = "build_property.AielEventIdsType";
+
+    /// <summary>.editorconfig global option key.</summary>
+    public const string EditorConfigKey = "aiel_event_ids_type";
+
+    /// <summary>Fallback fully-qualified type name when no override is configured.</summary>
+    public const string DefaultFullTypeName = "Aiel.Logging.AielEventIds";
+
+    /// <summary>Fallback short type name when no override is configured.</summary>
+    public const string DefaultShortName = "AielEventIds";
+
+    /// <summary>Key used to stamp the full type name into <see cref="Diagnostic.Properties"/>.</summary>
+    public const string DiagPropFullTypeName = "EventIdsFullTypeName";
+
+    /// <summary>Key used to stamp the short type name into <see cref="Diagnostic.Properties"/>.</summary>
+    public const string DiagPropShortName = "EventIdsShortName";
+
+    // ── Resolution ────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Resolves the EventIds type configuration from <paramref name="options"/>
+    /// using the 3-tier priority chain (MSBuild → .editorconfig → default).
+    /// </summary>
+    /// <param name="options">
+    /// The <see cref="AnalyzerOptions"/> available inside
+    /// <c>RegisterCompilationStartAction</c>.
+    /// </param>
+    public static EventIdsTypeConfig Resolve(AnalyzerOptions options)
+    {
+        var globalOptions = options.AnalyzerConfigOptionsProvider.GlobalOptions;
+
+        // Priority 1 — MSBuild CompilerVisibleProperty
+        if (globalOptions.TryGetValue(MsBuildPropertyKey, out var msBuildValue) &&
+            !string.IsNullOrWhiteSpace(msBuildValue))
+        {
+            return EventIdsTypeConfig.FromFullTypeName(msBuildValue.Trim());
+        }
+
+        // Priority 2 — .editorconfig global key
+        if (globalOptions.TryGetValue(EditorConfigKey, out var editorConfigValue) &&
+            !string.IsNullOrWhiteSpace(editorConfigValue))
+        {
+            return EventIdsTypeConfig.FromFullTypeName(editorConfigValue.Trim());
+        }
+
+        // Priority 3 — Built-in default
+        return EventIdsTypeConfig.FromFullTypeName(DefaultFullTypeName);
+    }
+
+    // ── Diagnostic property helpers ───────────────────────────────────────
+
+    /// <summary>
+    /// Builds an <see cref="ImmutableDictionary{TKey,TValue}"/> suitable for passing
+    /// as the <c>properties</c> argument of
+    /// <see cref="Diagnostic.Create(DiagnosticDescriptor,Location,ImmutableDictionary{string,string?},object[])"/>.
+    /// </summary>
+    public static ImmutableDictionary<string, string?> BuildDiagnosticProperties(
+        EventIdsTypeConfig config)
+        => ImmutableDictionary<string, string?>.Empty
+            .Add(DiagPropFullTypeName, config.FullTypeName)
+            .Add(DiagPropShortName,    config.ShortName);
+
+    /// <summary>
+    /// Reads the EventIds type config back from the property bag of a
+    /// <see cref="Diagnostic"/> that was reported by one of the Aiel analyzers.
+    /// Falls back to the default config if the properties are absent.
+    /// </summary>
+    /// <remarks>
+    /// Code fixes should call this method instead of independently re-reading
+    /// <see cref="AnalyzerConfigOptions"/> — the config is always available here
+    /// regardless of the IDE's options-provider threading model.
+    /// </remarks>
+    public static EventIdsTypeConfig ReadFromDiagnostic(Diagnostic diagnostic)
+    {
+        if (diagnostic.Properties.TryGetValue(DiagPropFullTypeName, out var fullName) &&
+            !string.IsNullOrWhiteSpace(fullName))
+        {
+            return EventIdsTypeConfig.FromFullTypeName(fullName!);
+        }
+
+        return EventIdsTypeConfig.FromFullTypeName(DefaultFullTypeName);
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Helpers/AnalyzerHelpers.cs
+================================================================================
+// -----------------------------------------------------------------------
+// AnalyzerHelpers.cs
+// Shared utility methods used across multiple analyzer implementations.
+//
+// NOTE: There is no longer a GetAielEventIdsType(Compilation) helper here.
+//       Use  config.GetTypeSymbol(compilation)  instead, where  config  is
+//       the EventIdsTypeConfig resolved by AnalyzerConfiguration.Resolve().
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Configuration;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace Aiel.Logging.Analyzers.Helpers;
+
+internal static class AnalyzerHelpers
+{
+    // ── ILogger helpers ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="type"/> IS or
+    /// IMPLEMENTS <c>Microsoft.Extensions.Logging.ILogger</c> (open or closed).
+    /// </summary>
+    public static bool IsILogger(ITypeSymbol type, Compilation compilation)
+    {
+        var ilogger  = compilation.GetTypeByMetadataName(WellKnownTypes.ILogger);
+        var iloggerT = compilation.GetTypeByMetadataName(WellKnownTypes.ILoggerOfT);
+        if (ilogger is null && iloggerT is null) return false;
+
+        if (SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, ilogger)
+         || SymbolEqualityComparer.Default.Equals(type.OriginalDefinition, iloggerT))
+            return true;
+
+        return type.AllInterfaces.Any(i =>
+            SymbolEqualityComparer.Default.Equals(i.OriginalDefinition, ilogger)
+         || SymbolEqualityComparer.Default.Equals(i.OriginalDefinition, iloggerT));
+    }
+
+    // ── LoggerMessage attribute helpers ─────────────────────────────────
+
+    /// <summary>Returns <see langword="true"/> when <c>[LoggerMessage]</c> is present on <paramref name="symbol"/>.</summary>
+    public static bool HasLoggerMessageAttribute(ISymbol symbol, Compilation compilation)
+    {
+        var attrType = compilation.GetTypeByMetadataName(WellKnownTypes.LoggerMessageAttr);
+        if (attrType is null) return false;
+        return symbol.GetAttributes().Any(a =>
+            SymbolEqualityComparer.Default.Equals(a.AttributeClass, attrType));
+    }
+
+    /// <summary>
+    /// Returns the <c>[LoggerMessage]</c> <see cref="AttributeData"/> from
+    /// <paramref name="symbol"/>, or <see langword="null"/> if absent.
+    /// </summary>
+    public static AttributeData? GetLoggerMessageAttribute(ISymbol symbol, Compilation compilation)
+    {
+        var attrType = compilation.GetTypeByMetadataName(WellKnownTypes.LoggerMessageAttr);
+        if (attrType is null) return null;
+        return symbol.GetAttributes().FirstOrDefault(a =>
+            SymbolEqualityComparer.Default.Equals(a.AttributeClass, attrType));
+    }
+
+    // ── Named-argument helpers ───────────────────────────────────────────
+
+    /// <summary>
+    /// Extracts a named argument value from <paramref name="attrData"/>
+    /// by <paramref name="argName"/> (case-insensitive).
+    /// </summary>
+    public static TypedConstant? GetNamedArgument(AttributeData attrData, string argName)
+    {
+        foreach (var (key, value) in attrData.NamedArguments)
+            if (string.Equals(key, argName, StringComparison.OrdinalIgnoreCase))
+                return value;
+        return null;
+    }
+
+    // ── Syntax helpers ───────────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the <see cref="AttributeSyntax"/> node whose resolved type
+    /// matches <paramref name="attrFullName"/>.
+    /// </summary>
+    public static AttributeSyntax? FindAttributeSyntax(
+        SyntaxList<AttributeListSyntax> attrLists,
+        SemanticModel semanticModel,
+        string attrFullName)
+    {
+        foreach (var list in attrLists)
+            foreach (var attr in list.Attributes)
+            {
+                var sym = semanticModel.GetSymbolInfo(attr).Symbol;
+                if (sym?.ContainingType?.ToDisplayString() == attrFullName)
+                    return attr;
+            }
+        return null;
+    }
+
+    // ── EventIds member resolution ───────────────────────────────────────
+
+    /// <summary>
+    /// Given an integer event-ID value and the EventIds enum type, returns
+    /// the matching enum member name (e.g. <c>"ModuleStart"</c>), or
+    /// <see langword="null"/> when no member has that value.
+    /// </summary>
+    public static string? TryResolveEventIdMemberName(int eventIdValue, INamedTypeSymbol eventIdsType)
+    {
+        foreach (var member in eventIdsType.GetMembers().OfType<IFieldSymbol>())
+            if (member.HasConstantValue && Convert.ToInt32(member.ConstantValue) == eventIdValue)
+                return member.Name;
+        return null;
+    }
+
+    // ── Cast-expression validation ───────────────────────────────────────
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="expr"/> is a
+    /// <c>(int)EnumType.Member</c> cast where <c>EnumType</c> is the
+    /// configured EventIds type.
+    /// </summary>
+    public static bool IsConfiguredEventIdsCast(
+        ExpressionSyntax expr,
+        SemanticModel model,
+        EventIdsTypeConfig config)
+    {
+        if (expr is not CastExpressionSyntax cast) return false;
+
+        var castType = model.GetTypeInfo(cast.Type).Type;
+        if (castType?.SpecialType != SpecialType.System_Int32) return false;
+
+        if (cast.Expression is not MemberAccessExpressionSyntax ma) return false;
+
+        var memberType = model.GetTypeInfo(ma.Expression).Type;
+        return memberType?.ToDisplayString() == config.FullTypeName;
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/Helpers/WellKnownTypes.cs
+================================================================================
+// -----------------------------------------------------------------------
+// WellKnownTypes.cs
+// Centralises fully-qualified type / member names for fixed framework
+// types (ILogger, LoggerMessageAttribute, etc.).
+//
+// NOTE: The EventIds enum type name is intentionally NOT listed here.
+//       It is configurable per-project via AnalyzerConfiguration and
+//       defaults to "Aiel.Logging.AielEventIds".
+// -----------------------------------------------------------------------
+
+namespace Aiel.Logging.Analyzers.Helpers;
+
+internal static class WellKnownTypes
+{
+    // ── Microsoft.Extensions.Logging ────────────────────────────────────
+    public const string ILogger           = "Microsoft.Extensions.Logging.ILogger";
+    public const string ILoggerOfT        = "Microsoft.Extensions.Logging.ILogger`1";
+    public const string LoggerMessageAttr = "Microsoft.Extensions.Logging.LoggerMessageAttribute";
+    public const string EventIdType       = "Microsoft.Extensions.Logging.EventId";
+
+    // ── LoggerMessage attribute named arguments ──────────────────────────
+    public const string EventIdArgName = "EventId";
+    public const string MessageArgName = "Message";
+
+    // ── Message template placeholder ────────────────────────────────────
+    /// <summary>
+    /// The placeholder that must appear in every log message template.
+    /// This is fixed — it is not configurable.
+    /// </summary>
+    public const string EventIdPlaceholder = "[{EventId}]";
+
+    // ── ILogger method names that must NOT be called directly ───────────
+    public static readonly IReadOnlyList<string> DirectLoggerMethods = new[]
+    {
+        "LogTrace", "LogDebug", "LogInformation", "LogWarning",
+        "LogError", "LogCritical", "Log", "BeginScope"
+    };
+
+    // ── Optional parameter name used in logging helpers ─────────────────
+    public const string EventIdParamName = "eventId";
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Analyzers/build/Aiel.Logging.Analyzers.props
+================================================================================
+<!--
+  Aiel.Logging.Analyzers.props
+  ════════════════════════════
+  Shipped inside the NuGet package at:
+    build/Aiel.Logging.Analyzers.props
+
+  MSBuild automatically imports this file when the package is installed.
+  It declares CompilerVisibleProperty entries so that the consuming
+  project's MSBuild properties are forwarded into the Roslyn analyzer
+  pipeline at compile time (via AnalyzerConfigOptions.GlobalOptions).
+
+  ┌──────────────────────────────────────────────────────────────────┐
+  │  User-settable properties                                        │
+  ├──────────────────────────────────────────────────────────────────┤
+  │  AielEventIdsType                                                │
+  │    Fully-qualified CLR name of the EventIds enum the analyzers   │
+  │    should enforce.  Defaults to "Aiel.Logging.AielEventIds"      │
+  │    when not set.                                                 │
+  │                                                                  │
+  │    Example (in your .csproj or Directory.Build.props):           │
+  │      <AielEventIdsType>                                          │
+  │        MyCompany.MyModule.Logging.MyEventIds                     │
+  │      </AielEventIdsType>                                         │
+  └──────────────────────────────────────────────────────────────────┘
+-->
+<Project>
+  <ItemGroup>
+    <!--
+      CompilerVisibleProperty makes the MSBuild property available to
+      Roslyn analyzers as:
+        build_property.AielEventIdsType
+      via AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.
+    -->
+    <CompilerVisibleProperty Include="AielEventIdsType" />
+  </ItemGroup>
+</Project>
+
+
+================================================================================
+FILE: src/Aiel.Logging.CodeFixes/Aiel.Logging.CodeFixes.csproj
+================================================================================
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+
+    <PackageId>Aiel.Logging.CodeFixes</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Aiel Framework</Authors>
+    <Description>Code fixes for Aiel.Logging.Analyzers (AIEL001–AIEL005).</Description>
+    <PackageTags>roslyn;codefix;logging;aiel</PackageTags>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers"         Version="3.3.4" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(OutputPath)\$(AssemblyName).dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs"
+          Visible="false" />
+  </ItemGroup>
+
+</Project>
+
+
+================================================================================
+FILE: src/Aiel.Logging.CodeFixes/CodeFixes/EventIdMismatchCodeFix.cs
+================================================================================
+// -----------------------------------------------------------------------
+// EventIdMismatchCodeFix.cs  –  Fix for AIEL005
+//
+// Offers two code actions when [LoggerMessage] EventId and the eventId
+// parameter default disagree:
+//   1. Trust the attribute  → update the parameter default
+//   2. Trust the parameter  → update the attribute EventId expression
+//
+// The configured EventIds type name is read from Diagnostic.Properties
+// so the fix generates syntax for whatever enum the project uses.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
+using System.Collections.Immutable;
+using System.Composition;
+
+namespace Aiel.Logging.CodeFixes.CodeFixes;
+
+/// <summary>
+/// Fixes AIEL005 by synchronising the <c>eventId</c> parameter default with
+/// the <c>[LoggerMessage]</c> attribute's <c>EventId</c> value, or vice-versa.
+/// </summary>
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(EventIdMismatchCodeFix))]
+[Shared]
+public sealed class EventIdMismatchCodeFix : CodeFixProvider
+{
+    private const string TitleSyncParam = "Sync parameter default to match [LoggerMessage] EventId";
+    private const string TitleSyncAttr  = "Sync [LoggerMessage] EventId to match parameter default";
+
+    /// <inheritdoc />
+    public override ImmutableArray<string> FixableDiagnosticIds =>
+        ImmutableArray.Create(DiagnosticDescriptors.EventIdMismatch.Id);
+
+    /// <inheritdoc />
+    public override FixAllProvider GetFixAllProvider() =>
+        WellKnownFixAllProviders.BatchFixer;
+
+    /// <inheritdoc />
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+        var document = context.Document;
+        var root     = await document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+        if (root is null) return;
+
+        var model = await document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
+        if (model is null) return;
+
+        var diagnostic = context.Diagnostics[0];
+        var node       = root.FindNode(diagnostic.Location.SourceSpan);
+        var methodDecl = node.AncestorsAndSelf().OfType<MethodDeclarationSyntax>().FirstOrDefault();
+        if (methodDecl is null) return;
+
+        var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)
+                     ?? AnalyzerConfiguration.FromFullTypeName(AnalyzerConfiguration.DefaultFullTypeName);
+
+        var (attrMember, paramMember) = ExtractMembers(diagnostic.GetMessage(), config.ShortName);
+        if (attrMember is null || paramMember is null) return;
+
+        // Fix 1: sync parameter → attribute (trust attribute)
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title:              TitleSyncParam,
+                createChangedDocument: ct =>
+                    SyncParameterToAttributeAsync(document, methodDecl, config.ShortName, attrMember, ct),
+                equivalenceKey:    TitleSyncParam),
+            diagnostic);
+
+        // Fix 2: sync attribute → parameter (trust parameter)
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title:              TitleSyncAttr,
+                createChangedDocument: ct =>
+                    SyncAttributeToParameterAsync(document, methodDecl, model,
+                        config, paramMember, ct),
+                equivalenceKey:    TitleSyncAttr),
+            diagnostic);
+    }
+
+    // ── Fix 1: update parameter default ──────────────────────────────────
+
+    private static async Task<Document> SyncParameterToAttributeAsync(
+        Document document,
+        MethodDeclarationSyntax methodDecl,
+        string enumShortName,
+        string targetMember,
+        CancellationToken ct)
+    {
+        var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
+        if (root is null) return document;
+
+        var param = methodDecl.ParameterList.Parameters
+            .FirstOrDefault(p =>
+                p.Identifier.ValueText.Equals(
+                    WellKnownTypes.EventIdParamName, StringComparison.OrdinalIgnoreCase)
+                && p.Default is not null);
+        if (param is null) return document;
+
+        var newDefault = SyntaxFactory.EqualsValueClause(
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(enumShortName),
+                SyntaxFactory.IdentifierName(targetMember)))
+            .WithAdditionalAnnotations(Formatter.Annotation);
+
+        return document.WithSyntaxRoot(
+            root.ReplaceNode(param, param.WithDefault(newDefault)));
+    }
+
+    // ── Fix 2: update attribute EventId expression ───────────────────────
+
+    private static async Task<Document> SyncAttributeToParameterAsync(
+        Document document,
+        MethodDeclarationSyntax methodDecl,
+        SemanticModel model,
+        EventIdsTypeConfig config,
+        string targetMember,
+        CancellationToken ct)
+    {
+        var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
+        if (root is null) return document;
+
+        var loggerMsgAttr = AnalyzerHelpers.FindAttributeSyntax(
+            methodDecl.AttributeLists, model, WellKnownTypes.LoggerMessageAttr);
+        if (loggerMsgAttr?.ArgumentList is null) return document;
+
+        var eventIdArg = loggerMsgAttr.ArgumentList.Arguments
+            .FirstOrDefault(a =>
+                a.NameEquals?.Name.Identifier.ValueText == WellKnownTypes.EventIdArgName);
+        if (eventIdArg is null) return document;
+
+        // Resolve the integer value for targetMember from the compiled type.
+        var eventIdsType = config.GetTypeSymbol(model.Compilation);
+        if (eventIdsType is null) return document;
+
+        var memberField = eventIdsType.GetMembers()
+            .OfType<IFieldSymbol>()
+            .FirstOrDefault(f => f.Name.Equals(targetMember, StringComparison.Ordinal));
+        if (memberField?.HasConstantValue != true) return document;
+
+        // Build:  (int)EnumType.targetMember
+        var newExpr = SyntaxFactory.CastExpression(
+            SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(config.ShortName),
+                SyntaxFactory.IdentifierName(targetMember)))
+            .WithAdditionalAnnotations(Formatter.Annotation);
+
+        return document.WithSyntaxRoot(
+            root.ReplaceNode(eventIdArg, eventIdArg.WithExpression(newExpr)));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    private static (string? attrMember, string? paramMember) ExtractMembers(
+        string msg, string shortName)
+    {
+        // messageFormat: "The [LoggerMessage] EventId ({ShortName}.AttrMember) does not
+        //                 match the default value of parameter 'eventId' ({ShortName}.ParamMember)."
+        var prefix = $"{shortName}.";
+
+        var idx1 = msg.IndexOf(prefix, StringComparison.Ordinal);
+        if (idx1 < 0) return (null, null);
+
+        var start1 = idx1 + prefix.Length;
+        var end1   = msg.IndexOfAny(new[] { ')', ' ', ',' }, start1);
+        if (end1 < 0) end1 = msg.Length;
+        var attrMember = msg[start1..end1];
+
+        var idx2 = msg.IndexOf(prefix, end1, StringComparison.Ordinal);
+        if (idx2 < 0) return (attrMember, null);
+
+        var start2 = idx2 + prefix.Length;
+        var end2   = msg.IndexOfAny(new[] { ')', ' ', ',' }, start2);
+        if (end2 < 0) end2 = msg.Length;
+        var paramMember = msg[start2..end2];
+
+        return (attrMember, paramMember);
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.CodeFixes/CodeFixes/MissingEventIdInMessageCodeFix.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdInMessageCodeFix.cs  (AIEL003)
+//
+// Inserts "[{EventId}]" at the start of the LoggerMessage.Message string
+// when the placeholder is absent.
+//
+// Config note: AIEL003 deals only with message template text — it does not
+// reference the EventIds enum — but the fix still reads config from the
+// diagnostic properties for consistency (future-proofing if the message
+// format ever becomes configurable).
+// -----------------------------------------------------------------------
+
+using System.Collections.Immutable;
+using System.Composition;
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Configuration;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace Aiel.Logging.CodeFixes.CodeFixes;
+
+/// <summary>
+/// Code fix for AIEL003 — inserts <c>[{EventId}] </c> at the beginning of the
+/// <see cref="Microsoft.Extensions.Logging.LoggerMessageAttribute"/> <c>Message</c>
+/// argument when the <c>[{EventId}]</c> placeholder is missing.
+/// </summary>
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MissingEventIdInMessageCodeFix))]
+[Shared]
+public sealed class MissingEventIdInMessageCodeFix : CodeFixProvider
+{
+    private const string EventIdPlaceholder = "[{EventId}]";
+
+    public override ImmutableArray<string> FixableDiagnosticIds =>
+        ImmutableArray.Create(DiagnosticDescriptors.MissingEventIdInMessage.Id);
+
+    public override FixAllProvider GetFixAllProvider() =>
+        WellKnownFixAllProviders.BatchFixer;
+
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false);
+
+        if (root is null) return;
+
+        var diagnostic = context.Diagnostics[0];
+
+        // The diagnostic span points at the Message literal argument.
+        var node = root.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true);
+
+        // Walk up to find the AttributeArgumentSyntax whose expression is
+        // either a string literal or an interpolated string.
+        var argSyntax = node.AncestorsAndSelf()
+            .OfType<AttributeArgumentSyntax>()
+            .FirstOrDefault();
+
+        if (argSyntax is null) return;
+
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title: $"Prepend \"{EventIdPlaceholder}\" to message",
+                createChangedDocument: ct =>
+                    PrependPlaceholderAsync(context.Document, argSyntax, ct),
+                equivalenceKey: nameof(MissingEventIdInMessageCodeFix)),
+            diagnostic);
+    }
+
+    // ── Implementation ───────────────────────────────────────────────────
+
+    private static async Task<Document> PrependPlaceholderAsync(
+        Document document,
+        AttributeArgumentSyntax argSyntax,
+        CancellationToken cancellationToken)
+    {
+        var root = await document
+            .GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        if (root is null) return document;
+
+        ExpressionSyntax? newExpression = argSyntax.Expression switch
+        {
+            // Simple string literal: "My message" → "[{EventId}] My message"
+            LiteralExpressionSyntax lit
+                when lit.IsKind(SyntaxKind.StringLiteralExpression) =>
+                    BuildPrependedStringLiteral(lit),
+
+            // Verbatim string literal: @"My message" → "[{EventId}] My message" (regular)
+            LiteralExpressionSyntax lit
+                when lit.IsKind(SyntaxKind.StringLiteralExpression) &&
+                     lit.Token.IsVerbatimStringLiteral() =>
+                    BuildPrependedStringLiteral(lit),
+
+            // Raw string literal or interpolated string — convert to regular literal
+            _ => BuildFallbackLiteral(argSyntax.Expression)
+        };
+
+        if (newExpression is null) return document;
+
+        var newArg  = argSyntax.WithExpression(newExpression.WithTriviaFrom(argSyntax.Expression));
+        var newRoot = root.ReplaceNode(argSyntax, newArg);
+        return document.WithSyntaxRoot(newRoot);
+    }
+
+    /// <summary>
+    /// Prepends <c>[{EventId}] </c> to the text of an existing string literal.
+    /// Preserves the verbatim / non-verbatim style of the original.
+    /// </summary>
+    private static LiteralExpressionSyntax BuildPrependedStringLiteral(
+        LiteralExpressionSyntax original)
+    {
+        var originalText = original.Token.ValueText; // already unescaped
+        var newText      = $"{EventIdPlaceholder} {originalText}";
+
+        // Always emit as a regular (non-verbatim) string because "[{EventId}]"
+        // contains no characters that need verbatim treatment.
+        var newToken = SyntaxFactory.Literal(newText);
+        return SyntaxFactory.LiteralExpression(
+            SyntaxKind.StringLiteralExpression,
+            newToken);
+    }
+
+    /// <summary>
+    /// Fallback for interpolated / raw strings — emits a plain string literal
+    /// containing only the placeholder (the developer can merge the rest manually).
+    /// </summary>
+    private static LiteralExpressionSyntax BuildFallbackLiteral(ExpressionSyntax _)
+    {
+        var token = SyntaxFactory.Literal($"{EventIdPlaceholder} <original message>");
+        return SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, token);
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.CodeFixes/CodeFixes/MissingEventIdParameterCodeFix.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdParameterCodeFix.cs  –  Fix for AIEL002
+//
+// Appends an optional  "<ConfiguredType> eventId = <ConfiguredType>.X"
+// parameter to a [LoggerMessage]-decorated method that is missing it.
+// The configured type name is read from Diagnostic.Properties.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
+using System.Collections.Immutable;
+using System.Composition;
+
+namespace Aiel.Logging.CodeFixes.CodeFixes;
+
+/// <summary>
+/// Fixes AIEL002 by appending an optional
+/// <c>&lt;EventIdsType&gt; eventId = &lt;EventIdsType&gt;.MemberName</c>
+/// parameter to the method signature.
+/// </summary>
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MissingEventIdParameterCodeFix))]
+[Shared]
+public sealed class MissingEventIdParameterCodeFix : CodeFixProvider
+{
+    private const string Title = "Add optional EventIds eventId parameter";
+
+    /// <inheritdoc />
+    public override ImmutableArray<string> FixableDiagnosticIds =>
+        ImmutableArray.Create(DiagnosticDescriptors.MissingEventIdParameter.Id);
+
+    /// <inheritdoc />
+    public override FixAllProvider GetFixAllProvider() =>
+        WellKnownFixAllProviders.BatchFixer;
+
+    /// <inheritdoc />
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false);
+        if (root is null) return;
+
+        var diagnostic = context.Diagnostics[0];
+        var node       = root.FindNode(diagnostic.Location.SourceSpan);
+        var methodDecl = node.AncestorsAndSelf()
+            .OfType<MethodDeclarationSyntax>()
+            .FirstOrDefault();
+        if (methodDecl is null) return;
+
+        var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)
+                     ?? AnalyzerConfiguration.FromFullTypeName(
+                            AnalyzerConfiguration.DefaultFullTypeName);
+
+        var memberName = ExtractSuggestedMember(diagnostic.GetMessage(), config.ShortName);
+
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title:              $"Add optional {config.ShortName} eventId = {config.ShortName}.{memberName}",
+                createChangedDocument: ct =>
+                    AddEventIdParameterAsync(context.Document, methodDecl,
+                        config.ShortName, memberName, ct),
+                equivalenceKey:    Title),
+            diagnostic);
+    }
+
+    // ── Transformation ───────────────────────────────────────────────────
+
+    private static async Task<Document> AddEventIdParameterAsync(
+        Document document,
+        MethodDeclarationSyntax methodDecl,
+        string enumShortName,
+        string memberName,
+        CancellationToken ct)
+    {
+        var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
+        if (root is null) return document;
+
+        // Build:  EnumType eventId = EnumType.MemberName
+        var defaultValue = SyntaxFactory.EqualsValueClause(
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(enumShortName),
+                SyntaxFactory.IdentifierName(memberName)));
+
+        var newParam = SyntaxFactory.Parameter(
+                SyntaxFactory.List<AttributeListSyntax>(),
+                SyntaxFactory.TokenList(),
+                SyntaxFactory.IdentifierName(enumShortName),
+                SyntaxFactory.Identifier(WellKnownTypes.EventIdParamName),
+                defaultValue)
+            .WithAdditionalAnnotations(Formatter.Annotation);
+
+        var newParams    = methodDecl.ParameterList.Parameters.Add(newParam);
+        var newParamList = methodDecl.ParameterList.WithParameters(newParams);
+        var newMethod    = methodDecl.WithParameterList(newParamList);
+
+        return document.WithSyntaxRoot(root.ReplaceNode(methodDecl, newMethod));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    private static string ExtractSuggestedMember(string msg, string shortName)
+    {
+        // messageFormat: "…missing an optional '<ShortName> eventId = <ShortName>.{member}' parameter."
+        var prefix = $"{shortName} eventId = {shortName}.";
+        const string suffix = "' parameter.";
+
+        var start = msg.IndexOf(prefix, StringComparison.Ordinal);
+        if (start >= 0)
+        {
+            start += prefix.Length;
+            var end = msg.IndexOf(suffix, start, StringComparison.Ordinal);
+            if (end > start) return msg[start..end];
+        }
+
+        return "SomeMember";
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.CodeFixes/CodeFixes/NoDirectILoggerCallsCodeFix.cs
+================================================================================
+// -----------------------------------------------------------------------
+// NoDirectILoggerCallsCodeFix.cs  (AIEL004)
+//
+// When the analyzer detects a direct ILogger.Log* call inside a method
+// that is itself decorated with [LoggerMessage], the fix offers to remove
+// the offending call (leaving a TODO comment) because a safe automatic
+// replacement requires domain knowledge the fix cannot supply.
+//
+// A second, more aggressive fix is also offered that removes the entire
+// statement unconditionally.
+//
+// Config note: AIEL004 does not reference the EventIds enum, but the fix
+// reads AnalyzerConfiguration from the diagnostic properties for
+// consistency with the rest of the fix layer.
+// -----------------------------------------------------------------------
+
+using System.Collections.Immutable;
+using System.Composition;
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Configuration;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
+
+namespace Aiel.Logging.CodeFixes.CodeFixes;
+
+/// <summary>
+/// Code fix for AIEL004 — offers two remediation strategies when a direct
+/// <c>ILogger</c> extension call is found inside a <c>[LoggerMessage]</c> method:
+/// <list type="number">
+///   <item>Replace the statement with a <c>// TODO:</c> comment so the developer
+///   can wire it to an Aiel-aware helper manually.</item>
+///   <item>Delete the statement outright.</item>
+/// </list>
+/// </summary>
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NoDirectILoggerCallsCodeFix))]
+[Shared]
+public sealed class NoDirectILoggerCallsCodeFix : CodeFixProvider
+{
+    public override ImmutableArray<string> FixableDiagnosticIds =>
+        ImmutableArray.Create(DiagnosticDescriptors.NoDirectILoggerCalls.Id);
+
+    public override FixAllProvider GetFixAllProvider() =>
+        WellKnownFixAllProviders.BatchFixer;
+
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false);
+
+        if (root is null) return;
+
+        var diagnostic = context.Diagnostics[0];
+
+        // AnalyzerConfiguration is resolved for property-stamping consistency;
+        // AIEL004 does not use the EventIds type name in the fix itself.
+        var config = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic);
+
+        var node = root.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true);
+
+        // Walk up to the enclosing ExpressionStatement (the invocation call).
+        var statement = node.AncestorsAndSelf()
+            .OfType<ExpressionStatementSyntax>()
+            .FirstOrDefault();
+
+        if (statement is null) return;
+
+        // Fix 1 — replace with TODO comment
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title: "Replace with TODO comment (manual migration needed)",
+                createChangedDocument: ct =>
+                    ReplaceWithTodoCommentAsync(context.Document, statement, ct),
+                equivalenceKey: $"{nameof(NoDirectILoggerCallsCodeFix)}_Todo"),
+            diagnostic);
+
+        // Fix 2 — remove the statement entirely
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title: "Remove direct ILogger call",
+                createChangedDocument: ct =>
+                    RemoveStatementAsync(context.Document, statement, ct),
+                equivalenceKey: $"{nameof(NoDirectILoggerCallsCodeFix)}_Remove"),
+            diagnostic);
+    }
+
+    // ── Fix 1: replace with TODO comment ────────────────────────────────
+
+    private static async Task<Document> ReplaceWithTodoCommentAsync(
+        Document document,
+        ExpressionStatementSyntax statement,
+        CancellationToken cancellationToken)
+    {
+        var root = await document
+            .GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        if (root is null) return document;
+
+        // Build:  // TODO: replace with the appropriate Aiel logging helper (AIEL004)
+        // Emit as an empty statement with a leading comment so formatting is preserved.
+        var originalCall = statement.Expression.ToString().Trim();
+        var comment = SyntaxFactory.Comment(
+            $"// TODO (AIEL004): replace with Aiel logging helper — was: {TruncateSafe(originalCall, 80)}");
+
+        // An empty statement (just a semicolon) with the comment attached.
+        var placeholder = SyntaxFactory
+            .EmptyStatement()
+            .WithLeadingTrivia(
+                statement.GetLeadingTrivia()
+                    .Add(comment)
+                    .Add(SyntaxFactory.ElasticCarriageReturnLineFeed))
+            .WithTrailingTrivia(statement.GetTrailingTrivia())
+            .WithAdditionalAnnotations(Formatter.Annotation);
+
+        var newRoot = root.ReplaceNode(statement, placeholder);
+        return document.WithSyntaxRoot(newRoot);
+    }
+
+    // ── Fix 2: remove statement ──────────────────────────────────────────
+
+    private static async Task<Document> RemoveStatementAsync(
+        Document document,
+        ExpressionStatementSyntax statement,
+        CancellationToken cancellationToken)
+    {
+        var root = await document
+            .GetSyntaxRootAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        if (root is null) return document;
+
+        var newRoot = root.RemoveNode(statement, SyntaxRemoveOptions.KeepLeadingTrivia)!;
+        return document.WithSyntaxRoot(newRoot);
+    }
+
+    // ── Utility ──────────────────────────────────────────────────────────
+
+    private static string TruncateSafe(string s, int maxLen) =>
+        s.Length <= maxLen ? s : string.Concat(s.AsSpan(0, maxLen - 3), "...");
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.CodeFixes/CodeFixes/UseAielEventIdsCodeFix.cs
+================================================================================
+// -----------------------------------------------------------------------
+// UseAielEventIdsCodeFix.cs  –  Fix for AIEL001
+//
+// Replaces a raw integer EventId literal with (int)<ConfiguredType>.Member.
+// The configured type name is read from Diagnostic.Properties so the fix
+// always generates syntax that matches whatever enum the project uses.
+// -----------------------------------------------------------------------
+
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Configuration;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Formatting;
+using System.Collections.Immutable;
+using System.Composition;
+
+namespace Aiel.Logging.CodeFixes.CodeFixes;
+
+/// <summary>
+/// Fixes AIEL001 by replacing a raw integer literal with
+/// <c>(int)&lt;ConfiguredEventIdsType&gt;.MemberName</c>.
+/// </summary>
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UseAielEventIdsCodeFix))]
+[Shared]
+public sealed class UseAielEventIdsCodeFix : CodeFixProvider
+{
+    private const string Title = "Replace with (int)<EventIds> member";
+
+    /// <inheritdoc />
+    public override ImmutableArray<string> FixableDiagnosticIds =>
+        ImmutableArray.Create(DiagnosticDescriptors.UseAielEventIds.Id);
+
+    /// <inheritdoc />
+    public override FixAllProvider GetFixAllProvider() =>
+        WellKnownFixAllProviders.BatchFixer;
+
+    /// <inheritdoc />
+    public override async Task RegisterCodeFixesAsync(CodeFixContext context)
+    {
+        var root = await context.Document
+            .GetSyntaxRootAsync(context.CancellationToken)
+            .ConfigureAwait(false);
+        if (root is null) return;
+
+        var diagnostic = context.Diagnostics[0];
+        var node       = root.FindNode(diagnostic.Location.SourceSpan);
+        if (node is not ExpressionSyntax expr) return;
+
+        // Read the EventIds type name that was resolved at analysis time.
+        // Falls back to the Aiel default when the property is absent.
+        var config     = AnalyzerConfiguration.ReadFromDiagnostic(diagnostic)
+                         ?? AnalyzerConfiguration.FromFullTypeName(
+                                AnalyzerConfiguration.DefaultFullTypeName);
+
+        var memberName = ExtractSuggestedMember(diagnostic.GetMessage(), config.ShortName);
+
+        context.RegisterCodeFix(
+            CodeAction.Create(
+                title:              $"Replace with (int){config.ShortName}.{memberName}",
+                createChangedDocument: ct =>
+                    ReplaceWithEnumCastAsync(context.Document, expr, config.ShortName, memberName, ct),
+                equivalenceKey:    Title),
+            diagnostic);
+    }
+
+    // ── Transformation ───────────────────────────────────────────────────
+
+    private static async Task<Document> ReplaceWithEnumCastAsync(
+        Document document,
+        ExpressionSyntax expr,
+        string enumShortName,
+        string memberName,
+        CancellationToken ct)
+    {
+        var root = await document.GetSyntaxRootAsync(ct).ConfigureAwait(false);
+        if (root is null) return document;
+
+        // Build:  (int)EnumType.MemberName
+        var castExpr = SyntaxFactory.CastExpression(
+            SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.IntKeyword)),
+            SyntaxFactory.MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                SyntaxFactory.IdentifierName(enumShortName),
+                SyntaxFactory.IdentifierName(memberName)))
+            .WithAdditionalAnnotations(Formatter.Annotation);
+
+        return document.WithSyntaxRoot(root.ReplaceNode(expr, castExpr));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    private static string ExtractSuggestedMember(string msg, string shortName)
+    {
+        // messageFormat: "Use '(int)EnumType.{member}' instead."
+        var prefix = $"(int){shortName}.";
+        const string suffix = "' instead.";
+
+        var start = msg.IndexOf(prefix, StringComparison.Ordinal);
+        if (start >= 0)
+        {
+            start += prefix.Length;
+            var end = msg.IndexOf(suffix, start, StringComparison.Ordinal);
+            if (end > start) return msg[start..end];
+        }
+
+        return "SomeMember";
+    }
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Template/Aiel.Logging.Template.csproj
+================================================================================
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+  </ItemGroup>
+
+  <!--
+    Plug in a custom EventIds enum via MSBuild.
+    In a real project this would reference the NuGet packages; here we use
+    project references so the sample builds inside the solution.
+  -->
+  <PropertyGroup>
+    <!--
+      Override the default AielEventIds type name.
+      The template demonstrates its own AielEventIds, so we leave this
+      commented out — the default (Aiel.Logging.AielEventIds) applies.
+
+      To use your own enum, uncomment and set your fully-qualified type name:
+        <AielEventIdsType>Acme.Logging.AcmeEventIds</AielEventIdsType>
+    -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Aiel.Logging.CodeFixes\Aiel.Logging.CodeFixes.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>
+
+
+================================================================================
+FILE: src/Aiel.Logging.Template/AielEventIds.cs
+================================================================================
+// -----------------------------------------------------------------------
+// AielEventIds.cs — Template / sample EventIds enum
+//
+// Range allocation convention:
+//   1000–1999  Service lifecycle
+//   2000–2999  Request pipeline
+//   3000–3999  Data / persistence
+//   4000–4999  Integration / external calls
+//   5000–5999  Security / auth
+//
+// Each Aiel module owns a distinct sub-range to guarantee uniqueness
+// across the system.  The range is documented in the team wiki.
+// -----------------------------------------------------------------------
+
+namespace Aiel.Logging;
+
+/// <summary>
+/// Central registry of structured-logging event identifiers for the Aiel framework.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Every <see cref="Microsoft.Extensions.Logging.LoggerMessageAttribute"/>-decorated
+/// method <b>must</b> use an <c>(int)AielEventIds.XXX</c> cast for its
+/// <c>EventId</c> argument (enforced by AIEL001).
+/// </para>
+/// <para>
+/// The matching optional parameter
+/// <c>AielEventIds eventId = AielEventIds.XXX</c> must also be present
+/// (enforced by AIEL002) and must agree with the attribute value (AIEL005).
+/// </para>
+/// </remarks>
+public enum AielEventIds
+{
+    // ── Service lifecycle ──────────────────────────────────────────────
+    ServiceStart     = 1000,
+    ServiceStop      = 1001,
+    ServiceRestart   = 1002,
+    ServiceHealthy   = 1003,
+    ServiceDegraded  = 1004,
+
+    // ── Request pipeline ──────────────────────────────────────────────
+    RequestStart     = 2000,
+    RequestEnd       = 2001,
+    RequestError     = 2002,
+    RequestTimeout   = 2003,
+    RequestRetry     = 2004,
+
+    // ── Data / persistence ────────────────────────────────────────────
+    DbQueryStart     = 3000,
+    DbQueryEnd       = 3001,
+    DbQueryError     = 3002,
+    DbMigration      = 3003,
+
+    // ── Integration / external calls ──────────────────────────────────
+    ExternalCallStart = 4000,
+    ExternalCallEnd   = 4001,
+    ExternalCallError = 4002,
+
+    // ── Security / auth ───────────────────────────────────────────────
+    AuthSuccess      = 5000,
+    AuthFailure      = 5001,
+    AuthTokenExpired = 5002,
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Template/SampleCompliant.cs
+================================================================================
+// -----------------------------------------------------------------------
+// SampleCompliant.cs — Template / demo of correct Aiel logging usage
+//
+// All methods below satisfy AIEL001–AIEL005:
+//   AIEL001 ✅  EventId uses (int)AielEventIds.XXX cast
+//   AIEL002 ✅  Optional AielEventIds parameter present
+//   AIEL003 ✅  Message template begins with "[{EventId}]"
+//   AIEL004 ✅  No direct ILogger.Log* calls
+//   AIEL005 ✅  Attribute EventId and parameter default agree
+// -----------------------------------------------------------------------
+
+using Microsoft.Extensions.Logging;
+
+namespace Aiel.Logging.Template;
+
+/// <summary>
+/// Demonstrates fully compliant Aiel logging patterns using
+/// <see cref="LoggerMessageAttribute"/>.
+/// </summary>
+public static partial class SampleLog
+{
+    // ── Service lifecycle ──────────────────────────────────────────────
+
+    /// <summary>Logs service startup.</summary>
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.ServiceStart,
+        Level    = LogLevel.Information,
+        Message  = "[{EventId}] Service started successfully")]
+    public static partial void ServiceStarted(
+        this ILogger         logger,
+        AielEventIds         eventId = AielEventIds.ServiceStart);
+
+    /// <summary>Logs graceful service shutdown.</summary>
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.ServiceStop,
+        Level    = LogLevel.Information,
+        Message  = "[{EventId}] Service stopped")]
+    public static partial void ServiceStopped(
+        this ILogger         logger,
+        AielEventIds         eventId = AielEventIds.ServiceStop);
+
+    // ── Request pipeline ──────────────────────────────────────────────
+
+    /// <summary>Logs the start of an incoming request.</summary>
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.RequestStart,
+        Level    = LogLevel.Debug,
+        Message  = "[{EventId}] Request {RequestId} received for {Path}")]
+    public static partial void RequestReceived(
+        this ILogger         logger,
+        string               requestId,
+        string               path,
+        AielEventIds         eventId = AielEventIds.RequestStart);
+
+    /// <summary>Logs successful request completion.</summary>
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.RequestEnd,
+        Level    = LogLevel.Information,
+        Message  = "[{EventId}] Request {RequestId} completed in {ElapsedMs}ms with status {StatusCode}")]
+    public static partial void RequestCompleted(
+        this ILogger         logger,
+        string               requestId,
+        long                 elapsedMs,
+        int                  statusCode,
+        AielEventIds         eventId = AielEventIds.RequestEnd);
+
+    /// <summary>Logs a failed request with full exception details.</summary>
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.RequestError,
+        Level    = LogLevel.Error,
+        Message  = "[{EventId}] Request {RequestId} failed")]
+    public static partial void RequestFailed(
+        this ILogger         logger,
+        string               requestId,
+        Exception            exception,
+        AielEventIds         eventId = AielEventIds.RequestError);
+
+    // ── Database operations ───────────────────────────────────────────
+
+    /// <summary>Logs a slow database query warning.</summary>
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.DbQueryEnd,
+        Level    = LogLevel.Warning,
+        Message  = "[{EventId}] Slow query on {Table}: {ElapsedMs}ms (threshold {ThresholdMs}ms)")]
+    public static partial void SlowQuery(
+        this ILogger         logger,
+        string               table,
+        long                 elapsedMs,
+        long                 thresholdMs,
+        AielEventIds         eventId = AielEventIds.DbQueryEnd);
+
+    // ── Security ──────────────────────────────────────────────────────
+
+    /// <summary>Logs an authentication failure (no PII in message).</summary>
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.AuthFailure,
+        Level    = LogLevel.Warning,
+        Message  = "[{EventId}] Authentication failed for user {UserId} from {IpAddress}")]
+    public static partial void AuthFailed(
+        this ILogger         logger,
+        string               userId,
+        string               ipAddress,
+        AielEventIds         eventId = AielEventIds.AuthFailure);
+}
+
+
+================================================================================
+FILE: src/Aiel.Logging.Template/SampleViolations.cs
+================================================================================
+// -----------------------------------------------------------------------
+// SampleViolations.cs — Template / demo of Aiel logging rule violations
+//
+// This file intentionally contains code that triggers AIEL001–AIEL005
+// so developers can see what the analyzers flag and how the code fixes
+// transform the violations.
+//
+// DO NOT include this file in production builds.
+// -----------------------------------------------------------------------
+
+#pragma warning disable // suppress warnings in this demo-only file
+
+using Microsoft.Extensions.Logging;
+
+namespace Aiel.Logging.Template;
+
+public static partial class SampleViolations
+{
+    // ── AIEL001 violation ────────────────────────────────────────────────
+    // EventId uses a raw integer literal instead of (int)AielEventIds.XXX.
+    //
+    // Fix: replace `1000` with `(int)AielEventIds.ServiceStart`
+    [LoggerMessage(
+        EventId  = 1000,                          // ← AIEL001: raw int
+        Level    = LogLevel.Information,
+        Message  = "[{EventId}] Service started")]
+    public static partial void Aiel001_RawInt(
+        this ILogger logger,
+        AielEventIds eventId = AielEventIds.ServiceStart);
+
+    // ── AIEL001 violation (wrong enum) ────────────────────────────────────
+    // EventId uses a cast from an unrecognised enum.
+    //
+    // Fix: replace the cast expression with `(int)AielEventIds.ServiceStart`
+    [LoggerMessage(
+        EventId  = (int)SomeOtherEnum.Foo,        // ← AIEL001: wrong enum
+        Level    = LogLevel.Warning,
+        Message  = "[{EventId}] Wrong enum")]
+    public static partial void Aiel001_WrongEnum(
+        this ILogger logger,
+        AielEventIds eventId = AielEventIds.ServiceStart);
+
+    // ── AIEL002 violation ────────────────────────────────────────────────
+    // No optional AielEventIds parameter.
+    //
+    // Fix: append `AielEventIds eventId = AielEventIds.ServiceStop`
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.ServiceStop,
+        Level    = LogLevel.Information,
+        Message  = "[{EventId}] Service stopped")]
+    public static partial void Aiel002_MissingParam(   // ← AIEL002: no eventId param
+        this ILogger logger);
+
+    // ── AIEL003 violation ────────────────────────────────────────────────
+    // Message template does not start with "[{EventId}]".
+    //
+    // Fix: prepend "[{EventId}] " to the message string
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.RequestStart,
+        Level    = LogLevel.Debug,
+        Message  = "Request received")]             // ← AIEL003: no [{{EventId}}] placeholder
+    public static partial void Aiel003_MissingPlaceholder(
+        this ILogger logger,
+        AielEventIds eventId = AielEventIds.RequestStart);
+
+    // ── AIEL004 violation ────────────────────────────────────────────────
+    // Direct ILogger extension call instead of a [LoggerMessage] partial method.
+    //
+    // Fix: replace with the appropriate SampleLog.XXX call (manual step),
+    //      or use the "Remove" fix if the call is redundant.
+    public static void Aiel004_DirectCall(ILogger logger)
+    {
+        logger.LogInformation("Service started"); // ← AIEL004: direct ILogger call
+    }
+
+    // ── AIEL005 violation ────────────────────────────────────────────────
+    // The attribute EventId and the parameter default disagree.
+    //
+    // Fix A: update attribute EventId to match parameter → (int)AielEventIds.RequestEnd
+    // Fix B: update parameter default to match attribute → AielEventIds.RequestStart
+    [LoggerMessage(
+        EventId  = (int)AielEventIds.RequestStart, // ← AIEL005: mismatch
+        Level    = LogLevel.Information,
+        Message  = "[{EventId}] Request ended")]
+    public static partial void Aiel005_Mismatch(
+        this ILogger logger,
+        AielEventIds eventId = AielEventIds.RequestEnd); // ← different member
+}
+
+/// <summary>Placeholder enum to illustrate AIEL001 wrong-enum violation.</summary>
+public enum SomeOtherEnum
+{
+    Foo = 99,
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Aiel.Logging.Analyzers.Tests.csproj
+================================================================================
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);NU5100</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- xUnit -->
+    <PackageReference Include="xunit"                           Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio"      Version="2.9.3"  PrivateAssets="all" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk"         Version="17.14.0" />
+
+    <!--
+      Roslyn analyzer-testing harness (Microsoft.CodeAnalysis.Testing).
+      These packages expose CSharpAnalyzerTest / CSharpCodeFixTest which run
+      analyzers inside an in-memory workspace — no SDK installation needed.
+    -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit"
+                      Version="1.1.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit"
+                      Version="1.1.2" />
+
+    <!-- Readable assertion messages -->
+    <PackageReference Include="FluentAssertions" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" />
+    <ProjectReference Include="..\..\src\Aiel.Logging.CodeFixes\Aiel.Logging.CodeFixes.csproj" />
+  </ItemGroup>
+
+</Project>
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/AnalyzerConfigurationTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// AnalyzerConfigurationTests.cs
+//
+// Unit tests for AnalyzerConfiguration.Resolve(), FromFullTypeName(),
+// ReadFromDiagnostic(), and BuildDiagnosticProperties().
+//
+// Also contains integration-style tests that run real analyzers with a
+// custom EventIds type injected via a synthetic MSBuild property.
+// -----------------------------------------------------------------------
+
+using System.Collections.Immutable;
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Configuration;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+// ═══════════════════════════════════════════════════════════════════════
+// Unit tests for AnalyzerConfiguration itself
+// ═══════════════════════════════════════════════════════════════════════
+
+public sealed class AnalyzerConfigurationUnitTests
+{
+    [Fact]
+    public void FromFullTypeName_SplitsCorrectly()
+    {
+        var cfg = EventIdsTypeConfig.FromFullTypeName("Acme.Logging.AcmeEventIds");
+        Assert.Equal("Acme.Logging.AcmeEventIds", cfg.FullTypeName);
+        Assert.Equal("AcmeEventIds",              cfg.ShortName);
+    }
+
+    [Fact]
+    public void FromFullTypeName_NoNamespace_ShortNameEqualsFullName()
+    {
+        var cfg = EventIdsTypeConfig.FromFullTypeName("MyEventIds");
+        Assert.Equal("MyEventIds", cfg.FullTypeName);
+        Assert.Equal("MyEventIds", cfg.ShortName);
+    }
+
+    [Fact]
+    public void DefaultConstants_AreCorrect()
+    {
+        Assert.Equal("Aiel.Logging.AielEventIds", AnalyzerConfiguration.DefaultFullTypeName);
+        Assert.Equal("AielEventIds",              AnalyzerConfiguration.DefaultShortName);
+    }
+
+    [Fact]
+    public void MsBuildPropertyKey_MatchesExpectedFormat()
+    {
+        Assert.Equal("build_property.AielEventIdsType", AnalyzerConfiguration.MsBuildPropertyKey);
+    }
+
+    [Fact]
+    public void EditorConfigKey_MatchesExpectedFormat()
+    {
+        Assert.Equal("aiel_event_ids_type", AnalyzerConfiguration.EditorConfigKey);
+    }
+
+    [Fact]
+    public void BuildDiagnosticProperties_ContainsBothKeys()
+    {
+        var cfg   = EventIdsTypeConfig.FromFullTypeName("Acme.Logging.AcmeEventIds");
+        var props = AnalyzerConfiguration.BuildDiagnosticProperties(cfg);
+
+        Assert.True(props.ContainsKey(AnalyzerConfiguration.DiagPropFullTypeName));
+        Assert.True(props.ContainsKey(AnalyzerConfiguration.DiagPropShortName));
+        Assert.Equal("Acme.Logging.AcmeEventIds", props[AnalyzerConfiguration.DiagPropFullTypeName]);
+        Assert.Equal("AcmeEventIds",              props[AnalyzerConfiguration.DiagPropShortName]);
+    }
+
+    [Fact]
+    public void ReadFromDiagnostic_WithProperties_ReturnsCorrectConfig()
+    {
+        // Build a fake diagnostic with the expected properties.
+        var props = ImmutableDictionary<string, string?>.Empty
+            .Add(AnalyzerConfiguration.DiagPropFullTypeName, "Acme.Logging.AcmeEventIds")
+            .Add(AnalyzerConfiguration.DiagPropShortName,    "AcmeEventIds");
+
+        var diag = Diagnostic.Create(
+            DiagnosticDescriptors.UseAielEventIds,
+            Location.None,
+            properties: props,
+            messageArgs: new object[] { "AcmeEventIds", "Acme.Logging.AcmeEventIds" });
+
+        var cfg = AnalyzerConfiguration.ReadFromDiagnostic(diag);
+        Assert.Equal("Acme.Logging.AcmeEventIds", cfg.FullTypeName);
+        Assert.Equal("AcmeEventIds",              cfg.ShortName);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Helper: test base that injects a custom AnalyzerConfigOptions
+// ═══════════════════════════════════════════════════════════════════════
+
+/// <summary>
+/// Minimal <see cref="AnalyzerConfigOptions"/> that returns a single key/value pair.
+/// Used to inject <c>build_property.AielEventIdsType</c> into analyzer tests.
+/// </summary>
+internal sealed class SingleKeyAnalyzerConfigOptions : AnalyzerConfigOptions
+{
+    private readonly string _key;
+    private readonly string _value;
+
+    public SingleKeyAnalyzerConfigOptions(string key, string value)
+    {
+        _key   = key;
+        _value = value;
+    }
+
+    public override bool TryGetValue(string key, out string value)
+    {
+        if (key == _key) { value = _value; return true; }
+        value = string.Empty;
+        return false;
+    }
+}
+
+/// <summary>
+/// <see cref="AnalyzerConfigOptionsProvider"/> backed by a single key/value pair.
+/// </summary>
+internal sealed class SingleKeyOptionsProvider : AnalyzerConfigOptionsProvider
+{
+    private readonly SingleKeyAnalyzerConfigOptions _options;
+
+    public SingleKeyOptionsProvider(string key, string value)
+        => _options = new SingleKeyAnalyzerConfigOptions(key, value);
+
+    public override AnalyzerConfigOptions GlobalOptions  => _options;
+    public override AnalyzerConfigOptions GetOptions(SyntaxTree tree)   => _options;
+    public override AnalyzerConfigOptions GetOptions(AdditionalText text) => _options;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Custom-enum tests — AIEL001
+// ═══════════════════════════════════════════════════════════════════════
+
+public sealed class CustomEnum_AIEL001_Tests
+{
+    private const string AcmeSource = AielAnalyzerVerifier<UseAielEventIdsAnalyzer>.AcmeEventIdsSource;
+
+    [Fact]
+    public async Task AcmeEventIdsCast_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            using Acme.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AcmeEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")]
+                public static partial void Ok(this ILogger logger);
+            }
+            """;
+
+        var test = AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+            .CreateTest(source, expected: null, eventIdsSource: AcmeSource);
+
+        // Inject the MSBuild property so the analyzer knows about AcmeEventIds.
+        test.OptionsProvider = new SingleKeyOptionsProvider(
+            AnalyzerConfiguration.MsBuildPropertyKey,
+            "Acme.Logging.AcmeEventIds");
+
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task RawInt_WithCustomEnum_StillDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            using Acme.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage({|#0:EventId = 2001|}, Level = LogLevel.Information, Message = "[{EventId}] ok")]
+                public static partial void Ok(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.UseAielEventIds.Id)
+            .WithLocation(0);
+
+        var test = AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+            .CreateTest(source, new[] { expected }, eventIdsSource: AcmeSource);
+
+        test.OptionsProvider = new SingleKeyOptionsProvider(
+            AnalyzerConfiguration.MsBuildPropertyKey,
+            "Acme.Logging.AcmeEventIds");
+
+        await test.RunAsync();
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Custom-enum tests — AIEL002
+// ═══════════════════════════════════════════════════════════════════════
+
+public sealed class CustomEnum_AIEL002_Tests
+{
+    private const string AcmeSource = AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>.AcmeEventIdsSource;
+
+    [Fact]
+    public async Task AcmeEventIdsParam_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            using Acme.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AcmeEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")]
+                public static partial void Ok(this ILogger logger, AcmeEventIds eventId = AcmeEventIds.ServiceStart);
+            }
+            """;
+
+        var test = AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>
+            .CreateTest(source, expected: null, eventIdsSource: AcmeSource);
+
+        test.OptionsProvider = new SingleKeyOptionsProvider(
+            AnalyzerConfiguration.MsBuildPropertyKey,
+            "Acme.Logging.AcmeEventIds");
+
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task MissingParam_WithCustomEnum_StillDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            using Acme.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AcmeEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")|}]
+                public static partial void Ok(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdParameter.Id)
+            .WithLocation(0);
+
+        var test = AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>
+            .CreateTest(source, new[] { expected }, eventIdsSource: AcmeSource);
+
+        test.OptionsProvider = new SingleKeyOptionsProvider(
+            AnalyzerConfiguration.MsBuildPropertyKey,
+            "Acme.Logging.AcmeEventIds");
+
+        await test.RunAsync();
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Custom-enum tests — AIEL005
+// ═══════════════════════════════════════════════════════════════════════
+
+public sealed class CustomEnum_AIEL005_Tests
+{
+    private const string AcmeSource = AielAnalyzerVerifier<EventIdMismatchAnalyzer>.AcmeEventIdsSource;
+
+    [Fact]
+    public async Task AcmeEnumMatch_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            using Acme.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AcmeEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")]
+                public static partial void Ok(this ILogger logger, AcmeEventIds eventId = AcmeEventIds.ServiceStart);
+            }
+            """;
+
+        var test = AielAnalyzerVerifier<EventIdMismatchAnalyzer>
+            .CreateTest(source, expected: null, eventIdsSource: AcmeSource);
+
+        test.OptionsProvider = new SingleKeyOptionsProvider(
+            AnalyzerConfiguration.MsBuildPropertyKey,
+            "Acme.Logging.AcmeEventIds");
+
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task AcmeEnumMismatch_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            using Acme.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AcmeEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")|}]
+                public static partial void Ok(this ILogger logger, AcmeEventIds eventId = AcmeEventIds.ServiceStop);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.EventIdMismatch.Id)
+            .WithLocation(0);
+
+        var test = AielAnalyzerVerifier<EventIdMismatchAnalyzer>
+            .CreateTest(source, new[] { expected }, eventIdsSource: AcmeSource);
+
+        test.OptionsProvider = new SingleKeyOptionsProvider(
+            AnalyzerConfiguration.MsBuildPropertyKey,
+            "Acme.Logging.AcmeEventIds");
+
+        await test.RunAsync();
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/EventIdMismatchAnalyzerTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// EventIdMismatchAnalyzerTests.cs — AIEL005
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class EventIdMismatchAnalyzerTests
+{
+    // ── No-diagnostic cases ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task AttributeAndParameterMatch_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+            }
+            """;
+
+        await AielAnalyzerVerifier<EventIdMismatchAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    [Fact]
+    public async Task NoParameterPresent_NoDiagnostic()
+    {
+        // AIEL002 handles the missing parameter; AIEL005 only checks when both are present.
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        await AielAnalyzerVerifier<EventIdMismatchAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    [Fact]
+    public async Task NoAttributeEventId_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+            }
+            """;
+
+        await AielAnalyzerVerifier<EventIdMismatchAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    // ── Diagnostic cases ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task AttributeAndParameterDiffer_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.EventIdMismatch.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<EventIdMismatchAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+
+    [Fact]
+    public async Task AttributeAndParameterDifferMembers_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.RequestStart, Level = LogLevel.Information, Message = "[{EventId}] Request")|}]
+                public static partial void RequestStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.EventIdMismatch.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<EventIdMismatchAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/EventIdMismatchCodeFixTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// EventIdMismatchCodeFixTests.cs — AIEL005 code-fix
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Aiel.Logging.CodeFixes.CodeFixes;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class EventIdMismatchCodeFixTests
+{
+    // Fix index 0 = "Update attribute EventId to match parameter default"
+    // Fix index 1 = "Update parameter default to match attribute EventId"
+
+    [Fact]
+    public async Task Mismatch_Fix0_UpdatesAttributeToMatchParameter()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+            }
+            """;
+
+        // Fix 0: attribute EventId updated to match the parameter default (ServiceStop).
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.EventIdMismatch.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<EventIdMismatchAnalyzer, EventIdMismatchCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 0, expected: expected);
+    }
+
+    [Fact]
+    public async Task Mismatch_Fix1_UpdatesParameterToMatchAttribute()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+            }
+            """;
+
+        // Fix 1: parameter default updated to match the attribute EventId (ServiceStart).
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.EventIdMismatch.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<EventIdMismatchAnalyzer, EventIdMismatchCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 1, expected: expected);
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/MissingEventIdInMessageAnalyzerTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdInMessageAnalyzerTests.cs — AIEL003
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class MissingEventIdInMessageAnalyzerTests
+{
+    // ── No-diagnostic cases ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task PlaceholderPresent_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Service started")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    [Fact]
+    public async Task PlaceholderPresentWithContent_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Processing {Name}")]
+                public static partial void Processing(this ILogger logger, string name);
+            }
+            """;
+
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    [Fact]
+    public async Task NoLoggerMessageAttribute_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void ServiceStarted(this ILogger logger) { }
+            }
+            """;
+
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    // ── Diagnostic cases ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task PlaceholderMissing_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Service started"|})]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+
+    [Fact]
+    public async Task OnlyPlaceholderSubstringMissing_RaisesDiagnostic()
+    {
+        // Has {EventId} but not the wrapping brackets — should still flag.
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"{EventId} started"|})]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/MissingEventIdInMessageCodeFixTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdInMessageCodeFixTests.cs — AIEL003 code-fix
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Aiel.Logging.CodeFixes.CodeFixes;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class MissingEventIdInMessageCodeFixTests
+{
+    [Fact]
+    public async Task MissingPlaceholder_PrependedToSimpleString()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Service started"|})]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Service started")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<MissingEventIdInMessageAnalyzer, MissingEventIdInMessageCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+    }
+
+    [Fact]
+    public async Task MissingPlaceholder_EmptyMessage_PrependedCorrectly()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:""|})]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<MissingEventIdInMessageAnalyzer, MissingEventIdInMessageCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+    }
+
+    [Fact]
+    public async Task MissingPlaceholder_WithTemplateParams_PrependedCorrectly()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Processing {Name} for {UserId}"|})]
+                public static partial void Processing(this ILogger logger, string name, int userId);
+            }
+            """;
+
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Processing {Name} for {UserId}")]
+                public static partial void Processing(this ILogger logger, string name, int userId);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<MissingEventIdInMessageAnalyzer, MissingEventIdInMessageCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/MissingEventIdParameterAnalyzerTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdParameterAnalyzerTests.cs — AIEL002
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class MissingEventIdParameterAnalyzerTests
+{
+    // ── No-diagnostic cases ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task ParameterPresent_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+            }
+            """;
+
+        await AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    [Fact]
+    public async Task NoLoggerMessageAttribute_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void ServiceStarted(this ILogger logger) { }
+            }
+            """;
+
+        await AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    // ── Diagnostic cases ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ParameterMissing_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdParameter.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+
+    [Fact]
+    public async Task ParameterWrongType_RaisesDiagnostic()
+    {
+        // Has a parameter named eventId but it's int, not AielEventIds — should flag.
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, int eventId = 1000);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdParameter.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<MissingEventIdParameterAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/MissingEventIdParameterCodeFixTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// MissingEventIdParameterCodeFixTests.cs — AIEL002 code-fix
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Aiel.Logging.CodeFixes.CodeFixes;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class MissingEventIdParameterCodeFixTests
+{
+    [Fact]
+    public async Task MissingParameter_AddsAielEventIdsParameter()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        // The fix appends `AielEventIds eventId = AielEventIds.ServiceStart` as the last parameter.
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdParameter.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<MissingEventIdParameterAnalyzer, MissingEventIdParameterCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+    }
+
+    [Fact]
+    public async Task ExistingParameters_AppendedAtEnd()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] {Name}")|}]
+                public static partial void ServiceStarted(this ILogger logger, string name);
+            }
+            """;
+
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] {Name}")]
+                public static partial void ServiceStarted(this ILogger logger, string name, AielEventIds eventId = AielEventIds.ServiceStart);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.MissingEventIdParameter.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<MissingEventIdParameterAnalyzer, MissingEventIdParameterCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/NoDirectILoggerCallsAnalyzerTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// NoDirectILoggerCallsAnalyzerTests.cs — AIEL004
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class NoDirectILoggerCallsAnalyzerTests
+{
+    // ── No-diagnostic cases ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task LoggerMessageMethod_NoDiagnostic()
+    {
+        // The invocation is from a [LoggerMessage] partial method — not a direct ILogger call.
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+
+                public static void StartService(ILogger logger)
+                {
+                    logger.ServiceStarted();
+                }
+            }
+            """;
+
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    [Fact]
+    public async Task NonLoggingMethod_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void DoWork(ILogger logger)
+                {
+                    var x = 1 + 2;
+                }
+            }
+            """;
+
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    // ── Diagnostic cases ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task DirectLogInformation_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void StartService(ILogger logger)
+                {
+                    {|#0:logger.LogInformation("Service started")|};
+                }
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.NoDirectILoggerCalls.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+
+    [Fact]
+    public async Task DirectLogError_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void HandleError(ILogger logger, Exception ex)
+                {
+                    {|#0:logger.LogError(ex, "An error occurred")|};
+                }
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.NoDirectILoggerCalls.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+
+    [Fact]
+    public async Task DirectLogWarning_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void Warn(ILogger logger)
+                {
+                    {|#0:logger.LogWarning("Watch out")|};
+                }
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.NoDirectILoggerCalls.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<NoDirectILoggerCallsAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/NoDirectILoggerCallsCodeFixTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// NoDirectILoggerCallsCodeFixTests.cs — AIEL004 code-fix
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Aiel.Logging.CodeFixes.CodeFixes;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class NoDirectILoggerCallsCodeFixTests
+{
+    // Fix index 0 = "Replace with TODO comment"
+    // Fix index 1 = "Remove direct ILogger call"
+
+    [Fact]
+    public async Task DirectLogCall_ReplacedWithTodoComment()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void StartService(ILogger logger)
+                {
+                    {|#0:logger.LogInformation("Service started")|};
+                }
+            }
+            """;
+
+        // Fix 0: replace with a TODO comment (empty statement with leading comment).
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void StartService(ILogger logger)
+                {
+                    // TODO (AIEL004): replace with Aiel logging helper — was: logger.LogInformation("Service started")
+                    ;
+                }
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.NoDirectILoggerCalls.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<NoDirectILoggerCallsAnalyzer, NoDirectILoggerCallsCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 0, expected: expected);
+    }
+
+    [Fact]
+    public async Task DirectLogCall_RemovedEntirely()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void StartService(ILogger logger)
+                {
+                    {|#0:logger.LogInformation("Service started")|};
+                }
+            }
+            """;
+
+        // Fix 1: remove the statement completely.
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                public static void StartService(ILogger logger)
+                {
+                }
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.NoDirectILoggerCalls.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<NoDirectILoggerCallsAnalyzer, NoDirectILoggerCallsCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 1, expected: expected);
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/UseAielEventIdsAnalyzerTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// UseAielEventIdsAnalyzerTests.cs — AIEL001
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class UseAielEventIdsAnalyzerTests
+{
+    // ── No-diagnostic cases ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task NoAttribute_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    [Fact]
+    public async Task AielEventIdsCast_NoDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")]
+                public static partial void Ok(this ILogger logger);
+            }
+            """;
+
+        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+
+    // ── Diagnostic cases ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task RawInteger_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage({|#0:EventId = 1001|}, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.UseAielEventIds.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+
+    [Fact]
+    public async Task OtherEnumCast_RaisesDiagnostic()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public enum SomeOtherEnum { Foo = 99 }
+            public static partial class Log
+            {
+                [LoggerMessage({|#0:EventId = (int)SomeOtherEnum.Foo|}, Level = LogLevel.Information, Message = "[{EventId}] msg")]
+                public static partial void Foo(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.UseAielEventIds.Id)
+            .WithLocation(0);
+
+        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>
+            .CreateTest(source, new[] { expected })
+            .RunAsync();
+    }
+
+    [Fact]
+    public async Task NamedArg_EventName_NoEventId_NoDiagnostic()
+    {
+        // No EventId argument at all — not AIEL001's concern (AIEL002 handles this).
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(Level = LogLevel.Information, Message = "[{EventId}] msg")]
+                public static partial void Ok(this ILogger logger);
+            }
+            """;
+
+        await AielAnalyzerVerifier<UseAielEventIdsAnalyzer>.VerifyNoDiagnosticsAsync(source);
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Tests/UseAielEventIdsCodeFixTests.cs
+================================================================================
+// -----------------------------------------------------------------------
+// UseAielEventIdsCodeFixTests.cs — AIEL001 code-fix
+// -----------------------------------------------------------------------
+using Aiel.Logging.Analyzers.Analyzers;
+using Aiel.Logging.Analyzers.Tests.Verifiers;
+using Aiel.Logging.CodeFixes.CodeFixes;
+using Microsoft.CodeAnalysis.Testing;
+using Xunit;
+
+namespace Aiel.Logging.Analyzers.Tests.Tests;
+
+public sealed class UseAielEventIdsCodeFixTests
+{
+    [Fact]
+    public async Task RawInt_FixedToAielEventIdsCast()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage({|#0:EventId = 1001|}, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        // The fix cannot know which member has value 1001, so it substitutes the
+        // first member of the enum.  The canonical first member of AielEventIds is
+        // ServiceStart (value 1000).  The fix replaces with (int)AielEventIds.ServiceStart.
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.UseAielEventIds.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<UseAielEventIdsAnalyzer, UseAielEventIdsCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+    }
+
+    [Fact]
+    public async Task OtherEnumCast_FixedToAielEventIdsCast()
+    {
+        const string source = """
+            using Microsoft.Extensions.Logging;
+            public enum SomeOtherEnum { Foo = 99 }
+            public static partial class Log
+            {
+                [LoggerMessage({|#0:EventId = (int)SomeOtherEnum.Foo|}, Level = LogLevel.Information, Message = "[{EventId}] msg")]
+                public static partial void Foo(this ILogger logger);
+            }
+            """;
+
+        const string fixedSource = """
+            using Microsoft.Extensions.Logging;
+            public enum SomeOtherEnum { Foo = 99 }
+            public static partial class Log
+            {
+                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] msg")]
+                public static partial void Foo(this ILogger logger);
+            }
+            """;
+
+        var expected = DiagnosticResult
+            .CompilerError(DiagnosticDescriptors.UseAielEventIds.Id)
+            .WithLocation(0);
+
+        await AielCodeFixVerifier<UseAielEventIdsAnalyzer, UseAielEventIdsCodeFix>
+            .VerifyCodeFixAsync(source, fixedSource, expected: expected);
+    }
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Verifiers/AnalyzerVerifier.cs
+================================================================================
+// -----------------------------------------------------------------------
+// AnalyzerVerifier.cs
+// Thin wrapper around CSharpAnalyzerTest that pre-loads the three standard
+// framework stubs (EventIds enum, LoggerMessageAttribute, ILogger).
+//
+// The eventIdsSource parameter lets configuration-aware tests substitute
+// a custom enum (e.g. AcmeEventIds) without touching the default stubs.
+// -----------------------------------------------------------------------
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Testing;
+
+namespace Aiel.Logging.Analyzers.Tests.Verifiers;
+
+/// <summary>
+/// Creates <see cref="CSharpAnalyzerTest{TAnalyzer,TVerifier}"/> instances
+/// pre-loaded with the Aiel framework stubs so individual test classes stay lean.
+/// </summary>
+internal static class AielAnalyzerVerifier<TAnalyzer>
+    where TAnalyzer : DiagnosticAnalyzer, new()
+{
+    // ── Shared source stubs ──────────────────────────────────────────────
+
+    /// <summary>Default AielEventIds enum stub used in standard tests.</summary>
+    public const string AielEventIdsSource = """
+        // Stub — mirrors the real AielEventIds shape used by production code.
+        public enum AielEventIds
+        {
+            ServiceStart  = 1000,
+            ServiceStop   = 1001,
+            RequestStart  = 2000,
+            RequestEnd    = 2001,
+            RequestError  = 2002,
+        }
+        """;
+
+    /// <summary>
+    /// Custom enum stub for configuration tests.
+    /// Full type name: <c>Acme.Logging.AcmeEventIds</c>.
+    /// </summary>
+    public const string AcmeEventIdsSource = """
+        // Stub — custom enum used to verify configurable EventIds support.
+        namespace Acme.Logging
+        {
+            public enum AcmeEventIds
+            {
+                ServiceStart = 2001,
+                ServiceStop  = 2002,
+                RequestError = 2003,
+            }
+        }
+        """;
+
+    /// <summary>Minimal LoggerMessageAttribute stub.</summary>
+    public const string LoggerMessageAttrSource = """
+        // Stub — minimal shape of Microsoft.Extensions.Logging.LoggerMessageAttribute.
+        namespace Microsoft.Extensions.Logging
+        {
+            using System;
+            [AttributeUsage(AttributeTargets.Method)]
+            public sealed class LoggerMessageAttribute : Attribute
+            {
+                public LoggerMessageAttribute() { }
+                public LoggerMessageAttribute(int eventId, LogLevel level, string message)
+                {
+                    EventId = eventId; Level = level; Message = message;
+                }
+                public int      EventId  { get; set; }
+                public LogLevel Level    { get; set; }
+                public string   Message  { get; set; } = string.Empty;
+                public string?  EventName { get; set; }
+            }
+        }
+        """;
+
+    /// <summary>Minimal ILogger + LogLevel + extension-method stubs.</summary>
+    public const string ILoggerSource = """
+        // Stub — minimal shape of Microsoft.Extensions.Logging.ILogger.
+        namespace Microsoft.Extensions.Logging
+        {
+            public interface ILogger { }
+
+            public enum LogLevel
+            {
+                Trace, Debug, Information, Warning, Error, Critical, None
+            }
+
+            public static class LoggerExtensions
+            {
+                public static void LogInformation(this ILogger logger, string message, params object[] args) { }
+                public static void LogWarning(this ILogger logger, string message, params object[] args) { }
+                public static void LogError(this ILogger logger, string message, params object[] args) { }
+                public static void LogError(this ILogger logger, System.Exception ex, string message, params object[] args) { }
+                public static void LogDebug(this ILogger logger, string message, params object[] args) { }
+                public static void LogTrace(this ILogger logger, string message, params object[] args) { }
+                public static void LogCritical(this ILogger logger, string message, params object[] args) { }
+            }
+        }
+        """;
+
+    // ── Factory ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Creates a pre-configured <see cref="CSharpAnalyzerTest{TAnalyzer,TVerifier}"/>
+    /// with the standard stubs loaded.
+    /// </summary>
+    /// <param name="source">C# source with optional diagnostic markers.</param>
+    /// <param name="expected">Diagnostics expected in the source. Pass <see langword="null"/> for no-diagnostic tests.</param>
+    /// <param name="eventIdsSource">Override the EventIds enum stub. <see langword="null"/> uses the default AielEventIds stub.</param>
+    public static CSharpAnalyzerTest<TAnalyzer, DefaultVerifier> CreateTest(
+        string               source,
+        DiagnosticResult[]?  expected       = null,
+        string?              eventIdsSource = null)
+    {
+        var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
+        {
+            TestCode        = source,
+            LanguageVersion = LanguageVersion.CSharp12,
+        };
+
+        test.TestState.Sources.Add(eventIdsSource ?? AielEventIdsSource);
+        test.TestState.Sources.Add(LoggerMessageAttrSource);
+        test.TestState.Sources.Add(ILoggerSource);
+
+        if (expected is not null)
+            test.ExpectedDiagnostics.AddRange(expected);
+
+        return test;
+    }
+
+    /// <summary>Convenience runner — expects no diagnostics.</summary>
+    public static Task VerifyNoDiagnosticsAsync(
+        string  source,
+        string? eventIdsSource = null)
+        => CreateTest(source, expected: null, eventIdsSource: eventIdsSource).RunAsync();
+
+    /// <summary>Convenience runner — expects the supplied diagnostics.</summary>
+    public static Task VerifyDiagnosticsAsync(
+        string               source,
+        string?              eventIdsSource = null,
+        params DiagnosticResult[] expected)
+        => CreateTest(source, expected, eventIdsSource).RunAsync();
+}
+
+
+================================================================================
+FILE: tests/Aiel.Logging.Analyzers.Tests/Verifiers/CodeFixVerifier.cs
+================================================================================
+// -----------------------------------------------------------------------
+// CodeFixVerifier.cs
+// Thin wrapper around CSharpCodeFixTest that pre-loads the three standard
+// framework stubs (EventIds enum, LoggerMessageAttribute, ILogger).
+//
+// The eventIdsSource parameter lets configuration-aware tests substitute
+// a custom enum (e.g. AcmeEventIds) without touching the base type.
+// -----------------------------------------------------------------------
+
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Testing;
+
+namespace Aiel.Logging.Analyzers.Tests.Verifiers;
+
+/// <summary>
+/// Creates <see cref="CSharpCodeFixTest{TAnalyzer,TCodeFix,TVerifier}"/> instances
+/// pre-loaded with the Aiel framework stubs so individual test classes stay lean.
+/// </summary>
+internal static class AielCodeFixVerifier<TAnalyzer, TCodeFix>
+    where TAnalyzer : DiagnosticAnalyzer, new()
+    where TCodeFix  : CodeFixProvider,    new()
+{
+    /// <summary>
+    /// Creates a code-fix test that expects <paramref name="source"/> to be
+    /// transformed into <paramref name="fixedSource"/> after the fix runs.
+    /// </summary>
+    /// <param name="source">C# source with diagnostic markers.</param>
+    /// <param name="fixedSource">Expected C# source after the fix.</param>
+    /// <param name="expected">Diagnostics expected in the unfixed source.</param>
+    /// <param name="eventIdsSource">
+    /// Override the default <c>AielEventIds</c> stub.  Pass <see langword="null"/>
+    /// to use the Aiel default.
+    /// </param>
+    /// <param name="codeFixIndex">
+    /// Zero-based index of the fix to apply when multiple fixes are registered.
+    /// </param>
+    public static CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier> CreateTest(
+        string source,
+        string fixedSource,
+        DiagnosticResult[]? expected    = null,
+        string?             eventIdsSource = null,
+        int                 codeFixIndex   = 0)
+    {
+        var test = new CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier>
+        {
+            TestCode        = source,
+            FixedCode       = fixedSource,
+            LanguageVersion = LanguageVersion.CSharp12,
+            CodeFixIndex    = codeFixIndex,
+        };
+
+        test.TestState.Sources.Add(
+            eventIdsSource ?? AielAnalyzerVerifier<TAnalyzer>.AielEventIdsSource);
+        test.TestState.Sources.Add(AielAnalyzerVerifier<TAnalyzer>.LoggerMessageAttrSource);
+        test.TestState.Sources.Add(AielAnalyzerVerifier<TAnalyzer>.ILoggerSource);
+
+        // Mirror the fixed-state stubs so the verifier can compile the fixed code too.
+        test.FixedState.Sources.Add(
+            eventIdsSource ?? AielAnalyzerVerifier<TAnalyzer>.AielEventIdsSource);
+        test.FixedState.Sources.Add(AielAnalyzerVerifier<TAnalyzer>.LoggerMessageAttrSource);
+        test.FixedState.Sources.Add(AielAnalyzerVerifier<TAnalyzer>.ILoggerSource);
+
+        if (expected is not null)
+            test.ExpectedDiagnostics.AddRange(expected);
+
+        return test;
+    }
+
+    /// <summary>Convenience runner — create and run in one call.</summary>
+    public static Task VerifyCodeFixAsync(
+        string source,
+        string fixedSource,
+        string? eventIdsSource = null,
+        int codeFixIndex       = 0,
+        params DiagnosticResult[] expected)
+        => CreateTest(source, fixedSource, expected, eventIdsSource, codeFixIndex).RunAsync();
+}
+
+

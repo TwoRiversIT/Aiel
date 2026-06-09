@@ -28,7 +28,7 @@ using System.Text;
 
 namespace Aiel.Authorization.Generators;
 
-[Generator]
+[Generator(LanguageNames.CSharp)]
 public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
 {
     private const String DefinesPermissionAttributeMetadataName = "Aiel.Authorization.AuthorizationDefinitionAttribute";

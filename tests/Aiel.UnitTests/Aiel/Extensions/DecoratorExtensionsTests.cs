@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.DependencyInjection;
 using Aiel.Dependencies;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Extensions;
 
@@ -32,7 +32,7 @@ public sealed class DecoratorExtensionsTests
     {
         IServiceCollection services = null!;
 
-        Assert.Throws<ArgumentNullException>(() => services.DecorateCollection<String>());
+        Assert.Throws<ArgumentNullException>(services.DecorateCollection<String>);
     }
 
     [Fact]

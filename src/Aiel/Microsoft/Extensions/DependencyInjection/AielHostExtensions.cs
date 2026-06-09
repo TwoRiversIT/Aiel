@@ -20,14 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Dependencies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Aiel.Dependencies;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class AielHostExtensions
+public static partial class AielHostExtensions
 {
     /// <summary>
     /// Resolves the registered dependency graph and calls
@@ -87,9 +87,12 @@ public static class AielHostExtensions
             var dependencyNode = initOrder.Pop();
             if (dependencyNode.Instance is IDependencyInitializer initializer)
             {
-                context.Logger.LogDebug("Initializing Dependency {DependencyType}.", dependencyNode.Type.Name);
+                LogInitializingDependency(context.Logger, dependencyNode.Type.Name);
                 await initializer.InitializeAsync(context, cancellationToken);
             }
         }
     }
+
+    [LoggerMessage(EventId = 0, Level = LogLevel.Debug, Message = "Initializing Dependency {DependencyType}.")]
+    private static partial void LogInitializingDependency(ILogger logger, string dependencyType);
 }

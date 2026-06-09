@@ -24,7 +24,7 @@ using Aiel.Dependencies;
 
 namespace Aiel;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AspNetCore.AielAspNetCoreBlazorWebAssembly))]
 public sealed class AielUnitTests : AielDependencyConfigurator;
 

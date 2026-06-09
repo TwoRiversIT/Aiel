@@ -1,0 +1,36 @@
+<!--
+  Aiel.Logging.Analyzers.props
+  ════════════════════════════
+  Shipped inside the NuGet package at:
+    build/Aiel.Logging.Analyzers.props
+
+  MSBuild automatically imports this file when the package is installed.
+  It declares CompilerVisibleProperty entries so that the consuming
+  project's MSBuild properties are forwarded into the Roslyn analyzer
+  pipeline at compile time (via AnalyzerConfigOptions.GlobalOptions).
+
+  ┌──────────────────────────────────────────────────────────────────┐
+  │  User-settable properties                                        │
+  ├──────────────────────────────────────────────────────────────────┤
+  │  AielEventIdsType                                                │
+  │    Fully-qualified CLR name of the EventIds enum the analyzers   │
+  │    should enforce.  Defaults to "Aiel.Logging.AielEventIds"      │
+  │    when not set.                                                 │
+  │                                                                  │
+  │    Example (in your .csproj or Directory.Build.props):           │
+  │      <AielEventIdsType>                                          │
+  │        MyCompany.MyModule.Logging.MyEventIds                     │
+  │      </AielEventIdsType>                                         │
+  └──────────────────────────────────────────────────────────────────┘
+-->
+<Project>
+  <ItemGroup>
+    <!--
+      CompilerVisibleProperty makes the MSBuild property available to
+      Roslyn analyzers as:
+        build_property.AielEventIdsType
+      via AnalyzerOptions.AnalyzerConfigOptionsProvider.GlobalOptions.
+    -->
+    <CompilerVisibleProperty Include="AielEventIdsType" />
+  </ItemGroup>
+</Project>

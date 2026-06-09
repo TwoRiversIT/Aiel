@@ -109,16 +109,16 @@ Mirror `Aiel.Analyzers.UnitTests.csproj`:
 
 | ID | Title | Severity | Suppressible |
 | --- | --- | --- | --- |
-| `AIEL20001` | `ActionHasNoAuthorizationStory` | `Error` | No |
-| `AIEL20002` | `DoesNotRespectAuthorityReasonIsEmpty` | `Error` | No |
+| `AIEL00006` | `ActionHasNoAuthorizationStory` | `Error` | No |
+| `AIEL00007` | `DoesNotRespectAuthorityReasonIsEmpty` | `Error` | No |
 
-**`AIEL20001` — `ActionHasNoAuthorizationStory`**
+**`AIEL00006` — `ActionHasNoAuthorizationStory`**
 
 > Action type `{0}` implements `IAction` but has no concrete `IActionPermissionChecker<{0}>` and no `[DoesNotRespectAuthority]` attribute. Add a concrete checker or mark the action with `[DoesNotRespectAuthority(Reason = "...")]`. Note: generated permission definitions are recognized by the analyzer only after `Aiel.Authorization.Generators` is added (Task 9).
 
 Category: `Authorization`. DefaultSeverity: **Error**. Must NOT be suppressible via `#pragma warning disable` (enforce per D4: missing authorization story is always a build failure).
 
-**`AIEL20002` — `DoesNotRespectAuthorityReasonIsEmpty`**
+**`AIEL00007` — `DoesNotRespectAuthorityReasonIsEmpty`**
 
 > `[DoesNotRespectAuthority]` on `{0}` has an empty or whitespace `Reason`. Provide a non-empty explanation.
 
@@ -135,8 +135,8 @@ Both diagnostics MUST appear in `AnalyzerReleases.Unshipped.md` before the PR ca
 - Registers `RegisterSymbolAction` for `SymbolKind.NamedType`.
 - For each named type that is a **concrete, non-abstract class** (not interface, not abstract, not struct) implementing `IActionInterfaceName` (`Aiel.Actions.IAction`):
   - Walks the compilation for any concrete non-abstract class implementing `IActionPermissionCheckerInterfaceName` (`Aiel.Authorization.IActionPermissionChecker<TAction>`) where `TAction` is the current action type. If found → no diagnostic.
-  - Checks whether the action type carries `[DoesNotRespectAuthority]` (metadata name `Aiel.Authorization.DoesNotRespectAuthorityAttribute`). If present with a non-empty `Reason` → no diagnostic. If present with empty or whitespace `Reason` → `AIEL20002`.
-  - If neither check passes → `AIEL20001`.
+  - Checks whether the action type carries `[DoesNotRespectAuthority]` (metadata name `Aiel.Authorization.DoesNotRespectAuthorityAttribute`). If present with a non-empty `Reason` → no diagnostic. If present with empty or whitespace `Reason` → `AIEL00007`.
+  - If neither check passes → `AIEL00006`.
 - Respects `GeneratedCodeAnalysisFlags.None` — does not fire on generated code.
 - Enables `EnableConcurrentExecution`.
 
@@ -156,11 +156,11 @@ Both diagnostics MUST appear in `AnalyzerReleases.Unshipped.md` before the PR ca
 Task 8 is NOT done until ALL of the following are true:
 
 1. `dotnet test .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. All previous tests still pass. New `Aiel.Authorization.Analyzers.UnitTests` tests pass.
-2. `AIEL20001` has `DefaultSeverity = DiagnosticSeverity.Error` and is NOT in the suppression allow-list.
-3. `AIEL20002` has `DefaultSeverity = DiagnosticSeverity.Error`.
+2. `AIEL00006` has `DefaultSeverity = DiagnosticSeverity.Error` and is NOT in the suppression allow-list.
+3. `AIEL00007` has `DefaultSeverity = DiagnosticSeverity.Error`.
 4. `Aiel.Authorization.Analyzers.csproj` carries NO project or package reference to any `Aiel.*` package.
 5. `DoesNotRespectAuthorityAttribute` exists in `Aiel.Authorization.Application.Contracts`, carries `required string Reason`, and has `AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)`.
-6. Both `AIEL20001` and `AIEL20002` appear in `AnalyzerReleases.Unshipped.md` with the correct metadata format.
+6. Both `AIEL00006` and `AIEL00007` appear in `AnalyzerReleases.Unshipped.md` with the correct metadata format.
 7. All new projects are registered in `TwoRivers.slnx`, `Aiel/Aiel.slnx`, and `Aiel/virtual-folders.json`.
 8. Build is clean: no warnings, no nullable suppressions, no `#pragma warning disable`.
 9. XML documentation is present on all public types in the analyzer project.
@@ -189,9 +189,9 @@ All tests use inline source strings with `Aiel.Authorization.IAction`, `Aiel.Aut
 
 ### `ActionHasNoAuthorizationStoryTests`
 
-1. `ReportsAIEL20001_WhenActionHasNoCheckerAndNoMarker`
+1. `ReportsAIEL00006_WhenActionHasNoCheckerAndNoMarker`
    - Source: concrete class `SampleAction : IAction`. No checker. No attribute.
-   - Expected: `AIEL20001` on the `SampleAction` type declaration.
+   - Expected: `AIEL00006` on the `SampleAction` type declaration.
 
 2. `NoDiagnostic_WhenConcreteCheckerExists`
    - Source: `SampleAction : IAction` + `SampleActionPermissionChecker : IActionPermissionChecker<SampleAction>`.
@@ -209,19 +209,19 @@ All tests use inline source strings with `Aiel.Authorization.IAction`, `Aiel.Aut
    - Source: `interface ICustomAction : IAction { }`.
    - Expected: no diagnostics.
 
-6. `ReportsAIEL20001_ForEachUncoveredActionInCompilation`
+6. `ReportsAIEL00006_ForEachUncoveredActionInCompilation`
    - Source: `SampleActionA : IAction`, `SampleActionB : IAction`, checker only for `SampleActionA`.
-   - Expected: `AIEL20001` on `SampleActionB` only.
+   - Expected: `AIEL00006` on `SampleActionB` only.
 
 ### `DoesNotRespectAuthorityReasonTests`
 
-1. `ReportsAIEL20002_WhenReasonIsEmpty`
+1. `ReportsAIEL00007_WhenReasonIsEmpty`
    - Source: `[DoesNotRespectAuthority(Reason = "")]` on `SampleAction : IAction`.
-   - Expected: `AIEL20002` on `SampleAction`.
+   - Expected: `AIEL00007` on `SampleAction`.
 
-2. `ReportsAIEL20002_WhenReasonIsWhitespace`
+2. `ReportsAIEL00007_WhenReasonIsWhitespace`
    - Source: `[DoesNotRespectAuthority(Reason = "   ")]` on `SampleAction : IAction`.
-   - Expected: `AIEL20002` on `SampleAction`.
+   - Expected: `AIEL00007` on `SampleAction`.
 
 3. `NoDiagnostic_WhenReasonIsNonEmpty`
    - Source: `[DoesNotRespectAuthority(Reason = "Reason supplied.")]` on `SampleAction : IAction`.
@@ -233,9 +233,9 @@ All tests use inline source strings with `Aiel.Authorization.IAction`, `Aiel.Aut
    - Source: `SampleAction : IAction` in namespace `Foo`; checker `SampleActionPermissionChecker : IActionPermissionChecker<SampleAction>` in namespace `Bar`.
    - Expected: no diagnostics. Checker recognition must be compilation-wide, not namespace-restricted.
 
-2. `ReportsAIEL20001_WhenCheckerExistsForDifferentAction`
+2. `ReportsAIEL00006_WhenCheckerExistsForDifferentAction`
    - Source: `SampleActionA : IAction`, `SampleActionB : IAction`, `SampleActionAChecker : IActionPermissionChecker<SampleActionA>`. No checker for B.
-   - Expected: `AIEL20001` on `SampleActionB`.
+   - Expected: `AIEL00006` on `SampleActionB`.
 
 3. `NoDiagnostic_WhenCheckerIsAbstractButConcreteSubclassExists`
    - Source: `SampleAction : IAction`; abstract `AbstractChecker : IActionPermissionChecker<SampleAction>`; concrete sealed `ConcreteChecker : AbstractChecker`.
@@ -245,13 +245,13 @@ All tests use inline source strings with `Aiel.Authorization.IAction`, `Aiel.Aut
 
 ## Known accepted gap — Task 9
 
-Actions that have a generated permission definition (emitted by `Aiel.Authorization.Generators`) but no concrete checker and no `[DoesNotRespectAuthority]` marker will trigger `AIEL20001` in Task 8. This is an explicit, documented gap. It is NOT a Task 8 bug; it is the motivation for Task 9.
+Actions that have a generated permission definition (emitted by `Aiel.Authorization.Generators`) but no concrete checker and no `[DoesNotRespectAuthority]` marker will trigger `AIEL00006` in Task 8. This is an explicit, documented gap. It is NOT a Task 8 bug; it is the motivation for Task 9.
 
-The `AIEL20001` diagnostic message MUST include a note that generated definitions are recognized after Task 9 lands:
+The `AIEL00006` diagnostic message MUST include a note that generated definitions are recognized after Task 9 lands:
 
 > "Note: generated permission definitions are recognized by the analyzer only after `Aiel.Authorization.Generators` is added."
 
-Task 9 will extend `ActionAuthorizationAnalyzer` (or a companion analyzer) to recognize the generated output and suppress `AIEL20001` accordingly.
+Task 9 will extend `ActionAuthorizationAnalyzer` (or a companion analyzer) to recognize the generated output and suppress `AIEL00006` accordingly.
 
 ---
 
@@ -260,7 +260,7 @@ Task 9 will extend `ActionAuthorizationAnalyzer` (or a companion analyzer) to re
 I will reject the Task 8 attempt if any of the following are true:
 
 - `Aiel.Authorization.Analyzers.csproj` contains a project or package reference to any `Aiel.*` assembly. Analyzers identify types by metadata name string only.
-- `AIEL20001` or `AIEL20002` has `DefaultSeverity = DiagnosticSeverity.Warning`. Both MUST be errors per D4.
+- `AIEL00006` or `AIEL00007` has `DefaultSeverity = DiagnosticSeverity.Warning`. Both MUST be errors per D4.
 - Either diagnostic ID is missing from `AnalyzerReleases.Unshipped.md`.
 - The analyzer fires on abstract action classes, action interfaces, or action records declared as `abstract`.
 - The analyzer does not recognize a checker defined in a different namespace from the action — checker lookup must be compilation-wide.

@@ -26,7 +26,7 @@ namespace Aiel.MessageBus;
 
 public sealed class MessageBusDependencyTests
 {
-    private static IServiceProvider BuildWithAbstractionsOnly()
+    private static ServiceProvider BuildWithAbstractionsOnly()
     {
         var services = new ServiceCollection();
         services.AddSingleton<IMessageTypeRegistry, DefaultMessageTypeRegistry>();

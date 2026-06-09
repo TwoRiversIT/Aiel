@@ -27,7 +27,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.AspNetCore;
 
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielMultiTenancy))]
 public sealed class AielAspNetCore : AielDependencyConfigurator
 {

@@ -52,7 +52,7 @@ public readonly struct EndPoint : IEquatable<EndPoint>, IComparable<EndPoint>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="port"/> is not within the range 0-65535.</exception>
     public EndPoint(String address, Int32 port)
     {
-        if (String.IsNullOrWhiteSpace(address) || !Rgx.IPv4().IsMatch(address))
+        if (String.IsNullOrWhiteSpace(address) || !AielRegexes.IPv4().IsMatch(address))
         {
             throw new ArgumentException($"'{address}' is not a valid IPv4 Address", nameof(address));
         }
@@ -205,7 +205,7 @@ public readonly struct EndPoint : IEquatable<EndPoint>, IComparable<EndPoint>
         if (!String.IsNullOrWhiteSpace(value))
         {
             var normalized = value.Trim();
-            if (Rgx.IPv4AndOptionalPort().IsMatch(normalized))
+            if (AielRegexes.IPv4AndOptionalPort().IsMatch(normalized))
             {
                 var tokens = normalized.Split([':'], StringSplitOptions.RemoveEmptyEntries);
                 var portNumber = tokens.Length == 2 ? Int32.Parse(tokens[1]) : 0;

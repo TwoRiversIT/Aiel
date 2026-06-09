@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+
+		<RootNamespace />
+		<AssemblyName>Aiel.Logging.CodeFixes</AssemblyName>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IsPackable>true</IsPackable>
+
+		<!--
+		These are settings specific to analyzers/code fixes/source generators. IncludeBuildOutput is false
+		to prevent the DLL landing in lib/, but the assembly is explicitly packed into analyzers/dotnet/cs.
+		Analyzers can be deterministic because they only read code and do not embed timestamps.
+		-->
+		<Deterministic>true</Deterministic>
+		<DevelopmentDependency>true</DevelopmentDependency>
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<IsRoslynComponent>true</IsRoslynComponent>
+		<NoPackageAnalysis>true</NoPackageAnalysis>
+		<NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
+
+	</PropertyGroup>
+
+	<!-- BEGIN: Analyzer specific settings -->
+
+	<ItemGroup>
+		<Compile Remove="bin\**" />
+		<EmbeddedResource Remove="bin\**" />
+		<None Remove="bin\**" />
+		<None Remove="bin\Debug\netstandard2.0\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="bin\Debug\netstandard2.0\$(AssemblyName).dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.3.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" />
+	</ItemGroup>
+	<!-- END: Analyzer specific settings -->
+
+</Project>

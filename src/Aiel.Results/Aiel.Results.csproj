@@ -45,6 +45,6 @@
 		<ProjectReference Include="..\Aiel\Aiel.csproj" />
 	</ItemGroup>
 
-	<Import Project="..\Aiel.Shared\Aiel.Shared.projitems" Label="Shared" />
+	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 
 </Project>

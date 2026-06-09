@@ -144,7 +144,7 @@ public static partial class StringExtensions
             return input.ToUpper();
         }
         //return as is if the input is just an abbreviation
-        if (Rgx.AllCaps().IsMatch(input))
+        if (AielRegexes.AllCaps().IsMatch(input))
         {
             return input;
         }

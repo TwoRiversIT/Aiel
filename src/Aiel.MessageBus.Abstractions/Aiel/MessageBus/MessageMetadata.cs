@@ -44,8 +44,8 @@ public sealed record MessageMetadata(
     public Guid MessageId { get; init; } = EnsureNotEmpty(MessageId, nameof(MessageId));
     public Guid CorrelationId { get; init; } = EnsureNotEmpty(CorrelationId, nameof(CorrelationId));
 
-    private static Guid EnsureNotEmpty(Guid value, String paramName) =>
-        value == Guid.Empty
+    private static Guid EnsureNotEmpty(Guid value, String paramName)
+        => value == Guid.Empty
             ? throw new ArgumentException("Message identifiers cannot be empty.", paramName)
             : value;
 }

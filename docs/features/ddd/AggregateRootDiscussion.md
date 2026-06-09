@@ -856,8 +856,7 @@ Option A — Base Class (or generic base struct)
 You define something like:
 
 ```csharp
-public abstract record StrongId<TValue>(TValue Value)
-    : IStrongId<TValue>;
+public abstract record StrongId<TValue>(TValue Value);
 ```
 Then each ID type inherits:
 

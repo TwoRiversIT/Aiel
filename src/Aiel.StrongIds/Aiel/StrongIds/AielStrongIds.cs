@@ -27,5 +27,5 @@ namespace Aiel.StrongIds;
 /// <summary>
 /// Ensures that the Aiel.StrongIds participates in the dependency graph.
 /// </summary>
-[DependsOn(typeof(AielAppFramework))]
+[DependsOn(typeof(AielFramework))]
 public sealed class AielStrongIds : AielDependencyConfigurator;

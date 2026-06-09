@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Logging;
 using Aiel.Actions;
 using Aiel.Results;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace Aiel.Mediator.Behaviors;
@@ -49,21 +49,31 @@ public sealed class LoggingBehavior<TAction>(ILogger<LoggingBehavior<TAction>> l
         CancellationToken cancellationToken)
     {
         var requestName = typeof(TAction).Name;
-        logger.LogInformation("Handling {RequestName}", requestName);
+        logger.LogHandlingRequest(requestName);
 
         var sw = Stopwatch.StartNew();
         try
         {
             var response = await next();
             sw.Stop();
-            logger.LogInformation("Handled {RequestName} in {Elapsed}ms", requestName, sw.ElapsedMilliseconds);
+            logger.LogHandledRequest(requestName, sw.ElapsedMilliseconds);
             return response;
         }
         catch (Exception ex)
         {
             sw.Stop();
-            logger.LogError(ex, "Handler {RequestName} threw after {Elapsed}ms", requestName, sw.ElapsedMilliseconds);
+            logger.LogHandlerFailed(requestName, sw.ElapsedMilliseconds, ex.GetType().Name, ex.Message);
             throw;
         }
     }
+}
+
+internal static partial class MigrationLoggingExtensions
+{
+    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Handling {RequestName}")]
+    public static partial void LogHandlingRequest(this ILogger logger, string requestName);
+    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Handled {RequestName} in {Elapsed}ms")]
+    public static partial void LogHandledRequest(this ILogger logger, string requestName, long elapsed);
+    [LoggerMessage(EventId = 6, Level = LogLevel.Error, Message = "Handler {RequestName} threw after {Elapsed}ms: {ExceptionType} - {ExceptionMessage}")]
+    public static partial void LogHandlerFailed(this ILogger logger, string requestName, long elapsed, string exceptionType, string exceptionMessage);
 }

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>7cd6e1f8-b53f-4c4c-9699-8b2d3e34d8e5</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Aiel.Roslyn</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Internal\DiagnosticMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Internal\DiagnosticRuleIDs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Internal\GeneratorConsts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Aiel\Internal\WellKnownTypes.cs" />
+  </ItemGroup>
+</Project>

@@ -53,6 +53,6 @@
 		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
 	</ItemGroup>
 
-	<Import Project="..\Aiel.Shared\Aiel.Shared.projitems" Label="Shared" />
+	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 
 </Project>

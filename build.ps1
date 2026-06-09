@@ -146,6 +146,14 @@ if ([string]::IsNullOrWhiteSpace($InformationalVersion) -or [string]::IsNullOrWh
 }
 
 if ($Publish -or $PreserveArtifacts) {
+
+    if (Test-Path -Path $ArtifactsBasePath) {
+        Write-Host "`nThe artifacts base directory already exists: $ArtifactsBasePath" -ForegroundColor Green
+    } else {
+        Write-Host "`nCreating artifacts base directory: $ArtifactsBasePath" -ForegroundColor Green
+        New-Item -ItemType Directory -Path $ArtifactsBasePath | Out-Null
+    }
+
     # If the destination artifacts directory already exists...
     if (Test-Path -Path $ArtifactsPath) {
         Write-Host "`nThe destination artifacts directory already exists: $ArtifactsPath" -ForegroundColor Red
@@ -382,8 +390,9 @@ if ($Publish -or $DryRun) {
         dotnet nuget push (Join-Path $LocalPackagesPath "*.nupkg") `
             --api-key $apiKey `
             --source $NuGetSource `
-            --skip-duplicate
-
+            --skip-duplicate `
+            --no-symbols
+            
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Publishing failed. Might not have any PDB files in it. Continuing on..." -ForegroundColor Yellow
         }

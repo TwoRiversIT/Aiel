@@ -20,6 +20,7 @@
 
 		<!-- Test project detection -->
 		<IsTestProject Condition="$(MSBuildProjectName.EndsWith('Tests')) or $(MSBuildProjectName.EndsWith('.TestBase'))">true</IsTestProject>
+
 	</PropertyGroup>
 
 	<!-- NuGet metadata (applies to all packable projects) -->
@@ -30,14 +31,14 @@
 		<Company>Two Rivers Information Technology Inc.</Company>
 		<Copyright>© Two Rivers Information Technology Inc. All rights reserved.</Copyright>
 
-		<PackageProjectUrl>https://forgejo.dkw.io/Aiel/AppFramework</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/TwoRiversIT/Aiel</PackageProjectUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageIcon>logo.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 
-		<RepositoryUrl>https://forgejo.dkw.io/Aiel/AppFramework.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/TwoRiversIT/Aiel.git</RepositoryUrl>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 

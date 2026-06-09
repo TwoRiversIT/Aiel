@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 // -----------------------------------------------------------------------
-// MissingEventIdInMessageAnalyzer.cs  –  AIEL00010
+// MissingTemplateEventIdPlaceholderAnalyzer.cs  –  AIEL00010
 //
 // Reports when a [LoggerMessage] message template does not contain the
 // "[{EventId}]" placeholder.  This rule does not inspect the EventIds
@@ -44,11 +44,11 @@ namespace Aiel.Logging.Analyzers;
 /// attribute must contain the <c>[{EventId}]</c> placeholder.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
+public sealed class MissingTemplateEventIdPlaceholderAnalyzer : DiagnosticAnalyzer
 {
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        => [DiagnosticDescriptors.MissingEventIdInMessage];
+        => [DiagnosticDescriptors.MissingTemplateEventIdPlaceholder];
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
@@ -111,7 +111,7 @@ public sealed class MissingEventIdInMessageAnalyzer : DiagnosticAnalyzer
         var props = AnalyzerConfiguration.BuildDiagnosticProperties(config);
 
         ctx.ReportDiagnostic(Diagnostic.Create(
-            DiagnosticDescriptors.MissingEventIdInMessage,
+            DiagnosticDescriptors.MissingTemplateEventIdPlaceholder,
             messageArg.Expression.GetLocation(),
             properties: props,
             messageText));

@@ -67,13 +67,3 @@ public sealed class LoggingBehavior<TAction>(ILogger<LoggingBehavior<TAction>> l
         }
     }
 }
-
-internal static partial class MigrationLoggingExtensions
-{
-    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Handling {RequestName}")]
-    public static partial void LogHandlingRequest(this ILogger logger, string requestName);
-    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Handled {RequestName} in {Elapsed}ms")]
-    public static partial void LogHandledRequest(this ILogger logger, string requestName, long elapsed);
-    [LoggerMessage(EventId = 6, Level = LogLevel.Error, Message = "Handler {RequestName} threw after {Elapsed}ms: {ExceptionType} - {ExceptionMessage}")]
-    public static partial void LogHandlerFailed(this ILogger logger, string requestName, long elapsed, string exceptionType, string exceptionMessage);
-}

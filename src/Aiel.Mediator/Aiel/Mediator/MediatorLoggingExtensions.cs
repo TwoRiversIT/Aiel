@@ -22,11 +22,12 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Aiel.EntityFrameworkCore.Migrations;
-
-internal static partial class MigrationsLoggingExtensions
+internal static partial class MediatorLoggingExtensions
 {
-    [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "Migration completed in {ElapsedMilliseconds}ms")]
-    internal static partial void LogMigrationCompleted(this ILogger logger, long elapsedMilliseconds);
-
+    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Handling {RequestName}")]
+    public static partial void LogHandlingRequest(this ILogger logger, String requestName);
+    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Handled {RequestName} in {Elapsed}ms")]
+    public static partial void LogHandledRequest(this ILogger logger, String requestName, Int64 elapsed);
+    [LoggerMessage(EventId = 6, Level = LogLevel.Error, Message = "Handler {RequestName} threw after {Elapsed}ms: {ExceptionType} - {ExceptionMessage}")]
+    public static partial void LogHandlerFailed(this ILogger logger, String requestName, Int64 elapsed, String exceptionType, String exceptionMessage);
 }

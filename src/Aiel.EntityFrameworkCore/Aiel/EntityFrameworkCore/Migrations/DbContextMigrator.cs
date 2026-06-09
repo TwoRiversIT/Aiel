@@ -76,19 +76,3 @@ public partial class DbContextMigrator<TDbContext>(IServiceProvider serviceProvi
         }
     }
 }
-
-internal static partial class MigrationLoggingExtensions
-{
-
-    [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "Migrations Found: {Count}")]
-    public static partial void LogMigrationsFound(this ILogger logger, int count);
-
-    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
-    public static partial void LogApplyingMigrations(this ILogger logger, string databaseName);
-
-    [LoggerMessage(EventId = 1, Level = LogLevel.Critical, Message = "Migrating {DatabaseName} failed: {Exception} - {Message}")]
-    public static partial void LogMigrationFailed(this ILogger logger, string databaseName, string exception, string message);
-
-    [LoggerMessage(EventId = 3, Level = LogLevel.Error, Message = "No migrations to apply: {DatabaseName}")]
-    public static partial void LogNoMigrationsToApply(this ILogger logger, string databaseName);
-}

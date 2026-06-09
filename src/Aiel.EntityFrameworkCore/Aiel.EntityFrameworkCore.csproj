@@ -1,23 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.EntityFrameworkCore</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.EntityFrameworkCore</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="./README.md" Pack="true" PackagePath="/" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
+    <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
@@ -27,14 +21,24 @@
         <PackageReference Include="Scrutor" Version="7.0.0" />
     </ItemGroup>
 
+    <!--
     <ItemGroup>
-      <ProjectReference Include="..\Aiel\Aiel.csproj" />
-	  <ProjectReference Include="..\Aiel.Application\Aiel.Application.csproj" />
-	  <ProjectReference Include="..\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
+        <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+        <Analyzer Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj"/>
+        <Analyzer Include="..\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj"/>
+    </ItemGroup>
+    -->
+
+    <ItemGroup>
+        <Analyzer Include="..\Aiel.Logging.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.dll" />
+        <Analyzer Include="..\Aiel.Logging.Analyzers.CodeFixes\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.CodeFixes.dll" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Microsoft\Extensions\Configuration\" />
+        <ProjectReference Include="..\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\Aiel.Application\Aiel.Application.csproj" />
+        <ProjectReference Include="..\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
     </ItemGroup>
 
 </Project>

@@ -16,12 +16,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
 <ProjectReference Include="..\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
 <ProjectReference Include="..\Aiel.Authorization.Client\Aiel.Authorization.Client.csproj" />
 	</ItemGroup>

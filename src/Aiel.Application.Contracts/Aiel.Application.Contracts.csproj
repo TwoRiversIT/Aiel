@@ -8,9 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
+		<None Include="./README.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -11,12 +11,6 @@
 		<None Include="./README.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
 	<!-- Include the analyzer DLL in the NuGet package to ensure it is available and used during compilation of consuming projects. -->
 	<ItemGroup>
 		<None Include="..\Aiel.StrongIds.Generators\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />

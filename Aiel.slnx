@@ -155,7 +155,10 @@
     <Project Path="src/Aiel.Data.Dapper/Aiel.Data.Dapper.csproj" />
     <Project Path="src/Aiel.Domain/Aiel.Domain.csproj" />
     <Project Path="src/Aiel.Emailing/Aiel.Emailing.csproj" />
-    <Project Path="src/Aiel.EntityFrameworkCore/Aiel.EntityFrameworkCore.csproj" />
+    <Project Path="src/Aiel.EntityFrameworkCore/Aiel.EntityFrameworkCore.csproj">
+      <BuildDependency Project="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
+      <BuildDependency Project="src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj" />
+      </Project>
     <Project Path="src/Aiel.Generators/Aiel.Generators.csproj" Id="0ccfbdc8-66d8-4900-a758-fcff918fe84d" />
     <Project Path="src/Aiel.Gps.HP.Generators/Aiel.Gps.HP.Generators.csproj" />
     <Project Path="src/Aiel.Gps.HP/Aiel.Gps.HP.csproj">

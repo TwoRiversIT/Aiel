@@ -13,12 +13,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
 		<ProjectReference Include="..\..\src\Aiel.Analyzers\Aiel.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>

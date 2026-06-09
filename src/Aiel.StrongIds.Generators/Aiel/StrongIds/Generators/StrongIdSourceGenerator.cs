@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.StrongIds.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -62,71 +61,22 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 
     private static void Emit(SourceProductionContext context, StrongIdCandidate candidate)
     {
-        var diagnostics = Validate(candidate);
-        if (!diagnostics.IsDefaultOrEmpty)
+        // Only emit code for candidates that match the exact valid shape.
+        // All validation diagnostics are handled by analyzers in Aiel.StrongIds.Analyzers.
+        if (!IsValidStrongIdShape(candidate.TypeSymbol))
         {
-            foreach (var diagnostic in diagnostics)
-            {
-                context.ReportDiagnostic(diagnostic);
-            }
+            return;
+        }
 
+        var valueType = GetBackingType(candidate.AttributeData);
+        if (valueType == null || !IsSupportedBackingType(valueType))
+        {
             return;
         }
 
         var model = CreateModel(candidate);
         var source = Render(model);
         context.AddSource(GetHintName(model.TypeSymbol), SourceText.From(source, Encoding.UTF8));
-    }
-
-    private static ImmutableArray<Diagnostic> Validate(StrongIdCandidate candidate)
-    {
-        var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
-        var symbol = candidate.TypeSymbol;
-        var valueType = GetBackingType(candidate.AttributeData);
-        var displayName = symbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
-
-        if (!IsValidStrongIdShape(symbol))
-        {
-            diagnostics.Add(Diagnostic.Create(
-                DiagnosticDescriptors.StrongIdMustBePartialRecordType,
-                symbol.Locations.FirstOrDefault(),
-                displayName));
-        }
-
-        if (UsesPositionalRecordSyntax(symbol))
-        {
-            diagnostics.Add(Diagnostic.Create(
-                DiagnosticDescriptors.StrongIdMustNotUsePositionalRecordSyntax,
-                symbol.Locations.FirstOrDefault(),
-                displayName));
-        }
-
-        if (DeclaresValueMember(symbol))
-        {
-            diagnostics.Add(Diagnostic.Create(
-                DiagnosticDescriptors.StrongIdMustNotDeclareValueMember,
-                symbol.Locations.FirstOrDefault(),
-                displayName));
-        }
-
-        if (DeclaresInstanceConstructors(symbol))
-        {
-            diagnostics.Add(Diagnostic.Create(
-                DiagnosticDescriptors.StrongIdMustNotDeclareInstanceConstructors,
-                symbol.Locations.FirstOrDefault(),
-                displayName));
-        }
-
-        if (valueType is not null && !IsSupportedBackingType(valueType))
-        {
-            diagnostics.Add(Diagnostic.Create(
-                DiagnosticDescriptors.StrongIdBackingTypeUnsupported,
-                symbol.Locations.FirstOrDefault(),
-                displayName,
-                valueType.ToDisplayString(TypeNameFormat)));
-        }
-
-        return diagnostics.ToImmutable();
     }
 
     private static StrongIdModel CreateModel(StrongIdCandidate candidate)
@@ -334,21 +284,25 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 
     private static Boolean IsValidStrongIdShape(INamedTypeSymbol symbol)
     {
+        // Must not be nested
         if (symbol.ContainingType is not null)
         {
             return false;
         }
 
+        // Must be a record
         if (!symbol.IsRecord)
         {
             return false;
         }
 
+        // Must be partial
         if (!IsPartial(symbol))
         {
             return false;
         }
 
+        // Must be a struct or sealed class
         if (symbol.TypeKind == TypeKind.Struct)
         {
             return true;

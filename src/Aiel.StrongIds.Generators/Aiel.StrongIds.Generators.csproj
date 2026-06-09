@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<RootNamespace />
@@ -44,11 +44,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
-		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
 	</ItemGroup>
 
 	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />

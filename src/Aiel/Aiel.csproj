@@ -5,10 +5,6 @@
 		<AssemblyName>Aiel</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>true</IsPackable>
-
-		<!-- Analyzer/Source Generator settings -->
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
 	
 	</PropertyGroup>
 
@@ -22,12 +18,6 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<!-- Include the analyzers and generators in the NuGet package to ensure they are available and used during compilation of consuming projects. -->
-	<ItemGroup>
-		<None Include="..\Aiel.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-		<None Include="..\Aiel.Logging.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
@@ -36,7 +26,12 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Aiel.Analyzers\Aiel.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Aiel.Generators\Aiel.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>

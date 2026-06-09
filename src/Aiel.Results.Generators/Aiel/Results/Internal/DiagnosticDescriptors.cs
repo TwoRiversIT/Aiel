@@ -20,38 +20,35 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Internal;
-using Microsoft.CodeAnalysis;
-
 namespace Aiel.Results.Internal;
 
-public static class DiagnosticDescriptors
-{
-    /// <summary>
-    /// AIEL00002 is raised when the generator detects an error type that does not have exactly one public constructor accepting a single string parameter for the error message.
-    /// </summary>
-    public static readonly DiagnosticDescriptor DerivedErrorTypesMustHaveSingleStringConstructor = new(
-        id: DiagnosticRuleIDs.AIEL00002_ErrorTypesMustHaveSingleStringConstructorId,
-        title: "Derived error types must have a single string constructor",
-        messageFormat: "Error type '{0}' must have a single string constructor accepting the error message",
-        category: DiagnosticMetadata.UsageCategory,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: "All error types derived from Error must have exactly one public constructor that accepts a single string parameter for the error message.",
-        customTags: []
-    );
+//public static class DiagnosticDescriptors
+//{
+//    /// <summary>
+//    /// AIEL00002 is raised when the generator detects an error type that does not have exactly one public constructor accepting a single string parameter for the error message.
+//    /// </summary>
+//    public static readonly DiagnosticDescriptor DerivedErrorTypesMustHaveSingleStringConstructor = new(
+//        id: DiagnosticRuleIDs.AIEL00002_ErrorTypesMustHaveSingleStringConstructorId,
+//        title: "Derived error types must have a single string constructor",
+//        messageFormat: "Error type '{0}' must have a single string constructor accepting the error message",
+//        category: DiagnosticMetadata.UsageCategory,
+//        defaultSeverity: DiagnosticSeverity.Error,
+//        isEnabledByDefault: true,
+//        description: "All error types derived from Error must have exactly one public constructor that accepts a single string parameter for the error message.",
+//        customTags: []
+//    );
 
-    /// <summary>
-    /// AIEL00003 is raised when the generator detects a call to a generic HttpClient JSON extension method
-    /// </summary>
-    public static readonly DiagnosticDescriptor Prefer_ResultHttpClientExtensions = new(
-        id: DiagnosticRuleIDs.AIEL00003_PreferResultHttpClientExtensionsId,
-        title: "Use ResultHttpClientExtensions for Result types",
-        messageFormat: "Use ResultHttpClientExtensions methods instead of generic HttpClient JSON methods for Result deserialization",
-        category: DiagnosticMetadata.UsageCategory,
-        defaultSeverity: DiagnosticSeverity.Info,
-        isEnabledByDefault: true,
-        description: "The ResultHttpClientExtensions class provides specialized methods for working with Result and Result<T> types. These methods ensure proper configuration of JSON serialization options. See the README.md documentation for available methods like GetResultAsync<T>, PostAndReturnResultAsync<TRequest, TResponse>, etc.",
-        customTags: []
-    );
-}
+//    /// <summary>
+//    /// AIEL00003 is raised when the generator detects a call to a generic HttpClient JSON extension method
+//    /// </summary>
+//    public static readonly DiagnosticDescriptor Prefer_ResultHttpClientExtensions = new(
+//        id: DiagnosticRuleIDs.AIEL00003_PreferResultHttpClientExtensionsId,
+//        title: "Use ResultHttpClientExtensions for Result types",
+//        messageFormat: "Use ResultHttpClientExtensions methods instead of generic HttpClient JSON methods for Result deserialization",
+//        category: DiagnosticMetadata.UsageCategory,
+//        defaultSeverity: DiagnosticSeverity.Info,
+//        isEnabledByDefault: true,
+//        description: "The ResultHttpClientExtensions class provides specialized methods for working with Result and Result<T> types. These methods ensure proper configuration of JSON serialization options. See the README.md documentation for available methods like GetResultAsync<T>, PostAndReturnResultAsync<TRequest, TResponse>, etc.",
+//        customTags: []
+//    );
+//}

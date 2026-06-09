@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<RootNamespace />
+		<AssemblyName>Aiel.Logging.Analyzers.UnitTests</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
@@ -25,8 +26,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj" />
 		<ProjectReference Include="..\..\src\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Logging.CodeFixes\Aiel.Logging.CodeFixes.csproj" />
 
 	</ItemGroup>
 

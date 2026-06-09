@@ -15,8 +15,6 @@
 		<Deterministic>false</Deterministic>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<IsRoslynComponent>true</IsRoslynComponent>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
 	</PropertyGroup>
@@ -55,12 +53,8 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup>
-		<AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
-		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
-	</ItemGroup>
+	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 	<!-- END: Generator and Analyzer specific settings -->
 
-	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 
 </Project>

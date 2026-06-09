@@ -5,11 +5,6 @@
 		<AssemblyName>Aiel.Gps.HP</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>true</IsPackable>
-
-		<!-- Enable viewing generated files -->
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
-
 	</PropertyGroup>
 
 	<ItemGroup>

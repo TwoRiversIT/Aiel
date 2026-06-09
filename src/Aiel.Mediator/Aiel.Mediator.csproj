@@ -6,11 +6,6 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>true</IsPackable>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-		<!-- Analyzer/Source Generator settings -->
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
-
 	</PropertyGroup>
 
 	<ItemGroup>

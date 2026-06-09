@@ -41,7 +41,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 using System.Composition;
 
-namespace Aiel.Logging.CodeFixes;
+namespace Aiel.Logging.Analyzers.CodeFixes;
 
 /// <summary>
 /// Code fix for AIEL00010 — inserts <c>[{EventId}] </c> at the beginning of the

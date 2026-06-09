@@ -195,7 +195,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_ReportsError_WhenTypeIsNotPartialRecordType()
+    public void Generate_SkipsSilently_WhenTypeIsNotPartialRecordType()
     {
         const String source = """
             using System;
@@ -209,13 +209,16 @@ public class StrongIdSourceGeneratorTests
 
         var result = RunGenerator(source);
 
+        // Generator silently skips invalid shapes; diagnostics are handled by analyzers
         result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00013" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().BeEmpty();
     }
 
     [Fact]
-    public void Generate_ReportsError_WhenPositionalRecordSyntaxUsed()
+    public void Generate_EmitsCode_WhenPositionalRecordSyntaxUsed()
     {
+        // Even though positional syntax is invalid per the analyzer, the generator still emits code
+        // for any partial record struct/sealed record shape. Diagnostics are handled by analyzers.
         const String source = """
             using System;
             using Aiel.StrongIds;
@@ -228,13 +231,15 @@ public class StrongIdSourceGeneratorTests
 
         var result = RunGenerator(source);
 
-        result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00014" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should().ContainSingle();
     }
 
     [Fact]
-    public void Generate_ReportsError_WhenValueMemberAlreadyExists()
+    public void Generate_EmitsCode_WhenValueMemberAlreadyExists()
     {
+        // Even though declaring a Value member is invalid per the analyzer, the generator still emits code
+        // for any partial record struct/sealed record shape. Diagnostics are handled by analyzers.
         const String source = """
             using System;
             using Aiel.StrongIds;
@@ -250,13 +255,15 @@ public class StrongIdSourceGeneratorTests
 
         var result = RunGenerator(source);
 
-        result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00016" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should().ContainSingle();
     }
 
     [Fact]
-    public void Generate_ReportsError_WhenInstanceConstructorAlreadyExists()
+    public void Generate_EmitsCode_WhenInstanceConstructorAlreadyExists()
     {
+        // Even though declaring instance constructors is invalid per the analyzer, the generator still emits code
+        // for any partial record struct/sealed record shape. Diagnostics are handled by analyzers.
         const String source = """
             using System;
             using Aiel.StrongIds;
@@ -275,12 +282,12 @@ public class StrongIdSourceGeneratorTests
 
         var result = RunGenerator(source);
 
-        result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00017" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should().ContainSingle();
     }
 
     [Fact]
-    public void Generate_ReportsError_WhenBackingTypeIsUnsupported()
+    public void Generate_SkipsSilently_WhenBackingTypeIsUnsupported()
     {
         const String source = """
             using Aiel.StrongIds;
@@ -293,8 +300,9 @@ public class StrongIdSourceGeneratorTests
 
         var result = RunGenerator(source);
 
+        // Generator silently skips unsupported backing types; diagnostics are handled by analyzers
         result.GeneratedSources.Should().BeEmpty();
-        result.GeneratorDiagnostics.Should().ContainSingle(d => d.Id == "AIEL00018" && d.Severity == DiagnosticSeverity.Error);
+        result.GeneratorDiagnostics.Should().BeEmpty();
     }
 
     private static GeneratorRunResult RunGenerator(String source, String strongIdNamespace = "Aiel.StrongIds")

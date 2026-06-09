@@ -39,7 +39,7 @@ using Microsoft.CodeAnalysis.Formatting;
 using System.Collections.Immutable;
 using System.Composition;
 
-namespace Aiel.Logging.CodeFixes;
+namespace Aiel.Logging.Analyzers.CodeFixes;
 
 /// <summary>
 /// Fixes AIEL00008 by replacing a raw integer literal with

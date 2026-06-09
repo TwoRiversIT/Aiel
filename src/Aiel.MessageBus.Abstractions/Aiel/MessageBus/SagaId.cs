@@ -20,10 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.StrongIds;
+
 namespace Aiel.MessageBus;
 
 /// <summary>
 /// Unique identifier for a saga instance. Carried on <see cref="MessageMetadata.SagaCorrelationId"/>
 /// to route inbound messages to the correct saga state without ad hoc header conventions.
 /// </summary>
-public readonly record struct SagaId(Guid Value);
+[StrongId<Guid>]
+public readonly partial record struct SagaId(Guid Value);

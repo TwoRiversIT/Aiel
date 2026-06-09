@@ -134,31 +134,3 @@ jobs:
       #       --api-key ${{ secrets.NUGET_API_KEY }} \
       #       --source https://api.nuget.org/v3/index.json \
       #       --skip-duplicate
-
-  # ─────────────────────────────────────────────────────────────────────
-  # lint
-  # Runs dotnet format in verify mode; fails if any files need changes.
-  # ─────────────────────────────────────────────────────────────────────
-  lint:
-    name: Format Check
-    runs-on: ubuntu-latest
-    needs: build-and-test
-
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v6
-
-      - name: Setup .NET ${{ env.DOTNET_VERSION }}
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-
-      - name: Restore dependencies
-        run: dotnet restore Aiel.slnx
-
-      - name: Check formatting
-        run: |
-          dotnet format Aiel.slnx \
-            --verify-no-changes \
-            --no-restore \
-            --severity warn

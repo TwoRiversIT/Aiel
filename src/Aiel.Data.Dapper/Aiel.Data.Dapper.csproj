@@ -12,12 +12,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.79" />
     </ItemGroup>
 

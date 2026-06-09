@@ -53,10 +53,10 @@ public sealed class MissingEventIdInMessageCodeFixTests
             """;
 
         var expected = DiagnosticResult
-            .CompilerWarning(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
             .WithLocation(0);
 
-        await AielCodeFixVerifier<MissingEventIdInMessageAnalyzer, MissingEventIdInMessageCodeFix>
+        await AielCodeFixVerifier<MissingTemplateEventIdPlaceholderAnalyzer, MissingEventIdInMessageCodeFix>
             .VerifyCodeFixAsync(source, fixedSource, expected: expected);
     }
 
@@ -82,10 +82,10 @@ public sealed class MissingEventIdInMessageCodeFixTests
             """;
 
         var expected = DiagnosticResult
-            .CompilerWarning(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
             .WithLocation(0);
 
-        await AielCodeFixVerifier<MissingEventIdInMessageAnalyzer, MissingEventIdInMessageCodeFix>
+        await AielCodeFixVerifier<MissingTemplateEventIdPlaceholderAnalyzer, MissingEventIdInMessageCodeFix>
             .VerifyCodeFixAsync(source, fixedSource, expected: expected);
     }
 
@@ -111,10 +111,10 @@ public sealed class MissingEventIdInMessageCodeFixTests
             """;
 
         var expected = DiagnosticResult
-            .CompilerWarning(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+            .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
             .WithLocation(0);
 
-        await AielCodeFixVerifier<MissingEventIdInMessageAnalyzer, MissingEventIdInMessageCodeFix>
+        await AielCodeFixVerifier<MissingTemplateEventIdPlaceholderAnalyzer, MissingEventIdInMessageCodeFix>
             .VerifyCodeFixAsync(source, fixedSource, expected: expected);
     }
 }

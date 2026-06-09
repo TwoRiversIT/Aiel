@@ -4,8 +4,7 @@
 		<RootNamespace />
 		<AssemblyName>Aiel</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>true</IsPackable>
-	
+		<IsPackable>true</IsPackable>	
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -13,31 +12,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
 		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.8" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Aiel.Analyzers\Aiel.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Aiel.Generators\Aiel.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-		<ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="ConfigureAwait.Fody">
-	    <TreatAsUsed>true</TreatAsUsed>
-	  </PackageReference>
 	</ItemGroup>
 
 </Project>

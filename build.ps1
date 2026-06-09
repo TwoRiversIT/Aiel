@@ -6,8 +6,8 @@ param(
     [switch] $PreserveArtifacts,
     [string] $ArtifactsBasePath = ".\artifacts",
     [string] $LocalPackagesPath = ".\LocalPackages",
-    [string] $NuGetSource = "https://forgejo.dkw.io/api/packages/tworivers/nuget/index.json",
-    [string] $NuGetApiKeyName = "FORGEJO_PERSONAL_ACCESS_TOKEN"
+    [string] $NuGetSource = "https://git.dkw.io/api/packages/tworiversit/nuget/index.json",
+    [string] $NuGetApiKeyName = "GITEA_PERSONAL_ACCESS_TOKEN"
 )
 
 $BuildLogPath = Join-Path $PSScriptRoot "build.log"
@@ -198,20 +198,21 @@ Write-Host "`nAll right people, get your asses in gear and get to work! v$($Vers
 # Clean up
 #-----------------------------
 Write-Host "`nCleaning Up:" -ForegroundColor Cyan
-Write-Host "- LocalPackages" -ForegroundColor Cyan
+Remove-BinObjFolders -Path "."
+Write-Host "`nCleaning Up: LocalPackages" -ForegroundColor Cyan
 Remove-BuildArtifacts -Path "."
-Write-Host "- Projects" -ForegroundColor Cyan
+Write-Host "`nCleaning Up: Projects" -ForegroundColor Cyan
 Remove-LocalPackages -Path $LocalPackagesPath
 
 #-----------------------------
 # Build
 #-----------------------------
-Write-Host "`nBuilding..." -ForegroundColor Cyan
+Write-Host "`nBuilding v$($Version.NuGetPackageVersion) in $Configuration..." -ForegroundColor Cyan
 
 dotnet build -c $Configuration `
-$(if ($TreatWarningsAsErrors) { $TreatWarningsAsErrors }) `
-$(if ($PublicRelease) { $PublicRelease }) `
-    /p:ContinuousIntegrationBuild=true
+    $(if ($TreatWarningsAsErrors) { $TreatWarningsAsErrors }) `
+    $(if ($PublicRelease) { $PublicRelease }) `
+        /p:ContinuousIntegrationBuild=true
 
 if ($LASTEXITCODE -ne 0) {
     Exit-BuildScript -Code $LASTEXITCODE -Message "Build failed!!!"
@@ -221,7 +222,7 @@ if ($LASTEXITCODE -ne 0) {
 # Run tests
 #-----------------------------
 if (-not $NoTests) {
-    Write-Host "`nRunning tests..." -ForegroundColor Cyan
+    Write-Host "`nRunning tests in $Configuration..." -ForegroundColor Cyan
     dotnet test -c $Configuration --no-build --verbosity normal `
         /p:ContinuousIntegrationBuild=true
 
@@ -241,16 +242,27 @@ $projects = Get-ChildItem -Recurse -Filter *.csproj | ForEach-Object {
 
     $isPackable = $false
     $isRoslynComponent = $false
+    $assemblyName = $null
 
     foreach ($pg in $xml.Project.PropertyGroup) {
+        if ($pg.AssemblyName) {
+            $assemblyName = $pg.AssemblyName
+        }
+        
         if ($pg.IsPackable -and $pg.IsPackable -eq "true") {
             $isPackable = $true
         }
+        
         if ($pg.IsGenerator -and $pg.IsGenerator -eq "true") {
             $isRoslynComponent = $true
         }
-        if ($pg.IsAnalyzer -and $pg.IsRoslynComponent -eq "true") {
+        if ($pg.IsRoslynComponent -and $pg.IsRoslynComponent -eq "true") {
             $isRoslynComponent = $true
+        }
+
+        # If a project is packable and marked as a Roslyn component, we know everything we need to know about it and can stop parsing the XML.
+        if ($isPackable -and $isRoslynComponent) {
+            break
         }
     }
 
@@ -258,6 +270,7 @@ $projects = Get-ChildItem -Recurse -Filter *.csproj | ForEach-Object {
         [PSCustomObject]@{
             Path              = $_.FullName
             IsRoslynComponent = $isRoslynComponent
+            AssemblyName      = $assemblyName
         }
     }
 }
@@ -272,7 +285,7 @@ Write-Host "Normal Projects: $($normalProjects.Count)"
 # Pack Roslyn Components First Just Because
 #-----------------------------------------
 foreach ($proj in $roslynProjects) {
-    Write-Host "`nPacking Roslyn Components: $($proj.Path)" -ForegroundColor Cyan
+    Write-Host "`nPacking Roslyn Component: $($proj.AssemblyName) v$($Version.NuGetPackageVersion)" -ForegroundColor Cyan
 
     # Generator/analyzer packages set IncludeBuildOutput=false, so there is no lib DLL or PDB
     # to place in a symbols/source package. Passing --include-symbols or --include-source would
@@ -280,6 +293,7 @@ foreach ($proj in $roslynProjects) {
     # properties that override the per-project <IncludeSymbols>false</IncludeSymbols> setting,
     # so they must be omitted here rather than suppressed from the project file alone.
     dotnet pack $proj.Path `
+        --no-build `
         -c $Configuration `
         -o $LocalPackagesPath `
         /p:ContinuousIntegrationBuild=true `
@@ -295,9 +309,10 @@ foreach ($proj in $roslynProjects) {
 # Pack normal projects
 #-----------------------------------------
 foreach ($proj in $normalProjects) {
-    Write-Host "`nPacking project: $($proj.Path)" -ForegroundColor Cyan
+    Write-Host "`nPacking: $($proj.AssemblyName) v$($Version.NuGetPackageVersion)" -ForegroundColor Cyan
 
     dotnet pack $proj.Path `
+        --no-build `
         -c $Configuration `
         -o $LocalPackagesPath `
         --include-source `

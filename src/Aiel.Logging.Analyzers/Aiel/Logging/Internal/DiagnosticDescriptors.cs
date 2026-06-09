@@ -60,8 +60,8 @@ public static class DiagnosticDescriptors
     /// AIEL00010 is raised when a <c>[LoggerMessage]</c> message template does not contain
     /// the exact <c>[{EventId}]</c> placeholder.
     /// </summary>
-    public static readonly DiagnosticDescriptor MissingEventIdInMessage = new(
-        id: DiagnosticRuleIDs.AIEL00010_MissingEventIdInMessageId,
+    public static readonly DiagnosticDescriptor MissingTemplateEventIdPlaceholder = new(
+        id: DiagnosticRuleIDs.AIEL00010_MissingTemplateEventIdPlaceholder,
         title: "Log message template missing [{EventId}] placeholder",
         messageFormat: "Message template '{0}' does not contain the '[{{EventId}}]' placeholder, or it is not formatted correctly. Note that it must be in square brackets.",
         category: DiagnosticMetadata.LoggingCategory,

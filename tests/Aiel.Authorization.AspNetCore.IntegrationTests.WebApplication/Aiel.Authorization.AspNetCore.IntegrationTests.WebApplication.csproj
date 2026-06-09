@@ -10,12 +10,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Update="ConfigureAwait.Fody">
-            <TreatAsUsed>true</TreatAsUsed>
-        </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Domain.Shared\Aiel.Authorization.Domain.Shared.csproj" />

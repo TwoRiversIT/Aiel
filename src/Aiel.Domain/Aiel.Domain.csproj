@@ -16,10 +16,4 @@
 	  <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
 </Project>

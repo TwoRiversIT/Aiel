@@ -56,8 +56,7 @@ public abstract class DatabaseMigratorBase
                 throw;
             }
 
-            Logger.LogWarning(ex, "{Message}: The operation will be tried {retryCount} times more.",
-                ex.Message, retryCount);
+            Logger.LogRetryingMigration(ex.Message, retryCount);
 
             await Task.Delay(Random.Next(5000, 15000), cancellationToken);
 

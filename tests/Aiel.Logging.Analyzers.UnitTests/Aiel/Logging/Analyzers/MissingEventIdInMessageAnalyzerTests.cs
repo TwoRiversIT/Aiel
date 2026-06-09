@@ -45,7 +45,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             }
             """;
 
-        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+        await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -62,7 +62,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             }
             """;
 
-        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+        await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -78,7 +78,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             }
             """;
 
-        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+        await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -100,12 +100,12 @@ public sealed class MissingEventIdInMessageAnalyzerTests
         var expected = new[]
         {
             DiagnosticResult
-                .CompilerWarning(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+                .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
                 .WithSpan(4, 102, 4, 119)
                 .WithArguments("Service started")
         };
 
-        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+        await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -126,12 +126,12 @@ public sealed class MissingEventIdInMessageAnalyzerTests
         var expected = new[]
         {
             DiagnosticResult
-                .CompilerWarning(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+                .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
                 .WithSpan(4, 102, 4, 121)
                 .WithArguments("{EventId} started")
         };
 
-        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+        await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }
@@ -152,12 +152,12 @@ public sealed class MissingEventIdInMessageAnalyzerTests
         var expected = new[]
         {
             DiagnosticResult
-                .CompilerWarning(DiagnosticDescriptors.MissingEventIdInMessage.Id)
+                .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
                 .WithSpan(4, 102, 4, 131)
                 .WithArguments("Started service [{EventId}]")
         };
 
-        await AielAnalyzerVerifier<MissingEventIdInMessageAnalyzer>
+        await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>
             .CreateTest(source, TestCode.AielEventIdsSource, expected)
             .RunAsync(TestContext.Current.CancellationToken);
     }

@@ -35,7 +35,7 @@ public static partial class DiagnosticRuleIDs
     public const String AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId = "AIEL00007";
     public const String AIEL00008_UseAielEventIdsId = "AIEL00008";
     public const String AIEL00009_MissingEventIdParameterId = "AIEL00009";
-    public const String AIEL00010_MissingEventIdInMessageId = "AIEL00010";
+    public const String AIEL00010_MissingTemplateEventIdPlaceholder = "AIEL00010";
     public const String AIEL00011_NoDirectILoggerCallsId = "AIEL00011";
     public const String AIEL00012_EventIdMismatchId = "AIEL00012";
     public const String AIEL00013_MustBePartialRecordTypeId = "AIEL00013";

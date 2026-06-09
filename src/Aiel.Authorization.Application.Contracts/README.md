@@ -1,0 +1,3 @@
+# Aiel.Authorization.Application.Contracts
+
+This project contains the contracts for the application layer of the Aiel.Authorization library. It defines the interfaces and data transfer objects (DTOs) that are used to interact with the application layer services. These contracts are essential for maintaining a clear separation of concerns and ensuring that the application layer can be easily consumed by other parts of the system.

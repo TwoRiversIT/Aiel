@@ -60,15 +60,3 @@ public class MigrationManager(
         }
     }
 }
-
-internal static partial class MigrationLoggingExtensions
-{
-    [LoggerMessage(EventId = 1, Level = LogLevel.Information, Message = "Starting migrations...")]
-    public static partial void LogStartingMigrations(this ILogger logger);
-
-    [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Completed migrations.")]
-    public static partial void LogCompletedMigrations(this ILogger logger);
-
-    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Migrating {Name} database...")]
-    public static partial void LogMigratingDatabase(this ILogger logger, string name);
-}

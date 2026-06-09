@@ -14,18 +14,13 @@
 		<Deterministic>true</Deterministic>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<IsRoslynComponent>true</IsRoslynComponent>
+		<DevelopmentDependency>true</DevelopmentDependency>
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="./README.md" Pack="true" PackagePath="/" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
 	</ItemGroup>
 
 	<!-- BEGIN: Generator and Analyzer specific settings -->

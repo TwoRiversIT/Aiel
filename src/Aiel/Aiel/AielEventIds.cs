@@ -20,10 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Aiel;
 
 /// <summary>
@@ -43,4 +39,13 @@ namespace Aiel;
 /// </remarks>
 public enum AielEventIds
 {
+    Migrations_ApplyingMigrationCompleted,
+    Migrations_ApplyingMigrationsStarted,
+    Migrations_MigrationDatabase,
+    Migrations_MigrationFailed,
+    Migrations_MigrationsFound,
+    Migrations_MigrationStarting,
+    Migrations_RetryingMigration,
+    Migrations_TenantMigrationCompleted,
+    Migrations_TenantMigrationFailed,
 }

@@ -55,7 +55,7 @@ public sealed class MissingEventIdInMessageCodeFix : CodeFixProvider
     private const String EventIdPlaceholder = "[{EventId}]";
 
     public override ImmutableArray<String> FixableDiagnosticIds
-        => [DiagnosticDescriptors.MissingEventIdInMessage.Id];
+        => [DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id];
 
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;

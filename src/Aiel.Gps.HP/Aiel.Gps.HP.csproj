@@ -11,12 +11,6 @@
 		<None Include="./README.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-
 	<!-- Bundle the source generator into this package's analyzers folder. -->
 	<ItemGroup>
 		<None Include="..\Aiel.Gps.HP.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Gps.HP.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />

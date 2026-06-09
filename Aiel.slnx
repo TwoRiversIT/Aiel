@@ -164,8 +164,10 @@
     <Project Path="src/Aiel.Gps/Aiel.Gps.csproj" />
     <Project Path="src/Aiel.IdGeneration/Aiel.IdGeneration.csproj" />
     <Project Path="src/Aiel.InternetTypes/Aiel.InternetTypes.csproj" />
-    <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
-    <Project Path="src/Aiel.Logging.CodeFixes/Aiel.Logging.CodeFixes.csproj" />
+    <Project Path="src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj" />
+    <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj">
+      <BuildDependency Project="src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj" />
+    </Project>
     <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
     <Project Path="src/Aiel.Mediator/Aiel.Mediator.csproj" />
@@ -173,6 +175,7 @@
     <Project Path="src/Aiel.MessageBus.Sagas/Aiel.MessageBus.Sagas.csproj" />
     <Project Path="src/Aiel.MessageBus.Testing/Aiel.MessageBus.Testing.csproj" />
     <Project Path="src/Aiel.MultiTenancy/Aiel.MultiTenancy.csproj" />
+    <Project Path="src/Aiel.Results.Analyzers/Aiel.Results.Analyzers.csproj" />
     <Project Path="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
     <Project Path="src/Aiel.Results/Aiel.Results.csproj">
       <BuildDependency Project="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
@@ -224,6 +227,7 @@
     <Project Path="tests/Aiel.MessageBus.Testing.UnitTests/Aiel.MessageBus.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.MessageBus.UnitTests/Aiel.MessageBus.UnitTests.csproj" />
     <Project Path="tests/Aiel.MultiTenancy.UnitTests/Aiel.MultiTenancy.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Results.Analyzers.UnitTests/Aiel.Results.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Results.Fixtures/Aiel.Results.Fixtures.csproj" />
     <Project Path="tests/Aiel.Results.GeneratedErrors/Aiel.Results.GeneratedErrors.csproj">
       <BuildDependency Project="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />

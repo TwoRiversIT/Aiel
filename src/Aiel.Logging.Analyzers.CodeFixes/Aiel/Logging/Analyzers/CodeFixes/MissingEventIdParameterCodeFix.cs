@@ -40,7 +40,7 @@ using Microsoft.CodeAnalysis.Formatting;
 using System.Collections.Immutable;
 using System.Composition;
 
-namespace Aiel.Logging.CodeFixes;
+namespace Aiel.Logging.Analyzers.CodeFixes;
 
 /// <summary>
 /// Fixes AIEL00009 by appending an optional

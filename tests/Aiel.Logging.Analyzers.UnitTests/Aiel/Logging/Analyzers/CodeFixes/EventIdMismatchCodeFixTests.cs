@@ -23,12 +23,11 @@
 // -----------------------------------------------------------------------
 // AIEL00012_CodeFix_Tests.cs — AIEL00012 code-fix
 // -----------------------------------------------------------------------
-using Aiel.Logging.Analyzers;
 using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis.Testing;
 using Verifiers;
 
-namespace Aiel.Logging.CodeFixes;
+namespace Aiel.Logging.Analyzers.CodeFixes;
 
 public sealed class EventIdMismatchCodeFixTests
 {

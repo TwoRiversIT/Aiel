@@ -3,7 +3,7 @@
 	<PropertyGroup>
 
 		<RootNamespace />
-		<AssemblyName>Aiel.Logging.CodeFixes</AssemblyName>
+		<AssemblyName>Aiel.Logging.Analyzers.CodeFixes</AssemblyName>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<IsPackable>true</IsPackable>
 

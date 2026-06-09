@@ -47,7 +47,7 @@ using Microsoft.CodeAnalysis.Formatting;
 using System.Collections.Immutable;
 using System.Composition;
 
-namespace Aiel.Logging.CodeFixes;
+namespace Aiel.Logging.Analyzers.CodeFixes;
 
 /// <summary>
 /// Code fix for AIEL00011 — offers two remediation strategies when a direct

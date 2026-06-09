@@ -26,6 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj" />
 		<ProjectReference Include="..\..\src\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" />
 
 	</ItemGroup>

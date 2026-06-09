@@ -165,9 +165,8 @@
     <Project Path="src/Aiel.IdGeneration/Aiel.IdGeneration.csproj" />
     <Project Path="src/Aiel.InternetTypes/Aiel.InternetTypes.csproj" />
     <Project Path="src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj" />
-    <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj">
-      <BuildDependency Project="src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj" />
-    </Project>
+    <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
+    <Project Path="src/Aiel.Logging/Aiel.Logging.csproj" Id="9a36c8c7-09d0-43af-995b-ff824d1e59b7" />
     <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
     <Project Path="src/Aiel.Mediator/Aiel.Mediator.csproj" />

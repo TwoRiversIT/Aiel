@@ -23,12 +23,6 @@
         <None Include="./README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
-    <ItemGroup>
-		<PackageReference Update="ConfigureAwait.Fody">
-			<TreatAsUsed>true</TreatAsUsed>
-		</PackageReference>
-	</ItemGroup>
-	
 	<!-- BEGIN: Analyzer specific settings -->
 	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 

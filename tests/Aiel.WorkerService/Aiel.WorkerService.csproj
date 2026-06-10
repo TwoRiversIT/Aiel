@@ -1,31 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
-	<PropertyGroup>
-		<AssemblyName>Aiel.WorkerService</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<UserSecretsId>dotnet-Aiel.WorkerService-5e31773d-b77c-4ac1-bb17-a16b8c098ea6</UserSecretsId>
-		<IsPackable>false</IsPackable>
+    <PropertyGroup>
+        <AssemblyName>Aiel.WorkerService</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <UserSecretsId>dotnet-Aiel.WorkerService-5e31773d-b77c-4ac1-bb17-a16b8c098ea6</UserSecretsId>
+        <IsPackable>false</IsPackable>
 
-		<!-- Specifically for testing Aiel.Generators -->
-		<ImplicitUsings>disable</ImplicitUsings>
+        <!-- Specifically for testing Aiel.Generators -->
+        <ImplicitUsings>disable</ImplicitUsings>
+    </PropertyGroup>
 
-		<!-- Analyzer/Source Generator settings -->
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
+    </ItemGroup>
 
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.2" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Aiel.AspNetCore\Aiel.AspNetCore.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore\Aiel.EntityFrameworkCore.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Security\Aiel.Security.csproj" />
-		<ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
-		<ProjectReference Include="..\Aiel.WorkerService.Shared\Aiel.WorkerService.Shared.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.AspNetCore\Aiel.AspNetCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore\Aiel.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Security\Aiel.Security.csproj" />
+        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\Aiel.WorkerService.Shared\Aiel.WorkerService.Shared.csproj" />
+    </ItemGroup>
 
 </Project>

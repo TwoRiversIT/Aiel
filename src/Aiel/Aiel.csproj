@@ -21,37 +21,49 @@
         <None Include="..\Aiel.StrongIds.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
+    <!-- Reference the analyzer DLL so they are available for local development. -->
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.8" />
+        <Analyzer Include="..\Aiel.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <Analyzer Include="..\Aiel.Authorization.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Authorization.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <Analyzer Include="..\Aiel.Logging.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <Analyzer Include="..\Aiel.Mediator.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Mediator.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <Analyzer Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <Analyzer Include="..\Aiel.StrongIds.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.9" />
     </ItemGroup>
 
+    <!--
     <ItemGroup>
-        <PackageReference Include="Aiel.Analyzers" Version="0.0.*">
+        <PackageReference Include="Aiel.Analyzers" Version="$(AielVersion)" >
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Authorization.Analyzers" Version="0.0.*">
+        <PackageReference Include="Aiel.Authorization.Analyzers" Version="$(AielVersion)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Logging.Analyzers" Version="0.0.*">
+        <PackageReference Include="Aiel.Logging.Analyzers" Version="$(AielVersion)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Mediator.Analyzers" Version="0.0.*">
+        <PackageReference Include="Aiel.Mediator.Analyzers" Version="$(AielVersion)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Results.Analyzers" Version="0.0.*">
+        <PackageReference Include="Aiel.Results.Analyzers" Version="$(AielVersion)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.StrongIds.Analyzers" Version="0.0.*">
+        <PackageReference Include="Aiel.StrongIds.Analyzers" Version="$(AielVersion)">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-
+    -->
+    
 </Project>

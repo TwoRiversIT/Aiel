@@ -23,7 +23,7 @@
         <IsToolingProject Condition="$(MSBuildProjectName.EndsWith('.Analyzers')) or $(MSBuildProjectName.EndsWith('.CodeFixes')) or $(MSBuildProjectName.EndsWith('.Generators')) or $(MSBuildProjectName.EndsWith('.Logging'))">true</IsToolingProject>
 
         <!-- Version to use -->
-        <AielVersion>0.0.2</AielVersion>
+        <AielVersion>0.0.3</AielVersion>
     </PropertyGroup>
 
     <!-- NuGet metadata (applies to all packable projects) -->

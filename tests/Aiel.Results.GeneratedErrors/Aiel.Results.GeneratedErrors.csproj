@@ -21,8 +21,7 @@
         <NoWarn>$(NoWarn);PDRP0001</NoWarn>
     </PropertyGroup>
 
-	<ItemGroup>
-        <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+    <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
     </ItemGroup>
 

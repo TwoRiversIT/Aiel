@@ -1,27 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.Authorization.Application.UnitTests</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Authorization.Application.UnitTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
 
-		<!-- Analyzer/Source Generator settings -->
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+        <!-- Analyzer/Source Generator settings -->
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
 
-	</PropertyGroup>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Application\Aiel.Authorization.Application.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Testing\Aiel.Authorization.Testing.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Aiel.Authorization.Generators" Version="0.0.0.85-alpha">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Authorization.Application\Aiel.Authorization.Application.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Authorization.Testing\Aiel.Authorization.Testing.csproj" />
+    </ItemGroup>
 
 </Project>

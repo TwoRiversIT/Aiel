@@ -21,20 +21,6 @@
         <PackageReference Include="Scrutor" Version="7.0.0" />
     </ItemGroup>
 
-    <!--
-    <ItemGroup>
-        <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
-        <Analyzer Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj"/>
-        <Analyzer Include="..\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj"/>
-    </ItemGroup>
-    -->
-
-    <ItemGroup>
-        <Analyzer Include="..\Aiel.Logging.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.dll" />
-        <Analyzer Include="..\Aiel.Logging.Analyzers.CodeFixes\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.CodeFixes.dll" />
-    </ItemGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\Aiel\Aiel.csproj" />
         <ProjectReference Include="..\Aiel.Application\Aiel.Application.csproj" />

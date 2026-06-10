@@ -29,4 +29,4 @@ namespace Aiel.MessageBus;
 /// to route inbound messages to the correct saga state without ad hoc header conventions.
 /// </summary>
 [StrongId<Guid>]
-public readonly partial record struct SagaId(Guid Value);
+public readonly partial record struct SagaId;

@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aiel.Authorization.Generators" Version="0.0.0.85-alpha">
+        <PackageReference Include="Aiel.Authorization.Generators" Version="0.0.0.88-alpha">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -18,7 +18,7 @@
 
     <!-- We also need to reference the source generator package so that NmeaMessage gets generated correctly. -->
     <ItemGroup>
-        <PackageReference Include="Aiel.Gps.HP.Generators" Version="0.0.0.85-alpha">
+        <PackageReference Include="Aiel.Gps.HP.Generators" Version="0.0.0.88-alpha">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

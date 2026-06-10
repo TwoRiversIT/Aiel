@@ -9,7 +9,7 @@
     "precision": "build"
   },
   "publicReleaseRefSpec": [
-    "^refs/heads/release/v\\d+\\.\\d+$"
+    "^refs/heads/release/v\\d+\\.\\d+\\.\\d+$"
   ],
   "release": {
     "branchName": "release/v{version}",

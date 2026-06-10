@@ -1,34 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.Authorization.EntityFrameworkCore.IntegrationTests</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
-	</PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Authorization.EntityFrameworkCore.IntegrationTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
 
-	<ItemGroup Condition="Exists('appsettings.Testing.json')">
-		<None Remove="appsettings.Testing.json" />
-		<Content Include="appsettings.Testing.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
-	</ItemGroup>
+    <ItemGroup Condition="Exists('appsettings.Testing.json')">
+        <None Remove="appsettings.Testing.json" />
+        <Content Include="appsettings.Testing.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Application\Aiel.Authorization.Application.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Authorization.EntityFrameworkCore\Aiel.Authorization.EntityFrameworkCore.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Authorization.Testing\Aiel.Authorization.Testing.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Authorization.EntityFrameworkCore.PostgreSql\Aiel.Authorization.EntityFrameworkCore.PostgreSql.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Authorization.Application\Aiel.Authorization.Application.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Authorization.EntityFrameworkCore\Aiel.Authorization.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Authorization.Testing\Aiel.Authorization.Testing.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Authorization.EntityFrameworkCore.PostgreSql\Aiel.Authorization.EntityFrameworkCore.PostgreSql.csproj" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Testcontainers.PostgreSql" Version="4.12.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.12.0" />
+    </ItemGroup>
 
 </Project>

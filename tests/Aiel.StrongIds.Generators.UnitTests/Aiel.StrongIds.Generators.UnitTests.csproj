@@ -1,22 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.StrongIds.Generators.UnitTests</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.StrongIds.Generators.UnitTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
 
-		<!-- Analyzer/Source Generator settings -->
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
-
-	</PropertyGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" />
-	  <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" />
+        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+    </ItemGroup>
 
 
 </Project>

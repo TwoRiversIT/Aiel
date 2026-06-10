@@ -35,9 +35,9 @@ public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
 {
     public class Test : CSharpSourceGeneratorTest<TSourceGenerator, DefaultVerifier>;
 
-    public static readonly ImmutableArray<PackageIdentity> HostPackages = [new PackageIdentity("Microsoft.Extensions.Hosting", "10.0.8")];
-    public static readonly ImmutableArray<PackageIdentity> WebPackages = [new PackageIdentity("Microsoft.AspNetCore.App.Ref", "10.0.8")];
-    public static readonly ImmutableArray<PackageIdentity> WebAssemblyPackages = [new PackageIdentity("Microsoft.AspNetCore.Components.WebAssembly", "10.0.8")];
+    public static readonly ImmutableArray<PackageIdentity> HostPackages = [new PackageIdentity("Microsoft.Extensions.Hosting", "10.0.9")];
+    public static readonly ImmutableArray<PackageIdentity> WebPackages = [new PackageIdentity("Microsoft.AspNetCore.App.Ref", "10.0.9")];
+    public static readonly ImmutableArray<PackageIdentity> WebAssemblyPackages = [new PackageIdentity("Microsoft.AspNetCore.Components.WebAssembly", "10.0.9")];
 
     [SuppressMessage("Style", "IDE0045:Convert to conditional expression", Justification = "Readbility")]
     public static async Task TestAsync(

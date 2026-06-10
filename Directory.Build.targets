@@ -1,48 +1,45 @@
 <Project>
 
-	<PropertyGroup>
-		<!-- Analyzer/Source Generator settings -->
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
-		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
-	</PropertyGroup>
+    <!-- Source Generator Output Generated Files to a common location for easier inspection during development
+    <PropertyGroup>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+    </PropertyGroup>
+    -->
 
-	<!-- Pack LICENSE and icon only for packable projects -->
-	<ItemGroup Condition="'$(IsPackable)' == 'true'">
-		<None Include="$(MSBuildThisFileDirectory)LICENSE.md"
-		  Pack="true"
-		  PackagePath="/" />
+    <PropertyGroup>
+        <!-- Analyzer/Source Generator settings -->
+        <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+        <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+    </PropertyGroup>
 
-		<None Include="$(MSBuildThisFileDirectory)logo.png"
-		  Pack="true"
-		  PackagePath="/" />
-	</ItemGroup>
+    <!-- Pack LICENSE and icon only for packable projects -->
+    <ItemGroup Condition="'$(IsPackable)' == 'true'">
+        <None Include="$(MSBuildThisFileDirectory)LICENSE.md" Pack="true" PackagePath="/" />
 
-	<!-- Include XML documentation file in NuGet packages -->
-	<ItemGroup Condition="'$(IsPackable)' == 'true' and '$(GenerateDocumentationFile)' == 'true'">
-		<None Include="$(OutputPath)$(AssemblyName).xml"
-		  Pack="true"
-		  PackagePath="\" />
-	</ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)logo.png" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
-	<!-- Finalize NuGet package description with Git commit link.
-		 Must run inside a Target (not a PropertyGroup) because $(GitCommitId) is
-		 set by the GetBuildVersion target, not during static property evaluation.
-		 Must set PackageDescription (not Description) because NuGet.Build.Tasks.Pack.targets
-		 freezes PackageDescription from $(Description) in a static PropertyGroup before
-		 any target runs; GenerateNuspec reads PackageDescription, not Description. -->
-	<Target Name="SetPackageDescription"
-			AfterTargets="GetBuildVersion"
-			Condition="'$(IsPackable)' == 'true'">
-		<PropertyGroup>
-			<PackageDescription>
-				%0AFramework and tools for implementing applications by following best practices in a developer friendly way.
+    <!-- Include XML documentation file in NuGet packages -->
+    <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(GenerateDocumentationFile)' == 'true'">
+        <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
-				Built from commit $(GitCommitId)
-				$(PackageProjectUrl)/commit/$(GitCommitId)%0A
-			</PackageDescription>
-		</PropertyGroup>
-	</Target>
+    <!-- Finalize NuGet package description with Git commit link.
+        Must run inside a Target (not a PropertyGroup) because $(GitCommitId) is
+        set by the GetBuildVersion target, not during static property evaluation.
+        Must set PackageDescription (not Description) because NuGet.Build.Tasks.Pack.targets
+        freezes PackageDescription from $(Description) in a static PropertyGroup before
+        any target runs; GenerateNuspec reads PackageDescription, not Description. -->
+    <Target Name="SetPackageDescription" AfterTargets="GetBuildVersion" Condition="'$(IsPackable)' == 'true'">
+        <PropertyGroup>
+            <PackageDescription>
+                %0AFramework and tools for implementing applications by following best practices in a developer friendly way.
+
+                Built from commit $(GitCommitId)
+                $(PackageProjectUrl)/commit/$(GitCommitId)%0A
+            </PackageDescription>
+        </PropertyGroup>
+    </Target>
 
 </Project>

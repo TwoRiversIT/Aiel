@@ -3,12 +3,8 @@
     <PropertyGroup>
         <RootNamespace />
         <AssemblyName>Aiel.Results.GeneratedErrors</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>false</IsPackable>
-
-		<!-- Analyzer/Source Generator settings -->
-        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-        <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
 
         <!-- Source generators embed timestamps so deterministic builds are not possible. -->
         <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>

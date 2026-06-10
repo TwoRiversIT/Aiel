@@ -79,19 +79,19 @@
 
     <!-- Tooling: Release -->
     <ItemGroup Condition="'$(IsToolingProject)' != 'true' and '$(IsTestProject)' != 'true'">
-        <PackageReference Include="Aiel.Authorization.Generators" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Authorization.Generators" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Generators" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Generators" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Results.Generators" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Results.Generators" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.StrongIds.Generators" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.StrongIds.Generators" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

@@ -28,27 +28,27 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aiel.Analyzers" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Analyzers" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Authorization.Analyzers" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Authorization.Analyzers" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Logging.Analyzers" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Logging.Analyzers" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Mediator.Analyzers" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Mediator.Analyzers" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.Results.Analyzers" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.Results.Analyzers" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Aiel.StrongIds.Analyzers" Version="0.0.0.88-alpha">
+        <PackageReference Include="Aiel.StrongIds.Analyzers" Version="0.0.*">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>

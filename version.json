@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "0.0.3-alpha",
+  "version": "0.0.3",
   "semVer1NumericIdentifierPadding": 2,
   "gitCommitIdShortFixedLength": 8,
   "gitCommitIdShortAutoMinimum": 0,
@@ -9,7 +9,7 @@
     "precision": "build"
   },
   "publicReleaseRefSpec": [
-    "^refs/heads/release/v\\d+\\.\\d+\\.\\d+$"
+    "^refs/heads/main$"
   ],
   "release": {
     "branchName": "release/v{version}",

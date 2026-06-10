@@ -13,19 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Testing\Aiel.Authorization.Testing.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
         <ProjectReference Include="..\Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication\Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     </ItemGroup>
 
 </Project>

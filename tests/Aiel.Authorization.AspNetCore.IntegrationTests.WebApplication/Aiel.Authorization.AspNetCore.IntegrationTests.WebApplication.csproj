@@ -7,6 +7,7 @@
         <IsPackable>false</IsPackable>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <StartupObject>Aiel.Authorization.AspNetCore.Program</StartupObject>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>

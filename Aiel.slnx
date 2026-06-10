@@ -218,6 +218,7 @@
     <Project Path="tests/Aiel.EntityFrameworkCore.IntegrationTests/Aiel.EntityFrameworkCore.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.Generators.UnitTests/Aiel.Generators.UnitTests.csproj" Id="9ec60c6c-84b1-4de7-b5af-14cb48f65f51" />
     <Project Path="tests/Aiel.Gps.Benchmarks/Aiel.Gps.Benchmarks.csproj" />
+    <Project Path="tests/Aiel.Gps.HP.Generators.UnitTests/Aiel.Gps.HP.Generators.UnitTests.csproj" Id="93eb6a6c-b1dc-49b2-84ef-60c4f109d98f" />
     <Project Path="tests/Aiel.Gps.HP.UnitTests/Aiel.Gps.HP.UnitTests.csproj" />
     <Project Path="tests/Aiel.Gps.IntegrationTests/Aiel.Gps.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.Gps.UnitTests/Aiel.Gps.UnitTests.csproj" />

@@ -39,6 +39,10 @@ public sealed class NmeaMessageUnionGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var hasNmeaAttributes = context.CompilationProvider.Select(static (compilation, _) =>
+            compilation.GetTypeByMetadataName(NmeaMessageAttributeName) is not null
+            || compilation.GetTypeByMetadataName(NmeaParserAttributeName) is not null);
+
         // Find all structs with [NmeaMessage] attribute
         var messageTypes = context.SyntaxProvider
             .CreateSyntaxProvider(
@@ -55,11 +59,17 @@ public sealed class NmeaMessageUnionGenerator : IIncrementalGenerator
 
         // Combine and generate
         var combined = messageTypes.Collect().Combine(parserTypes.Collect());
+        var input = combined.Combine(hasNmeaAttributes);
 
-        context.RegisterSourceOutput(combined, (spc, data) =>
+        context.RegisterSourceOutput(input, (spc, data) =>
         {
-            var messages = data.Left.Where(m => m is not null).Cast<MessageInfo>().ToList();
-            var parsers = data.Right.Where(p => p is not null).Cast<ParserInfo>().ToList();
+            if (!data.Right)
+            {
+                return;
+            }
+
+            var messages = data.Left.Left.Where(m => m is not null).Cast<MessageInfo>().ToList();
+            var parsers = data.Left.Right.Where(p => p is not null).Cast<ParserInfo>().ToList();
 
             if (messages.Count == 0)
             {

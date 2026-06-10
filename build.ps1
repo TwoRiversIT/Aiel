@@ -3,6 +3,7 @@ param(
     [switch] $Release,
     [switch] $DryRun,
     [switch] $Publish,
+    [switch] $ToolingOnly,
     [switch] $PreserveArtifacts,
     [string] $ArtifactsBasePath = ".\artifacts",
     [string] $LocalPackagesPath = ".\LocalPackages",
@@ -316,20 +317,22 @@ foreach ($proj in $roslynProjects) {
 #-----------------------------------------
 # Pack normal projects
 #-----------------------------------------
-foreach ($proj in $normalProjects) {
-    Write-Host "`nPacking: $($proj.AssemblyName) v$($Version.NuGetPackageVersion)" -ForegroundColor Cyan
+if (-not $ToolingOnly) {
+    foreach ($proj in $normalProjects) {
+        Write-Host "`nPacking: $($proj.AssemblyName) v$($Version.NuGetPackageVersion)" -ForegroundColor Cyan
 
-    dotnet pack $proj.Path `
-        --no-build `
-        -c $Configuration `
-        -o $LocalPackagesPath `
-        --include-source `
-        --include-symbols `
-        /p:ContinuousIntegrationBuild=true `
-    $(if ($TreatWarningsAsErrors) { $TreatWarningsAsErrors })
+        dotnet pack $proj.Path `
+            --no-build `
+            -c $Configuration `
+            -o $LocalPackagesPath `
+            --include-source `
+            --include-symbols `
+            /p:ContinuousIntegrationBuild=true `
+        $(if ($TreatWarningsAsErrors) { $TreatWarningsAsErrors })
 
-    if ($LASTEXITCODE -ne 0) {
-        Exit-BuildScript -Code $LASTEXITCODE -Message "Packing Normal Projects Failed!!!"
+        if ($LASTEXITCODE -ne 0) {
+            Exit-BuildScript -Code $LASTEXITCODE -Message "Packing Normal Projects Failed!!!"
+        }
     }
 }
 

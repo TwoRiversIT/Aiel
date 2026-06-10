@@ -3,6 +3,7 @@ param(
     [switch] $Release,
     [switch] $DryRun,
     [switch] $Publish,
+    [switch] $ToolingOnly,
     [switch] $PreserveArtifacts,
     [string] $ArtifactsBasePath = ".\artifacts",
     [string] $LocalPackagesPath = ".\LocalPackages",
@@ -146,6 +147,14 @@ if ([string]::IsNullOrWhiteSpace($InformationalVersion) -or [string]::IsNullOrWh
 }
 
 if ($Publish -or $PreserveArtifacts) {
+
+    if (Test-Path -Path $ArtifactsBasePath) {
+        Write-Host "`nThe artifacts base directory already exists: $ArtifactsBasePath" -ForegroundColor Green
+    } else {
+        Write-Host "`nCreating artifacts base directory: $ArtifactsBasePath" -ForegroundColor Green
+        New-Item -ItemType Directory -Path $ArtifactsBasePath | Out-Null
+    }
+
     # If the destination artifacts directory already exists...
     if (Test-Path -Path $ArtifactsPath) {
         Write-Host "`nThe destination artifacts directory already exists: $ArtifactsPath" -ForegroundColor Red
@@ -308,20 +317,22 @@ foreach ($proj in $roslynProjects) {
 #-----------------------------------------
 # Pack normal projects
 #-----------------------------------------
-foreach ($proj in $normalProjects) {
-    Write-Host "`nPacking: $($proj.AssemblyName) v$($Version.NuGetPackageVersion)" -ForegroundColor Cyan
+if (-not $ToolingOnly) {
+    foreach ($proj in $normalProjects) {
+        Write-Host "`nPacking: $($proj.AssemblyName) v$($Version.NuGetPackageVersion)" -ForegroundColor Cyan
 
-    dotnet pack $proj.Path `
-        --no-build `
-        -c $Configuration `
-        -o $LocalPackagesPath `
-        --include-source `
-        --include-symbols `
-        /p:ContinuousIntegrationBuild=true `
-    $(if ($TreatWarningsAsErrors) { $TreatWarningsAsErrors })
+        dotnet pack $proj.Path `
+            --no-build `
+            -c $Configuration `
+            -o $LocalPackagesPath `
+            --include-source `
+            --include-symbols `
+            /p:ContinuousIntegrationBuild=true `
+        $(if ($TreatWarningsAsErrors) { $TreatWarningsAsErrors })
 
-    if ($LASTEXITCODE -ne 0) {
-        Exit-BuildScript -Code $LASTEXITCODE -Message "Packing Normal Projects Failed!!!"
+        if ($LASTEXITCODE -ne 0) {
+            Exit-BuildScript -Code $LASTEXITCODE -Message "Packing Normal Projects Failed!!!"
+        }
     }
 }
 
@@ -382,8 +393,9 @@ if ($Publish -or $DryRun) {
         dotnet nuget push (Join-Path $LocalPackagesPath "*.nupkg") `
             --api-key $apiKey `
             --source $NuGetSource `
-            --skip-duplicate
-
+            --skip-duplicate `
+            --no-symbols
+            
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Publishing failed. Might not have any PDB files in it. Continuing on..." -ForegroundColor Yellow
         }

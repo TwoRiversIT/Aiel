@@ -20,11 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Results.Analyzers;
 using Aiel.Results.Internal;
 using Microsoft.CodeAnalysis.Testing;
 
-namespace Aiel.Results;
+namespace Aiel.Results.Analyzers;
 
 /// <summary>
 /// Tests for ConstructorAnalyzer - validates that Error-derived types

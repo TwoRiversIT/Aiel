@@ -1,25 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.Gps.HP</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Gps.HP</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="./README.md" Pack="true" PackagePath="/" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
-	<!-- Bundle the source generator into this package's analyzers folder. -->
-	<ItemGroup>
-		<None Include="..\Aiel.Gps.HP.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Gps.HP.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-	</ItemGroup>
+    <!-- Bundle the source generator into this package's analyzers folder. -->
+    <ItemGroup>
+        <None Include="..\Aiel.Gps.HP.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Gps.HP.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Aiel\Aiel.csproj" />
-		<!-- Reference the generator as an analyzer -->
-		<ProjectReference Include="..\Aiel.Gps.HP.Generators\Aiel.Gps.HP.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-	</ItemGroup>
+    <!-- We also need to reference the source generator package so that NmeaMessage gets generated correctly. -->
+    <ItemGroup>
+        <PackageReference Include="Aiel.Gps.HP.Generators" Version="0.0.0.85-alpha">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel\Aiel.csproj" />
+    </ItemGroup>
 
 </Project>

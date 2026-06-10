@@ -23,7 +23,7 @@
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 
-namespace Aiel.Results;
+namespace Aiel.Results.Analyzers;
 
 public abstract class AnalyzerTestBase<TAnalyzer>
     where TAnalyzer : Microsoft.CodeAnalysis.Diagnostics.DiagnosticAnalyzer, new()

@@ -16,11 +16,6 @@
 		<None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
-	<!-- Reference the generator project as an analyzer to ensure it is used during compilation of this project. -->
-	<ItemGroup>
-		<ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.8" />
 	</ItemGroup>

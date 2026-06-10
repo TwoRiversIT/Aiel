@@ -1,23 +1,20 @@
 {
-    "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-    "version": "0.0.0-alpha",
-    "versionIncrement": "build",
-    "versionHeightOffset": 1,
-    "semVer1NumericIdentifierPadding": 2,
-    "gitCommitIdShortFixedLength": 8,
-    "gitCommitIdShortAutoMinimum": 0,
-    "nugetPackageVersion": {
-        "semVer": 2,
-        "precision": "build"
-    },
-    "publicReleaseRefSpec": [
-        "^refs/heads/release/v\\d+\\.\\d+$",
-        "^refs/tags/v\\d+\\.\\d+$"
-    ],
-    "release" : {
-        "tagName" : "v{version}",
-        "branchName" : "release/v{version}",
-        "versionIncrement" : "build",
-        "firstUnstableTag" : "alpha"
-    }
+  "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
+  "version": "0.0.0",
+  "versionHeightOffset": 1,
+  "semVer1NumericIdentifierPadding": 2,
+  "gitCommitIdShortFixedLength": 8,
+  "gitCommitIdShortAutoMinimum": 0,
+  "nuGetPackageVersion": {
+    "semVer": 2.0,
+    "precision": "build"
+  },
+  "publicReleaseRefSpec": [
+    "^refs/heads/release/v\\d+\\.\\d+$",
+    "^refs/tags/v\\d+\\.\\d+$"
+  ],
+  "release": {
+    "branchName": "release/v{version}",
+    "versionIncrement": "build"
+  }
 }

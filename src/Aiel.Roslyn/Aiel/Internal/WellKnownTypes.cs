@@ -27,8 +27,11 @@
 //
 // NOTE: The EventIds enum type name is intentionally NOT listed here.
 //       It is configurable per-project via AnalyzerConfiguration and
-//       defaults to "Aiel.Logging.AielEventIds".
+//       defaults to "Aiel.AielEvent".
 // -----------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
 
 namespace Aiel.Internal;
 

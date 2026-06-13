@@ -16,14 +16,14 @@ public interface IQuery<out TResult> : IAction;
 public interface ICommandHandler<in TCommand>
     where TCommand : ICommand
 {
-    ValueTask Handle(TCommand command, CancellationToken cancellationToken);
+    ValueTask Handle(TCommand command, CancellationToken cancellationToken = default);
 }
 
 public interface IQueryHandler<in TQuery, TDto>
     where TQuery : IQuery<TDto>
     where TDto : Result<TDto>
 {
-    ValueTask<TDto> Handle(TQuery query, CancellationToken cancellationToken);
+    ValueTask<TDto> Handle(TQuery query, CancellationToken cancellationToken = default);
 }
 
 public delegate ValueTask<TDto> ActionHandlerDelegate<TDto>();
@@ -34,7 +34,7 @@ public interface IPipelineBehavior<in TAction, TDto>
     ValueTask<Result<TDto>> Handle(
         TAction action,
         ActionHandlerDelegate<TDto> next,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 
 public interface ISender
@@ -175,7 +175,7 @@ internal abstract class ActionHandlerBase<TResult> : ActionHandlerBase
     public abstract ValueTask<TResult> Handle(
         IAction<TResult> action,
         IServiceProvider provider,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 
 internal sealed class ActionHandlerWrapper<TAction, TResult> : ActionHandlerBase<TResult>
@@ -184,7 +184,7 @@ internal sealed class ActionHandlerWrapper<TAction, TResult> : ActionHandlerBase
     public override ValueTask<TResult> Handle(
         IAction<TResult> action,
         IServiceProvider provider,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var typed = (TAction)action;
         var handler = provider.GetRequiredService<IActionHandler<TAction, TResult>>();
@@ -224,7 +224,7 @@ public sealed class LoggingBehavior<TAction, TResult>(ILogger<LoggingBehavior<TA
     public async ValueTask<TResult> Handle(
         TAction action,
         ActionHandlerDelegate<TResult> next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var actionName = typeof(TAction).Name;
         logger.LogInformation("Handling {ActionName}", actionName);
@@ -255,7 +255,7 @@ public sealed class ValidationBehavior<TAction, TResult>(IEnumerable<IValidator<
     public async ValueTask<TResult> Handle(
         TAction action,
         ActionHandlerDelegate<TResult> next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (!validators.Any())
         {
@@ -306,7 +306,7 @@ public sealed class CachingBehavior<TAction, TResult>(
     public async ValueTask<TResult> Handle(
         TAction action,
         ActionHandlerDelegate<TResult> next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (action is not ICacheable cacheable)
         {
@@ -341,7 +341,7 @@ public sealed class TransactionBehavior<TAction, TResult>(
     public async ValueTask<TResult> Handle(
         TAction action,
         ActionHandlerDelegate<TResult> next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (action is not ITransactional)
         {
@@ -392,7 +392,7 @@ public sealed record ProductCreatedNotification(Guid ProductId, string Name) : I
 public sealed class LogProductCreatedHandler(ILogger<LogProductCreatedHandler> logger)
     : INotificationHandler<ProductCreatedNotification>
 {
-    public ValueTask Handle(ProductCreatedNotification notification, CancellationToken cancellationToken)
+    public ValueTask Handle(ProductCreatedNotification notification, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("Product created: {Id} - {Name}", notification.ProductId, notification.Name);
         return ValueTask.CompletedTask;
@@ -414,7 +414,7 @@ public interface INotification;
 public interface INotificationHandler<in TNotification>
     where TNotification : INotification
 {
-    ValueTask Handle(TNotification notification, CancellationToken cancellationToken);
+    ValueTask Handle(TNotification notification, CancellationToken cancellationToken = default);
 }
 
 public interface IPublisher
@@ -430,7 +430,7 @@ internal abstract class NotificationHandlerBase
     public abstract ValueTask Handle(
         object notification,
         IServiceProvider provider,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 
 internal sealed class NotificationHandlerWrapper<TNotification> : NotificationHandlerBase
@@ -439,7 +439,7 @@ internal sealed class NotificationHandlerWrapper<TNotification> : NotificationHa
     public override async ValueTask Handle(
         object notification,
         IServiceProvider provider,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var typed = (TNotification)notification;
         var handlers = provider.GetServices<INotificationHandler<TNotification>>();

@@ -20,7 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Collections;
+using Aiel.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -491,7 +492,7 @@ public class ApplicationConfigurationTests
         }
     }
 
-    public abstract class TestApplication : AielApplication
+    public abstract class TestApplication : AielApplicationConfigurator
     {
         public override String ApplicationName => "TestApplication";
         public override String ApplicationVersion => "1.0.0";

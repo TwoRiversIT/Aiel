@@ -26,9 +26,9 @@ internal static class TestCode
 {
     // ── Shared source stubs ──────────────────────────────────────────────
 
-    /// <summary>A stub of the real AielEventIds shape used by production code.</summary>
+    /// <summary>A stub of the real AielEvent shape used by production code.</summary>
     public const String AielEventIdsSource = """
-        public enum AielEventIds
+        public enum AielEvent
         {
             ServiceStart  = 1000,
             ServiceStop   = 1001,

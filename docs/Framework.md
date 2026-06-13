@@ -23,7 +23,7 @@ Both paths respect the same dependency ordering: a dependency is always configur
 
 ### Module Requirement (Critical for all Aiel Assemblies)
 
-Every assembly in the Aiel codebase — **including test assemblies** — that is not an analyzer or source generator MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from `AielDependencyConfigurator` (or `AielApplication` for the host). This class must include `[DependsOn(...)]` attributes that establish a direct or transitive path back to `AielFramework`.
+Every assembly in the Aiel codebase — **including test assemblies** — that is not an analyzer or source generator MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from `AielDependencyConfigurator` (or `AielApplicationConfigurator` for the host). This class must include `[DependsOn(...)]` attributes that establish a direct or transitive path back to `AielFramework`.
 
 This requirement ensures:
 - **Compile-time verifiability** of the module graph
@@ -35,7 +35,7 @@ The `AssemblyAnalyzer` enforces this rule at compile time and reports diagnostic
 
 ### Declarative Dependencies
 
-Every participating assembly MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from either `AielDependencyConfigurator` (libraries) or `AielApplication` (the host application).
+Every participating assembly MUST declare **exactly one** public, `sealed` class with a public parameterless constructor that inherits from either `AielDependencyConfigurator` (libraries) or `AielApplicationConfigurator` (the host application).
 
 #### `AielDependencyConfigurator`
 
@@ -43,9 +43,9 @@ Every participating assembly MUST declare **exactly one** public, `sealed` class
 
 ```csharp
 // MyLibrary/MyLibraryDependency.cs
-using Aiel.Dependencies;
+using Aiel.Framework;
 
-[DependsOn(typeof(AielFramework))]   // declare upstream dependencies here
+[DependsOn(typeof(AielFrameworkAbstractions))]   // declare upstream dependencies here
 public sealed class MyLibraryDependency : AielDependencyConfigurator
 {
     public override Task ConfigureAsync(
@@ -60,17 +60,17 @@ public sealed class MyLibraryDependency : AielDependencyConfigurator
 
 `AielDependencyConfigurator` implements `IDependencyConfigurator`, which defines two methods: `PreConfigureAsync` (phase 1) and `ConfigureAsync` (phase 2). See [Configuration](#configuration) below for the two-phase lifecycle.
 
-#### `AielApplication`
+#### `AielApplicationConfigurator`
 
-`AielApplication` extends `AielDependencyConfigurator` and represents the **composition root** — the topmost node of the dependency graph. Define exactly one per application project.
+`AielApplicationConfigurator` extends `AielDependencyConfigurator` and represents the **composition root** — the topmost node of the dependency graph. Define exactly one per application project.
 
 ```csharp
 // MyApp/MyApplication.cs
-using Aiel.Dependencies;
+using Aiel.Framework;
 
 [DependsOn(typeof(MyLibraryDependency))]
-[DependsOn(typeof(AielFramework))]
-public sealed class MyApplication : AielApplication
+[DependsOn(typeof(AielFrameworkAbstractions))]
+public sealed class MyApplication : AielApplicationConfigurator
 {
     public override String ApplicationName    => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
@@ -112,7 +112,7 @@ The Aiel library itself is registered as a dependency via `AielFramework : AielD
 
 ##### Source Generator — `DependencyGraphSourceGenerator`
 
-`Aiel.Generators` ships an incremental Roslyn source generator. When the project contains a concrete `AielApplication` subclass the generator:
+`Aiel.Framework.Generators` ships an incremental Roslyn source generator. When the project contains a concrete `AielApplicationConfigurator` subclass the generator:
 
 1. Walks the `[DependsOn]` graph transitively across all referenced assemblies.
 2. Emits `AielDependencyGraph.g.cs` into the `Microsoft.Extensions.DependencyInjection` namespace.
@@ -126,16 +126,16 @@ The Aiel library itself is registered as a dependency via `AielFramework : AielD
 
 The generated file contains a `AielDependencyGraph.Dependencies` property (`IReadOnlyCollection<DependencyDescriptor>`) and the `AddApplicationAsync()` extension. The extension calls `builder.RegisterDependenciesAsync(AielDependencyGraph.Dependencies)`, which creates a `DependencyManager`, registers it as `IDependencyManager`, and runs all configurators.
 
-Each generated `DependencyDescriptor` includes the dependency type itself in its `Configurators` list (since every `AielDependencyConfigurator` subclass implements `IDependencyConfigurator`). If the type also implements `IDependencyInitializer`, it is included in the `Initializers` list as well.
+Each generated `DependencyDescriptor` includes the dependency type itself in its `Configurators` list (since every `AielDependencyConfigurator` subclass implements `IDependencyConfigurator`). If the type also implements `IInitializer`, it is included in the `Initializers` list as well.
 
-The generator requires that the `AielApplication` subclass be `sealed` and non-abstract; open types are ignored.
+The generator requires that the `AielApplicationConfigurator` subclass be `sealed` and non-abstract; open types are ignored.
 
 ##### Analyzer — `AssemblyAnalyzer` (`AIEL00001`)
 
-`Aiel.Analyzers` ships a Roslyn diagnostic analyzer. It reports `AIEL00001` (error) when a compilation that references Aiel contains zero or more than one public, sealed, parameterless-constructor `AielDependencyConfigurator` or `AielApplication` subclass. Add it as an analyzer-only project reference:
+`Aiel.Framework.Analyzers` ships a Roslyn diagnostic analyzer. It reports `AIEL00001` (error) when a compilation that references Aiel contains zero or more than one public, sealed, parameterless-constructor `AielDependencyConfigurator` or `AielApplicationConfigurator` subclass. Add it as an analyzer-only project reference:
 
 ```xml
-<ProjectReference Include="..\path\to\Aiel.Analyzers.csproj"
+<ProjectReference Include="..\path\to\Aiel.Framework.Analyzers.csproj"
                   OutputItemType="Analyzer"
                   ReferenceOutputAssembly="false" />
 ```
@@ -259,21 +259,21 @@ host.InitializeApplicationAsync()
   │           └─► Application A ← initialized last
   │
   └─► Falls back to walking DependencyRoot    (reflection path)
-        └─► Post-order DFS, calls InitializeAsync on each IDependencyInitializer
+        └─► Post-order DFS, calls InitializeAsync on each IInitializer
 ```
 
-#### `IDependencyInitializer`
+#### `IInitializer`
 
 Implement this interface on a `AielDependencyConfigurator` subclass to participate in the initialisation phase.
 
-Using a separate initializer class is supported only when `DependencyDescriptor.Initializers` is explicitly populated (manual descriptor registration). The default reflection and source-generated discovery paths do not scan for standalone `IDependencyInitializer` types.
+Using a separate initializer class is supported only when `DependencyDescriptor.Initializers` is explicitly populated (manual descriptor registration). The default reflection and source-generated discovery paths do not scan for standalone `IInitializer` types.
 
 ```csharp
-public sealed class MyLibraryDependency : AielDependencyConfigurator, IDependencyInitializer
+public sealed class MyLibraryDependency : AielDependencyConfigurator, IInitializer
 {
     public async Task InitializeAsync(
         DependencyInitializationContext context,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var migrator = context.ServiceProvider.GetRequiredService<IDatabaseMigrator>();
         await migrator.MigrateAsync(cancellationToken);
@@ -356,12 +356,12 @@ This document explains how to define event IDs, how to write logging helpers, an
 
 ---
 
-## **1. Event IDs (`AielEventIds`)**
+## **1. Event IDs (`AielEvent`)**
 
 All log events in Aiel use a single shared enum:
 
 ```csharp
-public enum AielEventIds
+public enum AielEvent
 {
     // Pipeline (1000–1999)
     PipelineDispatching = 1000,
@@ -398,34 +398,34 @@ Example (Pipeline module):
 internal static partial class PipelineLoggingHelper
 {
     [LoggerMessage(
-        EventId = (int)AielEventIds.PipelineDispatching,
+        EventId = (int)AielEvent.PipelineDispatching,
         Level = LogLevel.Information,
         Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
     internal static partial void LogDispatching(
         this ILogger logger,
         string inputType,
         Guid correlationId,
-        AielEventIds eventId = AielEventIds.PipelineDispatching);
+        AielEvent eventId = AielEvent.PipelineDispatching);
 
     [LoggerMessage(
-        EventId = (int)AielEventIds.PipelineSuccess,
+        EventId = (int)AielEvent.PipelineSuccess,
         Level = LogLevel.Information,
         Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
     internal static partial void LogSuccess(
         this ILogger logger,
         string inputType,
         Guid correlationId,
-        AielEventIds eventId = AielEventIds.PipelineSuccess);
+        AielEvent eventId = AielEvent.PipelineSuccess);
 
     [LoggerMessage(
-        EventId = (int)AielEventIds.PipelineFailure,
+        EventId = (int)AielEvent.PipelineFailure,
         Level = LogLevel.Warning,
         Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
     internal static partial void LogFailure(
         this ILogger logger,
         string inputType,
         Guid correlationId,
-        AielEventIds eventId = AielEventIds.PipelineFailure);
+        AielEvent eventId = AielEvent.PipelineFailure);
 }
 ```
 
@@ -436,7 +436,7 @@ internal static partial class PipelineLoggingHelper
 Casting the enum value satisfies this requirement:
 
 ```csharp
-EventId = (int)AielEventIds.PipelineDispatching
+EventId = (int)AielEvent.PipelineDispatching
 ```
 
 #### **2.2. Event ID is also included as a structured property**
@@ -456,7 +456,7 @@ This ensures:
 This is intentional:
 
 ```csharp
-AielEventIds eventId = AielEventIds.PipelineDispatching
+AielEvent eventId = AielEvent.PipelineDispatching
 ```
 
 It allows:
@@ -492,7 +492,7 @@ The helper methods handle everything.
 When adding a new log event:
 
 ### **Step 1 — Assign an event ID**
-Add a new value to `AielEventIds` inside the correct module range:
+Add a new value to `AielEvent` inside the correct module range:
 
 ```csharp
 // Pipeline (1000–1999)
@@ -504,14 +504,14 @@ Follow the established pattern:
 
 ```csharp
 [LoggerMessage(
-    EventId = (int)AielEventIds.PipelineValidationError,
+    EventId = (int)AielEvent.PipelineValidationError,
     Level = LogLevel.Error,
     Message = "[{EventId}] Validation error: {Reason} [CorrelationId={CorrelationId}]")]
 internal static partial void LogValidationError(
     this ILogger logger,
     string reason,
     Guid correlationId,
-    AielEventIds eventId = AielEventIds.PipelineValidationError);
+    AielEvent eventId = AielEvent.PipelineValidationError);
 ```
 
 ### **Step 3 — Use it**
@@ -553,7 +553,7 @@ Future maintainers can extend the system without breaking anything.
 # **Summary for Developers**
 
 - Use the logging helpers — never log raw strings.  
-- Add new event IDs to `AielEventIds` using the correct numeric range.  
+- Add new event IDs to `AielEvent` using the correct numeric range.  
 - Follow the established pattern when creating new logging methods.  
 - Do not reuse or renumber event IDs.  
 - Keep messages structured and consistent.  

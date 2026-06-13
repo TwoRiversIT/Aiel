@@ -26,10 +26,10 @@ namespace Aiel.EntityFrameworkCore.Migrations;
 
 public static partial class MigrationLoggingExtensions
 {
-    [LoggerMessage(EventId = (Int32)AielEventIds.Migrations_MigrationsFound, Level = LogLevel.Information, Message = "[{EventId}] Migrations Found: {Count}")]
-    public static partial void LogMigrationsFound(this ILogger logger, Int32 count, AielEventIds eventId = AielEventIds.Migrations_MigrationsFound);
+    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationsFound, Level = LogLevel.Information, Message = "[{EventId}] Migrations Found: {Count}")]
+    public static partial void LogMigrationsFound(this ILogger logger, Int32 count, AielEvent eventId = AielEvent.Migrations_MigrationsFound);
 
-    [LoggerMessage(EventId = (Int32)AielEventIds.Migrations_ApplyingMigrationsStarted, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
+    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_ApplyingMigrationsStarted, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
     public static partial void LogApplyingMigrations(this ILogger logger, String databaseName);
 
     [LoggerMessage(EventId = 1, Level = LogLevel.Critical, Message = "Migrating {DatabaseName} failed: {Exception} - {Message}")]
@@ -59,6 +59,6 @@ public static partial class MigrationLoggingExtensions
     [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Migrating {Name} database...")]
     public static partial void LogMigratingDatabase(this ILogger logger, String name);
 
-    [LoggerMessage(EventId = (Int32)AielEventIds.Migrations_RetryingMigration, Level = LogLevel.Warning, Message = "[{EventId}] {Message}: The operation will be tried {RetryCount} times more.")]
-    public static partial void LogRetryingMigration(this ILogger logger, String message, Int32 retryCount, AielEventIds eventId = AielEventIds.Migrations_RetryingMigration);
+    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_RetryingMigration, Level = LogLevel.Warning, Message = "[{EventId}] {Message}: The operation will be tried {RetryCount} times more.")]
+    public static partial void LogRetryingMigration(this ILogger logger, String message, Int32 retryCount, AielEvent eventId = AielEvent.Migrations_RetryingMigration);
 }

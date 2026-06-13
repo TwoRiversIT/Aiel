@@ -23,7 +23,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System.Collections.Immutable;
 using System.Text;
 
 namespace Aiel.StrongIds.Generators;
@@ -35,7 +34,6 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
     private const String DisallowDefaultPropertyName = "DisallowDefault";
     private const String GenerateTryFromPropertyName = "GenerateTryFrom";
     private const String StrongIdAttributeMetadataName = "Aiel.StrongIds.StrongIdAttribute`1";
-    private const String StrongIdInterfaceMetadataName = "global::Aiel.StrongIds.IStrongId<TValue>";
     private const Int32 ReferenceBackingKindValue = 1;
 
     private static readonly SymbolDisplayFormat TypeNameFormat = new(
@@ -317,24 +315,6 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             .Select(static syntaxReference => syntaxReference.GetSyntax())
             .OfType<TypeDeclarationSyntax>()
             .All(static declaration => declaration.Modifiers.Any(static modifier => modifier.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword)));
-    }
-
-    private static Boolean UsesPositionalRecordSyntax(INamedTypeSymbol symbol)
-    {
-        return symbol.DeclaringSyntaxReferences
-            .Select(static syntaxReference => syntaxReference.GetSyntax())
-            .OfType<RecordDeclarationSyntax>()
-            .Any(static declaration => declaration.ParameterList is not null);
-    }
-
-    private static Boolean DeclaresValueMember(INamedTypeSymbol symbol)
-    {
-        return symbol.GetMembers("Value").Any(static member => !member.IsImplicitlyDeclared);
-    }
-
-    private static Boolean DeclaresInstanceConstructors(INamedTypeSymbol symbol)
-    {
-        return symbol.InstanceConstructors.Any(static constructor => !constructor.IsImplicitlyDeclared);
     }
 
     private static Boolean IsSupportedBackingType(ITypeSymbol valueType)

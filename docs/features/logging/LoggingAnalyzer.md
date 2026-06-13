@@ -28,12 +28,12 @@ code fix so violations can be corrected with a single IDE action.
 ```csharp
 // ✅ Fully compliant Aiel logging method
 [LoggerMessage(
-    EventId = (int)AielEventIds.ServiceStart,   // AIEL001: must use enum cast
+    EventId = (int)AielEvent.ServiceStart,   // AIEL001: must use enum cast
     Level   = LogLevel.Information,
     Message = "[{EventId}] Service started")]    // AIEL003: placeholder required
 public static partial void ServiceStarted(
     this ILogger logger,
-    AielEventIds eventId = AielEventIds.ServiceStart);  // AIEL002 + AIEL005
+    AielEvent eventId = AielEvent.ServiceStart);  // AIEL002 + AIEL005
 ```
 
 ---
@@ -58,8 +58,8 @@ public static partial void ServiceStarted(
 
 | ❌ Violation | ✅ Compliant |
 | --- | --- |
-| `EventId = 1000` | `EventId = (int)AielEventIds.ServiceStart` |
-| `EventId = (int)SomeOther.Foo` | `EventId = (int)AielEventIds.ServiceStart` |
+| `EventId = 1000` | `EventId = (int)AielEvent.ServiceStart` |
+| `EventId = (int)SomeOther.Foo` | `EventId = (int)AielEvent.ServiceStart` |
 
 Code fix: replaces the expression with `(int)<ConfiguredEnum>.FirstMember`.
 
@@ -71,13 +71,13 @@ Code fix: replaces the expression with `(int)<ConfiguredEnum>.FirstMember`.
 
 ```csharp
 // ❌ Missing parameter
-[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+[LoggerMessage(EventId = (int)AielEvent.ServiceStart, ...)]
 public static partial void ServiceStarted(this ILogger logger);
 
 // ✅ Parameter present
-[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+[LoggerMessage(EventId = (int)AielEvent.ServiceStart, ...)]
 public static partial void ServiceStarted(this ILogger logger,
-    AielEventIds eventId = AielEventIds.ServiceStart);
+    AielEvent eventId = AielEvent.ServiceStart);
 ```
 
 Code fix: appends the parameter with the correct type and default.
@@ -110,10 +110,10 @@ methods instead for compile-time verified, allocation-free, structured logging.
 public static void Foo(ILogger logger) => logger.LogInformation("msg");
 
 // ✅ [LoggerMessage] partial method
-[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information,
+[LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information,
                Message = "[{EventId}] msg")]
 public static partial void Foo(this ILogger logger,
-    AielEventIds eventId = AielEventIds.ServiceStart);
+    AielEvent eventId = AielEvent.ServiceStart);
 ```
 
 Code fixes (two options):
@@ -130,14 +130,14 @@ to the same enum member.**
 
 ```csharp
 // ❌ Mismatch
-[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+[LoggerMessage(EventId = (int)AielEvent.ServiceStart, ...)]
 public static partial void ServiceStarted(this ILogger logger,
-    AielEventIds eventId = AielEventIds.ServiceStop);  // ← different member
+    AielEvent eventId = AielEvent.ServiceStop);  // ← different member
 
 // ✅ Consistent
-[LoggerMessage(EventId = (int)AielEventIds.ServiceStart, ...)]
+[LoggerMessage(EventId = (int)AielEvent.ServiceStart, ...)]
 public static partial void ServiceStarted(this ILogger logger,
-    AielEventIds eventId = AielEventIds.ServiceStart);
+    AielEvent eventId = AielEvent.ServiceStart);
 ```
 
 Code fixes (two options):
@@ -149,7 +149,7 @@ Code fixes (two options):
 
 ## Configuration — Custom EventIds Enum
 
-By default the analyzers expect `Aiel.Logging.AielEventIds`.  Any project can substitute its
+By default the analyzers expect `Aiel.Logging.AielEvent`.  Any project can substitute its
 own enum via one of three mechanisms — evaluated in priority order:
 
 ### Priority 1 — MSBuild property (recommended)
@@ -175,7 +175,7 @@ This is useful when you want per-folder overrides.
 
 ### Priority 3 — Default
 
-If neither option is set the analyzers fall back to `Aiel.Logging.AielEventIds`.
+If neither option is set the analyzers fall back to `Aiel.Logging.AielEvent`.
 
 ### Resolution order summary
 
@@ -184,7 +184,7 @@ build_property.AielEventIdsType   (MSBuild)
         ↓ fallback
 aiel_event_ids_type               (.editorconfig)
         ↓ fallback
-Aiel.Logging.AielEventIds         (built-in default)
+Aiel.Logging.AielEvent         (built-in default)
 ```
 
 ### How it works internally

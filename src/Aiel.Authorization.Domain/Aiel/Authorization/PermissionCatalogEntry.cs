@@ -52,12 +52,12 @@ public sealed class PermissionCatalogEntry : StateBasedAggregateRoot<PermissionS
     /// <summary>
     /// Gets the current published permission name.
     /// </summary>
-    public PermissionName PermissionName { get; private set; }
+    public PermissionName PermissionName { get; }
 
     /// <summary>
     /// Gets the scope type required by this permission definition.
     /// </summary>
-    public AuthorizationScopeTypeName ScopeType { get; private set; }
+    public AuthorizationScopeTypeName ScopeType { get; }
 
     /// <summary>
     /// Gets the published lifecycle state for this permission definition.

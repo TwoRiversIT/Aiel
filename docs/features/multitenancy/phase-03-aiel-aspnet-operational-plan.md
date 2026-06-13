@@ -59,7 +59,7 @@ Aviendha must provide a tenant resolver that computes `TenantResolution` from th
 public sealed class AviendhaResolver(ITenantCatalogService catalog)
     : ITenantResolver
 {
-    public async ValueTask<TenantResolution> ResolveAsync(CancellationToken cancellationToken)
+    public async ValueTask<TenantResolution> ResolveAsync(CancellationToken cancellationToken = default)
     {
         // Aviendha's custom logic:
         // 1. Extract actor from authentication (JWT "sub" claim)
@@ -194,7 +194,7 @@ CREATE TABLE migration_checkpoints (
 ### Aviendha's `ITenantResolver` Pseudocode
 
 ```csharp
-public async ValueTask<TenantResolution> ResolveAsync(CancellationToken cancellationToken)
+public async ValueTask<TenantResolution> ResolveAsync(CancellationToken cancellationToken = default)
 {
     // 1. Extract actor from JWT "sub" claim
     var sub = httpContext.User.FindFirst("sub")?.Value;

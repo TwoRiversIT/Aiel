@@ -30,11 +30,6 @@ partial class UnrecognizedError : Error
     internal const String DefaultMessage = "An unrecognized error occurred and may not have been deserialized correctly.";
 }
 
-partial class NoError : Error
-{
-    internal const String DefaultMessage = "No error.";
-}
-
 public partial class ApiError : Error
 {
     internal static ApiError FromException(Exception ex)

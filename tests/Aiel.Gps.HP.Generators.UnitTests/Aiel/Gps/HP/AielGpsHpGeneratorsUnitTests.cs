@@ -20,12 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Framework;
 
 namespace Aiel.Gps.HP;
 
 [DependsOn(typeof(AielGpsHp))]
-public class AielGpsHpGeneratorsUnitTests : AielDependencyConfigurator
-{
-
-}
+public sealed class AielGpsHpGeneratorsUnitTests : AielDependencyConfigurator;

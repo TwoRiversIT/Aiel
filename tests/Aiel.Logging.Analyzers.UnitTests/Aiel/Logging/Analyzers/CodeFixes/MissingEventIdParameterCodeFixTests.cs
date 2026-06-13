@@ -38,18 +38,18 @@ public sealed class MissingEventIdParameterCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                [{|#0:LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
 
-        // The fix appends `AielEventIds eventId = AielEventIds.<MatchingMember>` as the last parameter. In this case, the matching member is `AielEventIds.ServiceStart`.
+        // The fix appends `AielEvent eventId = AielEvent.<MatchingMember>` as the last parameter. In this case, the matching member is `AielEvent.ServiceStart`.
         const String fixedCode = """
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStart);
             }
             """;
 
@@ -68,18 +68,18 @@ public sealed class MissingEventIdParameterCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] {Name}")|}]
+                [{|#0:LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] {Name}")|}]
                 public static partial void ServiceStarted(this ILogger logger, string name);
             }
             """;
 
-        // The fix appends `AielEventIds eventId = AielEventIds.<MatchingMember>` as the last parameter. In this case, the matching member is `AielEventIds.ServiceStart`.
+        // The fix appends `AielEvent eventId = AielEvent.<MatchingMember>` as the last parameter. In this case, the matching member is `AielEvent.ServiceStart`.
         const String fixedCode = """
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] {Name}")]
-                public static partial void ServiceStarted(this ILogger logger, string name, AielEventIds eventId = AielEventIds.ServiceStart);
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] {Name}")]
+                public static partial void ServiceStarted(this ILogger logger, string name, AielEvent eventId = AielEvent.ServiceStart);
             }
             """;
 

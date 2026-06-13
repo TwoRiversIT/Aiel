@@ -22,11 +22,9 @@
 
 using Aiel.Results.Models;
 using Aiel.Results.TestErrors;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.Results.IntegrationTests;
 
-[SuppressMessage("Roslynator", "RCS1102:Make class static", Justification = "No, it is used as an entry point for WebApplicationFactory<TEntryPoint>")]
 public class Program
 {
     private static void Main(String[] args)

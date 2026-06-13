@@ -24,6 +24,6 @@ namespace Aiel.MessageBus;
 
 /// <summary>
 /// Transport-safe stable identifier for the actor that produced a message.
-/// Populated from <see cref="Aiel.Execution.IActor.AuditIdentity"/> by <see cref="IMessageEnvelopeFactory"/>.
+/// Populated from <see cref="Aiel.Actions.IActor.AuditIdentity"/> by <see cref="IMessageEnvelopeFactory"/>.
 /// </summary>
 public readonly record struct ActorIdentifier(String Value);

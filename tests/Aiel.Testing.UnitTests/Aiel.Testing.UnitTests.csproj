@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
     </ItemGroup>

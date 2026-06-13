@@ -6,6 +6,7 @@
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <IsToolingTests>true</IsToolingTests>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,7 +27,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Mediator.Analyzers\Aiel.Mediator.Analyzers.csproj" />
-        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

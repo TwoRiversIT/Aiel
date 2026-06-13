@@ -64,37 +64,37 @@ public sealed class AuthorizationGrant : StateBasedAggregateRoot<AuthorizationGr
     /// <summary>
     /// Gets the stable permission identifier referenced by the grant.
     /// </summary>
-    public PermissionStableId PermissionStableId { get; private set; }
+    public PermissionStableId PermissionStableId { get; }
 
     /// <summary>
     /// Gets the current published permission name referenced by the grant.
     /// </summary>
-    public PermissionName PermissionName { get; private set; }
+    public PermissionName PermissionName { get; }
 
     /// <summary>
     /// Gets the scope type required by the grant.
     /// </summary>
-    public AuthorizationScopeTypeName ScopeType { get; private set; }
+    public AuthorizationScopeTypeName ScopeType { get; }
 
     /// <summary>
     /// Gets the specific scope key targeted by the grant.
     /// </summary>
-    public AuthorizationScopeKey ScopeKey { get; private set; }
+    public AuthorizationScopeKey ScopeKey { get; }
 
     /// <summary>
     /// Gets the subject type targeted by the grant.
     /// </summary>
-    public AuthorizationSubjectTypeName SubjectType { get; private set; }
+    public AuthorizationSubjectTypeName SubjectType { get; }
 
     /// <summary>
     /// Gets the specific subject key targeted by the grant.
     /// </summary>
-    public AuthorizationSubjectKey SubjectKey { get; private set; }
+    public AuthorizationSubjectKey SubjectKey { get; }
 
     /// <summary>
     /// Gets the persisted grant decision.
     /// </summary>
-    public AuthorizationGrantDecision Decision { get; private set; }
+    public AuthorizationGrantDecision Decision { get; }
 
     /// <summary>
     /// Creates a permission grant from explicit permission identity values.

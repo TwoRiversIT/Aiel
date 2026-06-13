@@ -31,7 +31,7 @@ internal abstract class NotificationHandlerBase
     public abstract ValueTask HandleAsync(
         Object notification,
         IServiceProvider provider,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 
 internal sealed class NotificationHandlerWrapper<TNotification>
@@ -41,7 +41,7 @@ internal sealed class NotificationHandlerWrapper<TNotification>
     public override async ValueTask HandleAsync(
         Object notification,
         IServiceProvider provider,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var typed = (TNotification)notification;
         var handlers = provider.GetServices<INotificationHandler<TNotification>>();

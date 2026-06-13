@@ -38,7 +38,7 @@ public sealed class MissingEventIdInMessageCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Service started"|})]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Service started"|})]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -47,7 +47,7 @@ public sealed class MissingEventIdInMessageCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Service started")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Service started")]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -67,7 +67,7 @@ public sealed class MissingEventIdInMessageCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:""|})]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = {|#0:""|})]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -76,7 +76,7 @@ public sealed class MissingEventIdInMessageCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ")]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -96,7 +96,7 @@ public sealed class MissingEventIdInMessageCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Processing {Name} for {UserId}"|})]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Processing {Name} for {UserId}"|})]
                 public static partial void Processing(this ILogger logger, string name, int userId);
             }
             """;
@@ -105,7 +105,7 @@ public sealed class MissingEventIdInMessageCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Processing {Name} for {UserId}")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Processing {Name} for {UserId}")]
                 public static partial void Processing(this ILogger logger, string name, int userId);
             }
             """;

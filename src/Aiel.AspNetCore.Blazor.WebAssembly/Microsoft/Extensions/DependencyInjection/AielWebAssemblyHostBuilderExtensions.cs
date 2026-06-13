@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Framework;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Diagnostics.CodeAnalysis;
@@ -34,13 +34,13 @@ public static class AielWebAssemblyHostBuilderExtensions
     /// dependency tree by reflecting over <typeparamref name="TApplication"/> and
     /// following all the <see cref="DependsOnAttribute"/> attributes.
     /// </summary>
-    /// <typeparam name="TApplication">A descendant of <see cref="AielApplication"/>.</typeparam>
+    /// <typeparam name="TApplication">A descendant of <see cref="AielApplicationConfigurator"/>.</typeparam>
     /// <param name="builder">The WebAssembly host builder.</param>
     /// <returns>The same <see cref="WebAssemblyHostBuilder"/> instance for chaining.</returns>
     public static async Task<WebAssemblyHostBuilder> AddApplicationAsync<TApplication>(
         this WebAssemblyHostBuilder builder,
         CancellationToken cancellationToken = default)
-        where TApplication : AielApplication, new()
+        where TApplication : AielApplicationConfigurator, new()
     {
         ArgumentNullException.ThrowIfNull(builder);
 

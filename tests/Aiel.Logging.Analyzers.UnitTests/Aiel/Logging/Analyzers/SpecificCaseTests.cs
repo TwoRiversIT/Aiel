@@ -36,13 +36,13 @@ public class SpecificCaseTests
 
             public static partial class MigrationLoggingExtensions
             {
-                [LoggerMessage(EventId = (Int32)AielEventIds.Migrations_ApplyingMigrationsStarted, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
+                [LoggerMessage(EventId = (Int32)AielEvent.Migrations_ApplyingMigrationsStarted, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
                 public static partial void LogApplyingMigrations(this ILogger logger, String databaseName);
             }
             """;
 
         const String eventIds = """
-            public enum AielEventIds
+            public enum AielEvent
             {
                 Migrations_ApplyingMigrationsStarted = 3000,
             }
@@ -68,13 +68,13 @@ public class SpecificCaseTests
 
             public static partial class MigrationLoggingExtensions
             {
-                [LoggerMessage(EventId = (Int32)AielEventIds.Migrations_ApplyingMigrationsStarted, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
+                [LoggerMessage(EventId = (Int32)AielEvent.Migrations_ApplyingMigrationsStarted, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
                 public static partial void LogApplyingMigrations(this ILogger logger, String databaseName);
             }
             """;
 
         const String eventIds = """
-            public enum AielEventIds
+            public enum AielEvent
             {
                 Migrations_ApplyingMigrationsStarted = 3000,
             }
@@ -84,7 +84,8 @@ public class SpecificCaseTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
-                .WithSpan(5, 128, 5, 165).WithArguments("Applying Migrations: {DatabaseName}")
+                .WithSpan(5, 125, 5, 162)
+                .WithArguments("Applying Migrations: {DatabaseName}")
         };
 
         await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>

@@ -160,7 +160,7 @@ public sealed class ActionAuthorizationAnalyzer : DiagnosticAnalyzer
         return null;
     }
 
-    private static Location? GetAttributeLocation(AttributeData attributeData, CancellationToken cancellationToken)
+    private static Location? GetAttributeLocation(AttributeData attributeData, CancellationToken cancellationToken = default)
     {
         var syntaxRef = attributeData.ApplicationSyntaxReference;
         if (syntaxRef is null)

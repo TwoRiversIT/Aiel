@@ -23,7 +23,6 @@
 using Aiel.Results;
 using Microsoft.EntityFrameworkCore;
 using Riok.Mapperly.Abstractions;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.Testing.Customers;
 
@@ -97,16 +96,16 @@ public record UpdateCustomerCommand(
 
 public interface ICustomerApplicationService
 {
-    Task<Result<Guid>> CreateCustomerAsync(CreateCustomerCommand command, CancellationToken cancellationToken);
-    Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdQuery query, CancellationToken cancellationToken);
-    Task<Result> UpdateCustomerAsync(UpdateCustomerCommand command, CancellationToken cancellationToken);
+    Task<Result<Guid>> CreateCustomerAsync(CreateCustomerCommand command, CancellationToken cancellationToken = default);
+    Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdQuery query, CancellationToken cancellationToken = default);
+    Task<Result> UpdateCustomerAsync(UpdateCustomerCommand command, CancellationToken cancellationToken = default);
 }
 
 public class CustomerApplicationService(ICustomerRepository repository) : ICustomerApplicationService
 {
     private readonly ICustomerRepository _repository = repository;
 
-    public async Task<Result<Guid>> CreateCustomerAsync(CreateCustomerCommand command, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> CreateCustomerAsync(CreateCustomerCommand command, CancellationToken cancellationToken = default)
     {
         var entity = command.ToEntity();
 
@@ -115,7 +114,7 @@ public class CustomerApplicationService(ICustomerRepository repository) : ICusto
         return result;
     }
 
-    public async Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<CustomerDto>> GetCustomerByIdAsync(GetCustomerByIdQuery query, CancellationToken cancellationToken = default)
     {
         var customer = await _repository.GetByIdAsync(query.Id, cancellationToken);
 
@@ -124,7 +123,7 @@ public class CustomerApplicationService(ICustomerRepository repository) : ICusto
         return Result<CustomerDto>.Success(dto);
     }
 
-    public async Task<Result> UpdateCustomerAsync(UpdateCustomerCommand command, CancellationToken cancellationToken)
+    public async Task<Result> UpdateCustomerAsync(UpdateCustomerCommand command, CancellationToken cancellationToken = default)
     {
         var existing = await _repository.GetByIdAsync(command.Id, cancellationToken);
 
@@ -160,16 +159,16 @@ public class NotFoundError(String description) : Error(NotFoundErrorCode.Instanc
 
 public interface ICustomerRepository
 {
-    Task<Result<Guid>> CreateAsync(Customer customer, CancellationToken cancellationToken);
-    Task<Customer> GetByIdAsync(Guid id, CancellationToken cancellationToken);
-    Task<Result> UpdateAsync(Customer customer, CancellationToken cancellationToken);
+    Task<Result<Guid>> CreateAsync(Customer customer, CancellationToken cancellationToken = default);
+    Task<Customer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<Result> UpdateAsync(Customer customer, CancellationToken cancellationToken = default);
 }
 
 public class CustomerRepository(CustomerDbContext dbContext) : ICustomerRepository
 {
     private readonly CustomerDbContext _dbContext = dbContext;
 
-    public async Task<Result<Guid>> CreateAsync(Customer customer, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> CreateAsync(Customer customer, CancellationToken cancellationToken = default)
     {
         await _dbContext.Customers.AddAsync(customer, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
@@ -177,7 +176,7 @@ public class CustomerRepository(CustomerDbContext dbContext) : ICustomerReposito
         return customer.Id;
     }
 
-    public async Task<Customer> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Customer> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var entity = await _dbContext.Customers
             .SingleOrDefaultAsync(e => e.Id == id, cancellationToken);
@@ -185,7 +184,7 @@ public class CustomerRepository(CustomerDbContext dbContext) : ICustomerReposito
         return entity!;
     }
 
-    public async Task<Result> UpdateAsync(Customer customer, CancellationToken cancellationToken)
+    public async Task<Result> UpdateAsync(Customer customer, CancellationToken cancellationToken = default)
     {
         //var existing = await _dbContext.Customers
         //    .SingleOrDefaultAsync(e => e.Id == customer.Id, cancellationToken);
@@ -204,8 +203,6 @@ public class CustomerRepository(CustomerDbContext dbContext) : ICustomerReposito
     }
 }
 
-[SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code", Justification = "<Pending>")]
-[SuppressMessage("AOT", "IL3050:Calling members annotated with 'RequiresDynamicCodeAttribute' may break functionality when AOT compiling.", Justification = "<Pending>")]
 public class CustomerDbContext(DbContextOptions<CustomerDbContext> options)
     : DbContext(options)
 {

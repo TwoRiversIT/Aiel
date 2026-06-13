@@ -21,30 +21,36 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions;
-using Aiel.Commands;
-using Aiel.Queries;
+using Aiel.Actions.Commands;
+using Aiel.Actions.Queries;
+using Aiel.Authorization;
 using Aiel.Results;
 using System.Collections.Concurrent;
 
 namespace Aiel.Mediator;
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record MissingHandlerCommand : ICommand;
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record MissingHandlerQuery : IQuery<String>;
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record ScopedResolutionCommand : ICommand;
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed class ScopedResolutionCommandHandler : ICommandHandler<ScopedResolutionCommand>
 {
-    public ValueTask<Result> HandleAsync(ScopedResolutionCommand action, CancellationToken cancellationToken)
+    public ValueTask<Result> HandleAsync(ScopedResolutionCommand action, CancellationToken cancellationToken = default)
         => ValueTask.FromResult(Result.Success());
 }
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record ScopedResolutionQuery : IQuery<String>;
 
 public sealed class ScopedResolutionQueryHandler : IQueryHandler<ScopedResolutionQuery, String>
 {
-    public ValueTask<Result> HandleAsync(ScopedResolutionQuery action, CancellationToken cancellationToken)
+    public ValueTask<Result> HandleAsync(ScopedResolutionQuery action, CancellationToken cancellationToken = default)
         => ValueTask.FromResult<Result>(Result.Success("scanned"));
 }
 
@@ -52,7 +58,7 @@ public sealed record ScopedResolutionNotification : INotification;
 
 public sealed class ScopedResolutionNotificationHandler : INotificationHandler<ScopedResolutionNotification>
 {
-    public ValueTask HandleAsync(ScopedResolutionNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(ScopedResolutionNotification notification, CancellationToken cancellationToken = default)
         => ValueTask.CompletedTask;
 }
 
@@ -60,24 +66,25 @@ public sealed record FaultingNotification : INotification;
 
 public sealed class FaultingNotificationHandler : INotificationHandler<FaultingNotification>
 {
-    public ValueTask HandleAsync(FaultingNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(FaultingNotification notification, CancellationToken cancellationToken = default)
         => throw new InvalidOperationException("handler fault");
 }
 
 public sealed class NonFaultingNotificationHandler(NotificationExecutionTracker tracker)
     : INotificationHandler<FaultingNotification>
 {
-    public ValueTask HandleAsync(FaultingNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(FaultingNotification notification, CancellationToken cancellationToken = default)
         => tracker.RecordAsync(cancellationToken);
 }
 
 public sealed class NotABehavior<T> { }
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record OrderedCommand : ICommand;
 
 public sealed class OrderedCommandHandler(ConcurrentQueue<String> callLog) : ICommandHandler<OrderedCommand>
 {
-    public ValueTask<Result> HandleAsync(OrderedCommand action, CancellationToken cancellationToken)
+    public ValueTask<Result> HandleAsync(OrderedCommand action, CancellationToken cancellationToken = default)
     {
         callLog.Enqueue("handler");
         return ValueTask.FromResult(Result.Success());
@@ -91,7 +98,7 @@ public sealed class OuterRecordingBehavior<TAction>(ConcurrentQueue<String> call
     public async ValueTask<Result> HandleAsync(
         TAction request,
         ActionHandlerDelegate next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         callLog.Enqueue("outer:before");
         var result = await next();
@@ -107,7 +114,7 @@ public sealed class InnerRecordingBehavior<TAction>(ConcurrentQueue<String> call
     public async ValueTask<Result> HandleAsync(
         TAction request,
         ActionHandlerDelegate next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         callLog.Enqueue("inner:before");
         var result = await next();
@@ -116,19 +123,21 @@ public sealed class InnerRecordingBehavior<TAction>(ConcurrentQueue<String> call
     }
 }
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record SuccessfulQuery(String Value) : IQuery<String>;
 
 public sealed class SuccessfulQueryHandler : IQueryHandler<SuccessfulQuery, String>
 {
-    public ValueTask<Result> HandleAsync(SuccessfulQuery action, CancellationToken cancellationToken)
+    public ValueTask<Result> HandleAsync(SuccessfulQuery action, CancellationToken cancellationToken = default)
         => ValueTask.FromResult<Result>(Result.Success(action.Value));
 }
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record ShortCircuitedQuery(String Value) : IQuery<String>;
 
 public sealed class ShortCircuitedQueryHandler : IQueryHandler<ShortCircuitedQuery, String>
 {
-    public ValueTask<Result> HandleAsync(ShortCircuitedQuery action, CancellationToken cancellationToken)
+    public ValueTask<Result> HandleAsync(ShortCircuitedQuery action, CancellationToken cancellationToken = default)
         => ValueTask.FromResult<Result>(Result.Success(action.Value));
 }
 
@@ -138,17 +147,18 @@ public sealed class ShortCircuitFailureBehavior<TAction> : IPipelineBehavior<TAc
     public ValueTask<Result> HandleAsync(
         TAction request,
         ActionHandlerDelegate next,
-        CancellationToken cancellationToken)
-        => ValueTask.FromResult(Result.Failure(new TestError()));
+        CancellationToken cancellationToken = default)
+        => ValueTask.FromResult(Result.Failure(new TestError("Test error")));
 }
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record ScopeTrackingCommand : ICommand;
 
 public sealed class ScopeTrackingCommandHandler(
     DispatchScopeMarker scopeMarker,
     ConcurrentQueue<Guid> seenScopeIds) : ICommandHandler<ScopeTrackingCommand>
 {
-    public ValueTask<Result> HandleAsync(ScopeTrackingCommand action, CancellationToken cancellationToken)
+    public ValueTask<Result> HandleAsync(ScopeTrackingCommand action, CancellationToken cancellationToken = default)
     {
         seenScopeIds.Enqueue(scopeMarker.Id);
         return ValueTask.FromResult(Result.Success());
@@ -167,14 +177,14 @@ public sealed record ParallelismProbeNotification : INotification;
 public sealed class FirstParallelismProbeHandler(NotificationExecutionTracker tracker)
     : INotificationHandler<ParallelismProbeNotification>
 {
-    public ValueTask HandleAsync(ParallelismProbeNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(ParallelismProbeNotification notification, CancellationToken cancellationToken = default)
         => tracker.RecordAsync(cancellationToken);
 }
 
 public sealed class SecondParallelismProbeHandler(NotificationExecutionTracker tracker)
     : INotificationHandler<ParallelismProbeNotification>
 {
-    public ValueTask HandleAsync(ParallelismProbeNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(ParallelismProbeNotification notification, CancellationToken cancellationToken = default)
         => tracker.RecordAsync(cancellationToken);
 }
 
@@ -183,7 +193,7 @@ public sealed record OrderedNotification : INotification;
 public sealed class FirstOrderedNotificationHandler(ConcurrentQueue<String> callLog)
     : INotificationHandler<OrderedNotification>
 {
-    public ValueTask HandleAsync(OrderedNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(OrderedNotification notification, CancellationToken cancellationToken = default)
     {
         callLog.Enqueue("first");
         return ValueTask.CompletedTask;
@@ -193,20 +203,21 @@ public sealed class FirstOrderedNotificationHandler(ConcurrentQueue<String> call
 public sealed class SecondOrderedNotificationHandler(ConcurrentQueue<String> callLog)
     : INotificationHandler<OrderedNotification>
 {
-    public ValueTask HandleAsync(OrderedNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(OrderedNotification notification, CancellationToken cancellationToken = default)
     {
         callLog.Enqueue("second");
         return ValueTask.CompletedTask;
     }
 }
 
+[DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record DisposalTrackingCommand : ICommand;
 
 public sealed class DisposalTrackingCommandHandler(
     DisposableScopeMarker scopeMarker,
     ScopeDisposalTracker tracker) : ICommandHandler<DisposalTrackingCommand>
 {
-    public ValueTask<Result> HandleAsync(DisposalTrackingCommand action, CancellationToken cancellationToken)
+    public ValueTask<Result> HandleAsync(DisposalTrackingCommand action, CancellationToken cancellationToken = default)
     {
         tracker.RecordUse(scopeMarker.Id);
         return ValueTask.FromResult(Result.Success());
@@ -219,7 +230,7 @@ public sealed class DisposalTrackingNotificationHandler(
     DisposableScopeMarker scopeMarker,
     ScopeDisposalTracker tracker) : INotificationHandler<DisposalTrackingNotification>
 {
-    public ValueTask HandleAsync(DisposalTrackingNotification notification, CancellationToken cancellationToken)
+    public ValueTask HandleAsync(DisposalTrackingNotification notification, CancellationToken cancellationToken = default)
     {
         tracker.RecordUse(scopeMarker.Id);
         return ValueTask.CompletedTask;
@@ -235,7 +246,7 @@ public sealed class NotificationExecutionTracker
     public Int32 InvocationCount => _invocationCount;
     public Int32 MaxConcurrentHandlers => _maxConcurrentHandlers;
 
-    public async ValueTask RecordAsync(CancellationToken cancellationToken)
+    public async ValueTask RecordAsync(CancellationToken cancellationToken = default)
     {
         var active = Interlocked.Increment(ref _activeHandlers);
         Interlocked.Increment(ref _invocationCount);
@@ -296,10 +307,3 @@ public sealed class DisposableScopeMarker(Guid id, ScopeDisposalTracker tracker)
         return ValueTask.CompletedTask;
     }
 }
-
-public sealed class TestErrorCode : ErrorCode
-{
-    protected override String Name => "TEST_ERROR";
-}
-
-public sealed class TestError() : Error(new TestErrorCode(), "Test error");

@@ -20,11 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Aiel.Authorization.AspNetCore;
 
-[SuppressMessage("Roslynator", "RCS1102:Make class static", Justification = "No, it is used as an entry point for WebApplicationFactory<TEntryPoint>.")]
 public class Program
 {
     private static void Main(String[] args)

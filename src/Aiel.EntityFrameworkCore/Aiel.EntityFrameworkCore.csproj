@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -22,7 +22,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\Aiel.Actions.Commands\Aiel.Actions.Commands.csproj" />
+        <ProjectReference Include="..\Aiel.DataAccess\Aiel.DataAccess.csproj" />
+        <ProjectReference Include="..\Aiel.Framework\Aiel.Framework.csproj" />
         <ProjectReference Include="..\Aiel.Application\Aiel.Application.csproj" />
         <ProjectReference Include="..\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
     </ItemGroup>

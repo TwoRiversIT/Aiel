@@ -21,8 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions;
-using Aiel.Commands;
-using Aiel.Execution;
+using Aiel.Actions.Commands;
 using Aiel.Results;
 
 namespace Aiel.Authorization;
@@ -108,7 +107,7 @@ public sealed class ActionGateCommandPipelineBehaviorTests
         var result = await behavior.HandleAsync(
             new TestCommand(),
             DefaultExecutionContext.CreateRoot(new TestActor()),
-            _ => Task.FromResult(Result.Failure(new TestError())),
+            _ => Task.FromResult(Result.Failure(new TestError("I do not know what I am doing"))),
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();
@@ -161,11 +160,4 @@ public sealed class ActionGateCommandPipelineBehaviorTests
         public Guid? ClientInstanceId => parent.ClientInstanceId;
         public IDictionary<String, Object?> Properties => parent.Properties;
     }
-
-    private sealed class TestErrorCode : ErrorCode
-    {
-        protected override String Name => "TEST_ERROR";
-    }
-
-    private sealed class TestError() : Error(new TestErrorCode(), "Test error");
 }

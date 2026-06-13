@@ -37,7 +37,7 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
 {
     public async ValueTask<Result> HandleAsync(
         CreateUserCommand command,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         // Mutate state, return Result.Success() or Result.Failure(error)
     }
@@ -47,7 +47,7 @@ public sealed class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserDto>
 {
     public async ValueTask<Result> HandleAsync(
         GetUserQuery query,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         // Read state, return Result.Success(dto) or Result.Failure(error)
         // Note: implementations must return Result<TDto> for the value to reach the caller
@@ -66,7 +66,7 @@ public sealed class MyBehavior<TAction> : IPipelineBehavior<TAction>
     public async ValueTask<Result> HandleAsync(
         TAction request,
         ActionHandlerDelegate next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         // Before: inspect request
         var result = await next();
@@ -87,7 +87,7 @@ public sealed class SendWelcomeEmailHandler : INotificationHandler<UserCreatedNo
 {
     public async ValueTask HandleAsync(
         UserCreatedNotification notification,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         // Send email. Exceptions are logged via ILogger and swallowed; all handlers run regardless of prior failures.
     }
@@ -223,7 +223,7 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
 
     public async ValueTask<Result> HandleAsync(
         CreateUserCommand command,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var user = new User(command.Name, command.Email);
         await _users.AddAsync(user, cancellationToken);

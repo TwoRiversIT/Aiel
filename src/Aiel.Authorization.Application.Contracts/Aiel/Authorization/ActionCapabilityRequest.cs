@@ -28,7 +28,6 @@ namespace Aiel.Authorization;
 public sealed class ActionCapabilityRequest
 {
     private static readonly IReadOnlyList<PermissionName> EmptyRequestedPermissions = [];
-    private readonly IReadOnlyList<PermissionName> _requestedPermissions;
 
     private ActionCapabilityRequest(
         AuthorizationScopeTypeName scopeType,
@@ -40,7 +39,7 @@ public sealed class ActionCapabilityRequest
         ScopeType = scopeType;
         ScopeKey = scopeKey;
         Mode = mode;
-        _requestedPermissions = NormalizeRequestedPermissions(requestedPermissions);
+        RequestedPermissions = NormalizeRequestedPermissions(requestedPermissions);
         ContinuationToken = continuationToken;
     }
 
@@ -62,7 +61,7 @@ public sealed class ActionCapabilityRequest
     /// <summary>
     /// Gets the explicitly requested permissions.
     /// </summary>
-    public IReadOnlyList<PermissionName> RequestedPermissions => _requestedPermissions;
+    public IReadOnlyList<PermissionName> RequestedPermissions { get; }
 
     /// <summary>
     /// Gets the continuation token for the requested page.

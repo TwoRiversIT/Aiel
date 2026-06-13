@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Emailing.Abstractions.Aiel.Emailing;
 using Microsoft.Extensions.Options;
 
 namespace Aiel.Emailing;

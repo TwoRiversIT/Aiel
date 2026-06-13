@@ -12,19 +12,19 @@ Aiel already has the core shape of Strong ID support:
 
 - `IStrongId` and `IStrongId<TValue>` live in `Aiel.Domain`.
 - `StrongIdAttribute<TValue>` and `StrongIdBackingKind` live in `Aiel.Domain`.
-- `StrongIdSourceGenerator` lives in `Aiel.Generators`.
+- `StrongIdSourceGenerator` lives in `Aiel.Framework.Generators`.
 - Strong ID diagnostics currently live in shared Roslyn descriptor files used by the generator and analyzer projects.
 - `AggregateRoot<TKey>`, `Entity<TKey>`, and `IRepository<TEntity, TId>` already constrain identifiers to `IStrongId`.
 - `DomainPrimitives-StrongID.md` already defines the intended authoring model and generator contract.
 
 That is a good starting point, but it is not yet a first-class feature. The current placement makes
 Strong ID look like a domain primitive owned by `Aiel.Domain`, while the required generator is
-owned by a broad `Aiel.Generators` package. Consumers can see the attribute and interfaces without
+owned by a broad `Aiel.Framework.Generators` package. Consumers can see the attribute and interfaces without
 necessarily receiving the generator that makes the recommended declaration shape work.
 
-The root `Aiel` package currently packs `Aiel.Analyzers` into `analyzers/dotnet/cs` and
-references `Aiel.Analyzers` as an analyzer project during local builds. It does not pack or
-reference `Aiel.Generators` in the same way. That matters because Strong ID authoring depends on
+The root `Aiel` package currently packs `Aiel.Framework.Analyzers` into `analyzers/dotnet/cs` and
+references `Aiel.Framework.Analyzers` as an analyzer project during local builds. It does not pack or
+reference `Aiel.Framework.Generators` in the same way. That matters because Strong ID authoring depends on
 generation, not only analysis.
 
 If permissions are going to use Strong IDs for grant IDs, scope keys, subject keys, actor IDs,
@@ -52,7 +52,7 @@ public readonly partial record struct AppointmentId;
 ```
 
 The consumer should receive the required generator and analyzers by referencing the Strong ID package.
-A project should not need to separately discover that `Aiel.Generators` is required.
+A project should not need to separately discover that `Aiel.Framework.Generators` is required.
 
 ---
 
@@ -141,8 +141,8 @@ Preferred model:
 3. `Aiel` may include `Aiel.StrongIds` as a dependency or repack its analyzer assets, but the
     direct Strong ID package remains the authoritative delivery unit.
 
-This differs from the current root package shape where `Aiel` explicitly packs `Aiel.Analyzers`,
-while `Aiel.Generators` remains separate. That current shape is not sufficient for first-class
+This differs from the current root package shape where `Aiel` explicitly packs `Aiel.Framework.Analyzers`,
+while `Aiel.Framework.Generators` remains separate. That current shape is not sufficient for first-class
 Strong ID because the generator is required for the recommended authoring model.
 
 Open packaging decision: decide whether `Aiel.StrongIds` directly includes the generator/analyzer
@@ -231,7 +231,7 @@ The generator should continue to reject:
 - user-declared instance constructors
 - unsupported backing value types
 
-Generator tests should move from the broad `Aiel.Generators.UnitTests` project into a dedicated
+Generator tests should move from the broad `Aiel.Framework.Generators.UnitTests` project into a dedicated
 `Aiel.StrongIds.Generators.UnitTests` project, or at least into a dedicated test folder if the test
 project split is deferred.
 

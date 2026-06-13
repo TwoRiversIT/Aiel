@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\Aiel.AspNetCore.Blazor.WebAssembly\Aiel.AspNetCore.Blazor.WebAssembly.csproj" />
     </ItemGroup>
 

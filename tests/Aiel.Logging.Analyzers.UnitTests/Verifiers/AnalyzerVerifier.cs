@@ -42,7 +42,7 @@ internal static class AielAnalyzerVerifier<TAnalyzer>
     /// with the standard stubs loaded.
     /// </summary>
     /// <param name="source">C# source with optional diagnostic markers.</param>
-    /// <param name="eventIdsSource">Override the EventIds enum stub. <see langword="null"/> uses the default AielEventIds stub.</param>
+    /// <param name="eventIdsSource">Override the EventIds enum stub. <see langword="null"/> uses the default AielEvent stub.</param>
     /// <param name="expected">Diagnostics expected in the source. Pass <see langword="null"/> for no-diagnostic tests.</param>
     public static CSharpAnalyzerTest<TAnalyzer, DefaultVerifier> CreateTest(
         String source,

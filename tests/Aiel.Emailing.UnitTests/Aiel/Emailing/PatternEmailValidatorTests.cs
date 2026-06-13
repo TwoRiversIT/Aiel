@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Emailing.Abstractions.Aiel.Emailing;
+
 namespace Aiel.Emailing;
 
 // This is 'internal' to block the tests from running because too many fail

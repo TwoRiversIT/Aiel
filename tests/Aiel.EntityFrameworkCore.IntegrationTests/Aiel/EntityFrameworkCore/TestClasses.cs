@@ -52,7 +52,7 @@ public class Customer : Entity
     public String Name { get; set; } = String.Empty;
     public virtual ICollection<Invoice> Invoices { get; set; } = [];
 
-    [SuppressMessage("Usage", "BG1001:The Faker[T] has missing property or field rules", Justification = "<Pending>")]
+    [SuppressMessage("Usage", "BG1001:The Faker[TEntity] has missing property or field rules", Justification = "<Pending>")]
     public static Customer Fake() => new Faker<Customer>()
         .RuleFor(c => c.Name, f => f.Person.FullName);
 }
@@ -84,7 +84,7 @@ public class Invoice : Entity
 
     public virtual ICollection<LineItem> LineItems { get; set; } = [];
 
-    [SuppressMessage("Usage", "BG1001:The Faker[T] has missing property or field rules", Justification = "<Pending>")]
+    [SuppressMessage("Usage", "BG1001:The Faker[TEntity] has missing property or field rules", Justification = "<Pending>")]
     public static Invoice Fake() => new Faker<Invoice>()
                 .RuleFor(i => i.InvoiceDate, f => f.Date.Past())
                 .RuleFor(i => i.InvoiceNumber, f => f.Lorem.Word());
@@ -157,7 +157,7 @@ public class Product : Entity
     public String Description { get; set; } = String.Empty;
     public Decimal UnitPrice { get; set; }
 
-    [SuppressMessage("Usage", "BG1001:The Faker[T] has missing property or field rules", Justification = "<Pending>")]
+    [SuppressMessage("Usage", "BG1001:The Faker[TEntity] has missing property or field rules", Justification = "<Pending>")]
     public static Product Fake() => new Faker<Product>()
         .RuleFor(p => p.Name, f => f.Commerce.Product())
         .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())

@@ -32,7 +32,7 @@ app.MapGet("/tenant-optional", handler);
 app.MapGet("/tenant-info", async Task<IResult> (
     HttpContext context,
     ITenantAccessor tenantAccessor,
-    CancellationToken cancellationToken) =>
+    CancellationToken cancellationToken = default) =>
 {
     var tenantResolution = context.GetTenantResolution();
 

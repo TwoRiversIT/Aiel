@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Framework;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -31,7 +31,7 @@ public static class AielWebAssemblyHostExtensions
 {
     /// <summary>
     /// Resolves the registered dependency graph and calls
-    /// <see cref="IDependencyInitializer.InitializeAsync"/> on each dependency that implements it,
+    /// <see cref="IInitializer.InitializeAsync"/> on each dependency that implements it,
     /// in post-order (dependencies before dependents). Prefers <see cref="IDependencyManager"/>
     /// when registered (source-generated graphs).
     /// </summary>
@@ -84,7 +84,7 @@ public static class AielWebAssemblyHostExtensions
         while (initOrder.Count > 0)
         {
             var node = initOrder.Pop();
-            if (node.Instance is IDependencyInitializer initializer)
+            if (node.Instance is IInitializer initializer)
             {
                 await initializer.InitializeAsync(context, cancellationToken);
             }

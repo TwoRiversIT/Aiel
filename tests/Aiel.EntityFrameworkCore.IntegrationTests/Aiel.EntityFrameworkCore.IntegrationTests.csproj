@@ -14,16 +14,11 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.9">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore\Aiel.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
-        <ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds.EntityFrameworkCore\Aiel.StrongIds.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
     </ItemGroup>

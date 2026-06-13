@@ -47,7 +47,7 @@ public sealed class UseAielEventIdsCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] Started")]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -79,7 +79,7 @@ public sealed class UseAielEventIdsCodeFixTests
             public enum SomeOtherEnum { Foo = 1001 }
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] msg")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] msg")]
                 public static partial void Foo(this ILogger logger);
             }
             """;

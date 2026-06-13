@@ -101,7 +101,7 @@ public sealed class MissingEventIdInMessageCodeFix : CodeFixProvider
     private static async Task<Document> PrependPlaceholderAsync(
         Document document,
         AttributeArgumentSyntax argSyntax,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var root = await document
             .GetSyntaxRootAsync(cancellationToken)

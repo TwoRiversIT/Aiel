@@ -24,7 +24,7 @@ namespace Aiel.MessageBus;
 
 /// <summary>
 /// Transport-safe snapshot of the actor that produced a message. Created by
-/// <see cref="IMessageEnvelopeFactory"/> from the local <see cref="Aiel.Execution.IActor"/>
+/// <see cref="IMessageEnvelopeFactory"/> from the local <see cref="Aiel.Actions.IActor"/>
 /// at publish time.
 /// </summary>
 public sealed record MessageActorSnapshot(ActorKind Kind, ActorIdentifier Identifier);

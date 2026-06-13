@@ -9,13 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aiel.Authorization.Generators" Version="$(AielVersion)">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application\Aiel.Authorization.Application.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Testing\Aiel.Authorization.Testing.csproj" />

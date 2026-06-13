@@ -40,7 +40,7 @@ public static class RescheduleAppointmentEndpoint
         HttpContext httpContext,
         IAppointmentApplicationService applicationService,
         IExecutionContextFactory executionContextFactory,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(httpContext);

@@ -54,7 +54,7 @@ public class ResultsIntegrationTestFixture : IntegrationTestFixture
         services.AddResultPattern();
     }
 
-    protected override ValueTask InitializeFixtureAsync(IServiceProvider services)
+    protected override ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var logger = services.GetRequiredService<ILogger<ResultsIntegrationTestFixture>>();
         logger.LogInformation("""

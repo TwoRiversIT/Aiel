@@ -20,11 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Framework;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
-[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielStrongIds))]
 public sealed class AielDomain : AielDependencyConfigurator;

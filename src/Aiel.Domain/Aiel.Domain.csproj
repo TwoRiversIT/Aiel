@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<RootNamespace />
@@ -12,7 +12,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Aiel\Aiel.csproj" />
+	  <ProjectReference Include="..\Aiel.Actions\Aiel.Actions.csproj" />
+	  <ProjectReference Include="..\Aiel.Domain.Abstractions\Aiel.Domain.Abstractions.csproj" />
+	  <ProjectReference Include="..\Aiel.Domain.Shared\Aiel.Domain.Shared.csproj" />
+	  <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
 	  <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
 	</ItemGroup>
 

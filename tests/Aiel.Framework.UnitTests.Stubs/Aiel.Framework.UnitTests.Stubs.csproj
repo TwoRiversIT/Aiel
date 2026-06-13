@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Framework.UnitTests.Stubs</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <IsToolingTests>true</IsToolingTests>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="Aiel\Framework\Stubs\Usings.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielApplicationConfigurator.cs" Link="Aiel\Framework\Stubs\AielApplicationConfigurator.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDependency.cs" Link="Aiel\Framework\Stubs\AielDependency.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDependencyConfigurator.cs" Link="Aiel\Framework\Stubs\AielDependencyConfigurator.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielEnvironment.cs" Link="Aiel\Framework\Stubs\AielEnvironment.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielFrameworkAbstractions.cs" Link="Aiel\Framework\Stubs\AielFrameworkAbstractions.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyConfigurationContext.cs" Link="Aiel\Framework\Stubs\DependencyConfigurationContext.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyContext.cs" Link="Aiel\Framework\Stubs\DependencyContext.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyDescriptor.cs" Link="Aiel\Framework\Stubs\DependencyDescriptor.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyInitializationContext.cs" Link="Aiel\Framework\Stubs\DependencyInitializationContext.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependsOnAttribute.cs" Link="Aiel\Framework\Stubs\DependsOnAttribute.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IConfigurator.cs" Link="Aiel\Framework\Stubs\IConfigurator.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IDependencyManager.cs" Link="Aiel\Framework\Stubs\IDependencyManager.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IInitializer.cs" Link="Aiel\Framework\Stubs\IInitializer.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel\Aiel\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
+        <EmbeddedResource Include="Aiel\Framework\Stubs\Usings.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+    </ItemGroup>
+
+</Project>

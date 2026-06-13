@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Mediator\Aiel.Mediator.csproj" />
     </ItemGroup>
 

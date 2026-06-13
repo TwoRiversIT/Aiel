@@ -1,0 +1,270 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using Aiel.Framework.Analyzers.Internal;
+using Aiel.Internal;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Immutable;
+
+namespace Aiel.Framework.Analyzers;
+
+/// <summary>
+/// Ensures that any assembly that references Aiel defines exactly one public,
+/// non-abstract <c>AielDependencyConfigurator</c> subclass with a public parameterless constructor.
+/// </summary>
+/// <remarks>
+/// If the assembly is a library, it must define a single class that inherits from
+/// <c>AielDependencyConfigurator</c>. If the assembly is the host application, it is the
+/// composition root for the dependency graph, and must define a single class that
+/// inherits from <c>AielApplicationConfigurator</c>.
+/// </remarks>
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
+{
+    private const String DependencyName = "Aiel.Framework.AielDependencyConfigurator";
+    private const String ApplicationName = "Aiel.Framework.AielApplicationConfigurator";
+
+    private static readonly DiagnosticDescriptor DependencyIsNotSealed = new(
+        id: DiagnosticRuleIDs.AIEL00020_DependencyIsNotSealedId,
+        title: "Root dependency type must be sealed",
+        messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplicationConfigurator` or `AielDependencyConfigurator`",
+        category: DiagnosticMetadata.UsageCategory,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "A root dependency type was found, but it is not sealed.",
+        customTags: []);
+
+    /// <inheritdoc />
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        => [DiagnosticDescriptors.RootDependencyRequired, DependencyIsNotSealed];
+
+    private record struct TrNamedTypes(INamedTypeSymbol Dependency, INamedTypeSymbol Application);
+
+    public override void Initialize(AnalysisContext context)
+    {
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.EnableConcurrentExecution();
+
+        context.RegisterCompilationAction(compilationContext =>
+        {
+            var trApplicationSymbol = compilationContext.Compilation.GetTypeByMetadataName(ApplicationName);
+            var trDependencySymbol = compilationContext.Compilation.GetTypeByMetadataName(DependencyName);
+
+            if (trApplicationSymbol is null || trDependencySymbol is null)
+            {
+                // If both are missing then the assembly doesn't reference Aiel at all.
+                // If either type is missing, WTF!
+                // Either way, no need to analyze.
+                return;
+            }
+
+            var trTypes = new TrNamedTypes(trDependencySymbol!, trApplicationSymbol!);
+
+            AnalyzeCompilation(compilationContext, trTypes);
+        });
+    }
+
+    private static void AnalyzeCompilation(CompilationAnalysisContext context, TrNamedTypes trTypes)
+    {
+        var candidates = new List<INamedTypeSymbol>();
+        var nonSealedCandidates = new List<INamedTypeSymbol>();
+        CollectRootDependencyCandidates(context.Compilation.Assembly.GlobalNamespace, trTypes, candidates, nonSealedCandidates);
+
+        if (candidates.Count == 1)
+        {
+            // Exactly one valid root type is present; rule is satisfied.
+            return;
+        }
+
+        var assemblyName = context.Compilation.AssemblyName ?? "this assembly";
+        var count = candidates.Count;
+
+        if (count == 0 && nonSealedCandidates.Count > 0)
+        {
+            var location = GetCompilationLocation(context);
+
+            var diagnostic = Diagnostic.Create(
+                DependencyIsNotSealed,
+                location,
+                assemblyName,
+                count);
+
+            context.ReportDiagnostic(diagnostic);
+            return;
+        }
+
+        if (count == 0)
+        {
+            var location = GetCompilationLocation(context);
+
+            var diagnostic = Diagnostic.Create(
+                DiagnosticDescriptors.RootDependencyRequired,
+                location,
+                assemblyName,
+                count);
+
+            context.ReportDiagnostic(diagnostic);
+            return;
+        }
+
+        // More than one root type found. Report a diagnostic on each candidate
+        // so that it is clear which types are participating in the violation.
+        foreach (var symbol in candidates)
+        {
+            var location = symbol.Locations.FirstOrDefault() ?? Location.None;
+
+            var diagnostic = Diagnostic.Create(
+                DiagnosticDescriptors.RootDependencyRequired,
+                location,
+                assemblyName,
+                count);
+
+            context.ReportDiagnostic(diagnostic);
+        }
+    }
+
+    private static void CollectRootDependencyCandidates(
+        INamespaceSymbol namespaceSymbol,
+        TrNamedTypes trTypes,
+        ICollection<INamedTypeSymbol> results,
+        ICollection<INamedTypeSymbol> nonSealedResults)
+    {
+
+        foreach (var member in namespaceSymbol.GetMembers())
+        {
+            if (member is INamespaceSymbol childNamespace)
+            {
+                CollectRootDependencyCandidates(childNamespace, trTypes, results, nonSealedResults);
+                continue;
+            }
+
+            if (member is not INamedTypeSymbol typeSymbol)
+            {
+                continue;
+            }
+
+            if (typeSymbol.TypeKind != TypeKind.Class)
+            {
+                continue;
+            }
+
+            if (!IsPublicConcreteRootAssembly(typeSymbol, trTypes))
+            {
+                continue;
+            }
+
+            if (!typeSymbol.IsSealed)
+            {
+                nonSealedResults.Add(typeSymbol);
+                continue;
+            }
+
+            results.Add(typeSymbol);
+        }
+    }
+
+    private static Boolean IsPublicConcreteRootAssembly(INamedTypeSymbol typeSymbol, TrNamedTypes trTypes)
+    {
+        if (typeSymbol.DeclaredAccessibility != Accessibility.Public)
+        {
+            return false;
+        }
+
+        if (typeSymbol.IsAbstract)
+        {
+            return false;
+        }
+
+        if (!InheritsFrom(typeSymbol, trTypes))
+        {
+            return false;
+        }
+
+        // Require a public parameterless constructor. This can be either the implicit
+        // parameterless constructor or an explicit one with no parameters.
+        var hasPublicParameterlessCtor = typeSymbol.InstanceConstructors
+            .Any(ctor =>
+                !ctor.IsStatic &&
+                ctor.DeclaredAccessibility == Accessibility.Public &&
+                ctor.Parameters.Length == 0);
+
+        return hasPublicParameterlessCtor;
+    }
+
+    private static Location GetCompilationLocation(CompilationAnalysisContext context)
+    {
+        var location = Location.None;
+
+        // Prefer a non-generated, in-project source tree with a real token span.
+        var candidateTree = context.Compilation.SyntaxTrees
+            .FirstOrDefault(tree =>
+            {
+                if (String.IsNullOrEmpty(tree.FilePath))
+                {
+                    return false;
+                }
+
+                // Quick heuristic: skip files that contain an auto-generated header.
+                var root = tree.GetRoot(context.CancellationToken);
+                var leading = root.GetLeadingTrivia().ToFullString();
+                if (leading.IndexOf("<auto-generated", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return false;
+                }
+
+                // Ensure the tree has at least one real token with a non-zero span.
+                var token = root.DescendantTokens().FirstOrDefault(t => t.Span.Length > 0);
+                return token.RawKind != 0;
+            });
+
+        if (candidateTree is null)
+        {
+            return location;
+        }
+
+        var candidateRoot = candidateTree.GetRoot(context.CancellationToken);
+        var candidateToken = candidateRoot.DescendantTokens().First(t => t.Span.Length > 0);
+        location = candidateToken.GetLocation();
+
+        if (!location.IsInSource)
+        {
+            location = Location.None;
+        }
+
+        return location;
+    }
+
+    private static Boolean InheritsFrom(INamedTypeSymbol typeSymbol, TrNamedTypes trTypes)
+    {
+        for (var current = typeSymbol.BaseType; current is not null; current = current.BaseType)
+        {
+            if (SymbolEqualityComparer.Default.Equals(current, trTypes.Application)
+                || SymbolEqualityComparer.Default.Equals(current, trTypes.Dependency))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}

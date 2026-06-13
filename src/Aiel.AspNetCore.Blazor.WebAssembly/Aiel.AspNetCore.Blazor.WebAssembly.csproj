@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Aiel.AspNetCore.Blazor\Aiel.AspNetCore.Blazor.csproj" />
+	  <ProjectReference Include="..\Aiel.Framework\Aiel.Framework.csproj" />
 	</ItemGroup>
 
 </Project>

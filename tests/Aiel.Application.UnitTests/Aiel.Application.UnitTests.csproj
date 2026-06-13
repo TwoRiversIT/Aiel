@@ -18,4 +18,9 @@
         <ProjectReference Include="..\..\src\Aiel.Application\Aiel.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Aiel\Commands\" />
+      <Folder Include="Aiel\DependencyInjection\" />
+    </ItemGroup>
+
 </Project>

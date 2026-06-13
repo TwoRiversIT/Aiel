@@ -70,7 +70,8 @@ public sealed class PermissionMigrationRunner(
         return Result.Success();
     }
 
-    private Task<Result> ApplyAddAsync(AddPermissionOperation operation, CancellationToken cancellationToken)
+    [SuppressMessage("Roslynator", "RCS1163:Unused parameter", Justification = "Async method signature required")]
+    private Task<Result> ApplyAddAsync(AddPermissionOperation operation, CancellationToken cancellationToken = default)
     {
         var record = new PermissionCatalogRecord
         {
@@ -85,7 +86,7 @@ public sealed class PermissionMigrationRunner(
         return Task.FromResult(Result.Success());
     }
 
-    private async Task<Result> ApplyRenameAsync(RenamePermissionOperation operation, CancellationToken cancellationToken)
+    private async Task<Result> ApplyRenameAsync(RenamePermissionOperation operation, CancellationToken cancellationToken = default)
     {
         var catalog = dbContext.Catalog.Local.FirstOrDefault(r => r.StableId == operation.StableId.Value)
             ?? await dbContext.Catalog
@@ -131,7 +132,7 @@ public sealed class PermissionMigrationRunner(
         return Result.Success();
     }
 
-    private async Task<Result> ApplyDeprecateAsync(DeprecatePermissionOperation operation, CancellationToken cancellationToken)
+    private async Task<Result> ApplyDeprecateAsync(DeprecatePermissionOperation operation, CancellationToken cancellationToken = default)
     {
         var catalog = dbContext.Catalog.Local.FirstOrDefault(r => r.StableId == operation.StableId.Value)
             ?? await dbContext.Catalog

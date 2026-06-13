@@ -81,7 +81,7 @@ Claims-based authentication extensions for extracting and working with user clai
 
 ## Data Access
 
-### [Aiel.Data.Dapper](./src/Aiel.Data.Dapper/README.md)
+### [Aiel.DataAccess.Dapper](./src/Aiel.DataAccess.Dapper/README.md)
 
 Column mapping for Dapper enabling property-to-column name mapping via attributes.
 

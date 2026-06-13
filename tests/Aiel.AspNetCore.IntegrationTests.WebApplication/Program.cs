@@ -22,18 +22,16 @@
 
 using Aiel.MultiTenancy;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.AspNetCore;
 
-[SuppressMessage("Roslynator", "RCS1102:Make class static", Justification = "No, it is used as an entry point for WebApplicationFactory<TEntryPoint>.")]
-public class Program
+public sealed class Program
 {
     private static async Task Main(String[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        await builder.AddApplicationAsync<AielAspNetCoreIntegrationTestsWebApplication>();
+        await builder.AddApplicationAsync();
         builder.Services.AddSingleton<ITenantResolver, UnconfiguredTenantResolver>();
 
         var app = builder.Build();
@@ -49,7 +47,7 @@ public class Program
             (HttpContext context) => TypedResults.Text(TestEndpointResponses.DescribeTenantResolution(context.GetTenantResolution())));
         app.MapGet(
             "/tenant-accessor",
-            async (ITenantAccessor tenantAccessor, CancellationToken cancellationToken) =>
+            async (ITenantAccessor tenantAccessor, CancellationToken cancellationToken = default) =>
             {
                 var tenantIdentity = await tenantAccessor.GetCurrentTenantAsync(cancellationToken);
                 return TypedResults.Text(tenantIdentity.TenantId.Value.ToString("D"));

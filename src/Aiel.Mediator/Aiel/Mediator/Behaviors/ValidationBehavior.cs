@@ -48,7 +48,7 @@ public sealed class ValidationBehavior<TAction>(IEnumerable<IValidator<TAction>>
     public async ValueTask<Result> HandleAsync(
         TAction request,
         ActionHandlerDelegate next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var context = new ValidationContext<TAction>(request);
         var failures = new List<ValidationFailure>();

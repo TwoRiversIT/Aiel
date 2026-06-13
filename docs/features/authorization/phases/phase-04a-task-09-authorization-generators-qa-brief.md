@@ -142,7 +142,7 @@ public IReadOnlyList<PermissionName> PreviousNames { get; init; } = [];
 
 ### `Aiel/src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj`
 
-Mirror `Aiel.Generators.csproj` exactly:
+Mirror `Aiel.Framework.Generators.csproj` exactly:
 
 | Property | Value |
 |---|---|
@@ -185,7 +185,7 @@ The generator DLL is delivered to consumers via `Aiel.Authorization.Application.
 
 ### `Aiel/tests/Aiel.Authorization.Generators.UnitTests/Aiel.Authorization.Generators.UnitTests.csproj`
 
-Mirror `Aiel.Analyzers.UnitTests.csproj`:
+Mirror `Aiel.Framework.Analyzers.UnitTests.csproj`:
 
 | Property | Value |
 |---|---|

@@ -24,6 +24,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Aiel.Authorization.Generators;
@@ -110,6 +111,7 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
             stableId: stableId ?? permissionName);
     }
 
+    [SuppressMessage("Roslynator", "RCS1214:Unnecessary interpolated string", Justification = "<Pending>")]
     private static void EmitChecker(SourceProductionContext context, PermissionModel model)
     {
         var sb = new StringBuilder();
@@ -130,7 +132,7 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
         sb.AppendLine($"    : global::Aiel.Authorization.IActionAuthorizationChecker<{model.ActionFqn}>");
         sb.AppendLine("{");
         sb.AppendLine($"    public async global::System.Threading.Tasks.Task<global::Aiel.Results.Result> CheckPermissionAsync(");
-        sb.AppendLine($"        global::Aiel.Execution.IActionExecutionContext<{model.ActionFqn}> context,");
+        sb.AppendLine($"        global::Aiel.Actions.IActionExecutionContext<{model.ActionFqn}> context,");
         sb.AppendLine($"        global::System.Threading.CancellationToken cancellationToken = default)");
         sb.AppendLine("    {");
         sb.AppendLine("        var scopeResult = await scopeResolver.ResolveAsync(context, cancellationToken).ConfigureAwait(false);");
@@ -160,6 +162,7 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
         context.AddSource(hintName, SourceText.From(sb.ToString(), Encoding.UTF8));
     }
 
+    [SuppressMessage("Roslynator", "RCS1214:Unnecessary interpolated string", Justification = "<Pending>")]
     private static void EmitAggregates(SourceProductionContext context, ImmutableArray<PermissionModel> models)
     {
         if (models.IsDefaultOrEmpty)

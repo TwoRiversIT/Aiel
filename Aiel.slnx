@@ -133,7 +133,10 @@
     <File Path="docs/prompts/general.md" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/Aiel.Analyzers/Aiel.Analyzers.csproj" Id="0b7bc240-ff3d-4322-9802-94b913e0e71d" />
+    <Project Path="src/Aiel.Actions.Commands/Aiel.Actions.Commands.csproj" />
+    <Project Path="src/Aiel.Actions.Queries.EntityFrameworkCore/Aiel.Actions.Queries.EntityFrameworkCore.csproj" />
+    <Project Path="src/Aiel.Actions.Queries/Aiel.Actions.Queries.csproj" />
+    <Project Path="src/Aiel.Actions/Aiel.Actions.csproj" Id="87688b42-8701-4c89-bb41-f81a29678a7c" />
     <Project Path="src/Aiel.Application.Contracts/Aiel.Application.Contracts.csproj" />
     <Project Path="src/Aiel.Application/Aiel.Application.csproj" />
     <Project Path="src/Aiel.AspNetCore.Blazor.WebAssembly/Aiel.AspNetCore.Blazor.WebAssembly.csproj" Id="b465f734-1d03-4d39-8fb9-11e78c1e83eb" />
@@ -152,11 +155,18 @@
     <Project Path="src/Aiel.Authorization.EntityFrameworkCore/Aiel.Authorization.EntityFrameworkCore.csproj" />
     <Project Path="src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj" />
     <Project Path="src/Aiel.Authorization.Testing/Aiel.Authorization.Testing.csproj" />
-    <Project Path="src/Aiel.Data.Dapper/Aiel.Data.Dapper.csproj" />
+    <Project Path="src/Aiel.DataAccess.Dapper/Aiel.DataAccess.Dapper.csproj" />
+    <Project Path="src/Aiel.DataAccess/Aiel.DataAccess.csproj" Id="9268dda6-c777-48d2-92f2-bc30412675fb" />
+    <Project Path="src/Aiel.Domain.Abstractions/Aiel.Domain.Abstractions.csproj" Id="d21725df-35c2-4364-804e-0e30ddccb290" />
+    <Project Path="src/Aiel.Domain.Shared/Aiel.Domain.Shared.csproj" Id="0b2dad1d-8c6e-4c8d-9260-6741b58c6c2d" />
     <Project Path="src/Aiel.Domain/Aiel.Domain.csproj" />
+    <Project Path="src/Aiel.Emailing.Abstractions/Aiel.Emailing.Abstractions.csproj" Id="04543c0e-bec5-4e39-8d44-c2658d5a2d49" />
     <Project Path="src/Aiel.Emailing/Aiel.Emailing.csproj" />
     <Project Path="src/Aiel.EntityFrameworkCore/Aiel.EntityFrameworkCore.csproj" />
-    <Project Path="src/Aiel.Generators/Aiel.Generators.csproj" Id="0ccfbdc8-66d8-4900-a758-fcff918fe84d" />
+    <Project Path="src/Aiel.Framework.Abstractions/Aiel.Framework.Abstractions.csproj" Id="d441d293-c3d3-493d-aeb6-f0fd07c54ef1" />
+    <Project Path="src/Aiel.Framework.Analyzers/Aiel.Framework.Analyzers.csproj" Id="0b7bc240-ff3d-4322-9802-94b913e0e71d" />
+    <Project Path="src/Aiel.Framework.Generators/Aiel.Framework.Generators.csproj" Id="0ccfbdc8-66d8-4900-a758-fcff918fe84d" />
+    <Project Path="src/Aiel.Framework/Aiel.Framework.csproj" Id="5b308164-fa89-4a79-ae34-e4aa83e94937" />
     <Project Path="src/Aiel.Gps.HP.Generators/Aiel.Gps.HP.Generators.csproj" />
     <Project Path="src/Aiel.Gps.HP/Aiel.Gps.HP.csproj">
       <BuildDependency Project="src/Aiel.Gps.HP.Generators/Aiel.Gps.HP.Generators.csproj" />
@@ -174,6 +184,7 @@
     <Project Path="src/Aiel.MessageBus.Sagas/Aiel.MessageBus.Sagas.csproj" />
     <Project Path="src/Aiel.MessageBus.Testing/Aiel.MessageBus.Testing.csproj" />
     <Project Path="src/Aiel.MultiTenancy/Aiel.MultiTenancy.csproj" />
+    <Project Path="src/Aiel.Results.Abstractions/Aiel.Results.Abstractions.csproj" Id="c2a2ad20-e528-4299-884e-8f2210fe20b0" />
     <Project Path="src/Aiel.Results.Analyzers/Aiel.Results.Analyzers.csproj" />
     <Project Path="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
     <Project Path="src/Aiel.Results/Aiel.Results.csproj" />
@@ -186,8 +197,8 @@
     <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj" />
     <Project Path="src/Aiel.Testing/Aiel.Testing.csproj" />
     <Project Path="src/Aiel/Aiel.csproj">
-      <BuildDependency Project="src/Aiel.Analyzers/Aiel.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
+      <BuildDependency Project="src/Aiel.Framework.Analyzers/Aiel.Framework.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.Results.Analyzers/Aiel.Results.Analyzers.csproj" />
@@ -195,10 +206,12 @@
     </Project>
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Aiel.Analyzers.UnitTests/Aiel.Analyzers.UnitTests.csproj" Id="97943d6d-c93b-49ba-8f0a-862708ebb581" />
+    <File Path="tests/Directory.Build.props" />
+    <Project Path="tests/Aiel.Actions.Commands.UnitTests/Aiel.Actions.Commands.UnitTests.csproj" Id="aace705f-04b2-477c-8a3d-e66c8eefe704" />
+    <Project Path="tests/Aiel.Actions.Queries.EntityFrameworkCore.IntegrationTests/Aiel.Actions.Queries.EntityFrameworkCore.IntegrationTests.csproj" />
+    <Project Path="tests/Aiel.Actions.Queries.UnitTests/Aiel.Actions.Queries.UnitTests.csproj" Id="0389e925-832e-438e-a214-679fc5ede0df" />
+    <Project Path="tests/Aiel.Actions.UnitTests/Aiel.Actions.UnitTests.csproj" Id="b7c7b53c-c295-48d1-86b6-f4004a029899" />
     <Project Path="tests/Aiel.Application.Contracts.UnitTests/Aiel.Application.Contracts.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Application.Specifications.IntegrationTests/Aiel.Application.Specifications.IntegrationTests.csproj" />
-    <Project Path="tests/Aiel.Application.Specifications.UnitTests/Aiel.Application.Specifications.UnitTests.csproj" />
     <Project Path="tests/Aiel.Application.UnitTests/Aiel.Application.UnitTests.csproj" />
     <Project Path="tests/Aiel.AspNetCore.IntegrationTests.WebApplication/Aiel.AspNetCore.IntegrationTests.WebApplication.csproj" />
     <Project Path="tests/Aiel.AspNetCore.IntegrationTests/Aiel.AspNetCore.IntegrationTests.csproj" />
@@ -213,10 +226,15 @@
     <Project Path="tests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests/Aiel.Authorization.EntityFrameworkCore.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.Authorization.Generators.UnitTests/Aiel.Authorization.Generators.UnitTests.csproj" />
     <Project Path="tests/Aiel.Authorization.Testing.UnitTests/Aiel.Authorization.Testing.UnitTests.csproj" />
-    <Project Path="tests/Aiel.Data.Dapper.UnitTests/Aiel.Data.Dapper.UnitTests.csproj" />
+    <Project Path="tests/Aiel.DataAccess.Dapper.UnitTests/Aiel.DataAccess.Dapper.UnitTests.csproj" />
     <Project Path="tests/Aiel.Emailing.UnitTests/Aiel.Emailing.UnitTests.csproj" />
     <Project Path="tests/Aiel.EntityFrameworkCore.IntegrationTests/Aiel.EntityFrameworkCore.IntegrationTests.csproj" />
-    <Project Path="tests/Aiel.Generators.UnitTests/Aiel.Generators.UnitTests.csproj" Id="9ec60c6c-84b1-4de7-b5af-14cb48f65f51" />
+    <Project Path="tests/Aiel.Framework.Analyzers.UnitTests/Aiel.Framework.Analyzers.UnitTests.csproj" Id="97943d6d-c93b-49ba-8f0a-862708ebb581" />
+    <Project Path="tests/Aiel.Framework.Generators.UnitTests/Aiel.Framework.Generators.UnitTests.csproj" Id="9ec60c6c-84b1-4de7-b5af-14cb48f65f51" />
+    <Project Path="tests/Aiel.Framework.UnitTests.Stubs/Aiel.Framework.UnitTests.Stubs.csproj">
+      <BuildDependency Project="src/Aiel.Framework.Abstractions/Aiel.Framework.Abstractions.csproj" />
+    </Project>
+    <Project Path="tests/Aiel.Framework.UnitTests/Aiel.Framework.UnitTests.csproj" Id="017b45ee-359c-4275-bcae-e808d5d4536e" />
     <Project Path="tests/Aiel.Gps.Benchmarks/Aiel.Gps.Benchmarks.csproj" />
     <Project Path="tests/Aiel.Gps.HP.Generators.UnitTests/Aiel.Gps.HP.Generators.UnitTests.csproj" Id="93eb6a6c-b1dc-49b2-84ef-60c4f109d98f" />
     <Project Path="tests/Aiel.Gps.HP.UnitTests/Aiel.Gps.HP.UnitTests.csproj" />

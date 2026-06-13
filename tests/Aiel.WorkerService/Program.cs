@@ -34,7 +34,7 @@ public static class Program
         var builder = Host.CreateApplicationBuilder(args);
 
         // Configure the application using the source-generated dependency graph.
-        await builder.AddApplicationAsync();
+        await builder.AddApplicationAsync<AielWorkerService>();
 
         builder.Services.AddHostedService<Worker>();
 

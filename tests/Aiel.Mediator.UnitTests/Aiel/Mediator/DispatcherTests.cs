@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.Mediator;
 
@@ -157,6 +158,7 @@ public class DispatcherTests
     }
 
     [Fact]
+    [SuppressMessage("AielUsage", "AIEL00005:Multiple mediator dispatch calls in a single method", Justification = "<Pending>")]
     public async Task ExecuteAsync_creates_a_new_scope_for_each_dispatch()
     {
         var cancellationToken = TestContext.Current.CancellationToken;

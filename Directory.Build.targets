@@ -1,11 +1,13 @@
 <Project>
 
-    <!-- Source Generator Output Generated Files to a common location for easier inspection during development
+    <!-- Source Generator Output Generated Files to a common location for easier inspection during development -->
     <PropertyGroup>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
+        <!-- Aiel NuGet Package Version -->
+        <AielVersion>0.0.3</AielVersion>
     </PropertyGroup>
-    -->
 
     <PropertyGroup>
         <!-- Analyzer/Source Generator settings -->

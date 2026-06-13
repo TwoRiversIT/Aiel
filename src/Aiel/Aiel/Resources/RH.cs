@@ -35,7 +35,8 @@ public static class RH
     private static readonly ConcurrentDictionary<String, String> Cache = new();
 
     /// <summary>
-    /// Looks in the assembly and namespace that contains <typeparamref name="T"/> for a resource named <paramref name="resource"/> and returns it as a <see cref="String"/>.
+    /// Looks in the assembly and namespace that contains <typeparamref name="T"/> for a resource named
+    /// <paramref name="resource"/> and returns it as a <see cref="String"/>.
     /// </summary>
     /// <typeparam name="T">The type used to locate the assembly and namespace for the resource.</typeparam>
     /// <param name="resource">The case-sensitive name of the manifest resource being requested.</param>
@@ -49,6 +50,21 @@ public static class RH
     {
         var type = typeof(T);
         return GetString(resource, type);
+    }
+
+    /// <summary>
+    /// Looks in the assembly and namespace that contains <typeparamref name="T"/> for embedded resources
+    /// with the specified names and returns them as a sequence of <see cref="String"/> values.
+    /// </summary>
+    /// <typeparam name="T">The type used to locate the assembly and namespace for the resources.</typeparam>
+    /// <param name="resources">The case-sensitive names of the manifest resources being requested.</param>
+    /// <returns>A sequence of manifest resources as strings; or throws if any are not found.</returns>
+    public static IEnumerable<String> GetStrings<T>(params String[] resources)
+    {
+        foreach (var resource in resources)
+        {
+            yield return RH.GetString<T>(resource);
+        }
     }
 
     /// <summary>

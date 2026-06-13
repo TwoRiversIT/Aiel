@@ -44,14 +44,14 @@ public class CustomersFixture : IntegrationTestFixture
         services.AddScoped<CustomerApplicationService>();
     }
 
-    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services)
+    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
     {
         // Ensure database schema exists
         var dbContext = services.GetRequiredService<CustomerDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
         // And no data left from previous tests
         dbContext.Customers.RemoveRange(dbContext.Customers);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

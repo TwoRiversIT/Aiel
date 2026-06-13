@@ -56,8 +56,8 @@ public sealed class MissingEventIdParameterAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStart);
             }
             """;
 
@@ -75,7 +75,7 @@ public sealed class MissingEventIdParameterAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -96,12 +96,12 @@ public sealed class MissingEventIdParameterAnalyzerTests
     [Fact]
     public async Task ParameterWrongType_RaisesAIEL00009()
     {
-        // Has a parameter named eventId but it's int, not AielEventIds — should flag.
+        // Has a parameter named eventId but it's int, not AielEvent — should flag.
         const String source = """
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
                 public static partial void ServiceStarted(this ILogger logger, int eventId = 1000);
             }
             """;

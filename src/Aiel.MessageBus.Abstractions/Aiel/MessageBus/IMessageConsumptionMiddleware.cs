@@ -34,5 +34,5 @@ public interface IMessageConsumptionMiddleware
     ValueTask InvokeAsync(
         IInboundMessageContext context,
         Func<CancellationToken, ValueTask> next,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }

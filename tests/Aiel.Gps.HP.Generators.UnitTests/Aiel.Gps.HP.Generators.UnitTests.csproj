@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -22,7 +22,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Gps.HP.Generators\Aiel.Gps.HP.Generators.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Gps.HP\Aiel.Gps.HP.csproj" />
-        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

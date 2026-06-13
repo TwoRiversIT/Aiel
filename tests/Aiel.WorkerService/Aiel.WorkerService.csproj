@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
 
     <PropertyGroup>
         <AssemblyName>Aiel.WorkerService</AssemblyName>
@@ -6,7 +6,7 @@
         <UserSecretsId>dotnet-Aiel.WorkerService-5e31773d-b77c-4ac1-bb17-a16b8c098ea6</UserSecretsId>
         <IsPackable>false</IsPackable>
 
-        <!-- Specifically for testing Aiel.Generators -->
+        <!-- Specifically for testing Aiel.Framework.Generators -->
         <ImplicitUsings>disable</ImplicitUsings>
     </PropertyGroup>
 
@@ -19,7 +19,7 @@
         <ProjectReference Include="..\..\src\Aiel.AspNetCore\Aiel.AspNetCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore\Aiel.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Security\Aiel.Security.csproj" />
-        <ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.WorkerService.Shared\Aiel.WorkerService.Shared.csproj" />
     </ItemGroup>
 

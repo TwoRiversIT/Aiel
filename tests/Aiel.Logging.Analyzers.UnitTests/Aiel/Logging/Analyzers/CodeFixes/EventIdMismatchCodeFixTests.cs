@@ -41,8 +41,8 @@ public sealed class EventIdMismatchCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+                [{|#0:LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStop);
             }
             """;
 
@@ -51,14 +51,16 @@ public sealed class EventIdMismatchCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStop, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStop);
             }
             """;
 
         var expected = new DiagnosticResult[]
         {
-            DiagnosticResult.CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id).WithSpan(5, 81, 5, 88),
+            DiagnosticResult.CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
+            .WithSpan(5, 78, 5, 85)
+            .WithArguments("AielEvent.ServiceStart", "AielEvent.ServiceStop")
         };
 
         await AielCodeFixVerifier<EventIdMismatchAnalyzer, EventIdMismatchCodeFix>
@@ -72,8 +74,8 @@ public sealed class EventIdMismatchCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+                [{|#0:LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStop);
             }
             """;
 
@@ -82,14 +84,15 @@ public sealed class EventIdMismatchCodeFixTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStart);
             }
             """;
 
         var expected = DiagnosticResult
             .CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
-            .WithSpan(5, 81, 5, 88);
+            .WithSpan(5, 78, 5, 85)
+            .WithArguments("AielEvent.ServiceStart", "AielEvent.ServiceStop");
 
         await AielCodeFixVerifier<EventIdMismatchAnalyzer, EventIdMismatchCodeFix>
             .VerifyCodeFixAsync(source, fixedSource, codeFixIndex: 1, expected: expected);

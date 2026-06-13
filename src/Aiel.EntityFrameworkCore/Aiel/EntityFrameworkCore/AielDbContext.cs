@@ -20,9 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Commands;
+using Aiel.Actions;
+using Aiel.Actions.Commands;
 using Aiel.Domain;
-using Aiel.Execution;
+using Aiel.Domain.Events;
 using Aiel.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
 
@@ -89,9 +90,11 @@ public class AielDbContext : DbContext, IUnitOfWork
 
     protected TenantResolution CurrentTenantResolution { get; private set; } = new TenantResolution.Missing();
 
+    [UnconditionalSuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Referenced by ModelBuilderExtensions static construction")]
     private Boolean HasResolvedTenant
         => CurrentTenantResolution is TenantResolution.Resolved;
 
+    [UnconditionalSuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Referenced by ModelBuilderExtensions static construction")]
     private Guid ResolvedTenantIdValue
         => CurrentTenantResolution is TenantResolution.Resolved resolved
             ? resolved.TenantIdentity.TenantId.Value

@@ -48,7 +48,7 @@ public class PermissionDefinitionSourceGeneratorTests
             public interface IAction { }
         }
 
-        namespace Aiel.Execution
+        namespace Aiel.Actions
         {
             public interface IActionExecutionContext<TAction>
                 where TAction : global::Aiel.Actions.IAction { }
@@ -96,7 +96,7 @@ public class PermissionDefinitionSourceGeneratorTests
                 where TAction : global::Aiel.Actions.IAction
             {
                 Task<global::Aiel.Results.Result<AuthorizationScopeResolution>> ResolveAsync(
-                    global::Aiel.Execution.IActionExecutionContext<TAction> context,
+                    global::Aiel.Actions.IActionExecutionContext<TAction> context,
                     CancellationToken cancellationToken = default);
             }
 
@@ -104,7 +104,7 @@ public class PermissionDefinitionSourceGeneratorTests
                 where TAction : global::Aiel.Actions.IAction
             {
                 AuthorizationSubjectKey ResolveSubjectKey(
-                    global::Aiel.Execution.IActionExecutionContext<TAction> context);
+                    global::Aiel.Actions.IActionExecutionContext<TAction> context);
             }
 
             public enum AuthorizationGrantDecision { Granted = 0, Prohibited = 1 }

@@ -49,8 +49,6 @@ public sealed class ActionCapabilitySnapshot(
         AuthorizationScopeKey.From("empty"),
         EmptyCapabilities);
 
-    private readonly IReadOnlyList<ClientAuthorizationCapability> _capabilities = capabilities?.ToArray() ?? EmptyCapabilities;
-
     /// <summary>
     /// Gets the snapshot version.
     /// </summary>
@@ -69,5 +67,5 @@ public sealed class ActionCapabilitySnapshot(
     /// <summary>
     /// Gets the permission capability entries included in the snapshot.
     /// </summary>
-    public IReadOnlyList<ClientAuthorizationCapability> Capabilities => _capabilities;
+    public IReadOnlyList<ClientAuthorizationCapability> Capabilities { get; } = capabilities?.ToArray() ?? EmptyCapabilities;
 }

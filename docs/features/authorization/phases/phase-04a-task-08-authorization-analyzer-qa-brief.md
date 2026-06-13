@@ -59,7 +59,7 @@ public sealed class DoesNotRespectAuthorityAttribute : Attribute
 
 ### `Aiel/src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj`
 
-Mirror the structure of `Aiel.Analyzers.csproj`:
+Mirror the structure of `Aiel.Framework.Analyzers.csproj`:
 
 | Property | Value |
 | --- | --- |
@@ -73,7 +73,7 @@ Mirror the structure of `Aiel.Analyzers.csproj`:
 
 **Allowed package references:**
 
-- `Microsoft.CodeAnalysis.CSharp` (same version as `Aiel.Analyzers` — currently `5.3.0`), `PrivateAssets="all"`
+- `Microsoft.CodeAnalysis.CSharp` (same version as `Aiel.Framework.Analyzers` — currently `5.3.0`), `PrivateAssets="all"`
 - `Microsoft.CodeAnalysis.Analyzers` (same version), `PrivateAssets="all"`
 
 **Forbidden references:**
@@ -85,7 +85,7 @@ The project MUST include `AnalyzerReleases.Shipped.md` and `AnalyzerReleases.Uns
 
 ### `Aiel/tests/Aiel.Authorization.Analyzers.UnitTests/Aiel.Authorization.Analyzers.UnitTests.csproj`
 
-Mirror `Aiel.Analyzers.UnitTests.csproj`:
+Mirror `Aiel.Framework.Analyzers.UnitTests.csproj`:
 
 | Property | Value |
 | --- | --- |
@@ -185,7 +185,7 @@ Task 8 is NOT done until ALL of the following are true:
 
 ## Required tests in `Aiel.Authorization.Analyzers.UnitTests`
 
-All tests use inline source strings with `Aiel.Authorization.IAction`, `Aiel.Authorization.IActionPermissionChecker<TAction>`, and `Aiel.Authorization.DoesNotRespectAuthorityAttribute` stubs embedded as `TestState.Sources` entries — identical in structure to the `AssemblyAnalyzerTests.cs` pattern in `Aiel.Analyzers.UnitTests`. Tests DO NOT reference any `Aiel.*` runtime assembly.
+All tests use inline source strings with `Aiel.Authorization.IAction`, `Aiel.Authorization.IActionPermissionChecker<TAction>`, and `Aiel.Authorization.DoesNotRespectAuthorityAttribute` stubs embedded as `TestState.Sources` entries — identical in structure to the `AssemblyAnalyzerTests.cs` pattern in `Aiel.Framework.Analyzers.UnitTests`. Tests DO NOT reference any `Aiel.*` runtime assembly.
 
 ### `ActionHasNoAuthorizationStoryTests`
 

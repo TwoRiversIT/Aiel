@@ -27,7 +27,7 @@
 // default value of the method's optional <ConfiguredType> eventId parameter.
 //
 // Uses AnalyzerConfiguration so the check works with any EventIds enum,
-// not just Aiel.Logging.AielEventIds.
+// not just Aiel.Logging.AielEvent.
 // -----------------------------------------------------------------------
 
 using Aiel.Internal;
@@ -35,7 +35,9 @@ using Aiel.Logging.Configuration;
 using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace Aiel.Logging.Analyzers;
 

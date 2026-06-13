@@ -29,31 +29,31 @@ public static class DiagnosticDescriptors
 {
     /// <summary>
     /// AIEL00008 is raised when a <c>[LoggerMessage]</c> attribute's <c>EventId</c> argument
-    /// is a raw integer literal rather than a cast of an <c>AielEventIds</c>
-    /// member (e.g. <c>(int)AielEventIds.ModuleStart</c>).
+    /// is a raw integer literal rather than a cast of an <c>AielEvent</c>
+    /// member (e.g. <c>(int)AielEvent.ModuleStart</c>).
     /// </summary>
     public static readonly DiagnosticDescriptor UseAielEventIds = new(
         id: DiagnosticRuleIDs.AIEL00008_UseAielEventIdsId,
-        title: "Use AielEventIds enum for event IDs",
-        messageFormat: "EventId '{0}' is a raw integer. Use '(int)AielEventIds.{1}' instead.",
+        title: "Use AielEvent enum for event IDs",
+        messageFormat: "EventId '{0}' is a raw integer. Use '(int)AielEvent.{1}' instead.",
         category: DiagnosticMetadata.LoggingCategory,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "All LoggerMessage event IDs must reference AielEventIds enum members so that IDs remain consistent across the framework.",
+        description: "All LoggerMessage event IDs must reference AielEvent enum members so that IDs remain consistent across the framework.",
         helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00008");
 
     /// <summary>
     /// AIEL00009 is raised when an Aiel logging helper method does not include an optional
-    /// <c>AielEventIds eventId = AielEventIds.X</c> parameter.
+    /// <c>AielEvent eventId = AielEvent.X</c> parameter.
     /// </summary>
     public static readonly DiagnosticDescriptor MissingEventIdParameter = new(
         id: DiagnosticRuleIDs.AIEL00009_MissingEventIdParameterId,
         title: "Logging helper missing EventId parameter",
-        messageFormat: "Method '{0}' is a logging helper but is missing an  'AielEventIds eventId = AielEventIds.{1}' parameter",
+        messageFormat: "Method '{0}' is a logging helper but is missing an  'AielEvent eventId = AielEvent.{1}' parameter",
         category: DiagnosticMetadata.LoggingCategory,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Every Aiel logging helper method must have an optional AielEventIds parameter so callers can override the default event ID at call sites.",
+        description: "Every Aiel logging helper method must have an optional AielEvent parameter so callers can override the default event ID at call sites.",
         helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00009");
 
     /// <summary>
@@ -88,7 +88,7 @@ public static class DiagnosticDescriptors
     /// <summary>
     /// AIEL00012 is raised when the numeric EventId in a <c>[LoggerMessage]</c>
     /// attribute does not match the default value of the method's
-    /// <c>AielEventIds eventId</c> parameter.
+    /// <c>AielEvent eventId</c> parameter.
     /// </summary>
     public static readonly DiagnosticDescriptor EventIdMismatch = new(
         id: DiagnosticRuleIDs.AIEL00012_EventIdMismatchId,
@@ -97,6 +97,6 @@ public static class DiagnosticDescriptors
         category: DiagnosticMetadata.LoggingCategory,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "The numeric EventId declared in [LoggerMessage] must match the AielEventIds member used as the default value for the 'eventId' parameter.",
+        description: "The numeric EventId declared in [LoggerMessage] must match the AielEvent member used as the default value for the 'eventId' parameter.",
         helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00012");
 }

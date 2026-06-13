@@ -20,14 +20,22 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Actions.Commands;
+using Aiel.Application;
+using Aiel.Authorization.Testing;
+using Aiel.Framework;
+using Aiel.Results;
 
 namespace Aiel.Authorization.AspNetCore;
 
 [DependsOn(typeof(AielApplicationContracts))]
 [DependsOn(typeof(AielAuthorizationApplicationContracts))]
 [DependsOn(typeof(AielAuthorizationDomainShared))]
-[DependsOn(typeof(Testing.AielAuthorizationTesting))]
-[DependsOn(typeof(Results.AielResults))]
-public sealed class AielAuthorizationAspNetCoreIntegrationTestsWebApplication : AielDependencyConfigurator;
-
+[DependsOn(typeof(AielAuthorizationTesting))]
+[DependsOn(typeof(AielResults))]
+[DependsOn(typeof(AielActionsCommands))]
+public sealed class AielAuthorizationAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+{
+    public override String ApplicationName => nameof(AielAuthorizationAspNetCoreIntegrationTestsWebApplication);
+    public override String ApplicationVersion => ThisAssembly.AssemblyVersion;
+}

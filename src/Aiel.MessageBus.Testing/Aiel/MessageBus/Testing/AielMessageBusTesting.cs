@@ -20,10 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Framework;
 
 namespace Aiel.MessageBus.Testing;
 
-public sealed class AielMessageBusTesting : AielDependencyConfigurator
-{
-}
+public sealed class AielMessageBusTesting : AielDependencyConfigurator;

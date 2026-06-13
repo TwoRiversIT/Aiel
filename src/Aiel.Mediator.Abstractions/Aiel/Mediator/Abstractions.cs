@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions;
-using Aiel.Commands;
-using Aiel.Queries;
+using Aiel.Actions.Commands;
+using Aiel.Actions.Queries;
 using Aiel.Results;
 
 namespace Aiel.Mediator;
@@ -40,7 +40,7 @@ public interface IActionHandler<in TAction>
     /// <param name="action">The action instance to handle.</param>
     /// <param name="cancellationToken">The token that cancels the dispatch.</param>
     /// <returns>A result that indicates whether the action completed successfully.</returns>
-    ValueTask<Result> HandleAsync(TAction action, CancellationToken cancellationToken);
+    ValueTask<Result> HandleAsync(TAction action, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -48,9 +48,7 @@ public interface IActionHandler<in TAction>
 /// </summary>
 /// <typeparam name="TCommand">The command type this handler can process.</typeparam>
 public interface ICommandHandler<in TCommand> : IActionHandler<TCommand>
-    where TCommand : ICommand
-{
-}
+    where TCommand : ICommand;
 
 /// <summary>
 /// Handles a dispatched query for a projected value.
@@ -58,9 +56,7 @@ public interface ICommandHandler<in TCommand> : IActionHandler<TCommand>
 /// <typeparam name="TQuery">The query type this handler can process.</typeparam>
 /// <typeparam name="TDto">The value type requested by the query.</typeparam>
 public interface IQueryHandler<in TQuery, TDto> : IActionHandler<TQuery>
-    where TQuery : IQuery<TDto>
-{
-}
+    where TQuery : IQuery<TDto>;
 
 /// <summary>
 /// Dispatches commands and queries to their registered handlers.
@@ -109,7 +105,7 @@ public interface INotificationHandler<in TNotification>
     /// <param name="notification">The notification instance to handle.</param>
     /// <param name="cancellationToken">The token that cancels notification handling.</param>
     /// <returns>A task that completes when handling finishes.</returns>
-    ValueTask HandleAsync(TNotification notification, CancellationToken cancellationToken);
+    ValueTask HandleAsync(TNotification notification, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -147,7 +143,7 @@ public interface IPipelineBehavior<in TAction>
     ValueTask<Result> HandleAsync(
         TAction request,
         ActionHandlerDelegate next,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>

@@ -68,7 +68,7 @@ public sealed class NmeaReader : DisposableBase
         _errorQueue = new BufferBlock<ParseError>(new DataflowBlockOptions { BoundedCapacity = DataflowBlockOptions.Unbounded });
     }
 
-    private void InitializeStreamReader(CancellationToken cancellationToken)
+    private void InitializeStreamReader(CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(IsDisposed, this);
 

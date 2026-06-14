@@ -20,13 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel;
-using Aiel.Dependencies;
+using Aiel.Actions.Commands;
+using Aiel.Actions.Queries;
+using Aiel.Framework;
 
 namespace Aiel.Mediator;
 
 /// <summary>
 /// Ensures that the Aiel.Mediator.Abstractions participates in the dependency graph.
 /// </summary>
-[DependsOn(typeof(AielApplicationContracts))]
+[DependsOn(typeof(AielActionsCommands))]
+[DependsOn(typeof(AielActionsQueries))]
 public sealed class AielMediatorAbstractions : AielDependencyConfigurator;

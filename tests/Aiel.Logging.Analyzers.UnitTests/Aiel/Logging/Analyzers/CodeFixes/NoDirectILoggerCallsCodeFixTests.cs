@@ -56,7 +56,7 @@ public sealed class NoDirectILoggerCallsCodeFixTests
         fixedSource.Should().Contain("logger.LogInformation(\"Service started\")");
     }
 
-    private static async Task<String> ApplyCodeFixAsync(String source, Int32 codeFixIndex, CancellationToken cancellationToken)
+    private static async Task<String> ApplyCodeFixAsync(String source, Int32 codeFixIndex, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(source);
 
@@ -73,7 +73,7 @@ public sealed class NoDirectILoggerCallsCodeFixTests
 
         solution = solution
             .AddDocument(DocumentId.CreateNewId(projectId), "Source.cs", source)
-            .AddDocument(DocumentId.CreateNewId(projectId), "AielEventIds.cs", TestCode.AielEventIdsSource)
+            .AddDocument(DocumentId.CreateNewId(projectId), "AielEvent.cs", TestCode.AielEventIdsSource)
             .AddDocument(DocumentId.CreateNewId(projectId), "LoggerMessageAttribute.cs", TestCode.LoggerMessageAttrSource)
             .AddDocument(DocumentId.CreateNewId(projectId), "ILogger.cs", TestCode.ILoggerSource);
 

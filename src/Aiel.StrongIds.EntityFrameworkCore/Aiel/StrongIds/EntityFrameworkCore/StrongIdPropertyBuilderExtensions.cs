@@ -64,6 +64,7 @@ internal static class StrongIdConversionExpressions<TStrongId, TValue>
     where TStrongId : notnull, IStrongId<TValue>
 {
     private static readonly MethodInfo FromMethod = ResolveFromMethod();
+    [SuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Pretty sure this is needed by a source generator which is why it appears unused.")]
     private static readonly Func<TValue, TStrongId> From = BuildFromDelegate();
 
     public static ValueConverter<TStrongId, TValue> CreateConverter()

@@ -24,7 +24,6 @@ using Aiel.Gps.Parsing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
 using System.Text;
 
@@ -295,8 +294,7 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
                 catch (Exception ex)
                 {
                     var rawPayload = payload.ToString(Encoding.UTF8);
-                    _logger.LogError(ex, "Line {LineCount} caused {ParserName}.Parse({Payload}) to generate the following exception:",
-                        LineCount, parser.GetType().Name, rawPayload);
+                    _logger.LogParseException(ex, LineCount, parser.GetType().Name, rawPayload);
 
                     error = new ParseError(LineCount, rawPayload, parser.GetType(), ex);
 
@@ -330,8 +328,7 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{ParserName}.CanHandle({Payload}) generated the following exception:",
-                parser.GetType().Name, payload.ToString(Encoding.UTF8));
+            _logger.LogCanHandleException(ex, parser.GetType().Name, payload.ToString(Encoding.UTF8));
         }
 
         return false;

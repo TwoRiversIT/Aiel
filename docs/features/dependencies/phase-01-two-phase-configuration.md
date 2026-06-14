@@ -147,7 +147,7 @@ Run full test suite. All new tests must now pass. All 698 pre-existing tests mus
 
 ### Task 6 — Correct `Framework.md` naming drift and update `PreConfigureAsync` description
 
-Update `Framework.md` to replace `TrDependency`/`TrApplication` with `AielDependencyConfigurator`/`AielApplication` and revise the `PreConfigureAsync` note to describe the now-implemented two-phase lifecycle.
+Update `Framework.md` to replace `TrDependency`/`TrApplication` with `AielDependencyConfigurator`/`AielApplicationConfigurator` and revise the `PreConfigureAsync` note to describe the now-implemented two-phase lifecycle.
 
 ---
 

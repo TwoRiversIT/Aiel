@@ -60,13 +60,13 @@ public sealed class AuthorizationEfCoreFixture : IntegrationTestFixture
         services.AddPermissionsNpgsql(GetConnectionString, options => options.EnableRetryOnFailure());
     }
 
-    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services)
+    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
     {
-        await _postgresContainer.StartAsync(TestContext.Current.CancellationToken);
+        await _postgresContainer.StartAsync(cancellationToken);
         _connectionString = _postgresContainer.GetConnectionString();
 
         var initializer = services.GetRequiredService<AuthorizationDbInitializer>();
-        await initializer.EnsureCreatedAsync(TestContext.Current.CancellationToken);
+        await initializer.EnsureCreatedAsync(cancellationToken);
     }
 
     protected override async ValueTask DisposeAsyncCore()

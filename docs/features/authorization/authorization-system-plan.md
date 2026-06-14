@@ -658,7 +658,7 @@ public sealed class AppointmentsController(
     public async Task<IActionResult> Reschedule(
         AppointmentId appointmentId,
         RescheduleAppointmentRequest request,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var action = new RescheduleAppointment(
             appointmentId,

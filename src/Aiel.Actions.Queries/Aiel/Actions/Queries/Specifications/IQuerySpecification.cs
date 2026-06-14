@@ -1,0 +1,42 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using System.Linq.Expressions;
+
+namespace Aiel.Actions.Queries.Specifications;
+
+public interface IQuerySpecification<TEntity> : ISpecification<TEntity>
+{
+    ICollection<Expression<Func<TEntity, Object>>> Includes { get; }
+    Expression<Func<TEntity, Object>>? OrderBy { get; }
+    Expression<Func<TEntity, Object>>? ThenBy { get; }
+    Expression<Func<TEntity, Object>>? OrderByDescending { get; }
+    Expression<Func<TEntity, Object>>? GroupBy { get; }
+
+    /// <summary>
+    /// Page number, starting at 1.
+    /// </summary>
+    Int32 PageNo { get; }
+    Int32 PageSize { get; }
+    Boolean IsPagingEnabled { get; }
+    Boolean IsReadOnly { get; }
+}

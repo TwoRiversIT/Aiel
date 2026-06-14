@@ -45,14 +45,14 @@ public abstract class EFCoreIntegrationTestFixture : IntegrationTestFixture
                    .EnableSensitiveDataLogging(true));
     }
 
-    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services)
+    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var dbContext = services.GetRequiredService<IntegrationTestDbContext>();
 
-        await dbContext.Database.EnsureCreatedAsync();
+        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
-        await dbContext.AddRangeAsync(Family);
+        await dbContext.AddRangeAsync(Family, cancellationToken);
 
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 }

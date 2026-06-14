@@ -1,16 +1,19 @@
 {
-    "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-    "version": "0.0.0-alpha",
-    "versionHeightOffset": 1,
-    "semVer1NumericIdentifierPadding": 2,
-    "gitCommitIdShortFixedLength": 8,
-    "gitCommitIdShortAutoMinimum": 0,
-    "nugetPackageVersion": {
-        "semVer": 2,
-        "precision": "revision"
-    },
-    "publicReleaseRefSpec": [
-        "^refs/heads/release/v\\d+\\.\\d+$",
-        "^refs/tags/v\\d+\\.\\d+$"
-    ]
+  "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
+  "version": "0.0.4",
+  "versionHeightOffset": 0,
+  "semVer1NumericIdentifierPadding": 2,
+  "gitCommitIdShortFixedLength": 8,
+  "gitCommitIdShortAutoMinimum": 0,
+  "nuGetPackageVersion": {
+    "semVer": 2.0,
+    "precision": "revision"
+  },
+  "publicReleaseRefSpec": [
+    "^refs/heads/main$"
+  ],
+  "release": {
+    "branchName": "release/v{version}",
+    "versionIncrement": "build"
+  }
 }

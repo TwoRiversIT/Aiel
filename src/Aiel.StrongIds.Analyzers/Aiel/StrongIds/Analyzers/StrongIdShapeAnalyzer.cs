@@ -180,7 +180,7 @@ public sealed class StrongIdShapeAnalyzer : DiagnosticAnalyzer
             .Any(static declaration => declaration.ParameterList is not null);
     }
 
-    private static ImmutableArray<TypeDeclarationSyntax> GetNonGeneratedTypeDeclarations(INamedTypeSymbol symbol, CancellationToken cancellationToken)
+    private static ImmutableArray<TypeDeclarationSyntax> GetNonGeneratedTypeDeclarations(INamedTypeSymbol symbol, CancellationToken cancellationToken = default)
     {
         return symbol.DeclaringSyntaxReferences
             .Select(static syntaxReference => syntaxReference.GetSyntax())
@@ -189,7 +189,7 @@ public sealed class StrongIdShapeAnalyzer : DiagnosticAnalyzer
             .ToImmutableArray();
     }
 
-    private static Boolean IsGeneratedSyntaxTree(SyntaxTree tree, CancellationToken cancellationToken)
+    private static Boolean IsGeneratedSyntaxTree(SyntaxTree tree, CancellationToken cancellationToken = default)
     {
         if (String.IsNullOrWhiteSpace(tree.FilePath))
         {

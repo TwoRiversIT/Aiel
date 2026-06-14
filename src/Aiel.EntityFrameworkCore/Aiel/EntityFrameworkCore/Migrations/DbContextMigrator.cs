@@ -58,7 +58,7 @@ public partial class DbContextMigrator<TDbContext>(IServiceProvider serviceProvi
 
             try
             {
-                Logger.LogApplyingMigrations(name);
+                Logger.LogMigratingDatabase(name);
 
                 var strategy = dbContext.Database.CreateExecutionStrategy();
                 await strategy.ExecuteAsync(dbContext.Database.MigrateAsync, cancellationToken);

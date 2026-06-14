@@ -34,19 +34,19 @@ code fixes in Visual Studio, VS Code, and Rider.
 
 ```csharp
 [LoggerMessage(
-    EventId = (int)AielEventIds.ServiceStart,    // AIEL00008 ✅
+    EventId = (int)AielEvent.ServiceStart,    // AIEL00008 ✅
     Level   = LogLevel.Information,
     Message = "[{EventId}] Service started")]     // AIEL00010 ✅
 public static partial void ServiceStarted(
     this ILogger logger,
-    AielEventIds eventId = AielEventIds.ServiceStart); // AIEL00009 + AIEL00012 ✅
+    AielEvent eventId = AielEvent.ServiceStart); // AIEL00009 + AIEL00012 ✅
 ```
 
 ---
 
 ## Configuration — Custom EventIds Enum
 
-By default the analyzers look for `Aiel.Logging.AielEventIds`.  You can substitute **any**
+By default the analyzers look for `Aiel.Logging.AielEvent`.  You can substitute **any**
 enum by setting a single MSBuild property or `.editorconfig` key — no code changes needed.
 
 ### Option 1: MSBuild property *(recommended)*
@@ -78,7 +78,7 @@ MSBuild <AielEventIdsType>   (highest)
   ↓ fallback
 .editorconfig aiel_event_ids_type
   ↓ fallback
-Aiel.Logging.AielEventIds    (built-in default)
+Aiel.Logging.AielEvent    (built-in default)
 ```
 
 The resolved type name is stamped into every reported `Diagnostic.Properties` entry so that
@@ -147,7 +147,7 @@ aiel-analyzers/
 │   ├── Aiel.Logging.CodeFixes/        # Code-fix library (netstandard2.0)
 │   │   └── CodeFixes/                 # 5 code-fix providers
 │   └── Aiel.Logging.Template/         # Sample project (net10.0)
-│       ├── AielEventIds.cs            # Full event-id enum example
+│       ├── AielEvent.cs               # Full event-id enum example
 │       ├── SampleCompliant.cs         # ✅ All rules satisfied
 │       └── SampleViolations.cs        # ❌ One violation per rule
 ├── tests/

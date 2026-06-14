@@ -42,7 +42,7 @@ internal static class AielCodeFixVerifier<TAnalyzer, TCodeFix>
     /// <param name="testCode">C# testCode with diagnostic markers.</param>
     /// <param name="fixedCode">Expected C# testCode after the fix.</param>
     /// <param name="eventIdsSource">
-    /// Override the default <c>AielEventIds</c> stub.  Pass <see langword="null"/>
+    /// Override the default <c>AielEvent</c> stub.  Pass <see langword="null"/>
     /// to use the Aiel default.
     /// </param>
     /// <param name="codeFixIndex">

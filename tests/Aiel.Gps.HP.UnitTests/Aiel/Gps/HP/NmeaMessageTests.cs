@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Gps.HP.Sentences;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.Gps.HP;
 
@@ -127,7 +126,7 @@ public class NmeaMessageTests
     }
 
     [Fact]
-    [SuppressMessage("Roslynator", "RCS1205:Order named arguments according to the order of parameters", Justification = "<Pending>")]
+    //[SuppressMessage("Roslynator", "RCS1205:Order named arguments according to the order of parameters", Justification = "<Pending>")]
     public void Match_GLL_InvokesCorrectHandler()
     {
         // Arrange
@@ -150,7 +149,6 @@ public class NmeaMessageTests
     }
 
     [Fact]
-    [SuppressMessage("Roslynator", "RCS1205:Order named arguments according to the order of parameters", Justification = "<Pending>")]
     public void Match_WithResult_ReturnsCorrectValue()
     {
         // Arrange

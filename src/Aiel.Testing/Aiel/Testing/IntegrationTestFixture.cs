@@ -75,26 +75,26 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
             EnvironmentName = "Testing"
         };
 
-        ConfigureSettings(settings);
+        await ConfigureSettingsAsync(settings, TestContext.Current.CancellationToken);
 
         var builder = Host.CreateEmptyApplicationBuilder(settings);
 
-        ConfigureBuilder(builder);
+        await ConfigureBuilderAsync(builder, TestContext.Current.CancellationToken);
 
-        ConfigureConfiguration(builder.Configuration);
+        await ConfigureConfigurationAsync(builder.Configuration, TestContext.Current.CancellationToken);
 
-        ConfigureLogging(builder.Logging);
+        await ConfigureLoggingAsync(builder.Logging, TestContext.Current.CancellationToken);
 
         builder.Services.AddSingleton<ILoggerProvider>(_ => new XUnitLoggerProvider(TestOutputHelper, new XUnitLoggerOptions() { IncludeLogLevel = true, IncludeScopes = true }));
 
-        ConfigureServices(builder.Services, builder.Configuration);
+        await ConfigureServicesAsync(builder.Services, builder.Configuration, TestContext.Current.CancellationToken);
 
         _host = builder.Build();
 
         Configuration = _host.Services.GetRequiredService<IConfiguration>();
 
         using var scope = _host.Services.CreateScope();
-        await InitializeFixtureAsync(scope.ServiceProvider);
+        await InitializeFixtureAsync(scope.ServiceProvider, TestContext.Current.CancellationToken);
     }
 
     /// <summary>
@@ -105,6 +105,12 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
     /// Override this method in derived classes to customize services settings.
     /// </remarks>
     protected virtual void ConfigureSettings(HostApplicationBuilderSettings settings) { }
+    protected virtual ValueTask ConfigureSettingsAsync(HostApplicationBuilderSettings settings, CancellationToken cancellationToken = default)
+    {
+        ConfigureSettings(settings);
+
+        return ValueTask.CompletedTask;
+    }
 
     /// <summary>
     /// Allows derived fixtures to configure the base fixture's application builder.
@@ -115,6 +121,12 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
     /// <param name="builder">The host application builder to configure. Provides access to services, configuration, and other application
     /// setup features.</param>
     protected virtual void ConfigureBuilder(IHostApplicationBuilder builder) { }
+    protected virtual ValueTask ConfigureBuilderAsync(IHostApplicationBuilder builder, CancellationToken cancellationToken = default)
+    {
+        ConfigureBuilder(builder);
+
+        return ValueTask.CompletedTask;
+    }
 
     /// <summary>
     /// Gets the base path used when loading integration-test configuration files.
@@ -145,6 +157,12 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
             // appsettings.Testing.json is optional so local overrides never need to be committed for the fixture to load.
             .AddJsonFile("appsettings.Testing.json", optional: true);
     }
+    protected virtual ValueTask ConfigureConfigurationAsync(IConfigurationBuilder builder, CancellationToken cancellationToken = default)
+    {
+        ConfigureConfiguration(builder);
+
+        return ValueTask.CompletedTask;
+    }
 
     /// <summary>
     /// Configures the application's logging services.
@@ -154,6 +172,12 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
     /// <param name="logging">The <see cref="ILoggingBuilder"/> instance used to configure logging providers and settings.</param>
     /// <returns>The <see cref="ILoggingBuilder"/> instance after applying any custom logging configuration.</returns>
     protected virtual void ConfigureLogging(ILoggingBuilder logging) { }
+    protected virtual ValueTask ConfigureLoggingAsync(ILoggingBuilder logging, CancellationToken cancellationToken = default)
+    {
+        ConfigureLogging(logging);
+
+        return ValueTask.CompletedTask;
+    }
 
     /// <summary>
     /// Called to configure dependency injection services for the test services.
@@ -164,6 +188,12 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
     /// Override this method in derived classes to register services needed for tests.
     /// </remarks>
     protected virtual void ConfigureServices(IServiceCollection services, IConfiguration configuration) { }
+    protected virtual ValueTask ConfigureServicesAsync(IServiceCollection services, IConfiguration configuration, CancellationToken cancellationToken = default)
+    {
+        ConfigureServices(services, configuration);
+
+        return ValueTask.CompletedTask;
+    }
 
     /// <summary>
     /// Provides an opportunity to configure the services instance before tests run.
@@ -171,10 +201,7 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
     /// <remarks>Override this method in a derived class to apply custom configuration to the services. This
     /// method is called before the tests are started, allowing for additional setup or service registration.</remarks>
     /// <param name="services">The services to configure. Cannot be null.</param>
-    protected virtual ValueTask InitializeFixtureAsync(IServiceProvider services)
-    {
-        return ValueTask.CompletedTask;
-    }
+    protected virtual ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 
     /// <summary>
     /// Called before each test to initialize the test scope.

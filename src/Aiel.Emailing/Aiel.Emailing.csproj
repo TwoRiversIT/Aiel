@@ -13,11 +13,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
-		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.8" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.9" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Aiel.Emailing.Abstractions\Aiel.Emailing.Abstractions.csproj" />
 		<ProjectReference Include="..\Aiel.Security\Aiel.Security.csproj" />
 	</ItemGroup>
 

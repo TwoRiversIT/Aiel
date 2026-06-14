@@ -23,6 +23,7 @@
 using Aiel.Logging.Configuration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System;
 
 namespace Aiel.Logging.Internal;
 
@@ -77,7 +78,7 @@ public sealed class EventIdsTypeConfig
         // Fallback to global options
         if (!optionsProvider.GlobalOptions.TryGetValue($"build_property.{AnalyzerConfiguration.MsBuildPropertyKey}", out var configuredValue))
         {
-            configuredValue = "Aiel.Logging.AielEventIds"; // your default
+            configuredValue = "Aiel.AielEvent"; // your default
         }
 
         // Resolve the type by metadata name

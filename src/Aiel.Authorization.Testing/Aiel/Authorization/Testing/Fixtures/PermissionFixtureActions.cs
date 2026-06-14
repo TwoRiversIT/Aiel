@@ -28,26 +28,31 @@ namespace Aiel.Authorization.Testing.Fixtures;
 /// A fixture action type for use in tests only. Not a production contract.
 /// </summary>
 /// <remarks>Alpha variant — use when you need a single distinguishable action type.</remarks>
+[DoesNotRespectAuthority(Reason = "Test fixture action type that should not be used in production.")]
 public sealed class AlphaTestAction : IAction;
 
 /// <summary>
 /// A fixture action type for use in tests only. Not a production contract.
 /// </summary>
 /// <remarks>Beta variant — use when a second distinct action type is needed alongside <see cref="AlphaTestAction"/>.</remarks>
+[DoesNotRespectAuthority(Reason = "Test fixture action type that should not be used in production.")]
 public sealed class BetaTestAction : IAction;
 
 /// <summary>
 /// A fixture action type for use in tests only. Not a production contract.
 /// </summary>
 /// <remarks>Gamma variant — use when a third distinct action type is needed.</remarks>
+[DoesNotRespectAuthority(Reason = "Test fixture action type that should not be used in production.")]
 public sealed class GammaTestAction : IAction;
 
 /// <summary>
 /// A fixture action type for rename migration tests only. Not a production contract.
 /// </summary>
+[DoesNotRespectAuthority(Reason = "Test fixture action type that should not be used in production.")]
 public sealed class ChangeAppointmentTestAction : IAction;
 
 /// <summary>
 /// A fixture action type for rename migration tests only. Not a production contract.
 /// </summary>
+[DoesNotRespectAuthority(Reason = "Test fixture action type that should not be used in production.")]
 public sealed class RescheduleAppointmentTestAction : IAction;

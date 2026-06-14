@@ -157,6 +157,7 @@ public class DispatcherTests
     }
 
     [Fact]
+    [SuppressMessage("AielUsage", "AIEL00005:Multiple mediator dispatch calls in a single method", Justification = "<Pending>")]
     public async Task ExecuteAsync_creates_a_new_scope_for_each_dispatch()
     {
         var cancellationToken = TestContext.Current.CancellationToken;
@@ -285,6 +286,6 @@ public class DispatcherTests
 
         fakeLogger.Collector.Count.Should().Be(1);
         fakeLogger.Collector.LatestRecord.Level.Should().Be(LogLevel.Error);
-        fakeLogger.Collector.LatestRecord.Message.Should().Be("The FaultingNotificationHandler threw an exception. See the inner exception for details.");
+        fakeLogger.Collector.LatestRecord.Message.Should().Be("[HandlerException] The FaultingNotificationHandler threw an exception. See the inner exception for details.");
     }
 }

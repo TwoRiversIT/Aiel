@@ -108,8 +108,8 @@ public sealed class EfCorePermissionStore(AuthorizationDbContext dbContext, Time
             .ToListAsync(cancellationToken);
 
         var summaries = records
-            .Select(ToSummary)
-            .ToList();
+            .ConvertAll(ToSummary)
+;
 
         return Result<IReadOnlyList<AuthorizationGrantSummary>>.Success(summaries);
     }

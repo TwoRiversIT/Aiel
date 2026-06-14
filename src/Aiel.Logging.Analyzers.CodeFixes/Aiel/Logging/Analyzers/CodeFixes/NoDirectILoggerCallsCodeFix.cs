@@ -121,7 +121,7 @@ public sealed class NoDirectILoggerCallsCodeFix : CodeFixProvider
     private static async Task<Document> ReplaceWithTodoCommentAsync(
         Document document,
         ExpressionStatementSyntax statement,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var root = await document
             .GetSyntaxRootAsync(cancellationToken)
@@ -157,7 +157,7 @@ public sealed class NoDirectILoggerCallsCodeFix : CodeFixProvider
     private static async Task<Document> RemoveStatementAsync(
         Document document,
         ExpressionStatementSyntax statement,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var root = await document
             .GetSyntaxRootAsync(cancellationToken)
@@ -175,5 +175,5 @@ public sealed class NoDirectILoggerCallsCodeFix : CodeFixProvider
     // ── Utility ──────────────────────────────────────────────────────────
 
     private static String TruncateSafe(String s, Int32 maxLen)
-        => s.Length <= maxLen ? s : String.Concat(s.Substring(0, maxLen - 3), "...");
+        => s.Length <= maxLen ? s : $"{s.Substring(0, maxLen - 3)}...";
 }

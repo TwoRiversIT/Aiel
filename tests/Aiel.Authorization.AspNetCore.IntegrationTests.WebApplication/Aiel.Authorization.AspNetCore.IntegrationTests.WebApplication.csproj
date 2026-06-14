@@ -7,9 +7,11 @@
         <IsPackable>false</IsPackable>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <StartupObject>Aiel.Authorization.AspNetCore.Program</StartupObject>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Actions.Commands\Aiel.Actions.Commands.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Domain.Shared\Aiel.Authorization.Domain.Shared.csproj" />

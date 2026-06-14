@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Framework;
 
 namespace Aiel.Results;
 
-[DependsOn(typeof(AielFramework))]
+[DependsOn(typeof(AielFrameworkAbstractions))]
 public sealed class AielResults : AielDependencyConfigurator;

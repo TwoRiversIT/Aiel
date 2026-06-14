@@ -41,8 +41,8 @@ public sealed class UseAielEventIdsAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStart);
 
                 public static void StartService(ILogger logger)
                 {
@@ -98,7 +98,7 @@ public sealed class UseAielEventIdsAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] ok")]
                 public static partial void Ok(this ILogger logger);
             }
             """;
@@ -115,8 +115,8 @@ public sealed class UseAielEventIdsAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStart);
             }
             """;
 
@@ -133,7 +133,7 @@ public sealed class UseAielEventIdsAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -151,7 +151,7 @@ public sealed class UseAielEventIdsAnalyzerTests
             public static partial class Log
             {
                 [LoggerMessage(Level = LogLevel.Information, Message = "[{EventId}] Started")]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStart);
             }
             """;
 
@@ -312,8 +312,8 @@ public sealed class UseAielEventIdsAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [{|#0:LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
-                public static partial void ServiceStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStop);
+                [{|#0:LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Started")|}]
+                public static partial void ServiceStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStop);
             }
             """;
 
@@ -321,8 +321,8 @@ public sealed class UseAielEventIdsAnalyzerTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
-                .WithSpan(5, 81, 5, 88)
-                .WithArguments("AielEventIds.ServiceStart", "AielEventIds.ServiceStop")
+                .WithSpan(5, 78, 5, 85)
+                .WithArguments("AielEvent.ServiceStart", "AielEvent.ServiceStop")
         };
 
         await AielAnalyzerVerifier<EventIdMismatchAnalyzer>
@@ -338,8 +338,8 @@ public sealed class UseAielEventIdsAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [{|#0:LoggerMessage(EventId = (int)AielEventIds.RequestStart, Level = LogLevel.Information, Message = "[{EventId}] Request")|}]
-                public static partial void RequestStarted(this ILogger logger, AielEventIds eventId = AielEventIds.ServiceStart);
+                [{|#0:LoggerMessage(EventId = (int)AielEvent.RequestStart, Level = LogLevel.Information, Message = "[{EventId}] Request")|}]
+                public static partial void RequestStarted(this ILogger logger, AielEvent eventId = AielEvent.ServiceStart);
             }
             """;
 
@@ -347,8 +347,8 @@ public sealed class UseAielEventIdsAnalyzerTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.EventIdMismatch.Id)
-                .WithSpan(5, 81, 5, 88)
-                .WithArguments("AielEventIds.RequestStart", "AielEventIds.ServiceStart")
+                .WithSpan(5, 78, 5, 85)
+                .WithArguments("AielEvent.RequestStart", "AielEvent.ServiceStart")
         };
 
         await AielAnalyzerVerifier<EventIdMismatchAnalyzer>

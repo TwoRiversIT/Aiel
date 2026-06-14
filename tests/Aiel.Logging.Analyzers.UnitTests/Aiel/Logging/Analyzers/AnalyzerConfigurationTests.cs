@@ -52,8 +52,8 @@ public sealed class AnalyzerConfigurationUnitTests
     [Fact]
     public void DefaultConstants_AreCorrect()
     {
-        AnalyzerConfiguration.DefaultFullTypeName.Should().Be("Aiel.Logging.AielEventIds");
-        AnalyzerConfiguration.DefaultShortName.Should().Be("AielEventIds");
+        AnalyzerConfiguration.DefaultFullTypeName.Should().Be("Aiel.AielEvent");
+        AnalyzerConfiguration.DefaultShortName.Should().Be("AielEvent");
     }
 
     [Fact]

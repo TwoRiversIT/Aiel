@@ -20,10 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Application;
 using Aiel.Collections;
-using Aiel.Dependencies;
+using Aiel.DataAccess;
 using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.EntityFrameworkCore.Seeding;
+using Aiel.Framework;
 using Aiel.MultiTenancy;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,7 +34,8 @@ namespace Aiel.EntityFrameworkCore;
 [DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielApplication))]
 [DependsOn(typeof(AielMultiTenancy))]
-public class AielEntityFrameworkCore : AielDependencyConfigurator
+[DependsOn(typeof(AielDataAccess))]
+public sealed class AielEntityFrameworkCore : AielDependencyConfigurator
 {
     public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {

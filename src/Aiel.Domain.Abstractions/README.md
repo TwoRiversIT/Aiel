@@ -1,0 +1,3 @@
+# Aiel.Domain.Abstractions
+
+This library provides the core domain abstractions for the Aiel project. It includes interfaces and base classes for entities, value objects, repositories, and other domain concepts. These abstractions are designed to be used across different layers of the application, such as the application layer, infrastructure layer, and presentation layer. By defining these abstractions in a separate library, we can ensure that our domain logic remains decoupled from specific implementations and can be easily tested and maintained.

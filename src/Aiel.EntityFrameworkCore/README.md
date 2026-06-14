@@ -43,7 +43,7 @@ it as a dependency in your app's startup configuration.
 
 ```csharp
 [DependsOn(typeof(AielEntityFrameworkCore))]
-public sealed class MyApplication : AielApplication;
+public sealed class MyApplication : AielApplicationConfigurator;
 ```
 
 If you are not using the full Two Rivers App Framework, you can still leverage the migration and

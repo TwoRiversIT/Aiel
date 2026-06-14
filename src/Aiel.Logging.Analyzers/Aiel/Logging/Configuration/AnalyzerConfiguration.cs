@@ -34,7 +34,7 @@
 //                Value: My.Namespace.MyEnum
 //
 //   Priority 3 — Built-in default
-//                Aiel.Logging.AielEventIds
+//                Aiel.Logging.AielEvent
 //
 // Usage in an analyzer:
 //
@@ -59,6 +59,7 @@
 using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System;
 using System.Collections.Immutable;
 
 namespace Aiel.Logging.Configuration;
@@ -83,10 +84,10 @@ public static class AnalyzerConfiguration
     public const String EditorConfigKey = "aiel_event_ids_type";
 
     /// <summary>Fallback fully-qualified type name when no override is configured.</summary>
-    public const String DefaultFullTypeName = "Aiel.Logging.AielEventIds";
+    public const String DefaultFullTypeName = "Aiel.AielEvent";
 
     /// <summary>Fallback short type name when no override is configured.</summary>
-    public const String DefaultShortName = "AielEventIds";
+    public const String DefaultShortName = "AielEvent";
 
     /// <summary>Fallback member name when no matching member is found.</summary>
     public const String DefaultMemberName = "Replace_With_A_Valid_Member";
@@ -95,7 +96,7 @@ public static class AnalyzerConfiguration
     public const String DiagPropFullTypeName = "EventIdsFullTypeName";
 
     /// <summary>Key used to stamp the short type name into <see cref="Diagnostic.Properties"/>.</summary>
-    public const String DiagPropShortName = "EventIdsShortName";
+    public const String DiagPropShortName = "EventIdShortName";
 
     // ── Resolution ────────────────────────────────────────────────────────
 

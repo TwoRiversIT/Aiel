@@ -50,7 +50,7 @@ public static class TenantEndpointConventionBuilderExtensions
                         invocationContext.HttpContext,
                         out var tenantResolutionFeature))
                 {
-                    return Results.StatusCode(StatusCodes.Status500InternalServerError);
+                    return Microsoft.AspNetCore.Http.Results.StatusCode(StatusCodes.Status500InternalServerError);
                 }
 
                 var tenantResolution = tenantResolutionFeature.Resolution;
@@ -59,7 +59,7 @@ public static class TenantEndpointConventionBuilderExtensions
                     return await next(invocationContext);
                 }
 
-                return Results.StatusCode(TenantResolutionRequirementPolicy.MapStatusCode(tenantResolution));
+                return Microsoft.AspNetCore.Http.Results.StatusCode(TenantResolutionRequirementPolicy.MapStatusCode(tenantResolution));
             });
         });
 

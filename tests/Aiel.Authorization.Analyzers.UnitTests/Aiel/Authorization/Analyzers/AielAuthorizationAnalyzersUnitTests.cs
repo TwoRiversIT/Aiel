@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Dependencies;
+using Aiel.Framework;
 
 namespace Aiel.Authorization.Analyzers;
 
-[DependsOn(typeof(AielFramework))]
+[DependsOn(typeof(AielFrameworkAbstractions))]
 public sealed class AielAuthorizationAnalyzersUnitTests : AielDependencyConfigurator;
 

@@ -6,7 +6,7 @@
 - **Baseline observed in this worktree:**
   - `Aiel.Application.Contracts.UnitTests`: 1/1 passing
   - `Aiel.Application.UnitTests`: 58/58 passing
-  - `Aiel.Analyzers.UnitTests`: 9/9 passing
+  - `Aiel.Framework.Analyzers.UnitTests`: 9/9 passing
 - **Non-collision rule:** Do not mix permission runtime, generator, EF Core, ASP.NET Core, or Aviendha adoption work into this slice.
 
 ## First failing-test path
@@ -41,7 +41,7 @@
 - **Green assertions:**
   - Moved contracts load from `Aiel.Application.Contracts`.
   - `Aiel.Application` no longer defines `Aiel.Commands.ICommand`, `Aiel.Queries.IQuery\`1`, or the moved handler, dispatcher, and pipeline interfaces.
-  - `Aiel.Domain` no longer defines `Aiel.Execution.IExecutionContext`.
+  - `Aiel.Domain` no longer defines `Aiel.Actions.IExecutionContext`.
   - Dispatcher ordering and child-context behavior still pass.
 - **Keep and extend:** `Aiel/tests/Aiel.Application.Contracts.UnitTests/Aiel/Execution/ActionExecutionContextTests.cs` should continue to prove actor, correlation, causation, properties, payload, and `ClientInstanceId` preservation.
 
@@ -52,7 +52,7 @@ Treat this command pair as authoritative for the first 04a slice:
 1. `dotnet test .\Aiel\tests\Aiel.Application.Contracts.UnitTests\Aiel.Application.Contracts.UnitTests.csproj --nologo --verbosity minimal`
 2. `dotnet test .\Aiel\tests\Aiel.Application.UnitTests\Aiel.Application.UnitTests.csproj --nologo --verbosity minimal`
 
-Use `Aiel.Analyzers.UnitTests` only as a secondary smoke check for this slice. It is green today, but it does not prove the move-delete boundary is complete.
+Use `Aiel.Framework.Analyzers.UnitTests` only as a secondary smoke check for this slice. It is green today, but it does not prove the move-delete boundary is complete.
 
 ## Verin rejection cases
 

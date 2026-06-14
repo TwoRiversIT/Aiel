@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Aiel.Gps;
@@ -176,7 +175,6 @@ public class NmeaReaderTests
     }
 
     [Fact]
-    [SuppressMessage("Usage", "VSTHRD103:Call async methods when in an async method", Justification = "This is an intended usage for testing disposal behavior.")]
     public async Task Dispose_stops_background_parsing()
     {
         var streamReader = new NmeaStreamReader()

@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Commands;
-using Aiel.Execution;
 using Aiel.Results;
+using Aiel.Actions;
+using Aiel.Actions.Commands;
 
 namespace Aiel.Authorization;
 

@@ -24,7 +24,23 @@ namespace Aiel;
 
 public enum AielEvent
 {
-    PipelineDispatching = 1000,
-    PipelineSuccess = 1001,
-    PipelineFailure = 1002
+    _None = 9999,
+    Actions_CommandDispatched,
+    Actions_CommandFailed,
+    Actions_CommandSucceeded,
+    Actions_QueryDispatched,
+    Actions_QueryFailed,
+    Actions_QuerySucceeded,
+    Backgound_WorkerRunning,
+    Migrations_MigratingDatabase,
+    Migrations_MigrationCompleted,
+    Migrations_MigrationFailed,
+    Migrations_MigrationsCompleted,
+    Migrations_MigrationsFound,
+    Migrations_MigrationsNotFound,
+    Migrations_MigrationsStarting,
+    Migrations_RetryingMigration,
+    Migrations_SkippingTenant,
+    Migrations_TenantMigrationCompleted,
+    Migrations_TenantMigrationFailed,
 }

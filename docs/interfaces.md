@@ -39,7 +39,7 @@ public interface IDbConnectionFactory
 
 ---
 
-## `Aiel.Dependencies`
+## `Aiel.Framework`
 
 Package: `Aiel`
 
@@ -50,16 +50,16 @@ public interface IDependencyConfigurator
     ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
 }
 
-public interface IDependencyInitializer
+public interface IInitializer
 {
-    Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken);
+    Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default);
 }
 
 public interface IDependencyManager
 {
     IReadOnlyCollection<DependencyDescriptor> Dependencies { get; }
-    Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken);
-    Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken);
+    Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
+    Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default);
 }
 ```
 
@@ -212,7 +212,7 @@ public interface IRehydrateFromHistory
 
 ---
 
-## `Aiel.Execution`
+## `Aiel.Actions`
 
 Package: `Aiel.Application.Contracts`
 
@@ -599,7 +599,7 @@ public interface INotification;
 public interface IActionHandler<in TAction>
     where TAction : IAction
 {
-    ValueTask<Result> HandleAsync(TAction action, CancellationToken cancellationToken);
+    ValueTask<Result> HandleAsync(TAction action, CancellationToken cancellationToken = default);
 }
 
 public interface ICommandHandler<in TCommand> : IActionHandler<TCommand>
@@ -611,7 +611,7 @@ public interface IQueryHandler<in TQuery, TDto> : IActionHandler<TQuery>
 public interface INotificationHandler<in TNotification>
     where TNotification : INotification
 {
-    ValueTask HandleAsync(TNotification notification, CancellationToken cancellationToken);
+    ValueTask HandleAsync(TNotification notification, CancellationToken cancellationToken = default);
 }
 
 public interface ISender
@@ -629,7 +629,7 @@ public interface IPublisher
 public interface IPipelineBehavior<in TAction>
     where TAction : IAction
 {
-    ValueTask<Result> HandleAsync(TAction request, ActionHandlerDelegate next, CancellationToken cancellationToken);
+    ValueTask<Result> HandleAsync(TAction request, ActionHandlerDelegate next, CancellationToken cancellationToken = default);
 }
 ```
 
@@ -685,7 +685,7 @@ public interface IInboundMessageContext
 
 public interface IMessageConsumptionMiddleware
 {
-    ValueTask InvokeAsync(IInboundMessageContext context, Func<CancellationToken, ValueTask> next, CancellationToken cancellationToken);
+    ValueTask InvokeAsync(IInboundMessageContext context, Func<CancellationToken, ValueTask> next, CancellationToken cancellationToken = default);
 }
 
 public interface IOutboxWriter

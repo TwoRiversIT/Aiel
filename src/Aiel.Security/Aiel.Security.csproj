@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<RootNamespace />
@@ -12,7 +12,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-        <ProjectReference Include="..\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\Aiel.Emailing.Abstractions\Aiel.Emailing.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

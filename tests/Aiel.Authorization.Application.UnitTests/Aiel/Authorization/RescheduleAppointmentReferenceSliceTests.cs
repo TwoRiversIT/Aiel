@@ -21,9 +21,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Authorization.Testing;
-using Aiel.Commands;
-using Aiel.Execution;
 using Aiel.Results;
+using Aiel.Actions;
+using Aiel.Actions.Commands;
 
 namespace Aiel.Authorization;
 

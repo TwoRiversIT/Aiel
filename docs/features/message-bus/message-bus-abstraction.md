@@ -681,7 +681,7 @@ public interface IMessageConsumptionMiddleware
     ValueTask InvokeAsync(
         IInboundMessageContext context,
         Func<CancellationToken, ValueTask> next,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 ```
 
@@ -697,7 +697,7 @@ Adapters invoke the middleware chain before resolving `IMessageHandler<T>` or `I
 
 ```csharp
 [DependsOn(typeof(MessageBusAbstractionsDependency))]
-public sealed class MyApplication : AielApplication { ... }
+public sealed class MyApplication : AielApplicationConfigurator { ... }
 ```
 
 `MessageBusAbstractionsDependency` registers only framework-owned support services:

@@ -31,7 +31,7 @@ internal abstract class NotificationHandlerBase
     public abstract ValueTask HandleAsync(
         Object notification,
         IServiceProvider provider,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 
 internal sealed class NotificationHandlerWrapper<TNotification>
@@ -41,7 +41,7 @@ internal sealed class NotificationHandlerWrapper<TNotification>
     public override async ValueTask HandleAsync(
         Object notification,
         IServiceProvider provider,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var typed = (TNotification)notification;
         var handlers = provider.GetServices<INotificationHandler<TNotification>>();
@@ -60,12 +60,11 @@ internal sealed class NotificationHandlerWrapper<TNotification>
             }
             catch (Exception ex)
             {
-                // Every handler must be invoked even if a previous one fails.
-                // Exceptions are logged so that a single bad handler does not
-                // silently suppress the rest.
-                logger.LogError(ex, "The {Handler} threw an exception. See the inner exception for details.", handler.GetType().Name);
+                // Every handler must be invoked even if a previous one fails so that a single
+                // bad handler does not silently suppress the rest. Exceptions are logged.
+                // ToDo: Consider aggregating exceptions from all handlers and throw them together.
+                logger.LogHandlerException(ex, handler.GetType().Name);
             }
         }
     }
 }
-

@@ -4,8 +4,9 @@
 		<RootNamespace />
 		<AssemblyName>Aiel.Authorization.Analyzers.UnitTests</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
-		<IsTestProject>true</IsTestProject>
 		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+        <IsToolingTests>true</IsToolingTests>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -20,7 +21,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" />
-		<ProjectReference Include="..\..\src\Aiel\Aiel.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

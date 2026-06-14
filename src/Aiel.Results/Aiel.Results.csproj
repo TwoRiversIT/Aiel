@@ -11,19 +11,26 @@
 		<None Include="./README.md" Pack="true" PackagePath="/" />
 	</ItemGroup>
 
-	<!-- Include the analyzer DLL in the NuGet package to ensure it is available and used during compilation of consuming projects. -->
-	<ItemGroup>
+    <!-- Reference the source generator project as an analyzer to ensure it is used during compilation of this project. -->
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+        <ProjectReference Include="..\..\src\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+        <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+    </ItemGroup>
+
+    <!-- Bundle the source generator into this package's analyzers folder. -->
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+        <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 		<None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.9" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.8" />
+		<ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
+		<ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Aiel\Aiel.csproj" />
-	</ItemGroup>
-
-	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 
 </Project>

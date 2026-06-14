@@ -1,5 +1,4 @@
 using Aiel.StrongIds.Analyzers;
-using Aiel.StrongIds.Internal;
 using Microsoft.CodeAnalysis.Testing;
 using Verifiers;
 

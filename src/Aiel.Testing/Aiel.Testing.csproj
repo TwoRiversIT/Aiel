@@ -14,21 +14,19 @@
 	<ItemGroup>
         <Using Include="Xunit" />
     </ItemGroup>
-
-	<ItemGroup>
-	</ItemGroup>
 	
 	<ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.9" />
 		<PackageReference Include="Meziantou.Extensions.Logging.Xunit.v3" Version="2.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.8" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
-		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.6.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.9" />
+		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.7.0" />
 		<PackageReference Include="xunit.v3.extensibility.core" Version="3.2.2" />
 	</ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel\Aiel.csproj" />
+        <ProjectReference Include="..\Aiel.Framework\Aiel.Framework.csproj" />
     </ItemGroup>
 
 </Project>

@@ -31,7 +31,7 @@ internal abstract class ActionHandlerBase
     public abstract ValueTask<Result> HandleAsync(
         IAction action,
         IServiceProvider provider,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 }
 
 internal sealed class ActionHandlerWrapper<TAction>(Type[] behaviorTypes) : ActionHandlerBase
@@ -44,7 +44,7 @@ internal sealed class ActionHandlerWrapper<TAction>(Type[] behaviorTypes) : Acti
     public override ValueTask<Result> HandleAsync(
         IAction action,
         IServiceProvider provider,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var typed = (TAction)action;
         var handler = provider.GetRequiredService<IActionHandler<TAction>>();

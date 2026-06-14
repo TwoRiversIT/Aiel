@@ -13,7 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
+      <ProjectReference Include="..\Aiel.Actions.Commands\Aiel.Actions.Commands.csproj" />
+      <ProjectReference Include="..\Aiel.Actions.Queries\Aiel.Actions.Queries.csproj" />
     </ItemGroup>
 
 </Project>

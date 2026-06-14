@@ -27,7 +27,7 @@
 // raw integer literal instead of (int)<ConfiguredEventIds>.Replace_With_A_Valid_Member.
 //
 // The EventIds enum type is configurable (see AnalyzerConfiguration).
-// Default: Aiel.Logging.AielEventIds
+// Default: Aiel.Logging.AielEvent
 // -----------------------------------------------------------------------
 
 using Aiel.Internal;
@@ -37,6 +37,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System;
 using System.Collections.Immutable;
 
 namespace Aiel.Logging.Analyzers;
@@ -89,7 +90,7 @@ public sealed class UseAielEventIdsAnalyzer : DiagnosticAnalyzer
         // Fallback to global options
         if (!optionsProvider.GlobalOptions.TryGetValue($"build_property.{AnalyzerConfiguration.MsBuildPropertyKey}", out var configuredValue))
         {
-            configuredValue = "Aiel.Logging.AielEventIds"; // your default
+            configuredValue = "Aiel.AielEvent"; // your default
         }
 
         // Resolve the type by metadata name

@@ -22,6 +22,4 @@
 
 namespace Aiel.Gps.HP;
 
-public partial struct NmeaMessage
-{
-}
+public partial struct NmeaMessage;

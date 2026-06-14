@@ -46,7 +46,7 @@ public sealed class LoggingBehavior<TAction>(ILogger<LoggingBehavior<TAction>> l
     public async ValueTask<Result> HandleAsync(
         TAction request,
         ActionHandlerDelegate next,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         var requestName = typeof(TAction).Name;
         logger.LogHandlingRequest(requestName);

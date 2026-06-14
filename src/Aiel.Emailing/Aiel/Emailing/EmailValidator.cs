@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Emailing.Abstractions.Aiel.Emailing;
+
 namespace Aiel.Emailing;
 
 public static class EmailValidator

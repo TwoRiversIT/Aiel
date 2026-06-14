@@ -40,7 +40,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Service started")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Service started")]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -57,7 +57,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Processing {Name}")]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = "[{EventId}] Processing {Name}")]
                 public static partial void Processing(this ILogger logger, string name);
             }
             """;
@@ -92,7 +92,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Service started"|})]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Service started"|})]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -101,7 +101,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
-                .WithSpan(4, 102, 4, 119)
+                .WithSpan(4, 99, 4, 116)
                 .WithArguments("Service started")
         };
 
@@ -118,7 +118,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"{EventId} started"|})]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = {|#0:"{EventId} started"|})]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -127,7 +127,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
-                .WithSpan(4, 102, 4, 121)
+                .WithSpan(4, 99, 4, 118)
                 .WithArguments("{EventId} started")
         };
 
@@ -144,7 +144,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
             using Microsoft.Extensions.Logging;
             public static partial class Log
             {
-                [LoggerMessage(EventId = (int)AielEventIds.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Started service [{EventId}]"|})]
+                [LoggerMessage(EventId = (int)AielEvent.ServiceStart, Level = LogLevel.Information, Message = {|#0:"Started service [{EventId}]"|})]
                 public static partial void ServiceStarted(this ILogger logger);
             }
             """;
@@ -153,8 +153,7 @@ public sealed class MissingEventIdInMessageAnalyzerTests
         {
             DiagnosticResult
                 .CompilerWarning(DiagnosticDescriptors.MissingTemplateEventIdPlaceholder.Id)
-                .WithSpan(4, 102, 4, 131)
-                .WithArguments("Started service [{EventId}]")
+                .WithSpan(4, 99, 4, 128).WithArguments("Started service [{EventId}]")
         };
 
         await AielAnalyzerVerifier<MissingTemplateEventIdPlaceholderAnalyzer>

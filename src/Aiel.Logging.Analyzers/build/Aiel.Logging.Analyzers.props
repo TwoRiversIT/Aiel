@@ -14,7 +14,7 @@
   ├──────────────────────────────────────────────────────────────────┤
   │  AielEventIdsType                                                │
   │    Fully-qualified CLR name of the EventIds enum the analyzers   │
-  │    should enforce.  Defaults to "Aiel.Logging.AielEventIds"      │
+  │    should enforce.  Defaults to "Aiel.AielEvent"                 │
   │    when not set.                                                 │
   │                                                                  │
   │    Example (in your .csproj or Directory.Build.props):           │

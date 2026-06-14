@@ -25,7 +25,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Testing;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.Mediator;
 
@@ -287,6 +286,6 @@ public class DispatcherTests
 
         fakeLogger.Collector.Count.Should().Be(1);
         fakeLogger.Collector.LatestRecord.Level.Should().Be(LogLevel.Error);
-        fakeLogger.Collector.LatestRecord.Message.Should().Be("The FaultingNotificationHandler threw an exception. See the inner exception for details.");
+        fakeLogger.Collector.LatestRecord.Message.Should().Be("[HandlerException] The FaultingNotificationHandler threw an exception. See the inner exception for details.");
     }
 }

@@ -24,6 +24,7 @@ using Aiel.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 using Xunit;
 
 namespace Aiel.Results;
@@ -54,13 +55,11 @@ public class ResultsIntegrationTestFixture : IntegrationTestFixture
         services.AddResultPattern();
     }
 
+    [SuppressMessage("AielLogging", "AIEL00011:Do not call ILogger methods directly", Justification = "Just testing to see if we can actually suppress this warning.")]
     protected override ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var logger = services.GetRequiredService<ILogger<ResultsIntegrationTestFixture>>();
-        logger.LogInformation("""
-            Initializing Results integration test fixture. The module initializers in the
-            Aiel.Results.UnitTests.CustomErrors assembly should have run by now.
-            """);
+        logger.LogInformation("Initializing Results integration test fixture. FYI: The module initializers in the Aiel.Results.UnitTests.CustomErrors assembly should have run by now.");
 
         return ValueTask.CompletedTask;
     }

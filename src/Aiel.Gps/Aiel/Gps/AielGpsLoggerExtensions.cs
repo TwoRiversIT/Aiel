@@ -20,27 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel;
+using Microsoft.Extensions.Logging;
 
-public enum AielEvent
+namespace Aiel.Gps;
+
+public static partial class AielGpsLoggerExtensions
 {
-    _None = 9999,
-    Actions_CommandDispatched,
-    Actions_CommandFailed,
-    Actions_CommandSucceeded,
-    Actions_QueryDispatched,
-    Actions_QueryFailed,
-    Actions_QuerySucceeded,
-    Backgound_WorkerRunning,
-    Migrations_MigratingDatabase,
-    Migrations_MigrationCompleted,
-    Migrations_MigrationFailed,
-    Migrations_MigrationsCompleted,
-    Migrations_MigrationsFound,
-    Migrations_MigrationsNotFound,
-    Migrations_MigrationsStarting,
-    Migrations_RetryingMigration,
-    Migrations_SkippingTenant,
-    Migrations_TenantMigrationCompleted,
-    Migrations_TenantMigrationFailed,
+    [LoggerMessage(Level = LogLevel.Error, EventId = GpsEvent.ParsingFailed, Message = "[{EventId}] Line {LineCount} caused {ParserName}.Parse({Payload}) to generate the following exception:")]
+    public static partial void LogParseException(this ILogger logger, Exception exception, Int32 lineCount, String parserName, String payload, String eventId = nameof(GpsEvent.ParsingFailed));
+
+    [LoggerMessage(Level = LogLevel.Error, EventId = GpsEvent.CanHandleException, Message = "[{EventId}] {ParserName}.CanHandle({Payload}) generated the following exception:")]
+    public static partial void LogCanHandleException(this ILogger logger, Exception exception, String parserName, String payload, String eventId = nameof(GpsEvent.CanHandleException));
 }

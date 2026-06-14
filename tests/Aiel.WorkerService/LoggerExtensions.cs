@@ -20,27 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel;
+using Microsoft.Extensions.Logging;
+using System;
 
-public enum AielEvent
+namespace Aiel.WorkerService;
+
+public static partial class LoggerExtensions
 {
-    _None = 9999,
-    Actions_CommandDispatched,
-    Actions_CommandFailed,
-    Actions_CommandSucceeded,
-    Actions_QueryDispatched,
-    Actions_QueryFailed,
-    Actions_QuerySucceeded,
-    Backgound_WorkerRunning,
-    Migrations_MigratingDatabase,
-    Migrations_MigrationCompleted,
-    Migrations_MigrationFailed,
-    Migrations_MigrationsCompleted,
-    Migrations_MigrationsFound,
-    Migrations_MigrationsNotFound,
-    Migrations_MigrationsStarting,
-    Migrations_RetryingMigration,
-    Migrations_SkippingTenant,
-    Migrations_TenantMigrationCompleted,
-    Migrations_TenantMigrationFailed,
+
+    [LoggerMessage(Level = LogLevel.Information, EventId = (Int32)AielEvent.Backgound_WorkerRunning, Message = "[{EventId}] Worker running at: {Time}")]
+    public static partial void LogWorkerRunning(this ILogger logger, DateTime time, AielEvent eventId = AielEvent.Backgound_WorkerRunning);
 }

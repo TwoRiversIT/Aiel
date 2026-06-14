@@ -29,12 +29,12 @@ namespace Aiel.Queries;
 /// </summary>
 internal static partial class QueryLoggerExtensions
 {
-    [LoggerMessage(EventId = (Int32)AielEvent.QueryDispatching, Level = LogLevel.Information, Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
-    internal static partial void LogDispatching(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.QueryDispatching);
+    [LoggerMessage(EventId = (Int32)AielEvent.Actions_QueryDispatched, Level = LogLevel.Information, Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
+    internal static partial void LogDispatching(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_QueryDispatched);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.QuerySuccess, Level = LogLevel.Information, Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
-    internal static partial void LogSuccess(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.QuerySuccess);
+    [LoggerMessage(EventId = (Int32)AielEvent.Actions_QuerySucceeded, Level = LogLevel.Information, Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
+    internal static partial void LogSuccess(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_QuerySucceeded);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.QueryFailure, Level = LogLevel.Warning, Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
-    internal static partial void LogFailure(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.QueryFailure);
+    [LoggerMessage(EventId = (Int32)AielEvent.Actions_QueryFailed, Level = LogLevel.Warning, Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
+    internal static partial void LogFailure(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_QueryFailed);
 }

@@ -22,19 +22,13 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace Aiel.Commands;
+namespace Aiel.Mediator;
 
 /// <summary>
-/// Shared structured-logging helpers for command and query pipeline behaviors.
+/// Provides extension methods for logging events related to the Aiel.Mediator library using the defined event IDs.
 /// </summary>
-internal static partial class CommandLoggerExtensions
+public static partial class AielMediatorLoggerExtensions
 {
-    [LoggerMessage(EventId = (Int32)AielEvent.Actions_CommandDispatched, Level = LogLevel.Information, Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
-    internal static partial void LogDispatching(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_CommandDispatched);
-
-    [LoggerMessage(EventId = (Int32)AielEvent.Actions_CommandSucceeded, Level = LogLevel.Information, Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
-    internal static partial void LogSuccess(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_CommandSucceeded);
-
-    [LoggerMessage(EventId = (Int32)AielEvent.Actions_CommandFailed, Level = LogLevel.Warning, Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
-    internal static partial void LogFailure(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_CommandFailed);
+    [LoggerMessage(Level = LogLevel.Error, EventId = (Int32)AielMediatorEventIds.HandlerException, Message = "[{EventId}] The {Handler} threw an exception. See the inner exception for details.")]
+    public static partial void LogHandlerException(this ILogger logger, Exception exception, String handler, AielMediatorEventIds eventId = AielMediatorEventIds.HandlerException);
 }

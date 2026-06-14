@@ -20,27 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel;
+namespace Aiel.Gps;
 
-public enum AielEvent
+public static class GpsEvent
 {
-    _None = 9999,
-    Actions_CommandDispatched,
-    Actions_CommandFailed,
-    Actions_CommandSucceeded,
-    Actions_QueryDispatched,
-    Actions_QueryFailed,
-    Actions_QuerySucceeded,
-    Backgound_WorkerRunning,
-    Migrations_MigratingDatabase,
-    Migrations_MigrationCompleted,
-    Migrations_MigrationFailed,
-    Migrations_MigrationsCompleted,
-    Migrations_MigrationsFound,
-    Migrations_MigrationsNotFound,
-    Migrations_MigrationsStarting,
-    Migrations_RetryingMigration,
-    Migrations_SkippingTenant,
-    Migrations_TenantMigrationCompleted,
-    Migrations_TenantMigrationFailed,
+    public const Int32 ParsingFailed = 0;
+    public const Int32 CanHandleException = 1;
 }

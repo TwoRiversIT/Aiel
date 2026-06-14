@@ -20,27 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel;
+namespace Aiel.Mediator;
 
-public enum AielEvent
+/// <summary>
+/// Defines event IDs for logging events related to the Aiel.Mediator library.
+/// These event IDs can be used to categorize and filter log messages generated
+/// by the library, making it easier to identify and troubleshoot issues.
+/// </summary>
+public enum AielMediatorEventIds
 {
-    _None = 9999,
-    Actions_CommandDispatched,
-    Actions_CommandFailed,
-    Actions_CommandSucceeded,
-    Actions_QueryDispatched,
-    Actions_QueryFailed,
-    Actions_QuerySucceeded,
-    Backgound_WorkerRunning,
-    Migrations_MigratingDatabase,
-    Migrations_MigrationCompleted,
-    Migrations_MigrationFailed,
-    Migrations_MigrationsCompleted,
-    Migrations_MigrationsFound,
-    Migrations_MigrationsNotFound,
-    Migrations_MigrationsStarting,
-    Migrations_RetryingMigration,
-    Migrations_SkippingTenant,
-    Migrations_TenantMigrationCompleted,
-    Migrations_TenantMigrationFailed,
+    /// <summary>
+    /// Indicates that an exception occurred while processing a request in a handler.
+    /// </summary>
+    HandlerException = 0,
+    WorkerRunning = 1
 }

@@ -12,13 +12,13 @@
 	</ItemGroup>
 
     <!-- Reference the source generator project as an analyzer to ensure it is used during compilation of this project. -->
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <ProjectReference Include="..\..\src\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
     </ItemGroup>
 
     <!-- Bundle the source generator into this package's analyzers folder. -->
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 		<None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>

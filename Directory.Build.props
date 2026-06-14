@@ -86,7 +86,7 @@
     </ItemGroup>
 
     <!-- Tooling: Debug -->
-    <ItemGroup Condition="'$(Configuration)' == 'Debug' and '$(IsToolingProject)' != 'true' and '$(IsToolingTests)' != 'true'">
+    <ItemGroup Condition="'$(IsToolingProject)' != 'true' and '$(IsToolingTests)' != 'true'">
         <!-- Reference the analyzer and generator project as an analyzer to ensure it is used during compilation of this project. -->
         <ProjectReference Include="..\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
         <ProjectReference Include="..\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />

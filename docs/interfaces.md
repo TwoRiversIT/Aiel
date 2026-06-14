@@ -469,9 +469,9 @@ public interface IRequireEmailSender
 
 ---
 
-## `Aiel.EntityFrameworkCore.Migrations`
+## `Aiel.DataAccess.EntityFrameworkCore.Migrations`
 
-Package: `Aiel.EntityFrameworkCore`
+Package: `Aiel.DataAccess.EntityFrameworkCore`
 
 ```csharp
 public interface IDatabaseMigrator

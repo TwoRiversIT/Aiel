@@ -1,6 +1,6 @@
 # Aiel.Gps.HP.Generators
 
-Source generators for the high-performance NMEA parsing library.
+Source generators for the high-performance NMEA parsing library.  For more information, see the [Aiel.Gps.HP documentation](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.Gps.HP/README.md).
 
 ## Features
 
@@ -43,3 +43,7 @@ public readonly struct GllParser : INmeaParser<GLL>
 ```
 
 The generator will automatically create the discriminated union.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

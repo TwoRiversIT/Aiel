@@ -366,13 +366,13 @@ Placement:
 
 - Namespace: `Aiel.MultiTenancy`
 - Target package: `Aiel.MultiTenancy`
-- EF integration hook point: `Aiel.EntityFrameworkCore.AielDbContext`
+- EF integration hook point: `Aiel.DataAccess.EntityFrameworkCore.AielDbContext`
 
 **See also:**
 - [`multitenancy-system.md`](../multitenancy/multitenancy-system.md) — framework scope and extension points
 - [`Aiel.MultiTenancy` README](../../src/Aiel.MultiTenancy/README.md) — API reference
 - [`Aiel.AspNetCore` README](../../src/Aiel.AspNetCore/README.md) — HTTP pipeline usage
-- [`Aiel.EntityFrameworkCore` README](../../src/Aiel.EntityFrameworkCore/README.md) — data access patterns
+- [`Aiel.DataAccess.EntityFrameworkCore` README](../../src/Aiel.DataAccess.EntityFrameworkCore/README.md) — data access patterns
 
 ### `IMultiTenant`
 
@@ -498,7 +498,7 @@ Placement:
 
 - Namespace: `Aiel.Commands`
 - Contract package: `Aiel.Application`
-- Default implementation package: `Aiel.EntityFrameworkCore`
+- Default implementation package: `Aiel.DataAccess.EntityFrameworkCore`
 
 ### `IUnitOfWork`
 

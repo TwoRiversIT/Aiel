@@ -116,7 +116,7 @@ It should **not** depend on:
 
 - `Aiel.Application`
 - `Aiel.Domain`
-- `Aiel.EntityFrameworkCore`
+- `Aiel.DataAccess.EntityFrameworkCore`
 - any transport SDK
 - any hosted-service runtime assumptions
 

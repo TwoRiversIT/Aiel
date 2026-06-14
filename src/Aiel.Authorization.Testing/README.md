@@ -1,3 +1,7 @@
 # Aiel.Authorization.Testing
 
-This project contains testing utilities and helper classes for the Aiel.Authorization library. It provides tools and frameworks to facilitate unit testing and integration testing of the authorization system, ensuring that the library functions correctly and meets the expected behavior.
+This project contains testing utilities and helper classes for the Aiel.Authorization library.  For more information, see the [Aiel.Authorization](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.Authorization/README.md) documentation.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

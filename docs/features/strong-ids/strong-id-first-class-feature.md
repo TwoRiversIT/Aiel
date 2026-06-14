@@ -113,7 +113,7 @@ The desired direction is:
 ```text
 Aiel.Domain -> Aiel.StrongIds
 Aiel.Application -> Aiel.Domain -> Aiel.StrongIds
-Aiel.EntityFrameworkCore -> Aiel.StrongIds.EntityFrameworkCore -> Aiel.StrongIds
+Aiel.DataAccess.EntityFrameworkCore -> Aiel.StrongIds.EntityFrameworkCore -> Aiel.StrongIds
 Aiel.Authorization.* -> Aiel.StrongIds
 ```
 

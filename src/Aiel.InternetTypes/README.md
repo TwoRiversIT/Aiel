@@ -34,3 +34,45 @@ public void Must_output_Human_Readable_strings()
     s.ToFormattedString().Should().Be("1970-01-01-01");
 }
 ```
+
+### Extension Methods
+
+#### IPAddressExtensions
+
+IP address utilities:
+
+```csharp
+using Aiel.Internet;
+using System.Net;
+
+var ip = IPAddress.Parse("192.168.1.100");
+var network = IPAddress.Parse("192.168.1.0");
+
+if (ip.IsInSameSubnet(network, 24))
+{
+    Console.WriteLine("Same subnet");
+}
+```
+
+### Comparers
+
+#### IPAddressComparer
+
+Compares IP addresses for sorting:
+
+```csharp
+using Aiel.Net;
+
+var addresses = new[]
+{
+    IPAddress.Parse("192.168.1.100"),
+    IPAddress.Parse("10.0.0.1"),
+    IPAddress.Parse("192.168.1.10")
+};
+
+Array.Sort(addresses, new IPAddressComparer());
+```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

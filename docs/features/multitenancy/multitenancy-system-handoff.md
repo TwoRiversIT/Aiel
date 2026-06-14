@@ -92,7 +92,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
    - Remove nullable public tenant resolution returns.
    - Acceptance gate: focused unit tests fail first, then pass; no Aviendha references; public XML docs are present.
 
-3. `Aiel.EntityFrameworkCore: rename base context and align tenant contract` — Perrin primary, Verin tests.
+3. `Aiel.DataAccess.EntityFrameworkCore: rename base context and align tenant contract` — Perrin primary, Verin tests.
    - Rename `TrDbContext` to `AielDbContext`.
    - Update discriminator query filters and tenant stamping to the selected tenant identity contract.
    - Decide whether compatibility type aliases/shims are unnecessary because the project is greenfield.
@@ -104,7 +104,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
    - Keep actor resolution and storage binding host-owned through extension points.
    - Acceptance gate: ASP.NET integration tests cover resolved, missing, optional, forbidden/conflict, and error outcomes.
 
-5. `Aiel.EntityFrameworkCore: per-tenant migration primitives` — Perrin primary, Nynaeve secondary, Verin review.
+5. `Aiel.DataAccess.EntityFrameworkCore: per-tenant migration primitives` — Perrin primary, Nynaeve secondary, Verin review.
    - Define target-scoped migration abstractions, ledger/checkpoint contracts, rollout locks/leases, readiness contributors, and telemetry hooks.
    - Keep production fan-out migrations out of normal web startup.
    - Acceptance gate: tests prove startup does not enumerate tenant targets and out-of-band runner checkpoint/resume behavior is explicit.
@@ -121,21 +121,21 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
 
 **Relevant files**
 
-- `d:/source/TwoRivers/Aiel/docs/planning/multitenancy-system.md` — current high-level multitenancy draft to reconcile into an implementation-ready Aiel plan.
-- `d:/source/TwoRivers/Aiel/docs/DomainPrimitives.md` — current source-of-truth language for identity-only `TenantContext`, explicit tenant outcomes, and EF strategy.
-- `d:/source/TwoRivers/Aiel/docs/phases/phase-03-aiel-aspnet-operational-plan.md` — ASP.NET and migration operating model to preserve.
-- `d:/source/TwoRivers/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/TenantContext.cs` — provisional identity wrapper; likely replace with `TenantId` plus `TenantIdentity`/scoped-accessor vocabulary.
-- `d:/source/TwoRivers/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/ITenantProvider.cs` — provisional nullable contract to replace with explicit outcomes and clearer resolver/accessor naming.
-- `d:/source/TwoRivers/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/IMultiTenant.cs` — discriminator marker used by EF query filters and tenant stamping; keep or rename only after the core naming ADR.
-- `d:/source/TwoRivers/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/TenantResolutionConstants.cs` — constants that must align with trust-boundary decisions.
-- `d:/source/TwoRivers/Aiel/src/Aiel.EntityFrameworkCore/Aiel/EntityFrameworkCore/TrDbContext.cs` — provisional EF base context; rename to `AielDbContext`.
-- `d:/source/TwoRivers/Aiel/src/Aiel.EntityFrameworkCore/Aiel/EntityFrameworkCore/ModelBuilderExtensions.cs` — existing global query-filter implementation.
-- `d:/source/TwoRivers/Aiel/tests/Aiel.EntityFrameworkCore.IntegrationTests/Aiel/EntityFrameworkCore/TrDbContextTests.cs` — current discriminator tests to extend.
-- `d:/source/TwoRivers/Aiel/src/Aiel.AspNetCore/Aiel/AspNetCore/AielAspNetCore.cs` — currently marker-only ASP.NET package; primary home for HTTP middleware/metadata.
-- `d:/source/TwoRivers/.squad/decisions.md` — existing squad decisions, including May 10 tenant lifecycle and migration decisions.
-- `d:/source/TwoRivers/.squad/routing.md` — owner routing for phase/issues.
-- `d:/source/TwoRivers/.squad/skills/tenant-contract-boundaries/SKILL.md` — useful boundary rules, but subordinate to Aiel framework architecture decisions.
-- `d:/source/TwoRivers/Aviendha/docs/planning/MULTITENANCY.md` — downstream reference implementation pressure test, not normative for Aiel.
+- `D:/source/Aviendha/Aiel/docs/planning/multitenancy-system.md` — current high-level multitenancy draft to reconcile into an implementation-ready Aiel plan.
+- `D:/source/Aviendha/Aiel/docs/DomainPrimitives.md` — current source-of-truth language for identity-only `TenantContext`, explicit tenant outcomes, and EF strategy.
+- `D:/source/Aviendha/Aiel/docs/phases/phase-03-aiel-aspnet-operational-plan.md` — ASP.NET and migration operating model to preserve.
+- `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/TenantContext.cs` — provisional identity wrapper; likely replace with `TenantId` plus `TenantIdentity`/scoped-accessor vocabulary.
+- `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/ITenantProvider.cs` — provisional nullable contract to replace with explicit outcomes and clearer resolver/accessor naming.
+- `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/IMultiTenant.cs` — discriminator marker used by EF query filters and tenant stamping; keep or rename only after the core naming ADR.
+- `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/TenantResolutionConstants.cs` — constants that must align with trust-boundary decisions.
+- `D:/source/Aviendha/Aiel/src/Aiel.DataAccess.EntityFrameworkCore/Aiel/EntityFrameworkCore/TrDbContext.cs` — provisional EF base context; rename to `AielDbContext`.
+- `D:/source/Aviendha/Aiel/src/Aiel.DataAccess.EntityFrameworkCore/Aiel/EntityFrameworkCore/ModelBuilderExtensions.cs` — existing global query-filter implementation.
+- `D:/source/Aviendha/Aiel/tests/Aiel.DataAccess.EntityFrameworkCore.IntegrationTests/Aiel/EntityFrameworkCore/TrDbContextTests.cs` — current discriminator tests to extend.
+- `D:/source/Aviendha/Aiel/src/Aiel.AspNetCore/Aiel/AspNetCore/AielAspNetCore.cs` — currently marker-only ASP.NET package; primary home for HTTP middleware/metadata.
+- `D:/source/Aviendha/.squad/decisions.md` — existing squad decisions, including May 10 tenant lifecycle and migration decisions.
+- `D:/source/Aviendha/.squad/routing.md` — owner routing for phase/issues.
+- `D:/source/Aviendha/.squad/skills/tenant-contract-boundaries/SKILL.md` — useful boundary rules, but subordinate to Aiel framework architecture decisions.
+- `D:/source/Aviendha/docs/planning/MULTITENANCY.md` — downstream reference implementation pressure test, not normative for Aiel.
 
 **Verification**
 
@@ -144,7 +144,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
 3. Run `Set-Location d:/source/TwoRivers/Aiel; dotnet build Aiel.slnx -c Debug -warnaserror`.
 4. Run `Set-Location d:/source/TwoRivers/Aiel; dotnet test Aiel.slnx -c Debug --no-build`.
 5. For ASP.NET middleware work: add integration tests using a test host/web application covering required, optional, missing, forbidden/conflict, and error outcomes.
-6. For EF discriminator work: run `Aiel.EntityFrameworkCore.IntegrationTests` and verify no cross-tenant leakage and no nullable public tenant outcomes remain.
+6. For EF discriminator work: run `Aiel.DataAccess.EntityFrameworkCore.IntegrationTests` and verify no cross-tenant leakage and no nullable public tenant outcomes remain.
 7. For migration primitives: add tests showing production startup does not enumerate/fan out tenant targets and that out-of-band runner checkpoints/resumes correctly.
 8. For documentation: ensure Aiel docs distinguish reusable framework contracts from Aviendha-specific adoption and do not promise admin UI/CLI behavior before contracts exist.
 

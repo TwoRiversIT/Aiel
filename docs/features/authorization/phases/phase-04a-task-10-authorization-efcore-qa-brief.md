@@ -388,7 +388,7 @@ Task 10 integration tests that exercise real schema behavior (Gate 2: rename mig
 
 **Open question for Doug:** Is `Testcontainers.PostgreSql` an approved external dependency? It introduces a Docker dependency in CI. If Testcontainers is not available, the alternative is a connection string supplied via environment variable / test configuration — but this is less hermetic. Flag before adding the package reference (rule AA1 applies: new external dependency requires explicit approval).
 
-**If Testcontainers is approved:** The test fixture base class should inherit from `Aiel.Testing.IntegrationTestFixture` and configure the PostgreSQL container in `ConfigureServices`, following the pattern established in `Aiel.EntityFrameworkCore.IntegrationTests`.
+**If Testcontainers is approved:** The test fixture base class should inherit from `Aiel.Testing.IntegrationTestFixture` and configure the PostgreSQL container in `ConfigureServices`, following the pattern established in `Aiel.DataAccess.EntityFrameworkCore.IntegrationTests`.
 
 **If Testcontainers is NOT approved:** Tests that require real PostgreSQL MUST be decorated with `[Trait("Category", "RequiresPostgres")]` and skipped automatically when no connection string is configured. The Gate 2 test MUST be skipped in this case — not silently passing on an InMemory provider.
 

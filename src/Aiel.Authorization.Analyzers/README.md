@@ -1,3 +1,7 @@
 # Aiel.Authorization.Analyzers
 
-This project contains Roslyn analyzers for the Aiel.Authorization library. These analyzers help developers identify potential issues and improve the usage of the Aiel.Authorization library in their code.
+This project contains Roslyn analyzers for the Aiel.Authorization library. For more information, see the [Aiel.Authorization](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.Authorization/README.md) documentation.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

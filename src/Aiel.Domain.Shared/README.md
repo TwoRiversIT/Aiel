@@ -1,3 +1,7 @@
 # Aiel.Domain.Shared
 
-This library provides shared domain concepts and utilities for the Aiel project. It includes common value objects, domain events, and other reusable components that can be used across different domain modules. By centralizing these shared concepts, we can promote consistency and reduce duplication within the domain layer.
+This library provides shared domain concepts and utilities for the Aiel Framework.  For more information, see the [Aiel.Domain](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.Domain/README.md) documentation.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

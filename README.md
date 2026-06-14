@@ -91,7 +91,7 @@ Column mapping for Dapper enabling property-to-column name mapping via attribute
 - `ColumnMapper` for automatic mapping discovery from assemblies
 - Type-safe mapping without manual configuration
 
-### [Aiel.EntityFrameworkCore](./src/Aiel.EntityFrameworkCore/README.md)
+### [Aiel.DataAccess.EntityFrameworkCore](./src/Aiel.DataAccess.EntityFrameworkCore/README.md)
 
 Entity Framework Core utilities and extensions (in development).
 
@@ -106,7 +106,7 @@ Application-layer contracts for commands, queries, specifications, and read-side
 - `ICommand`, `IQuery<TResult>`, handlers, and dispatchers
 - `PageRequest`, `SortRequest`, and `PagedResult<T>` for read-side shaping
 
-### [Aiel.EntityFrameworkCore](./src/Aiel.EntityFrameworkCore/README.md)
+### [Aiel.DataAccess.EntityFrameworkCore](./src/Aiel.DataAccess.EntityFrameworkCore/README.md)
 
 Entity Framework Core integration for repositories, strong IDs, and read-side query specifications.
 

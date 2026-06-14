@@ -26,7 +26,7 @@ Aiel provides a flexible, extensible multitenancy framework designed to support 
 
 - [`Aiel.MultiTenancy` README](../../src/Aiel.MultiTenancy/README.md) for public API reference
 - [`Aiel.AspNetCore` README](../../src/Aiel.AspNetCore/README.md) for HTTP pipeline usage
-- [`Aiel.EntityFrameworkCore` README](../../src/Aiel.EntityFrameworkCore/README.md) for data access patterns
+- [`Aiel.DataAccess.EntityFrameworkCore` README](../../src/Aiel.DataAccess.EntityFrameworkCore/README.md) for data access patterns
 
 ---
 
@@ -312,7 +312,7 @@ See the **README files** for practical quick-start guides:
 
 - **`Aiel.MultiTenancy` README**: Public contract surface, outcome types, constants
 - **`Aiel.AspNetCore` README**: HTTP middleware, fail-closed endpoints, tenant-required metadata
-- **`Aiel.EntityFrameworkCore` README**: AielDbContext, query filters, migration pipeline, seeding
+- **`Aiel.DataAccess.EntityFrameworkCore` README**: AielDbContext, query filters, migration pipeline, seeding
 
 ---
 

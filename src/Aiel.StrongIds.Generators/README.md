@@ -1,5 +1,7 @@
 # Aiel.StrongIds.Generators
 
-Source generator for `Aiel.StrongIds` declarations.
+Source generator for `Aiel.StrongIds` declarations. For more information, see the [Aiel.StrongIds](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.StrongIds/README.md) documentation.
 
-This package exists so the Strong ID generator can be built, tested, and packed independently, while the main `Aiel.StrongIds` package republishes the generator as a compile-time asset for normal consumers.
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

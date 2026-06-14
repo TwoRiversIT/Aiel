@@ -17,7 +17,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.AspNetCore\Aiel.AspNetCore.csproj" />
-        <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore\Aiel.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.DataAccess.EntityFrameworkCore\Aiel.DataAccess.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Security\Aiel.Security.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.WorkerService.Shared\Aiel.WorkerService.Shared.csproj" />

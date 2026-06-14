@@ -20,51 +20,50 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.AspNetCore;
-using Aiel.DataAccess.EntityFrameworkCore;
+using Aiel.Application;
+using Aiel.Collections;
 using Aiel.DataAccess.EntityFrameworkCore.Migrations;
+using Aiel.DataAccess.EntityFrameworkCore.Seeding;
 using Aiel.Framework;
-using Aiel.Security;
-using Aiel.WorkerService.Shared;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Aiel.MultiTenancy;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace Aiel.WorkerService;
+namespace Aiel.DataAccess.EntityFrameworkCore;
 
-[DependsOn(typeof(AielAspNetCore))]
-[DependsOn(typeof(AielSecurity))]
-[DependsOn(typeof(AielWorkerServiceShared))]
-[DependsOn(typeof(AielDataAcccessEntityFrameworkCore))]
-public sealed class AielWorkerService : AielApplicationConfigurator
+[DependsOn(typeof(AielFramework))]
+[DependsOn(typeof(AielApplication))]
+[DependsOn(typeof(AielMultiTenancy))]
+[DependsOn(typeof(AielDataAccess))]
+public sealed class AielDataAcccessEntityFrameworkCore : AielDependencyConfigurator
 {
-    public override String ApplicationName => ThisAssembly.AssemblyName;
-    public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
-
     public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        // https://www.npgsql.org/efcore/release-notes/6.0.html#opting-out-of-the-new-timestamp-mapping-logic
-        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
+        AutoAddDatabaseMigrators(context.Services);
         return ValueTask.CompletedTask;
     }
 
     public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        var connStr = context.GetConnectionStringOrDefault("MyAppDb");
-        context.Services.AddDbContext<MyAppDbContext>(options =>
-        {
-            options.UseNpgsql(connStr, options => options.MigrationsAssembly("Inara.IdentityProvider.EntityFrameworkCore.PostgreSql"));
-            options.EnableSensitiveDataLogging(context.IsDevelopment);
-        });
-
-        context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<MyAppDbContext>>();
-
+        context.Services.Configure<SeedingOptions>(context.Configuration.GetSection(nameof(SeedingOptions)));
         return ValueTask.CompletedTask;
     }
-}
 
-public class MyAppDbContext : DbContext;
+    private static void AutoAddDatabaseMigrators(IServiceCollection services)
+    {
+        var contributors = new TypeSet<IDatabaseMigrator>();
+
+        services.OnAdding(context =>
+        {
+            if (typeof(IDatabaseMigrator).IsAssignableFrom(context.ImplementationType))
+            {
+                contributors.Add(context.ImplementationType);
+            }
+        });
+
+        services.Configure<AielMigrationOptions>(options =>
+        {
+            // Add all found contributors
+            options.Migrators.AddRange(contributors);
+        });
+    }
+}

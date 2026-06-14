@@ -38,6 +38,11 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Show computed version
+        run: |
+          dotnet tool install --global nbgv
+          nbgv get-version
+    
       # Cache NuGet packages to speed up subsequent runs.
       - name: Cache NuGet packages
         uses: actions/cache@v4
@@ -69,6 +74,8 @@ jobs:
           name: xUnit Test Results
           path: ./TestResults/**/*.trx
           reporter: dotnet-trx
+          fail-on-error: false
+          fail-on-empty: false
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4

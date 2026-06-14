@@ -3,8 +3,7 @@
 > [Result Pattern in C#](https://adrianbailador.github.io/blog/44-result-pattern-)
 > by [Adrian Bailador](https://adrianbailador.github.io/)
 
-The `Result` class provides a way to represent the outcome of operations,
-encapsulating success and failure states along with relevant data or error messages.
+The `Result` class provides a way to represent the outcome of operations, encapsulating success and failure states along with relevant data or error messages.
 
 ## Basic Usage
 
@@ -386,6 +385,7 @@ Custom errors defined in any assembly will serialize correctly, even if the cons
 The `Error.Exception()` method is available to convert exceptions to errors, but its use should be **rare and discouraged**.
 
 **Why it exists:**
+
 In Blazor applications, unhandled exceptions can crash the entire app, forcing a page reload. Converting exceptions to errors provides a recovery path.
 
 **Important limitations:**
@@ -397,17 +397,17 @@ try
 }
 catch (Exception ex)
 {
-    // ⚠️ This deliberately loses stack trace and inner exceptions
+    // This deliberately loses stack trace and inner exceptions
     return Error.Exception(ex);  
 }
 ```
 
 **The conversion is deliberately minimal:**
 
-- ✅ Captures exception type name and message only
-- ❌ Loses stack trace (security/privacy concern)
-- ❌ Loses inner exceptions
-- ❌ Loses custom exception properties
+- Captures exception type name and message only
+- Loses stack trace (security/privacy concern)
+- Loses inner exceptions
+- Loses custom exception properties
 
 **Why these limitations:**
 
@@ -667,3 +667,8 @@ builder.Services.AddResultPattern(options =>
     options.PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase;
     options.WriteIndented = true;
 });
+```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

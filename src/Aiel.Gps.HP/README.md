@@ -1,53 +1,50 @@
 # Aiel.Gps.HP
 
-High‑performance, zero‑allocation NMEA 0183 sentence parser for .NET 10.
+High-performance, zero-allocation NMEA 0183 sentence parser for .NET 10.
 
-Designed for real‑time GPS data processing, telemetry pipelines, embedded systems, and any workload where performance and memory efficiency are critical.
+Designed for real-time GPS data processing, telemetry pipelines, embedded systems, and any workload where performance and memory efficiency are critical.
 
 Built on modern .NET features:
 
 - `System.IO.Pipelines` for efficient I/O
-- `ReadOnlySpan<byte>` for zero‑allocation parsing
-- `ref struct Lexer` for stack‑only parsing operations
-- Source‑generated discriminated union for type‑safe message handling
-- Attribute‑driven compile‑time registration (fork path) and runtime registration (NuGet consumers)
-
+- `ReadOnlySpan<Byte>` for zero-allocation parsing
+- `ref struct Lexer` for stack-only parsing operations
+- Source-generated discriminated union for type-safe message handling
+- Attribute-driven compile-time registration (fork path) and runtime registration (NuGet consumers)
 
 ---
 
 ## **Features**
 
-- **True Zero‑Allocation Parsing**  
-  Stack‑based lexer and struct‑based messages eliminate heap allocations for message types without string fields. GLL parsing produces **zero allocations**.
+- **True Zero-Allocation Parsing**  
+  Stack-based lexer and struct-based messages eliminate heap allocations for message types without string fields. GLL parsing produces **zero allocations**.
 
 - **Exceptional Performance**  
   **~84ns** per message for simple sentences. **10x faster** than previous versions.
 
-- **Source‑Generated Discriminated Union**  
-  Type‑safe pattern matching over NMEA message types with compile‑time guarantees.
+- **Source-Generated Discriminated Union**  
+  Type-safe pattern matching over NMEA message types with compile-time guarantees.
 
 - **Async Stream Processing**  
-  Efficient backpressure‑aware streaming using `System.IO.Pipelines`.
+  Efficient backpressure-aware streaming using `System.IO.Pipelines`.
 
 - **Dual Extensibility Model**  
-  - **Fork (highest performance)**: Add custom messages to the library source so they are included in the compile‑time discriminated union — zero‑allocation
+  - **Fork (highest performance)**: Add custom messages to the library source so they are included in the compile-time discriminated union — zero-allocation
   - **Runtime registration**: Register custom parsers via `NmeaParserRegistry` as a NuGet consumer — one allocation per custom message
 
 - **Separation of Concerns**  
-  Single‑message parsing (`NmeaSingleParser`) and batch streaming (`NmeaBatchReader`) are independent APIs.
+  Single-message parsing (`NmeaSingleParser`) and batch streaming (`NmeaBatchReader`) are independent APIs.
 
 - **Comprehensive Error Handling**  
   Parse errors available via `ReadErrorsAsync()` channel without disrupting message flow.
 
 ---
 
-
 > **.NET 10 Only**: This is intentional. While the other packages in this repo multi-target .NET versions, the HP library exists
 > to be the absolute fastest possible implementation. The .NET team and many other contributors have made amazing improvements to
 > performance over the years, so if you are not using the latest version of .NET, you are not as serious about performance as you
 > say you are. If you need to support .NET 8, please consider using the `Aiel.Gps` package instead. It has a similar API but
 > prioritizes extensibility over speed.
-
 
 ---
 
@@ -83,7 +80,7 @@ var gll = NmeaSingleParser.Parse(bytes, parser);
 Console.WriteLine($"Lat: {gll.Latitude}, Lon: {gll.Longitude}");
 ```
 
-It's called `NmeaSingleParser`, but there is no reason you cannot use it inside a loop. For high‑throughput scenarios, batch
+It's called `NmeaSingleParser`, but there is no reason you cannot use it inside a loop. For high-throughput scenarios, batch
 processing with `NmeaBatchReader` is recommended.
 
 > 
@@ -110,7 +107,7 @@ processing with `NmeaBatchReader` is recommended.
 >         onRMC: rmc => Console.WriteLine($"Speed: {rmc.SpeedOverGround} knots"),
 >         onGSA: gsa => Console.WriteLine($"Fix: {gsa.FixType}"),
 >         onGSV: gsv => Console.WriteLine($"Satellites: {gsv.SatellitesInView}"),
->         onVTG: vtg => Console.WriteLine($"Track: {vtg.TrueTrackMadeGood}°"),
+>         onVTG: vtg => Console.WriteLine($"Track: {vtg.TrueTrackMadeGood}Ã‚Â°"),
 >         onGFDTA: gfdta => Console.WriteLine($"Concentration: {gfdta.Concentration}"));
 > }
 > ```
@@ -200,7 +197,7 @@ await Task.WhenAll(messagesTask, errorsTask);
 
 ### **Custom Messages at Runtime**
 
-For proprietary or non‑standard NMEA sentences that cannot be added at compile time:
+For proprietary or nonÃ¢â‚¬â€˜standard NMEA sentences that cannot be added at compile time:
 
 ```csharp
 public sealed class MyCustomParser : ICustomNmeaParser
@@ -273,7 +270,7 @@ public sealed class GpsService : BackgroundService
                 onRMC: rmc => _logger.LogInformation("Speed: {Speed} knots", rmc.SpeedOverGround),
                 onGSA: gsa => _logger.LogDebug("HDOP: {Hdop}", gsa.Hdop),
                 onGSV: gsv => _logger.LogDebug("Satellites in view: {Count}", gsv.SatellitesInView),
-                onVTG: vtg => _logger.LogDebug("Track: {Track}°", vtg.TrueTrackMadeGood),
+                onVTG: vtg => _logger.LogDebug("Track: {Track}Ã‚Â°", vtg.TrueTrackMadeGood),
                 onGFDTA: gfdta => _logger.LogInformation("Concentration: {Value}", gfdta.Concentration));
         }
 
@@ -293,19 +290,19 @@ Aiel.Gps.HP supports two extensibility tiers. Choosing the right one depends on 
 ### Understanding the Two Tiers
 
 |                                      | Tier 1: Fork                     | Tier 2: Runtime Registration |
-| ------------------------------------ | -------------------------------- | ---------------------------- |
+| ------------------------------------------ | -------------------------------- | ---------------------------- |
 | **Who uses this?**                   | People like David Fowler         | NuGet package consumers      |
 | **When does registration happen?**   | Compile time                     | Application startup          |
 | **Allocation per message?**          | Zero                             | One (boxed object)           |
 | **Included in `NmeaMessage` union?** | Yes                              | No — separate channel        |
 | **IntelliSense / type safety?**      | Full                             | Cast required                |
-| **Suitable for high‑throughput?**    | Yes                              | Yes, with minor overhead     |
+| **Suitable for high-throughput?**    | Yes                              | Yes, with minor overhead     |
 
 ---
 
 ### Using Both Tiers Together
 
-ℹ️ A common misconception: the two tiers are **not mutually exclusive**. You do not have to choose one or the other — you can use both simultaneously.
+¹⁰ A common misconception: the two tiers are **not mutually exclusive**. You do not have to choose one or the other — you can use both simultaneously.
 
 When `NmeaBatchReader` receives a sentence, it follows a strict dispatch order:
 
@@ -317,17 +314,17 @@ When `NmeaBatchReader` receives a sentence, it follows a strict dispatch order:
 
 This means you can register any number of custom parsers without affecting the performance of your built-in message processing. The benchmarks confirm this design: 4,000 `$GPGLL` sentences processed with a populated registry show a ratio of **0.96** — statistically identical to processing with no registry present at all.
 
-✅ **Bottom line**: register your proprietary sentences via Tier 2 and enjoy zero-allocation parsing for all standard NMEA sentences at the same time. No trade-offs required.
+… **Bottom line**: register your proprietary sentences via Tier 2 and enjoy zero-allocation parsing for all standard NMEA sentences at the same time. No trade-offs required.
 
 ---
 
 ### **Tier 1 — Fork the Library (Absolute Highest Performance)**
 
-> This path is for teams that need every nanosecond and are willing to maintain their own fork, or for contributors submitting new built‑in sentence types.
+> This path is for teams that need every nanosecond and are willing to maintain their own fork, or for contributors submitting new built-in sentence types.
 
 The source generator discovers message types at compile time by scanning the current compilation for structs marked with `[NmeaMessage]` and `[NmeaParser]`. Because the generator runs during compilation of `Aiel.Gps.HP` itself, any custom types must exist in that compilation to be included in the generated `NmeaMessage` discriminated union.
 
-**What this means in practice:** custom types added to a fork are first‑class citizens — they appear alongside `GLL`, `GGA`, and `RMC` in the `Match()` call with zero overhead.
+**What this means in practice:** custom types added to a fork are first-class citizens — they appear alongside `GLL`, `GGA`, and `RMC` in the `Match()` call with zero overhead.
 
 **Step 1 — Fork the repository and add your message struct:**
 
@@ -345,7 +342,7 @@ public struct MyCustomMessage
     public Int32 Checksum;
 
     public override readonly String ToString() =>
-        $"MYCST {DeviceId} {Temperature}°C {SignalStrength}dBm {Status}";
+        $"MYCST {DeviceId} {Temperature}Ã‚Â°C {SignalStrength}dBm {Status}";
 }
 ```
 
@@ -373,7 +370,7 @@ public readonly struct MyCustomParser : INmeaParser<MyCustomMessage>
 }
 ```
 
-**Step 3 — Rebuild.** The generator runs automatically and includes `MyCustomMessage` in the `NmeaMessage` union. Your custom type now appears as a first‑class member:
+**Step 3 — Rebuild.** The generator runs automatically and includes `MyCustomMessage` in the `NmeaMessage` union. Your custom type now appears as a first-class member:
 
 ```csharp
 if (NmeaMessage.TryParse(bytes, out var message))
@@ -381,7 +378,7 @@ if (NmeaMessage.TryParse(bytes, out var message))
     message.Match(
         onGLL: gll => ProcessGll(gll),
         onGGA: gga => ProcessGga(gga),
-        onMyCustomMessage: custom => Console.WriteLine($"Temp: {custom.Temperature}°C"));
+        onMyCustomMessage: custom => Console.WriteLine($"Temp: {custom.Temperature}Ã‚Â°C"));
         // ... etc.
 }
 ```
@@ -394,9 +391,9 @@ if (NmeaMessage.TryParse(bytes, out var message))
 
 > This is the standard extensibility path for anyone consuming `Aiel.Gps.HP` as a NuGet package. One heap allocation is made per custom message parsed. For most workloads this is negligible. The performance section contains benchmarks comparing both tiers.
 
-Custom parsers are registered at application startup via `NmeaParserRegistry`. Custom messages flow through a separate `ReadCustomMessagesAsync()` channel on `NmeaBatchReader` and are returned as `Object` (requiring a cast). Built‑in messages are unaffected and continue to flow through `ReadAsync()` as normal.
+Custom parsers are registered at application startup via `NmeaParserRegistry`. Custom messages flow through a separate `ReadCustomMessagesAsync()` channel on `NmeaBatchReader` and are returned as `Object` (requiring a cast). Built-in messages are unaffected and continue to flow through `ReadAsync()` as normal.
 
-A full end‑to‑end example follows in the next section.
+A full end-to-end example follows in the next section.
 
 ---
 
@@ -434,7 +431,7 @@ public sealed class GasDetectorParser : ICustomNmeaParser
 
     public Object Parse(ref Lexer lexer)
     {
-        // Skip the sentence identifier — custom parsers are responsible for this,
+        // Skip the sentence identifier Ã¢â‚¬â€ custom parsers are responsible for this,
         // just like built-in INmeaParser<T> implementations.
         lexer.ConsumeString();
 
@@ -454,7 +451,7 @@ public sealed class GasDetectorParser : ICustomNmeaParser
 ```csharp
 using Aiel.Gps.HP;
 
-// Build the registry at startup — it is thread-safe and can be shared
+// Build the registry at startup Ã¢â‚¬â€ it is thread-safe and can be shared
 var registry = new NmeaParserRegistry();
 registry.Register(new GasDetectorParser());
 
@@ -482,7 +479,7 @@ var customTask = Task.Run(async () =>
 {
     await foreach (var raw in reader.ReadCustomMessagesAsync())
     {
-        // Each custom message requires a cast — the type system cannot
+        // Each custom message requires a cast Ã¢â‚¬â€ the type system cannot
         // know at compile time which custom parsers are registered.
         if (raw is GasDetectorMessage gas)
         {
@@ -496,7 +493,7 @@ await Task.WhenAll(builtInTask, customTask);
 
 #### Accessing Statistics
 
-After the reader completes, `Statistics` reports counts for both built‑in and custom messages:
+After the reader completes, `Statistics` reports counts for both built-in and custom messages:
 
 ```csharp
 var stats = reader.Statistics;
@@ -551,7 +548,7 @@ var value = lexer.NextDouble();    // Returns Double.NaN for empty field
 var time = lexer.NextTime();       // Returns TimeOnly.MinValue for empty field
 ```
 
-### **Built‑In Message Examples**
+### **Built-In Message Examples**
 
 #### Simple: GLL (Geographic Position)
 
@@ -668,9 +665,9 @@ public readonly struct GsvParser : INmeaParser<GSV>
 | **RMC**   | Recommended Minimum Navigation Information | Time, Status, Latitude, Longitude, Speed, Track Angle, Date, Magnetic Variation                          |
 | **GSA**   | GPS DOP and Active Satellites              | Fix Mode, Fix Type, Satellite PRNs, PDOP, HDOP, VDOP                                                     |
 | **GSV**   | GPS Satellites in View                     | Total Messages, Message Number, Satellites in View, Satellite Details (PRN, Elevation, Azimuth, SNR)     |
-| **GLL**   | Geographic Position - Latitude/Longitude   | Latitude, Longitude, Time, Status                                                                         |
+| **GLL**   | Geographic Position - Latitude/Longitude   | Latitude, Longitude, Time, Status                                                                        |
 | **VTG**   | Track Made Good and Ground Speed           | True Track, Magnetic Track, Ground Speed (knots and km/h)                                                |
-| **GFDTA** | Proprietary GasFinder Sentence             | Concentration, R2, Distance, Light, DateTime, Serial Number, Status                                       |
+| **GFDTA** | Proprietary GasFinder Sentence             | Concentration, R2, Distance, Light, DateTime, Serial Number, Status                                      |
 
 All message types are implemented as `struct` for optimal performance.
 
@@ -772,21 +769,21 @@ Basic latitude/longitude position fix.
 
 ## Architecture
 
-The library uses a modern, high‑performance architecture:
+The library uses a modern, high-performance architecture:
 
 1. **Source Generator** (`Aiel.Gps.HP.Generators`) - Scans the `Aiel.Gps.HP` compilation at build time and emits the `NmeaMessage` discriminated union and parser dispatcher
-2. **NmeaBatchReader** - Pipeline‑based async stream reader using `System.IO.Pipelines`; routes sentences to built‑in parsers or the `NmeaParserRegistry`
-3. **NmeaSingleParser** - Zero‑allocation single‑sentence parser; accepts any `INmeaParser<TMessage>` directly
-4. **Lexer** (`ref struct`) - Stack‑only tokenizer; never allocates; passed by `ref` through the entire parse chain
+2. **NmeaBatchReader** - Pipeline-based async stream reader using `System.IO.Pipelines`; routes sentences to built-in parsers or the `NmeaParserRegistry`
+3. **NmeaSingleParser** - Zero-allocation single-sentence parser; accepts any `INmeaParser<TMessage>` directly
+4. **Lexer** (`ref struct`) - Stack-only tokenizer; never allocates; passed by `ref` through the entire parse chain
 5. **Message Structs** - Value types; live on the stack when possible
-6. **NmeaParserRegistry** - Thread‑safe dictionary of `ICustomNmeaParser` instances; consulted only when a sentence identifier is not recognised by the built‑in dispatcher
+6. **NmeaParserRegistry** - Thread-safe dictionary of `ICustomNmeaParser` instances; consulted only when a sentence identifier is not recognised by the built-in dispatcher
 
 
 ## Performance
 
-Aiel.Gps.HP delivers exceptional performance through zero‑allocation parsing, stack‑based operations, and source generation.
+Aiel.Gps.HP delivers exceptional performance through zero-allocation parsing, stack-based operations, and source generation.
 
-### Single‑Message Parsing Benchmarks
+### Single-Message Parsing Benchmarks
 
 BenchmarkDotNet v0.14.0, Windows 11 (10.0.26200.7840)  
 Unknown processor  
@@ -802,7 +799,7 @@ Unknown processor
 
 **Key Observations:**
 
-- **GLL parsing is truly zero‑allocation** — no Gen0 collections, 0 bytes allocated
+- **GLL parsing is truly zero-allocation** — no Gen0 collections, 0 bytes allocated
 - GFDTA allocates 72 bytes due to `String` fields (unavoidable)
 - Discriminated union `TryParse` has nearly identical performance to direct parsing
 
@@ -814,7 +811,7 @@ Unknown processor
 | HP: Batch Parse Medium (4,483 messages)   |    737,020.21 ns |  4,051.609 ns |  3,383.277 ns |  55.6641 |  41.9922 |       - |  1059617 B |
 | HP: Batch Parse Large (13,470 messages)   |  2,515,757.47 ns | 26,705.870 ns | 24,980.687 ns | 167.9688 | 164.0625 | 78.1250 |  3268809 B |
 
-**Per‑Message Averages:**
+**Per-Message Averages:**
 
 - Small: 138 ns/message, 214 B/message
 - Medium: 164 ns/message, 236 B/message
@@ -856,13 +853,13 @@ Unknown processor
 
 ### Performance Characteristics
 
-- **Sub‑100ns latency** for simple messages without string fields
-- **Stack‑only parsing** using `ref struct Lexer` (no heap pressure)
-- **Source‑generated dispatch** eliminates virtual calls and reflection
+- **Sub-100ns latency** for simple messages without string fields
+- **Stack-only parsing** using `ref struct Lexer` (no heap pressure)
+- **Source-generated dispatch** eliminates virtual calls and reflection
 - **Efficient pipeline I/O** with `System.IO.Pipelines` for batch processing
-- **Minimal GC pressure** — Gen0‑only collections for datasets under 5,000 messages
+- **Minimal GC pressure** — Gen0-only collections for datasets under 5,000 messages
 
-### Built‑In vs Runtime Registration Benchmarks
+### Built-In vs Runtime Registration Benchmarks
 
 BenchmarkDotNet v0.14.0, Windows 11 (10.0.26200.7840)  
 Unknown processor  
@@ -896,17 +893,17 @@ Unknown processor
 
 ---
 
-### Real‑World Throughput
+### Real-World Throughput
 
-Based on the medium dataset benchmark (4,483 messages in 737μs):
+Based on the medium dataset benchmark (4,483 messages in 737ÃŽÂ¼s):
 
 - **~6.1 million messages/second**
 - **~3.3 GB/s** throughput (assuming 550 bytes average per NMEA sentence)
 
 This makes Aiel.Gps.HP suitable for:
 
-- Real‑time GPS tracking systems
-- High‑frequency telemetry processing
+- Real-time GPS tracking systems
+- High-frequency telemetry processing
 - Embedded systems with limited resources
 - Data ingestion pipelines processing large GPS log files
 
@@ -942,9 +939,9 @@ Given a set of structs decorated with `[NmeaMessage]` and `[NmeaParser]` in the 
 
 This means:
 
-- Types in `Aiel.Gps.HP` itself (GLL, GGA, RMC, etc.) → included in the union automatically
-- Types added to a **fork** of the library → included in the union automatically
-- Types in a **NuGet consumer's project** → NOT included — use `ICustomNmeaParser` instead
+- Types in `Aiel.Gps.HP` itself (GLL, GGA, RMC, etc.) — included in the union automatically
+- Types added to a **fork** of the library — included in the union automatically
+- Types in a **NuGet consumer's project** — NOT included — use `ICustomNmeaParser` instead
 
 ### Inspecting Generated Code
 
@@ -956,7 +953,7 @@ Get-ChildItem -Path obj\Generated -Recurse -Filter *.cs
 
 The key generated file is typically named `NmeaMessage.g.cs`. Inspect it when troubleshooting missing types or unexpected `Match()` signatures.
 
-### Adding a Built‑In Type (Fork Path)
+### Adding a Built-In Type (Fork Path)
 
 1. Add a struct with `[NmeaMessage("IDENTIFIER")]` in the `Aiel.Gps.HP` project
 2. Add a corresponding `readonly struct` with `[NmeaParser(typeof(YourMessage))]` implementing `INmeaParser<YourMessage>`
@@ -968,14 +965,6 @@ The key generated file is typically named `NmeaMessage.g.cs`. Inspect it when tr
 ## **Contributing**
 
 This is part of the [Aiel Application Framework](https://github.com/AielIT/AppFramework). Contributions are welcome via pull requests.
-
----
-
-## **License**
-
-MIT License.
-
-High-performance NMEA 0183 sentence parser for .NET 10. This library provides efficient parsing of GPS data streams using modern .NET features including source generation, `System.IO.Pipelines`, `ReadOnlySpan<T>`, and `ref struct` for true zero-allocation parsing.
 
 ---
 
@@ -1017,16 +1006,20 @@ await foreach (var message in reader.ReadAsync())
 
 ### Key Differences
 
-1. **No Registration Required**: Built‑in message types are automatically available
+1. **No Registration Required**: Built-in message types are automatically available
 2. **Discriminated Union**: Use pattern matching instead of type checking
-3. **Struct‑Based**: All messages are structs, not classes
+3. **Struct-Based**: All messages are structs, not classes
 4. **Source Generation**: Custom messages use attributes instead of inheritance
 5. **TimeOnly/DateOnly**: Uses modern .NET date/time types instead of `TimeSpan`/`DateTime`
-6. **Separate APIs**: Single‑message parsing (`NmeaSingleParser`) and batch streaming (`NmeaBatchReader`) are independent
+6. **Separate APIs**: Single-message parsing (`NmeaSingleParser`) and batch streaming (`NmeaBatchReader`) are independent
 
 ### Performance Improvements
 
-- **8x faster** single‑message parsing
+- **8x faster** single-message parsing
 - **6x faster** batch processing
 - **77% reduction** in memory allocations
-- **True zero‑allocation** for messages without string fields
+- **True zero-allocation** for messages without string fields
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

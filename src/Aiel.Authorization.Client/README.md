@@ -27,3 +27,7 @@ if (snapshotResult.IsSuccess && snapshotResult.Value.CanExecute(PermissionName.F
 ```
 
 When an application-service call returns `AuthorizationDeniedError`, call `HandleAuthorizationFailureAsync(...)` to invalidate the cached entry for the request key and fetch a fresh snapshot version.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

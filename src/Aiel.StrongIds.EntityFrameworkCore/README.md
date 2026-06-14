@@ -1,6 +1,6 @@
 # Aiel.StrongIds.EntityFrameworkCore
 
-Entity Framework Core integration helpers for `Aiel.StrongIds`.
+Entity Framework Core integration helpers for `Aiel.StrongIds`. For more information, see the [Aiel.StrongIds](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.StrongIds/README.md) documentation.
 
 ## Usage
 
@@ -17,3 +17,7 @@ modelBuilder.Entity<Order>(entity =>
 ```
 
 `HasStrongIdConversion<TStrongId, TValue>()` configures an EF Core value converter for generated Strong IDs and sets an immutable-friendly value comparer for change tracking. The nullable overload supports optional struct-backed Strong IDs and maps them through nullable provider values such as `Guid?`.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

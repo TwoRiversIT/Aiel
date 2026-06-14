@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.AspNetCore;
-using Aiel.EntityFrameworkCore;
-using Aiel.EntityFrameworkCore.Migrations;
+using Aiel.DataAccess.EntityFrameworkCore;
+using Aiel.DataAccess.EntityFrameworkCore.Migrations;
 using Aiel.Framework;
 using Aiel.Security;
 using Aiel.WorkerService.Shared;
@@ -38,7 +38,7 @@ namespace Aiel.WorkerService;
 [DependsOn(typeof(AielAspNetCore))]
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielWorkerServiceShared))]
-[DependsOn(typeof(AielEntityFrameworkCore))]
+[DependsOn(typeof(AielDataAcccessEntityFrameworkCore))]
 public sealed class AielWorkerService : AielApplicationConfigurator
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;

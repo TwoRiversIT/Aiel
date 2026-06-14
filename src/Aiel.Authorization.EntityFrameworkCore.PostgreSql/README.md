@@ -1,3 +1,7 @@
 # Aiel.Authorization.EntityFrameworkCore.PostgreSql
 
-This project contains the Entity Framework Core integration for the Aiel.Authorization library. It provides the necessary configurations, DbContext, and entity mappings to work with a PostgreSQL database using Entity Framework Core. This project helps to persist and retrieve authorization-related data efficiently.
+This project contains PostgreSQL support for the Entity Framework Core integration of the Aiel.Authorization library.  For more information, see the [Aiel.Authorization](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.Authorization/README.md) documentation.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

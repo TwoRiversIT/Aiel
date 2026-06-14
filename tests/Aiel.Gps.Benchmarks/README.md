@@ -46,9 +46,9 @@ Benchmarking helps us:
 
 **How to Interpret**:
 
-- If Mean scales linearly with message count → Good! O(n) performance
-- If Allocated is constant per message → Good! No memory leaks
-- If small dataset shows high overhead → Parser initialization cost
+- If Mean scales linearly with message count Ã¢â€ â€™ Good! O(n) performance
+- If Allocated is constant per message Ã¢â€ â€™ Good! No memory leaks
+- If small dataset shows high overhead Ã¢â€ â€™ Parser initialization cost
 
 ### 2. Parser Configuration (`ParserConfigurationBenchmarks`)
 
@@ -75,9 +75,9 @@ Benchmarking helps us:
 
 **How to Interpret**:
 
-- Ratio close to 1.00 → Parser registration has minimal overhead
-- Ratio > 1.20 → Consider registering only needed parsers
-- Allocated increases → Each parser adds memory overhead
+- Ratio close to 1.00 Ã¢â€ â€™ Parser registration has minimal overhead
+- Ratio > 1.20 Ã¢â€ â€™ Consider registering only needed parsers
+- Allocated increases Ã¢â€ â€™ Each parser adds memory overhead
 
 ### 3. Individual Parser Performance (`IndividualParserBenchmarks`)
 
@@ -96,16 +96,16 @@ Benchmarking helps us:
 ```
 |                             Method |      Mean | Allocated |
 |----------------------------------- |----------:|----------:|
-| Parse GGA (Position Fix) [Baseline]|  1.234 μs |     128 B |
-| Parse RMC (Recommended Minimum)    |  1.456 μs |     144 B |
-| Parse GSV (Satellites in View)     |  2.789 μs |     256 B |
+| Parse GGA (Position Fix) [Baseline]|  1.234 ÃŽÂ¼s |     128 B |
+| Parse RMC (Recommended Minimum)    |  1.456 ÃŽÂ¼s |     144 B |
+| Parse GSV (Satellites in View)     |  2.789 ÃŽÂ¼s |     256 B |
 ```
 
 **How to Interpret**:
 
-- GSV slower than GGA → Expected (more fields to parse)
-- High allocation on simple parser → Investigation needed
-- Microsecond (μs) times → Very fast, good!
+- GSV slower than GGA Ã¢â€ â€™ Expected (more fields to parse)
+- High allocation on simple parser Ã¢â€ â€™ Investigation needed
+- Microsecond (ÃŽÂ¼s) times Ã¢â€ â€™ Very fast, good!
 
 ## Running Benchmarks
 
@@ -125,10 +125,10 @@ dotnet run -c Release --project tests\Aiel.Gps.Benchmarks --filter *ParseLargeDa
 ### Important: Always Use Release Configuration
 
 ```powershell
-# ✅ CORRECT
+# Ã¢Å“â€¦ CORRECT
 dotnet run -c Release
 
-# ❌ WRONG - Debug builds are 10-100x slower and not representative
+# Ã¢ÂÅ’ WRONG - Debug builds are 10-100x slower and not representative
 dotnet run -c Debug
 ```
 
@@ -171,18 +171,18 @@ BenchmarkDotNet runs each benchmark multiple times and uses statistical analysis
 - **Multiple runs**: Typically 15-100 iterations for accuracy
 - **Statistical tests**: Uses Mann-Whitney U test for comparisons
 
-### Red Flags 🚩
+### Red Flags Ã°Å¸Å¡Â©
 
 Watch out for:
 
 - **High StdDev**: Indicates unstable performance (investigate variability)
 - **Increasing Allocated with dataset size**: Possible memory leak
-- **Non-linear scaling**: O(n²) behavior when O(n) expected
+- **Non-linear scaling**: O(nÃ‚Â²) behavior when O(n) expected
 - **GC Gen2 collections**: Indicates large object heap pressure
 
 ## Best Practices for Benchmarking
 
-### DO ✅
+### DO Ã¢Å“â€¦
 
 1. **Run on idle system**: Close browsers, IDEs, and other apps
 2. **Use Release builds**: Always `-c Release`
@@ -193,7 +193,7 @@ Watch out for:
 7. **Use `[GlobalSetup]`**: For expensive initialization
 8. **Return results**: Prevents dead code elimination
 
-### DON'T ❌
+### DON'T Ã¢ÂÅ’
 
 1. **Run on busy system**: Other processes affect timing
 2. **Use Debug builds**: Not representative of production
@@ -217,10 +217,10 @@ GPS devices typically output:
 
 If your benchmarks show:
 
-- **100+ messages/ms** → Excellent! Can handle 100,000+ msg/sec
-- **10-100 messages/ms** → Good! Can handle 10,000-100,000 msg/sec
-- **1-10 messages/ms** → Adequate for most use cases
-- **< 1 message/ms** → May struggle with high-frequency GPS
+- **100+ messages/ms** Ã¢â€ â€™ Excellent! Can handle 100,000+ msg/sec
+- **10-100 messages/ms** Ã¢â€ â€™ Good! Can handle 10,000-100,000 msg/sec
+- **1-10 messages/ms** Ã¢â€ â€™ Adequate for most use cases
+- **< 1 message/ms** Ã¢â€ â€™ May struggle with high-frequency GPS
 
 ### Throughput Calculation Example
 
@@ -316,3 +316,7 @@ When adding new benchmarks:
 ---
 
 **Remember**: The goal is not just to have fast code, but to **understand** performance characteristics and make **informed decisions** about tradeoffs.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

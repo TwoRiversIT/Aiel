@@ -101,3 +101,7 @@ To add new test data:
 2. Ensure the file uses `*.nmea` or `*.log` extension (automatically embedded)
 3. Load using: `RH.GetStream<RealWorldDataTests>("TestData.filename.nmea")`
 4. Create test validating expected message counts and types
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

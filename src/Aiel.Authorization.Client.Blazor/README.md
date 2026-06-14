@@ -19,3 +19,7 @@ The default sample posture is hide-on-denial: if the requested permission is not
 ```
 
 `ActionCapabilityVisibility.CanExecute(...)` exposes the same decision as pure logic for view-model or component-code checks.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

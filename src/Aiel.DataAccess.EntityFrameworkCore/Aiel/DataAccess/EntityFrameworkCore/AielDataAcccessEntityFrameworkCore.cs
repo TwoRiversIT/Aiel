@@ -1,0 +1,69 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using Aiel.Application;
+using Aiel.Collections;
+using Aiel.DataAccess.EntityFrameworkCore.Migrations;
+using Aiel.DataAccess.EntityFrameworkCore.Seeding;
+using Aiel.Framework;
+using Aiel.MultiTenancy;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Aiel.DataAccess.EntityFrameworkCore;
+
+[DependsOn(typeof(AielFramework))]
+[DependsOn(typeof(AielApplication))]
+[DependsOn(typeof(AielMultiTenancy))]
+[DependsOn(typeof(AielDataAccess))]
+public sealed class AielDataAcccessEntityFrameworkCore : AielDependencyConfigurator
+{
+    public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        AutoAddDatabaseMigrators(context.Services);
+        return ValueTask.CompletedTask;
+    }
+
+    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.Services.Configure<SeedingOptions>(context.Configuration.GetSection(nameof(SeedingOptions)));
+        return ValueTask.CompletedTask;
+    }
+
+    private static void AutoAddDatabaseMigrators(IServiceCollection services)
+    {
+        var contributors = new TypeSet<IDatabaseMigrator>();
+
+        services.OnAdding(context =>
+        {
+            if (typeof(IDatabaseMigrator).IsAssignableFrom(context.ImplementationType))
+            {
+                contributors.Add(context.ImplementationType);
+            }
+        });
+
+        services.Configure<AielMigrationOptions>(options =>
+        {
+            // Add all found contributors
+            options.Migrators.AddRange(contributors);
+        });
+    }
+}

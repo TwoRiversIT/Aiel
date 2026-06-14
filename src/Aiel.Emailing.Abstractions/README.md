@@ -1,3 +1,7 @@
 # Aiel.Emailing.Abstractions
 
-This library provides the core abstractions for the Aiel emailing functionality. It includes interfaces and base classes for email services, email templates, and other related concepts. These abstractions are designed to be used across different layers of the application, such as the application layer, infrastructure layer, and presentation layer. By defining these abstractions in a separate library, we can ensure that our emailing logic remains decoupled from specific implementations and can be easily tested and maintained.
+This library provides the core abstractions for the Aiel emailing functionality.  For more information, see the [Aiel.Emailing](https://github.com/TwoRiversIT/Aiel/blob/main/src/Aiel.Emailing/README.md) documentation.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

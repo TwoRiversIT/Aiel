@@ -54,7 +54,7 @@ Stable IDs used in fixtures MUST use `PermissionStableId.From(string)` with valu
 | Allowed references | Forbidden references |
 | --- | --- |
 | `Aiel.Authorization.Application.Contracts` | `Aiel.Authorization.Application` (the impl) |
-| `Aiel.Testing` | `Aiel.EntityFrameworkCore` |
+| `Aiel.Testing` | `Aiel.DataAccess.EntityFrameworkCore` |
 | `Aiel.Results` (if not transitively available) | `Aiel.AspNetCore` or any HTTP package |
 | xUnit v3 extensibility (if needed for assertion helpers) | Any mocking framework (Moq, NSubstitute, etc.) |
 

@@ -16,8 +16,8 @@ The Aiel codebase (contracts, implementations, and tests) is the authoritative s
 
 - ✅ `Aiel.MultiTenancy`: Tenant-identity contracts (`TenantId`, `TenantIdentity`, `TenantResolution`)
 - ✅ `Aiel.AspNetCore`: HTTP middleware (`UseAielTenantResolution`, `RequireTenant()`, `ITenantAccessor`)
-- ✅ `Aiel.EntityFrameworkCore`: Base context rename (`AielDbContext`), query filters for `IMultiTenant` entities
-- ✅ `Aiel.EntityFrameworkCore`: Migration primitives (`IDatabaseMigrator`, `DbContextMigrator<T>`, retry and telemetry)
+- ✅ `Aiel.DataAccess.EntityFrameworkCore`: Base context rename (`AielDbContext`), query filters for `IMultiTenant` entities
+- ✅ `Aiel.DataAccess.EntityFrameworkCore`: Migration primitives (`IDatabaseMigrator`, `DbContextMigrator<T>`, retry and telemetry)
 
 **Still to implement (Aviendha or application):**
 
@@ -141,7 +141,7 @@ Migrations run outside the request path (via ServiceHost or deployment job), not
 | Owner | Responsibilities |
 |---|---|
 | **Aiel.AspNetCore** | HTTP middleware for tenant resolution, fail-closed enforcement, `RequireTenant()` metadata, tenant-optional fallback |
-| **Aiel.EntityFrameworkCore** | `AielDbContext`, query filters for `IMultiTenant`, migration retry/telemetry, per-target migrator abstraction |
+| **Aiel.DataAccess.EntityFrameworkCore** | `AielDbContext`, query filters for `IMultiTenant`, migration retry/telemetry, per-target migrator abstraction |
 | **Application (Aviendha)** | Tenant catalog schema, `ITenantResolver` implementation, connection resolution, migration batch policy, checkpointing, operator commands, backup/restore workflows |
 | **Deploy pipeline** | Execute migrations outside app startup, manage rollout checkpoints, stop on failed batches, verify version compatibility before traffic release |
 

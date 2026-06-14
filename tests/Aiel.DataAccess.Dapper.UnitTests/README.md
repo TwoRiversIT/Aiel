@@ -58,3 +58,7 @@ public class Product
     public Decimal Price { get; set; }
 }
 ```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

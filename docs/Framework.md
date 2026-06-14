@@ -579,7 +579,7 @@ If you want, I can also produce:
 | Aiel.Authorization       | 13000–13999 |
 | Aiel.Domain              | 14000–14999 |
 | Aiel.Emailing            | 15000–15999 |
-| Aiel.EntityFrameworkCore | 16000–16999 |
+| Aiel.DataAccess.EntityFrameworkCore | 16000–16999 |
 | Aiel.Gps                 | 17000–17999 |
 | Aiel.Mediator            | 18000–18999 |
 | Aiel.MessageBus          | 19000–19999 |
@@ -850,7 +850,7 @@ the dispatch layer (outbox in Phase 03) an opportunity to retry.
 ### Repository Contract
 
 `IRepository<TAggregate, TId>` is the write-side persistence abstraction declared in `Aiel.Domain`.
-EF Core implementations are provided by `Aiel.EntityFrameworkCore` (Phase 03).
+EF Core implementations are provided by `Aiel.DataAccess.EntityFrameworkCore` (Phase 03).
 
 ```csharp
 public interface IRepository<TAggregate, TId>

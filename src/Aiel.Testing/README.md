@@ -689,3 +689,7 @@ This example demonstrates:
 - Using both the SUT and services directly
 - Following the Arrange-Act-Assert pattern
 - Using primary constructors for cleaner test class syntax
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

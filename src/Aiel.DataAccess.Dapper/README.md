@@ -1,7 +1,6 @@
-# Aiel.Dapper
+# Aiel.DataAccess.Dapper
 
-Provides column mapping for Dapper. This allows you to map column names to properties on your
-classes without having to jump through hoops.
+Provides column mapping support for Dapper. This allows you to map column names to properties on your classes without having to jump through hoops. Well, not too many hoops anyway. This is especially useful when you have a database that uses snake_case for table and column names and you want to use PascalCase in your code.
 
 ## Installation
 

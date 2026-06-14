@@ -27,3 +27,8 @@ This library provides a set of actions that can be performed on an Aiel characte
 - Withdraw: Withdraw from combat to avoid taking damage.
 - Whirlwind: Perform a whirlwind attack to hit multiple enemies at once.
 - Wild Attack: Perform a wild attack that has a chance to hit multiple enemies or deal extra damage.
+
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

@@ -20,6 +20,32 @@ dotnet add package Aiel.Emailing
 - **Email**: Strongly-typed email address value object
 - **EmailAddress**: Combines display name and email address (compatible with `System.Net.Mail.MailAddress`)
 
+#### Email
+
+Strongly-typed email address value object with validation:
+
+```csharp
+using Aiel.Emailing;
+
+var email = new Email("user@example.com");
+Console.WriteLine(email.Domain);  // "example.com"
+Console.WriteLine(email.LocalPart);  // "user"
+```
+
+#### EmailAddress
+
+Combines display name and email address (compatible with `System.Net.Mail.MailAddress`):
+
+```csharp
+using Aiel.Emailing;
+
+var emailAddress = new EmailAddress("John Doe", "john@example.com");
+var mailAddress = (MailAddress)emailAddress;  // Implicit conversion
+
+// Or parse from string
+var parsed = new EmailAddress("John Doe <john@example.com>");
+```
+
 ### Email Validation
 
 Multiple validation strategies:

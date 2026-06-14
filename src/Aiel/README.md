@@ -19,7 +19,6 @@ dotnet add package Aiel
 ## Features
 
 - [DisposableBase - Safe IAsyncDisposable and IDisposable pattern](#disposablebase---safe-iasyncdisposable-and-idisposable-pattern)
-- [Value Objects (Email, EmailAddress)](#value-objects)
 - [NaturalComparer](#naturalcomparer)
 - [Extension Methods](#extension-methods)
 - [Comparers](#comparers)
@@ -83,34 +82,6 @@ The key insight: when `DisposeAsync()` is called, it calls `DisposeAsyncCore()` 
 managed resources async), then `Dispose(false)` (cleaning only unmanaged resources). This
 prevents double-disposal of managed resources.
 
-### Value Objects
-
-#### Email
-
-Strongly-typed email address value object with validation:
-
-```csharp
-using Aiel.Emailing;
-
-var email = new Email("user@example.com");
-Console.WriteLine(email.Domain);  // "example.com"
-Console.WriteLine(email.LocalPart);  // "user"
-```
-
-#### EmailAddress
-
-Combines display name and email address (compatible with `System.Net.Mail.MailAddress`):
-
-```csharp
-using Aiel.Emailing;
-
-var emailAddress = new EmailAddress("John Doe", "john@example.com");
-var mailAddress = (MailAddress)emailAddress;  // Implicit conversion
-
-// Or parse from string
-var parsed = new EmailAddress("John Doe <john@example.com>");
-```
-
 ### NaturalComparer
 
 Compares strings using natural (human-friendly) ordering where numbers are compared numerically:
@@ -143,23 +114,6 @@ var truncated = text.Truncate(8);  // "Hello ..."
 var clean = "  lots   of   spaces  ".RemoveWhitespace();  // "lotsofspaces"
 ```
 
-#### IPAddressExtensions
-
-IP address utilities:
-
-```csharp
-using Aiel.Extensions;
-using System.Net;
-
-var ip = IPAddress.Parse("192.168.1.100");
-var network = IPAddress.Parse("192.168.1.0");
-
-if (ip.IsInSameSubnet(network, 24))
-{
-    Console.WriteLine("Same subnet");
-}
-```
-
 #### MiscExtensions
 
 Miscellaneous extension methods:
@@ -183,23 +137,6 @@ catch (Exception ex)
 ```
 
 ### Comparers
-
-#### IPAddressComparer
-
-Compares IP addresses for sorting:
-
-```csharp
-using Aiel.Net;
-
-var addresses = new[]
-{
-    IPAddress.Parse("192.168.1.100"),
-    IPAddress.Parse("10.0.0.1"),
-    IPAddress.Parse("192.168.1.10")
-};
-
-Array.Sort(addresses, new IPAddressComparer());
-```
 
 #### EnumerableComparer
 
@@ -236,7 +173,5 @@ var codes = ReflectionUtils.GetConstants<String>(typeof(ErrorCodes));
 ```
 
 ## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

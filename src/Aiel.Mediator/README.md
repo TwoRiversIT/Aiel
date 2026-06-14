@@ -10,12 +10,12 @@ Aiel.Mediator is the central dispatcher for all action-oriented logic in a Aiel-
 
 ### What this package provides
 
-- **Dispatcher** — A centralized mediator (`ISender` / `IPublisher`) that routes commands, queries, and notifications to their handlers
-- **Assembly-scanned handler registration** — Automatically discovers and registers handlers without manual configuration
-- **Pipeline behaviors** — Inject cross-cutting concerns like validation and logging around every dispatch
-- **Built-in behaviors** — `ValidationBehavior` (FluentValidation) and `LoggingBehavior` (structured logging with timing)
-- **Scoped execution** — Each request gets its own dependency scope, ensuring clean isolation
-- **Result-based error handling** — Action handlers return `Result`, while `ISender.QueryAsync()` surfaces typed `Result<TDto>` values and validation errors as `ValidationError`
+- **Dispatcher**: A centralized mediator (`ISender` / `IPublisher`) that routes commands, queries, and notifications to their handlers
+- **Assembly-scanned handler registration**: Automatically discovers and registers handlers without manual configuration
+- **Pipeline behaviors**: Inject cross-cutting concerns like validation and logging around every dispatch
+- **Built-in behaviors**: `ValidationBehavior` (FluentValidation) and `LoggingBehavior` (structured logging with timing)
+- **Scoped execution**: Each request gets its own dependency scope, ensuring clean isolation
+- **Result-based error handling**: Action handlers return `Result`, while `ISender.QueryAsync()` surfaces typed `Result<TDto>` values and validation errors as `ValidationError`
 
 ## Key concepts
 
@@ -23,8 +23,8 @@ Aiel.Mediator is the central dispatcher for all action-oriented logic in a Aiel-
 
 An **action** is any application operation that routes through the dispatcher. Actions come in two flavors:
 
-- **Commands** — Mutate state. Implement `ICommand`, return `Result` (success or failure).
-- **Queries** — Read-only operations. Implement `IQuery<TDto>`; query handlers return `Result`, and `ISender.QueryAsync()` returns `Result<TDto>` to the caller.
+- **Commands** Ã¢â‚¬â€ Mutate state. Implement `ICommand`, return `Result` (success or failure).
+- **Queries** Ã¢â‚¬â€ Read-only operations. Implement `IQuery<TDto>`; query handlers return `Result`, and `ISender.QueryAsync()` returns `Result<TDto>` to the caller.
 
 Both are marked as `sealed record` or `sealed class` and carry all the data needed by their handler.
 
@@ -189,9 +189,9 @@ await _publisher.PublishAsync(notification, cancellationToken);
 
 ### Types
 
-- **`Result<T>`** — Discriminated union of success (carries `T`) or failure (carries `Error`). Returned by the dispatcher's `QueryAsync()` method; query handlers typically produce it via `Result.Success(dto)` while still satisfying the `Result`-returning handler contract.
-- **`Result`** — Discriminated union of success or failure. Returned by all command handlers and the dispatcher's `ExecuteAsync()` method.
-- **`ValidationError`** — A specialized `Error` subclass that carries `IEnumerable<ValidationFailure>` from FluentValidation. Created by `ValidationBehavior` when validation fails.
+- **`Result<T>`** Ã¢â‚¬â€ Discriminated union of success (carries `T`) or failure (carries `Error`). Returned by the dispatcher's `QueryAsync()` method; query handlers typically produce it via `Result.Success(dto)` while still satisfying the `Result`-returning handler contract.
+- **`Result`** Ã¢â‚¬â€ Discriminated union of success or failure. Returned by all command handlers and the dispatcher's `ExecuteAsync()` method.
+- **`ValidationError`** Ã¢â‚¬â€ A specialized `Error` subclass that carries `IEnumerable<ValidationFailure>` from FluentValidation. Created by `ValidationBehavior` when validation fails.
 
 ## Example flow
 
@@ -302,11 +302,16 @@ public async Task ExecuteAsync_WithInvalidCommand_ValidationFails()
 }
 ```
 
+
 ### Known limitations and design decisions
 
-- **Behaviors run in registration order** — The first behavior added wraps all others. This is fixed at startup; you cannot alter the pipeline per-request.
-- **Notification handlers are invoked sequentially** — All handlers for a notification run one after another in registration order. If you need parallel execution, you can `Task.WhenAll()` them inside a behavior.
-- **Notification publish awaits all handlers** — Exceptions from notification handlers are logged via `ILogger<NotificationHandlerBase>` at Error level and swallowed; all handlers run to completion regardless of prior failures. `PublishAsync()` completes successfully even if handlers threw. If no handlers are registered for a notification type, `PublishAsync()` returns immediately (no-op).
-- **Handlers are scoped** — Each dispatch creates a new dependency scope and is cleaned up when the dispatch completes. This ensures isolation but prevents long-lived cached state within a handler.
-- **Query handlers must return `Result<TDto>`** — The handler interface declares `ValueTask<Result>` for pipeline uniformity, but implementations must return `Result<TDto>` (e.g., `Result<UserDto>.Success(dto)`) for the value to be available to the caller. If a behavior short-circuits with a plain `Result.Failure()`, it is automatically promoted to `Result<TDto>.Failure()`.
-- **Validation behavior requires FluentValidation** — If you use `ValidationBehavior<>`, you must add `AbstractValidator<TAction>` implementations for any action you want to validate. Behaviors without validators are skipped.
+- **Behaviors run in registration order** Ã¢â‚¬â€ The first behavior added wraps all others. This is fixed at startup; you cannot alter the pipeline per-request.
+- **Notification handlers are invoked sequentially** Ã¢â‚¬â€ All handlers for a notification run one after another in registration order. If you need parallel execution, you can `Task.WhenAll()` them inside a behavior.
+- **Notification publish awaits all handlers** Ã¢â‚¬â€ Exceptions from notification handlers are logged via `ILogger<NotificationHandlerBase>` at Error level and swallowed; all handlers run to completion regardless of prior failures. `PublishAsync()` completes successfully even if handlers threw. If no handlers are registered for a notification type, `PublishAsync()` returns immediately (no-op).
+- **Handlers are scoped** Ã¢â‚¬â€ Each dispatch creates a new dependency scope and is cleaned up when the dispatch completes. This ensures isolation but prevents long-lived cached state within a handler.
+- **Query handlers must return `Result<TDto>`** Ã¢â‚¬â€ The handler interface declares `ValueTask<Result>` for pipeline uniformity, but implementations must return `Result<TDto>` (e.g., `Result<UserDto>.Success(dto)`) for the value to be available to the caller. If a behavior short-circuits with a plain `Result.Failure()`, it is automatically promoted to `Result<TDto>.Failure()`.
+- **Validation behavior requires FluentValidation** Ã¢â‚¬â€ If you use `ValidationBehavior<>`, you must add `AbstractValidator<TAction>` implementations for any action you want to validate. Behaviors without validators are skipped.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

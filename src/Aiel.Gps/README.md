@@ -1,37 +1,38 @@
 # Aiel.Gps
 
-High‑performance, zero‑allocation NMEA 0183 sentence parser for .NET.  
-Designed for real‑time GPS data processing, telemetry pipelines, embedded systems, and any workload where performance and memory efficiency matter.
+High-performance, zero-allocation NMEA 0183 sentence parser for .NET. Designed for real-time GPS data processing, telemetry pipelines, embedded systems, and any workload where performance and memory efficiency matter.
+
+> NOTE: [Aiel.Gps.HP](https://github.com/TwoRiversIT/Aiel/src/Aiel.Gps.HP) is the new, even higher performance version. This legacy version will continue to be maintained for critical bug fixes but no new features will be added.
 
 Built on modern .NET primitives:
 
 - `System.IO.Pipelines`
 - `ReadOnlySequence<byte>`
 - `Span<T>`
-- Zero‑allocation lexing
+- Zero-allocation lexing
 - Pluggable lexer architecture
 
 ---
 
 ## **Features**
 
-- **Zero‑Allocation Parsing Path**  
+- **Zero-Allocation Parsing Path**  
   Optimized lexer eliminates intermediate strings, arrays, and heap allocations.
 
-- **High‑Throughput Performance**  
-  Sub‑microsecond parsing for most NMEA sentences.
+- **High-Throughput Performance**  
+  Sub-microsecond parsing for most NMEA sentences.
 
 - **Async Stream Processing**  
-  Efficient backpressure‑aware streaming using `System.IO.Pipelines`.
+  Efficient backpressure-aware streaming using `System.IO.Pipelines`.
 
 - **Extensible Message Model**  
   Add custom NMEA or proprietary sentences with minimal code.
 
 - **Flexible API**  
   Consumers choose between:
-  - raw UTF‑8 slices (`ReadOnlySequence<byte>`)
+  - raw UTF-8 slices (`ReadOnlySequence<byte>`)
   - decoded strings
-  - strongly‑typed numeric/time fields
+  - strongly-typed numeric/time fields
 
 - **Configurable Error Handling**  
   Control how unparsed or malformed lines are handled.
@@ -200,7 +201,7 @@ public class CustomSentence : NmeaMessage
     public Int32 SignalStrength { get; private set; }
     public Char Status { get; private set; }
 
-    public override String ToString() => $"PCUST {DeviceId} {Temperature}°C {SignalStrength}dBm {Status}";
+    public override String ToString() => $"PCUST {DeviceId} {Temperature}Ã‚Â°C {SignalStrength}dBm {Status}";
 
     public override NmeaMessage Parse(ReadOnlySequence<Byte> sentence)
     {
@@ -274,7 +275,7 @@ await foreach (var message in reader.ReadAsync(cancellationToken))
     if (message is CustomSentence custom)
     {
         Console.WriteLine($"Device: {custom.DeviceId}");
-        Console.WriteLine($"Temperature: {custom.Temperature}°C");
+        Console.WriteLine($"Temperature: {custom.Temperature}Ã‚Â°C");
         Console.WriteLine($"Signal: {custom.SignalStrength}dBm");
     }
 }
@@ -556,7 +557,7 @@ The library is designed for high performance:
 - Microsoft.Extensions.Logging.Abstractions
 - System.IO.Pipelines
 
-## **Zero‑Allocation Lexer Architecture**
+## **ZeroÃ¢â‚¬â€˜Allocation Lexer Architecture**
 
 The parser uses a pluggable lexer system:
 
@@ -566,11 +567,11 @@ LexerFactory.Create = seq => new LexerOptimized(seq);
 
 Consumers can choose:
 
-- **Optimized zero‑allocation lexer**  
-- **Original string‑producing lexer**  
+- **Optimized zeroÃ¢â‚¬â€˜allocation lexer**  
+- **Original stringÃ¢â‚¬â€˜producing lexer**  
 - **Custom lexers** for specialized workloads
 
-This design keeps the API ergonomic while enabling high‑performance scenarios.
+This design keeps the API ergonomic while enabling highÃ¢â‚¬â€˜performance scenarios.
 
 ---
 
@@ -637,3 +638,7 @@ This is part of the [Aiel Application Framework](https://github.com/AielIT/AppFr
 MIT License.
 
 High-performance NMEA 0183 sentence parser for .NET applications. This library provides efficient parsing of GPS data streams using modern .NET features including `System.IO.Pipelines` and `ReadOnlySequence<T>` for zero-allocation parsing.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

@@ -55,12 +55,12 @@ Multi-tenancy contracts for tenant-scoped entities, current-tenant resolution, a
 
 ## Aiel Tenancy Model Comparison
 
-Aiel provides two first‑class tenancy models — **Discriminator** and **Database‑per‑Tenant** — and supports **Hybrid** configurations through extension points. These models differ in isolation guarantees, operational characteristics, and long‑term scalability.
+Aiel provides two first-class tenancy models, **Discriminator** and **Database-per-Tenant**, and supports **Hybrid** configurations through extension points. These models differ in isolation guarantees, operational characteristics, and long-term scalability.
 
 | **Model** | **Isolation** | **Cost** | **Operational Complexity** | **Best for** | **Migration Difficulty** |
 | --- | ---: | ---: | ---: | --- | ---: |
-| **Discriminator** | Low | Low | Low | Lightweight SaaS, internal tools, early‑stage products | Low → Medium |
-| **Database per tenant** | High | High | Medium → High | Strong isolation, regulated domains, large tenants | Low → Medium |
+| **Discriminator** | Low | Low | Low | Lightweight SaaS, internal tools, early-stage products | Low - Medium |
+| **Database-per-Tenant** | High | High | Medium - High | Strong isolation, regulated domains, large tenants | Low - Medium |
 | **Hybrid** | Variable | Variable | High | Mixed tenant profiles, cost optimization at scale | Variable |
 
 ---
@@ -72,19 +72,19 @@ A single database and schema shared by all tenants, with a `tenant_id` column on
 ### Discriminator Pros
 
 - **Simple to operate**: one database, one schema, unified migrations.
-- **Cost‑efficient**: minimal infrastructure footprint.
+- **Cost-efficient**: minimal infrastructure footprint.
 - **Fast to onboard**: provisioning a new tenant is a metadata operation.
-- **Good for early‑stage products**: low operational overhead.
+- **Good for early-stage products**: low operational overhead.
 
 ### Discriminator Cons
 
-- **Weak isolation**: all tenant data is co‑located; accidental cross‑tenant access is possible without strict safeguards.
+- **Weak isolation**: all tenant data is co-located; accidental cross-tenant access is possible without strict safeguards.
 - **Shared blast radius**: a bad migration or query affects all tenants.
 - **Limited compliance story**: difficult to meet strong isolation or residency requirements.
-- **Migration complexity**: moving from discriminator → database‑per‑tenant requires:
+- **Migration complexity**: moving from discriminator to database-per-tenant requires:
   - Extracting tenant data
   - Creating new databases
-  - Re‑testing all data access paths
+  - Re-testing all data access paths
   - Coordinating cutover without downtime
 
 ### Discriminator Best Fit
@@ -92,11 +92,11 @@ A single database and schema shared by all tenants, with a `tenant_id` column on
 - Internal enterprise apps  
 - Lightweight SaaS  
 - Products with low regulatory burden  
-- Early‑stage systems prioritizing simplicity  
+- Early-stage systems prioritizing simplicity  
 
 ---
 
-## Database‑per‑Tenant Model
+## Database-per-Tenant Model
 
 Each tenant receives its own dedicated database instance (or logical database within a cluster).
 
@@ -104,10 +104,10 @@ Each tenant receives its own dedicated database instance (or logical database wi
 
 - **Strong isolation**: tenant data is physically separated.
 - **Reduced blast radius**: issues affect only one tenant.
-- **Per‑tenant backup/restore**: simple, reliable, and fast.
+- **Per-tenant backup/restore**: simple, reliable, and fast.
 - **Flexible scaling**: tenants can be distributed across clusters or regions.
-- **Operational clarity**: each tenant is a self‑contained unit.
-- **Future‑proof**: supports data residency, sharding, and per‑tenant encryption.
+- **Operational clarity**: each tenant is a self-contained unit.
+- **Future-proof**: supports data residency, sharding, and per-tenant encryption.
 
 ### Database-per-Tenant Cons
 
@@ -123,13 +123,13 @@ Each tenant receives its own dedicated database instance (or logical database wi
 - Regulated domains  
 - Systems requiring strong isolation  
 - Tenants with large or unpredictable workloads  
-- Products expecting long‑term scale and regional distribution  
+- Products expecting longÃ¢â‚¬â€˜term scale and regional distribution  
 
 ---
 
 ## Hybrid Model
 
-A flexible approach where different tenants use different models (e.g., small tenants on discriminator, large tenants on database‑per‑tenant).
+A flexible approach where different tenants use different models (e.g., small tenants on discriminator, large tenants on database-per-tenant).
 
 ### Hybrid Pros
 
@@ -148,28 +148,32 @@ A flexible approach where different tenants use different models (e.g., small te
 ### Hybrid Best Fit
 
 - Platforms serving a wide range of tenant sizes  
-- Systems with cost‑sensitive small tenants and high‑value large tenants  
+- Systems with cost-sensitive small tenants and high-value large tenants  
 - Products expecting to evolve their isolation strategy over time  
 
 ---
 
-## Why Aiel Does Not Provide Schema‑per‑Tenant
+## Why Aiel Does Not Provide Schema-per-Tenant
 
-Aiel intentionally excludes Schema‑per‑Tenant as a built‑in model due to its poor long‑term characteristics:
+Aiel intentionally excludes Schema-per-Tenant as a built-in model due to its poor long-term characteristics:
 
-- **Operational fragility**: migrations across thousands of schemas are error‑prone.  
+- **Operational fragility**: migrations across thousands of schemas are error-prone.  
 - **Difficult restores**: restoring a single tenant requires manual extraction.  
 - **Shared blast radius**: all schemas share the same database instance.  
-- **Scaling limitations**: one instance must handle all tenants’ workloads.  
+- **Scaling limitations**: one instance must handle all tenants' workloads.  
 - **Misleading isolation**: appears safer than discriminator but shares many of the same risks.  
 
-Aiel’s philosophy of **Safety by Design** means avoiding models that look attractive early but become liabilities at scale. Developers may still implement schema‑per‑tenant using extension points, but Aiel does not endorse it as a recommended pattern.
+Aiel's philosophy of **Safety by Design** means avoiding models that look attractive early but become liabilities at scale. Developers may still implement schema-per-tenant using extension points, but Aiel does not endorse it as a recommended pattern.
 
 ---
 
 ## Summary
 
 - **Discriminator**: simple, cheap, low isolation.  
-- **Database‑per‑Tenant**: strong isolation, scalable, operationally heavier but safer.  
+- **Database-per-Tenant**: strong isolation, scalable, operationally heavier but safer.  
 - **Hybrid**: flexible but complex; best for platforms with diverse tenant needs.  
-- **Schema‑per‑Tenant**: intentionally excluded to avoid long‑term operational pitfalls.
+- **Schema-per-Tenant**: intentionally excluded to avoid long-term operational pitfalls.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.

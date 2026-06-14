@@ -53,7 +53,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
     private const String WebAssemblyBuilder = "WebAssemblyHostBuilder";
 
     private const String FqDependencyDescriptor = "global::" + RootNamespace + "." + DependencyDescriptor;
-    private const String FqDependsOn = "global::" + RootNamespace + "." + DependsOnAttribute;
+    //private const String FqDependsOn = "global::" + RootNamespace + "." + DependsOnAttribute;
     private const String FqIDependencyInitializer = "global::" + RootNamespace + ".IInitializer";
 
     private const String NsHostApplicationBuilder = "Microsoft.Extensions.Hosting." + HostApplicationBuilder;
@@ -606,10 +606,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
                     break;
                 }
 
-                if (dependencySymbol is null)
-                {
-                    dependencySymbol = FindTypeBySimpleName(current.ContainingAssembly.GlobalNamespace, dependencyTypeName);
-                }
+                dependencySymbol ??= FindTypeBySimpleName(current.ContainingAssembly.GlobalNamespace, dependencyTypeName);
 
                 if (dependencySymbol is null && attributeData.AttributeClass is not null)
                 {
@@ -732,20 +729,13 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             """;
     }
 
-    private sealed class DependencyReference
+    private sealed class DependencyReference(INamedTypeSymbol? symbol, String displayName, String typeExpression)
     {
-        public DependencyReference(INamedTypeSymbol? symbol, String displayName, String typeExpression)
-        {
-            Symbol = symbol;
-            DisplayName = displayName;
-            TypeExpression = typeExpression;
-        }
+        public INamedTypeSymbol? Symbol { get; } = symbol;
 
-        public INamedTypeSymbol? Symbol { get; }
+        public String DisplayName { get; } = displayName;
 
-        public String DisplayName { get; }
-
-        public String TypeExpression { get; }
+        public String TypeExpression { get; } = typeExpression;
     }
 
     private enum ProjectType

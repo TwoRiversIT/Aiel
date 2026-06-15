@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Aiel\Aiel.csproj" />
+      <ProjectReference Include="..\Aiel.Utilities\Aiel.Utilities.csproj" />
     </ItemGroup>
 
 </Project>

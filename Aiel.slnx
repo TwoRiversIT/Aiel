@@ -197,7 +197,7 @@
     <Project Path="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
     <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj" />
     <Project Path="src/Aiel.Testing/Aiel.Testing.csproj" />
-    <Project Path="src/Aiel/Aiel.csproj">
+    <Project Path="src/Aiel.Utilities/Aiel.Utilities.csproj">
       <BuildDependency Project="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.Framework.Analyzers/Aiel.Framework.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />

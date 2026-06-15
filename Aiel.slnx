@@ -157,6 +157,7 @@
     <Project Path="src/Aiel.Authorization.Testing/Aiel.Authorization.Testing.csproj" />
     <Project Path="src/Aiel.Authorization/Aiel.Authorization.csproj" />
     <Project Path="src/Aiel.DataAccess.Dapper/Aiel.DataAccess.Dapper.csproj" />
+    <Project Path="src/Aiel.DataAccess.EntityFrameworkCore/Aiel.DataAccess.EntityFrameworkCore.csproj" />
     <Project Path="src/Aiel.DataAccess/Aiel.DataAccess.csproj" Id="9268dda6-c777-48d2-92f2-bc30412675fb" />
     <Project Path="src/Aiel.Domain.Abstractions/Aiel.Domain.Abstractions.csproj" Id="d21725df-35c2-4364-804e-0e30ddccb290" />
     <Project Path="src/Aiel.Domain.Shared/Aiel.Domain.Shared.csproj" Id="0b2dad1d-8c6e-4c8d-9260-6741b58c6c2d" />

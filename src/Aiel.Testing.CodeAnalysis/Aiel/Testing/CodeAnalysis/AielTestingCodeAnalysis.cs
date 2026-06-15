@@ -20,10 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Results;
+using Aiel.Framework;
 
-partial class NoError : Error
-{
-    internal const String DefaultMessage = "No error.";
-}
+namespace Aiel.Testing.CodeAnalysis;
 
+[DependsOn(typeof(AielTesting))]
+public sealed class AielTestingCodeAnalysis : AielDependencyConfigurator;

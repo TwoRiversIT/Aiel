@@ -196,6 +196,7 @@
     <Project Path="src/Aiel.StrongIds.EntityFrameworkCore/Aiel.StrongIds.EntityFrameworkCore.csproj" />
     <Project Path="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
     <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj" />
+    <Project Path="src/Aiel.Testing.CodeAnalysis/Aiel.Testing.CodeAnalysis.csproj" />
     <Project Path="src/Aiel.Testing/Aiel.Testing.csproj" />
     <Project Path="src/Aiel.Utilities/Aiel.Utilities.csproj">
       <BuildDependency Project="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
@@ -267,7 +268,7 @@
     <Project Path="tests/Aiel.StrongIds.UnitTests/Aiel.StrongIds.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.Integration.UnitTests/Aiel.Testing.Integration.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
-    <Project Path="tests/Aiel.UnitTests/Aiel.UnitTests.csproj" />
+    <Project Path="tests/Aiel.UnitTests/Aiel.Utilities.UnitTests.csproj" />
     <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
     <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />
   </Folder>

@@ -27,29 +27,24 @@ namespace Aiel.Results;
 /// <summary>
 /// Unit tests for the <see cref="Error"/> class and its factory methods.
 /// </summary>
-public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper output)
-    : ResultsUnitTestBase(fixture, output)
+public class ErrorTests
 {
     [Fact]
-    public void None_ShouldHaveDescription()
+    public void NoError_ShouldHave_Description()
     {
-        var error = Result.NoError;
-
-        error.Message.Should().Be(NoError.DefaultMessage);
+        Result.NoError.Message.Should().Be(NoError.DefaultMessage);
     }
 
     [Fact]
-    public void None_ShouldHaveNoneErrorCode()
+    public void NoError_AssignedToString_ShouldBe_NoError()
     {
-        var error = Result.NoError;
-
-        String codeName = error.ErrorCode;
+        String codeName = Result.NoError.ErrorCode;
 
         codeName.Should().Be("NoError");
     }
 
     [Fact]
-    public void NotFound_ShouldCreateNotFoundError()
+    public void SimpleError_ShouldBe_Creatable()
     {
         var error = new SimpleError("User not found");
 
@@ -60,7 +55,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void NotFoundError_ShouldUseSingletonErrorCode()
+    public void SimpleError_ShouldUse_SingletonErrorCode()
     {
         var error1 = new SimpleError("Description 1");
         var error2 = new SimpleError("Description 2");
@@ -78,7 +73,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void Errors_SameInstance_ShouldBeEqual()
+    public void Errors_SameInstance_ShouldBe_Equal()
     {
         var error = new SimpleError("Invalid input");
         var sameError = error;
@@ -87,7 +82,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void Errors_WithSameTypeButDifferentDescription_ShouldNotBeEqual()
+    public void Errors_WithSameTypeButDifferentDescription_ShouldNotBe_Equal()
     {
         var error1 = new SimpleError("Invalid input");
         var error2 = new SimpleError("Different description");
@@ -96,7 +91,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void Errors_WithDifferentTypes_ShouldNotBeEqual()
+    public void Errors_WithDifferentTypes_ShouldNotBe_Equal()
     {
         var error1 = new TransactionError("Description")
         {
@@ -109,7 +104,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void ErrorCodeSingletons_ShouldAllBeUnique()
+    public void ErrorCodeSingletons_ShouldAllBe_Unique()
     {
         var errors = new Error[]
         {
@@ -129,7 +124,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void Error_CodePropertyCanBeUsedAsString()
+    public void ErrorCodeProperty_IsAssignableTo_String()
     {
         var error = new TransactionError("Test")
         {
@@ -143,7 +138,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void Error_ToStringOnCode_ShouldReturnName()
+    public void ErrorCode_ToString_ShouldReturn_Name()
     {
         var error = new TransactionError("Test")
         {
@@ -153,11 +148,11 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
 
         var codeString = error.ErrorCode.ToString();
 
-        codeString.Should().Be("TransactionError", "ToString should return the error type name");
+        codeString.Should().Be(nameof(TransactionError), "ToString should return the error type name");
     }
 
     [Fact]
-    public void IsErrorType_WithMatchingType_ShouldReturnTrue()
+    public void IsErrorType_WithMatchingType_ShouldReturn_True()
     {
         var error = new SimpleError("Test");
 
@@ -167,7 +162,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void IsErrorType_WithNonMatchingType_ShouldReturnFalse()
+    public void IsErrorType_WithNonMatchingType_ShouldReturn_False()
     {
         var error = new SimpleError("Test");
 
@@ -177,7 +172,7 @@ public class ErrorTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
-    public void IsErrorType_WithBaseErrorType_ShouldReturnTrue()
+    public void IsErrorType_WithBaseErrorType_ShouldReturn_True()
     {
         var error = new SimpleError("Test");
 

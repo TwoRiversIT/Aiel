@@ -39,6 +39,7 @@ public sealed class PolymorphismHookGenerator : SourceGeneratorBase, IIncrementa
 
         var sb = new StringBuilder();
         sb.AppendLine(Header(nameof(PolymorphismHookGenerator)));
+        sb.AppendLine("using System;");
         sb.AppendLine("using System.Runtime.CompilerServices;");
         sb.AppendLine("using System.Text.Json.Serialization.Metadata;");
         sb.AppendLine();
@@ -53,7 +54,7 @@ public sealed class PolymorphismHookGenerator : SourceGeneratorBase, IIncrementa
         sb.AppendLine($"    public static void {GeneratorConsts.Initializer}()");
         sb.AppendLine("    {");
         sb.AppendLine("        // Ensure the static constructors are called to register them in the error code registry.");
-        foreach (var error in symbols.Select(ErrorInf.FromSymbol))
+        foreach (var error in symbols.Select(ErrorInfo.FromSymbol))
         {
             sb.AppendLine($"        _ = new {error.FqErrorName}(NotEmpty);");
         }
@@ -75,7 +76,7 @@ public sealed class PolymorphismHookGenerator : SourceGeneratorBase, IIncrementa
         sb.AppendLine("            };");
         sb.AppendLine();
 
-        foreach (var error in symbols.Select(ErrorInf.FromSymbol))
+        foreach (var error in symbols.Select(ErrorInfo.FromSymbol))
         {
             sb.AppendLine("            ti.PolymorphismOptions.DerivedTypes.Add(");
             sb.AppendLine($"                new JsonDerivedType(typeof({error.FqErrorCodeName}),");
@@ -84,7 +85,8 @@ public sealed class PolymorphismHookGenerator : SourceGeneratorBase, IIncrementa
             sb.AppendLine();
         }
 
-        sb.AppendLine("            throw new Exception();");
+        // Something tells me that the code this generator produces is never being called.
+        sb.AppendLine("            throw new Exception(\"The code produced by PolymorphismHookGenerator _is_ being called. You should remove this exception.\");");
         //sb.AppendLine($"        }}");
 
         sb.AppendLine("    }");

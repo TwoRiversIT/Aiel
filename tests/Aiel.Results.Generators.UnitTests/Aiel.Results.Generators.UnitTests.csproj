@@ -18,6 +18,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing.CodeAnalysis\Aiel.Testing.CodeAnalysis.csproj" />
     </ItemGroup>
 
 </Project>

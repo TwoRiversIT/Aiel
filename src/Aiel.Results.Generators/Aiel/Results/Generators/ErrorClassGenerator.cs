@@ -32,6 +32,11 @@ public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncremen
 {
     protected override void Generate(SourceProductionContext context, ImmutableArray<INamedTypeSymbol> symbols)
     {
+        if (symbols.Length == 0)
+        {
+            return;
+        }
+
         var sb = new StringBuilder();
         sb.AppendLine(Header(nameof(ErrorClassGenerator)));
 
@@ -41,7 +46,7 @@ public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncremen
         sb.AppendLine("#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member");
         sb.AppendLine();
 
-        foreach (var error in symbols.Select(ErrorInf.FromSymbol))
+        foreach (var error in symbols.Select(ErrorInfo.FromSymbol))
         {
             var spaces = "";
 
@@ -52,7 +57,7 @@ public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncremen
                 spaces = "    ";
             }
 
-            sb.AppendLine($"{spaces}public partial class {error.ErrorName} : {GeneratorConsts.FqErrorType}");
+            sb.AppendLine($"{spaces}{error.Accessibility} partial class {error.ErrorName} : {GeneratorConsts.FqErrorType}");
             sb.AppendLine($"{spaces}{{");
 
             sb.AppendLine($"{spaces}    static {error.ErrorName}()");
@@ -61,7 +66,7 @@ public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncremen
             sb.AppendLine($"{spaces}    }}");
             sb.AppendLine();
 
-            sb.AppendLine($"{spaces}    public {error.ErrorName}(String {GeneratorConsts.MessageParameter})");
+            sb.AppendLine($"{spaces}    {error.Accessibility} {error.ErrorName}(String {GeneratorConsts.MessageParameter})");
             sb.AppendLine($"{spaces}        : base({error.ErrorCodeName}.{GeneratorConsts.Instance}, {GeneratorConsts.MessageParameter}) {{ }}");
             sb.AppendLine();
 

@@ -6,13 +6,15 @@
   "gitCommitIdShortAutoMinimum": 0,
   "nuGetPackageVersion": {
     "semVer": 2.0,
-    "precision": "revision"
+    "precision": "build"
   },
   "publicReleaseRefSpec": [
-    "^refs/heads/main$"
+    "^refs/heads/main$",
+    "^refs/tags/v\\d+\\.\\d+\\.\\d+$"
   ],
   "release": {
     "branchName": "release/v{version}",
-    "versionIncrement": "build"
+    "versionIncrement": "build",
+    "firstUnstableTag": "beta"
   }
 }

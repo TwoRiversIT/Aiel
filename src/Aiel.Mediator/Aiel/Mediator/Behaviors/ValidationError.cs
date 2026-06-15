@@ -28,7 +28,7 @@ namespace Aiel.Mediator.Behaviors;
 /// <summary>
 /// Represents a dispatcher failure produced by FluentValidation validators.
 /// </summary>
-public partial class ValidationError : Error
+public sealed partial class ValidationError : Error
 {
     /// <summary>
     /// Gets the validation failures returned by the validators that ran for the action.

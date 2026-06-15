@@ -25,14 +25,19 @@ using System.Text;
 
 namespace Aiel.Results;
 
-partial class UnrecognizedError : Error
+public sealed partial class NoError : Error
+{
+    internal const String DefaultMessage = "No error.";
+}
+
+public sealed partial class UnrecognizedError : Error
 {
     internal const String DefaultMessage = "An unrecognized error occurred and may not have been deserialized correctly.";
 }
 
-public partial class ApiError : Error
+public sealed partial class ApiError : Error
 {
-    internal static ApiError FromException(Exception ex)
+    public static ApiError FromException(Exception ex)
     {
         var sb = new StringBuilder();
         ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
@@ -44,4 +49,4 @@ public partial class ApiError : Error
 /// Represents an error that occurred during an API call. This should be used to wrap HTTP-related errors,
 /// including deserialization issues, transport errors, etc., but not Application or Domain-Specific errors.
 /// </summary>
-public partial class ResultError : Error;
+public sealed partial class ResultError : Error;

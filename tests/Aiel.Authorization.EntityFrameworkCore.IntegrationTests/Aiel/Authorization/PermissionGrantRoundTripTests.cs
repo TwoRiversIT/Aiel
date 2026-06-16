@@ -94,11 +94,9 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             CancellationToken);
 
         // Assert
-        Assert.True(result.IsSuccess);
-        var grants = result.Value;
-        Assert.Single(grants);
-        Assert.Equal(AuthorizationTestData.PermissionNameRead.Value, grants[0].PermissionName.Value);
-        Assert.Equal(AuthorizationGrantDecision.Granted, grants[0].Decision);
+        result.Should().NotBeNull().And.HaveCount(1);
+        Assert.Equal(AuthorizationTestData.PermissionNameRead.Value, result[0].PermissionName.Value);
+        Assert.Equal(AuthorizationGrantDecision.Granted, result[0].Decision);
     }
 
     [Fact]
@@ -139,8 +137,7 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             subjectKey,
             CancellationToken);
 
-        Assert.True(grantsResult.IsSuccess);
-        Assert.Empty(grantsResult.Value);
+        grantsResult.Should().NotBeNull().And.BeEmpty();
     }
 
     [Fact]

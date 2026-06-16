@@ -20,34 +20,35 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Extensions;
+using Aiel.Results;
+using Riok.Mapperly.Abstractions;
 
-/// <summary>
-/// Miscellaneous extension methods.
-/// </summary>
-public static class MiscExtensions
+namespace Aiel.Authorization.EntityFrameworkCore;
+
+[Mapper]
+internal static partial class EfCoreMapper
 {
-    /// <summary>
-    /// Clamps a value between a minimum and maximum value.
-    /// </summary>
-    /// <typeparam name="T">The type of value to clamp. Must implement <see cref="IComparable{T}"/>.</typeparam>
-    /// <param name="val">The value to clamp.</param>
-    /// <param name="min">The minimum allowed value.</param>
-    /// <param name="max">The maximum allowed value.</param>
-    /// <returns>The original value if it is within the range, otherwise the minimum or maximum value.</returns>
-    public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
+    public static AuthorizationGrant ToEntity(AuthorizationGrantRecord record)
     {
-        if (val.CompareTo(min) < 0)
+        var result = AuthorizationGrant.Create(
+            AuthorizationGrantId.From(record.Id),
+            PermissionStableId.From(record.StableId),
+            PermissionName.From(record.PermissionName),
+            AuthorizationScopeTypeName.From(record.ScopeType),
+            AuthorizationScopeKey.From(record.ScopeKey),
+            AuthorizationSubjectTypeName.From(record.SubjectType),
+            AuthorizationSubjectKey.From(record.SubjectKey),
+            (AuthorizationGrantDecision)record.Decision);
+
+        if (result.IsSuccess)
         {
-            return min;
+            return result.Value;
         }
-        else if (val.CompareTo(max) > 0)
-        {
-            return max;
-        }
-        else
-        {
-            return val;
-        }
+
+        throw new ResultException(result);
     }
+
+    [SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "This is not really an async method.")]
+    public static IAsyncEnumerable<AuthorizationGrant> ProjectToEntity(this IQueryable<AuthorizationGrantRecord> records)
+        => records.Select(ToEntity).ToAsyncEnumerable();
 }

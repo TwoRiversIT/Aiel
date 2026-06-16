@@ -69,8 +69,8 @@ public interface IAuthorizationGrantStore
     /// <param name="subjectType">The type of subject to query.</param>
     /// <param name="subjectKey">The specific subject key to query.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
-    /// <returns>A non-null, possibly empty list of <see cref="AuthorizationGrantSummary"/> instances.</returns>
-    Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+    /// <returns>A non-null, possibly empty list of <see cref="AuthorizationGrant"/> instances.</returns>
+    Task<IReadOnlyList<AuthorizationGrant>> GetGrantsForSubjectAsync(
         AuthorizationSubjectTypeName subjectType,
         AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default);

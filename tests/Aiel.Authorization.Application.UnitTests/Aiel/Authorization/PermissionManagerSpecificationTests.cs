@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions;
+using Aiel.Authorization.Testing;
 using Aiel.Results;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Aiel.Authorization;
 
@@ -52,7 +52,7 @@ public sealed class PermissionManagerSpecificationTests
     public async Task GrantPermissionAsync_WhenValid_DelegatesToStoreAndReturnsGrantId()
     {
         var expectedId = AuthorizationGrantId.From(Guid.Parse("d9f15185-8ea2-4c86-b4c5-57e59b7a8ae2"));
-        var store = new FakePermissionStore
+        var store = new FakeAuthorizationGrantStore
         {
             CreateGrantResult = Result.Success(expectedId)
         };
@@ -74,7 +74,7 @@ public sealed class PermissionManagerSpecificationTests
     [Fact]
     public async Task RevokePermissionAsync_DelegatesToStoreWithGrantId()
     {
-        var store = new FakePermissionStore
+        var store = new FakeAuthorizationGrantStore
         {
             RevokeGrantResult = Result.Success()
         };
@@ -82,7 +82,7 @@ public sealed class PermissionManagerSpecificationTests
         var grantId = AuthorizationGrantId.From(Guid.Parse("2b30dadf-a609-4b4a-8c7d-7a2410508f8d"));
 
         var result = await manager.RevokeAsync(
-            new RevokeAuthorizationRequest { GrantId = grantId },
+            new RevokeAuthorizationCommand { GrantId = grantId },
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeTrue();
@@ -92,22 +92,22 @@ public sealed class PermissionManagerSpecificationTests
     [Fact]
     public async Task GetGrantsForSubjectAsync_DoesNotExposePersistenceRecords()
     {
-        var store = new FakePermissionStore
+        var store = new FakeAuthorizationGrantStore
         {
-            GetGrantsResult = Result.Success<IReadOnlyList<AuthorizationGrantSummary>>(
+            GetGrantsResult =
                 [
-                    new AuthorizationGrantSummary
-                    {
-                        GrantId = AuthorizationGrantId.From(Guid.Parse("ca64b97a-eb26-4d06-9a75-1f0a6d0efeea")),
-                        PermissionName = DocumentsRead,
-                        ScopeType = TenantScope,
-                        ScopeKey = TenantScopeKey,
-                        SubjectType = UserSubject,
-                        SubjectKey = UserSubjectKey,
-                        Decision = AuthorizationGrantDecision.Granted
-                    }
-                ])
+                    AuthorizationGrant.Create(
+                        AuthorizationGrantId.From(Guid.Parse("ca64b97a-eb26-4d06-9a75-1f0a6d0efeea")),
+                        PermissionStableId.From("perm_01k0task5manager000000000001"),
+                        DocumentsRead,
+                        TenantScope,
+                        TenantScopeKey,
+                        UserSubject,
+                        UserSubjectKey,
+                        AuthorizationGrantDecision.Granted).Value!
+                ]
         };
+
         var manager = CreateManager(store: store);
 
         var result = await manager.GetGrantsForSubjectAsync(
@@ -116,20 +116,20 @@ public sealed class PermissionManagerSpecificationTests
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().AllBeOfType<AuthorizationGrantSummary>();
+        result.Value.Should().AllBeOfType<AuthorizationGrantDto>();
         store.GetGrantsCalls.Should().ContainSingle();
     }
 
     private static DefaultPermissionManager CreateManager(
         Boolean registryHasPermission = true,
-        FakePermissionStore? store = null)
+        FakeAuthorizationGrantStore? store = null)
         => new(
             new FakePermissionDefinitionRegistry(registryHasPermission),
-            store ?? new FakePermissionStore
+            store ?? new FakeAuthorizationGrantStore
             {
                 CreateGrantResult = Result.Success(AuthorizationGrantId.From(Guid.Parse("d972d5cd-b196-4a0b-bffa-31bb05789d76"))),
                 RevokeGrantResult = Result.Success(),
-                GetGrantsResult = Result.Success<IReadOnlyList<AuthorizationGrantSummary>>([])
+                GetGrantsResult = []
             });
 
     private static GrantPermissionRequest CreateRequest()
@@ -187,59 +187,59 @@ public sealed class PermissionManagerSpecificationTests
         }
     }
 
-    private sealed class FakePermissionStore : IAuthorizationGrantStore
-    {
-        public List<CreateGrantCall> CreateGrantCalls { get; } = [];
+    //private sealed class FakeAuthorizationGrantStore : IAuthorizationGrantStore
+    //{
+    //    public List<CreateGrantCall> CreateGrantCalls { get; } = [];
 
-        public List<PermissionSubjectLookup> GetGrantsCalls { get; } = [];
+    //    public List<PermissionSubjectLookup> GetGrantsCalls { get; } = [];
 
-        public List<AuthorizationGrantId> RevokeGrantCalls { get; } = [];
+    //    public List<AuthorizationGrantId> RevokeGrantCalls { get; } = [];
 
-        public Result<AuthorizationGrantId> CreateGrantResult { get; init; } =
-            Result.Success(AuthorizationGrantId.From(Guid.Parse("7f1c7467-bbe9-4adc-ab9d-b7bf869d1b87")));
+    //    public Result<AuthorizationGrantId> CreateGrantResult { get; init; } =
+    //        Result.Success(AuthorizationGrantId.From(Guid.Parse("7f1c7467-bbe9-4adc-ab9d-b7bf869d1b87")));
 
-        public Result<IReadOnlyList<AuthorizationGrantSummary>> GetGrantsResult { get; init; } =
-            Result.Success<IReadOnlyList<AuthorizationGrantSummary>>([]);
+    //    public Result<IReadOnlyList<AuthorizationGrantDto>> GetGrantsResult { get; init; } =
+    //        Result.Success<IReadOnlyList<AuthorizationGrantDto>>([]);
 
-        public Result RevokeGrantResult { get; init; } = Result.Success();
+    //    public Result RevokeGrantResult { get; init; } = Result.Success();
 
-        public Task<Result<AuthorizationGrantId>> CreateGrantAsync(
-            PermissionName permissionName,
-            AuthorizationScopeTypeName scopeType,
-            AuthorizationScopeKey scopeKey,
-            AuthorizationSubjectTypeName subjectType,
-            AuthorizationSubjectKey subjectKey,
-            AuthorizationGrantDecision decision,
-            CancellationToken cancellationToken = default)
-        {
-            CreateGrantCalls.Add(new CreateGrantCall(
-                permissionName,
-                scopeType,
-                scopeKey,
-                subjectType,
-                subjectKey,
-                decision));
+    //    public Task<Result<AuthorizationGrantId>> CreateGrantAsync(
+    //        PermissionName permissionName,
+    //        AuthorizationScopeTypeName scopeType,
+    //        AuthorizationScopeKey scopeKey,
+    //        AuthorizationSubjectTypeName subjectType,
+    //        AuthorizationSubjectKey subjectKey,
+    //        AuthorizationGrantDecision decision,
+    //        CancellationToken cancellationToken = default)
+    //    {
+    //        CreateGrantCalls.Add(new CreateGrantCall(
+    //            permissionName,
+    //            scopeType,
+    //            scopeKey,
+    //            subjectType,
+    //            subjectKey,
+    //            decision));
 
-            return Task.FromResult(CreateGrantResult);
-        }
+    //        return Task.FromResult(CreateGrantResult);
+    //    }
 
-        public Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
-            AuthorizationSubjectTypeName subjectType,
-            AuthorizationSubjectKey subjectKey,
-            CancellationToken cancellationToken = default)
-        {
-            GetGrantsCalls.Add(new PermissionSubjectLookup(subjectType, subjectKey));
-            return Task.FromResult(GetGrantsResult);
-        }
+    //    public Task<Result<IReadOnlyList<AuthorizationGrantDto>>> GetGrantsForSubjectAsync(
+    //        AuthorizationSubjectTypeName subjectType,
+    //        AuthorizationSubjectKey subjectKey,
+    //        CancellationToken cancellationToken = default)
+    //    {
+    //        GetGrantsCalls.Add(new PermissionSubjectLookup(subjectType, subjectKey));
+    //        return Task.FromResult(GetGrantsResult);
+    //    }
 
-        public Task<Result> RevokeGrantAsync(
-            AuthorizationGrantId grantId,
-            CancellationToken cancellationToken = default)
-        {
-            RevokeGrantCalls.Add(grantId);
-            return Task.FromResult(RevokeGrantResult);
-        }
-    }
+    //    public Task<Result> RevokeGrantAsync(
+    //        AuthorizationGrantId grantId,
+    //        CancellationToken cancellationToken = default)
+    //    {
+    //        RevokeGrantCalls.Add(grantId);
+    //        return Task.FromResult(RevokeGrantResult);
+    //    }
+    //}
 
     private sealed record CreateGrantCall(
         PermissionName PermissionName,

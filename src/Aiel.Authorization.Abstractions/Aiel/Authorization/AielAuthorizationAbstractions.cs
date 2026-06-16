@@ -20,13 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
+
 namespace Aiel.Authorization;
 
-/// <summary>
-/// Carries the identifier of the grant to revoke.
-/// </summary>
-public sealed class RevokeAuthorizationRequest
-{
-    /// <summary>Gets the unique identifier of the persisted grant to revoke.</summary>
-    public required AuthorizationGrantId GrantId { get; init; }
-}
+[DependsOn(typeof(AielFrameworkAbstractions))]
+public sealed class AielAuthorizationAbstractions : AielDependencyConfigurator;

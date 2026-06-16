@@ -12,8 +12,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Aiel.Actions.Commands\Aiel.Actions.Commands.csproj" />
         <ProjectReference Include="..\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Aiel.Authorization.Domain\Aiel.Authorization.Domain.csproj" />
     </ItemGroup>
 
 </Project>

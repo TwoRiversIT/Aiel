@@ -20,12 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using Aiel.StrongIds;
 
-namespace Aiel.Mediator;
+namespace Aiel.Authorization;
 
 /// <summary>
-/// Ensures that the Aiel.Mediator participates in the dependency graph.
+/// Identifies a published permission definition across renames.
 /// </summary>
-[DependsOn(typeof(AielMediatorAbstractions))]
-public sealed class AielMediator : AielDependencyConfigurator;
+[StrongId<String>(DisallowDefault = true)]
+public readonly partial record struct PermissionStableId;
+
+/// <summary>
+/// Identifies a concrete persisted authorization grant.
+/// </summary>
+[StrongId<Guid>(DisallowDefault = true, GenerateTryFrom = true)]
+public readonly partial record struct AuthorizationGrantId;
+
+/// <summary>
+/// Identifies a client capability snapshot version token.
+/// </summary>
+[StrongId<String>(DisallowDefault = true)]
+public readonly partial record struct CapabilitySnapshotVersion;

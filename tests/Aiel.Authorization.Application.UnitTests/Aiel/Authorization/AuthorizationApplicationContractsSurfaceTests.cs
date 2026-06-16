@@ -20,18 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
 using Aiel.Results;
 
 namespace Aiel.Authorization;
 
-public sealed class PermissionApplicationContractsSurfaceTests
+public sealed class AuthorizationApplicationContractsSurfaceTests
 {
     [Fact]
     public void ContractsAssembly_ExposesExpectedNamespace()
     {
         typeof(IActionGate<>).Namespace.Should().Be("Aiel.Authorization");
         typeof(IActionCapabilityService).Namespace.Should().Be("Aiel.Authorization");
-        typeof(IActionValidator<>).Namespace.Should().Be("Aiel.Authorization");
         typeof(IActionAuthorizationChecker<>).Namespace.Should().Be("Aiel.Authorization");
         typeof(IAuthorizationDefinitionRegistry).Namespace.Should().Be("Aiel.Authorization");
         typeof(IAuthorizationGrantEvaluator).Namespace.Should().Be("Aiel.Authorization");
@@ -49,10 +49,10 @@ public sealed class PermissionApplicationContractsSurfaceTests
         typeof(ActionCapabilityRequestMode).Namespace.Should().Be("Aiel.Authorization");
         typeof(CapabilityContinuationToken).Namespace.Should().Be("Aiel.Authorization");
         typeof(AuthorizationDefinitionManifest).Namespace.Should().Be("Aiel.Authorization");
-        typeof(AuthorizationGrantSummary).Namespace.Should().Be("Aiel.Authorization");
+        typeof(AuthorizationGrantDto).Namespace.Should().Be("Aiel.Authorization");
         typeof(AuthorizationScopeResolution).Namespace.Should().Be("Aiel.Authorization");
         typeof(GrantPermissionRequest).Namespace.Should().Be("Aiel.Authorization");
-        typeof(RevokeAuthorizationRequest).Namespace.Should().Be("Aiel.Authorization");
+        typeof(RevokeAuthorizationCommand).Namespace.Should().Be("Aiel.Authorization");
         typeof(ClientAuthorizationCapability).Namespace.Should().Be("Aiel.Authorization");
     }
 

@@ -12,9 +12,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Actions.Commands\Aiel.Actions.Commands.csproj" />
         <ProjectReference Include="..\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Aiel.Authorization.Abstractions\Aiel.Authorization.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Authorization.Domain.Shared\Aiel.Authorization.Domain.Shared.csproj" />
-        <ProjectReference Include="..\Aiel.Results\Aiel.Results.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

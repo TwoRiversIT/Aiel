@@ -120,53 +120,45 @@ public sealed class AuthorizationGrant : StateBasedAggregateRoot<AuthorizationGr
     {
         if (grantId == default)
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantIdRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantIdRequired);
         }
 
         if (permissionStableId == default)
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantStableIdRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantStableIdRequired);
         }
 
         if (String.IsNullOrEmpty(permissionName.Value))
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantPermissionNameRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantPermissionNameRequired);
         }
 
         if (String.IsNullOrEmpty(scopeType.Value))
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantScopeTypeRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantScopeTypeRequired);
         }
 
         if (String.IsNullOrEmpty(scopeKey.Value))
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantScopeKeyRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantScopeKeyRequired);
         }
 
         if (String.IsNullOrEmpty(subjectType.Value))
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantSubjectTypeRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantSubjectTypeRequired);
         }
 
         if (String.IsNullOrEmpty(subjectKey.Value))
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantSubjectKeyRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantSubjectKeyRequired);
         }
 
         if (!Enum.IsDefined(decision))
         {
-            return Result<AuthorizationGrant>.Failure(
-                new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantDecisionRequired));
+            return new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.GrantDecisionRequired);
         }
 
-        return Result<AuthorizationGrant>.Success(
+        return Result.Success(
             new AuthorizationGrant(
                 grantId,
                 permissionStableId,

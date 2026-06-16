@@ -56,7 +56,7 @@ public interface IAuthorizationManager
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
     /// <returns>A successful <see cref="Result"/> on success.</returns>
     Task<Result> RevokeAsync(
-        RevokeAuthorizationRequest request,
+        RevokeAuthorizationCommand request,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -65,8 +65,8 @@ public interface IAuthorizationManager
     /// <param name="subjectType">The type of subject to query.</param>
     /// <param name="subjectKey">The specific subject key to query.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
-    /// <returns>A non-null list of <see cref="AuthorizationGrantSummary"/> instances; empty when none are found.</returns>
-    Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+    /// <returns>A non-null list of <see cref="AuthorizationGrantDto"/> instances; empty when none are found.</returns>
+    Task<Result<IReadOnlyList<AuthorizationGrantDto>>> GetGrantsForSubjectAsync(
         AuthorizationSubjectTypeName subjectType,
         AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default);

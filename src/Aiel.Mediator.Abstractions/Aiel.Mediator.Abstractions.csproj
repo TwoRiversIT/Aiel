@@ -13,6 +13,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Include="..\Aiel.Mediator.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Mediator.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="Aiel.Mediator.Abstractions.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\Aiel.Actions.Commands\Aiel.Actions.Commands.csproj" />
       <ProjectReference Include="..\Aiel.Actions.Queries\Aiel.Actions.Queries.csproj" />
     </ItemGroup>

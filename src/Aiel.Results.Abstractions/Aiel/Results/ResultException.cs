@@ -31,7 +31,7 @@ namespace Aiel.Results;
 /// the Aiel libraries to surface domain or application errors alongside a richer
 /// error model when available.
 /// </remarks>
-public class ResultException : Exception
+public class ResultException : AielException
 {
     /// <summary>
     /// Gets an optional <see cref="Error"/> instance containing structured
@@ -59,6 +59,14 @@ public class ResultException : Exception
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
     /// error message.
     /// </summary>
+    public ResultException(Result result) : this(result.Error)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
+    /// error message.
+    /// </summary>
     public ResultException(Error error) : this(error.Message, error)
     {
     }
@@ -69,7 +77,7 @@ public class ResultException : Exception
     /// </summary>
     /// <param name="message">The error message that explains the reason for the exception.</param>
     /// <param name="error">An optional <see cref="Error"/> instance with structured error details.</param>
-    public ResultException(String? message, Error? error) : base(message)
+    public ResultException(String? message, Error? error) : base(message ?? error?.Message ?? "An error occurred.")
     {
         Error = error;
     }

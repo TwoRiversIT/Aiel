@@ -37,12 +37,12 @@ public sealed class EfCorePermissionStore(AuthorizationDbContext dbContext, Time
 {
     /// <inheritdoc />
     public async Task<Result<AuthorizationGrantId>> CreateGrantAsync(
-        PermissionName permissionName,
-        AuthorizationScopeTypeName scopeType,
-        AuthorizationScopeKey scopeKey,
-        AuthorizationSubjectTypeName subjectType,
-        AuthorizationSubjectKey subjectKey,
-        AuthorizationGrantDecision decision,
+PermissionName permissionName,
+AuthorizationScopeTypeName scopeType,
+AuthorizationScopeKey scopeKey,
+AuthorizationSubjectTypeName subjectType,
+AuthorizationSubjectKey subjectKey,
+AuthorizationGrantDecision decision,
         CancellationToken cancellationToken = default)
     {
         var catalogEntry = await dbContext.Catalog
@@ -98,31 +98,16 @@ public sealed class EfCorePermissionStore(AuthorizationDbContext dbContext, Time
     }
 
     /// <inheritdoc />
-    public async Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+    public async Task<IReadOnlyList<AuthorizationGrant>> GetGrantsForSubjectAsync(
         AuthorizationSubjectTypeName subjectType,
         AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default)
     {
         var records = await dbContext.Grants
             .Where(r => r.SubjectType == subjectType.Value && r.SubjectKey == subjectKey.Value)
+            .ProjectToEntity()
             .ToListAsync(cancellationToken);
 
-        var summaries = records
-            .ConvertAll(ToSummary)
-;
-
-        return Result<IReadOnlyList<AuthorizationGrantSummary>>.Success(summaries);
+        return records.ToArray();
     }
-
-    private static AuthorizationGrantSummary ToSummary(AuthorizationGrantRecord record)
-        => new()
-        {
-            GrantId = AuthorizationGrantId.From(record.Id),
-            PermissionName = PermissionName.From(record.PermissionName),
-            ScopeType = AuthorizationScopeTypeName.From(record.ScopeType),
-            ScopeKey = AuthorizationScopeKey.From(record.ScopeKey),
-            SubjectType = AuthorizationSubjectTypeName.From(record.SubjectType),
-            SubjectKey = AuthorizationSubjectKey.From(record.SubjectKey),
-            Decision = (AuthorizationGrantDecision)record.Decision,
-        };
 }

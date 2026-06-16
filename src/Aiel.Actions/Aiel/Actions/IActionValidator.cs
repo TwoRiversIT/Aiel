@@ -20,12 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using Aiel.Results;
 
-namespace Aiel.Mediator;
+namespace Aiel.Actions;
 
 /// <summary>
-/// Ensures that the Aiel.Mediator participates in the dependency graph.
+/// Validates an action's input before any permission check runs.
 /// </summary>
-[DependsOn(typeof(AielMediatorAbstractions))]
-public sealed class AielMediator : AielDependencyConfigurator;
+/// <typeparam name="TAction">The action payload type.</typeparam>
+/// <remarks>
+/// Implement this interface per action type. The <see cref="IActionGate{TAction}"/> calls this
+/// before <see cref="IActionAuthorizationChecker{TAction}"/>; a validation failure short-circuits the gate.
+/// </remarks>
+public interface IActionValidator<TAction>
+    where TAction : IAction
+{
+    /// <summary>
+    /// Validates the action payload in the given execution context.
+    /// </summary>
+    /// <param name="context">The action execution context holding the payload and actor.</param>
+    /// <param name="cancellationToken">A token to observe for cancellation.</param>
+    /// <returns>
+    /// <see cref="Result.Success()"/> when the action is valid;
+    /// a failed <see cref="Result"/> carrying a <see cref="AuthorizationValidationError"/> otherwise.
+    /// </returns>
+    Task<Result> ValidateAsync(IActionExecutionContext<TAction> context, CancellationToken cancellationToken = default);
+}

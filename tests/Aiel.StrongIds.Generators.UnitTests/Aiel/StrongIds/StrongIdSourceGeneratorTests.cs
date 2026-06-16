@@ -50,6 +50,7 @@ public class StrongIdSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
 
         var generatedSource = result.GeneratedSources[0].SourceText.ToString();
+        generatedSource.Should().Contain("public readonly partial record struct OrderId : global::Aiel.StrongIds.IStrongId<global::System.Guid>");
         generatedSource.Should().Contain("public global::System.Guid Value { get; }");
         generatedSource.Should().Contain("public OrderId(global::System.Guid value)");
         generatedSource.Should().Contain("public static OrderId From(global::System.Guid value) => new(value);");

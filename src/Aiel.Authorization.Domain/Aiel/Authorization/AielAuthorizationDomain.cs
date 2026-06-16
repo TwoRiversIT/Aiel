@@ -20,12 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Domain;
 using Aiel.Framework;
+using Aiel.Results;
 
 namespace Aiel.Authorization;
 
-[DependsOn(typeof(Domain.AielDomain))]
 [DependsOn(typeof(AielAuthorizationDomainShared))]
-[DependsOn(typeof(Results.AielResults))]
+[DependsOn(typeof(AielDomain))]
+[DependsOn(typeof(AielResults))]
 public sealed class AielAuthorizationDomain : AielDependencyConfigurator;
 

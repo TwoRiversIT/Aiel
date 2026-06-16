@@ -29,22 +29,26 @@ namespace Aiel.Authorization;
 /// </summary>
 public sealed class DefaultPermissionManager(
     IAuthorizationDefinitionRegistry definitionRegistry,
-    IAuthorizationGrantStore permissionStore) : IAuthorizationManager
+    IAuthorizationGrantStore authorizationGrantStore) : IAuthorizationManager
 {
     /// <inheritdoc />
-    public Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+    public async Task<Result<IReadOnlyList<AuthorizationGrantDto>>> GetGrantsForSubjectAsync(
         AuthorizationSubjectTypeName subjectType,
         AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default)
-        => permissionStore.GetGrantsForSubjectAsync(subjectType, subjectKey, cancellationToken);
+    {
+        var results = await authorizationGrantStore.GetGrantsForSubjectAsync(subjectType, subjectKey, cancellationToken);
+
+        return Result.Success(results.ToDto());
+    }
 
     /// <inheritdoc />
     public Task<Result> RevokeAsync(
-        RevokeAuthorizationRequest request,
+        RevokeAuthorizationCommand request,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
-        return permissionStore.RevokeGrantAsync(request.GrantId, cancellationToken);
+        return authorizationGrantStore.RevokeGrantAsync(request.GrantId, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -61,7 +65,7 @@ public sealed class DefaultPermissionManager(
                     AuthorizationErrors.MissingAuthorizationStory(request.PermissionName)));
         }
 
-        return permissionStore.CreateGrantAsync(
+        return authorizationGrantStore.CreateGrantAsync(
             request.PermissionName,
             request.ScopeType,
             request.ScopeKey,

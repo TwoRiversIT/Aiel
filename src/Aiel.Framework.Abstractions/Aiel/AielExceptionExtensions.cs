@@ -20,24 +20,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.StrongIds;
+namespace Aiel;
 
-namespace Aiel.Authorization;
-
-/// <summary>
-/// Identifies a published permission definition across renames.
-/// </summary>
-[StrongId<String>(DisallowDefault = true)]
-public readonly partial record struct PermissionStableId;
-
-/// <summary>
-/// Identifies a concrete persisted authorization grant.
-/// </summary>
-[StrongId<Guid>(DisallowDefault = true)]
-public readonly partial record struct AuthorizationGrantId;
-
-/// <summary>
-/// Identifies a client capability snapshot version token.
-/// </summary>
-[StrongId<String>(DisallowDefault = true)]
-public readonly partial record struct CapabilitySnapshotVersion;
+public static class AielExceptionExtensions
+{
+    /// <summary>
+    /// Visits the exception and all its inner exceptions, executing an action on each.
+    /// </summary>
+    /// <param name="ex">The exception to visit.</param>
+    /// <param name="action">An action to execute on each exception in the hierarchy.</param>
+    /// <remarks>
+    /// This method traverses the <see cref="Exception.InnerException"/> chain and executes
+    /// the specified action on the original exception and all inner exceptions.
+    /// </remarks>
+    public static void Visit(this Exception ex, Action<Exception> action)
+    {
+        action(ex);
+        var iex = ex.InnerException;
+        while (iex != null)
+        {
+            action(iex);
+            iex = iex.InnerException;
+        }
+    }
+}

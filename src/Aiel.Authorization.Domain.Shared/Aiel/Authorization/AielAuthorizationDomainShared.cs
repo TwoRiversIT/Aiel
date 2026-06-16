@@ -21,13 +21,11 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Results;
 using Aiel.StrongIds;
 
 namespace Aiel.Authorization;
 
-/// <summary>
-/// Ensures that the Aiel.Authorization.Domain.Shared participates in the dependency graph.
-/// </summary>
-[DependsOn(typeof(AielFrameworkAbstractions))]
+[DependsOn(typeof(AielResultsAbstractions))]
 [DependsOn(typeof(AielStrongIds))]
 public sealed class AielAuthorizationDomainShared : AielDependencyConfigurator;

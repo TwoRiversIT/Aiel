@@ -21,7 +21,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Mediator.Abstractions\Aiel.Mediator.Abstractions.csproj" />
-        <ProjectReference Include="..\Aiel.Results\Aiel.Results.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

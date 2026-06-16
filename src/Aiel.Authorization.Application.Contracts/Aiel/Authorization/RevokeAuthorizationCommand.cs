@@ -20,31 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions;
-using Aiel.Results;
+using Aiel.Actions.Commands;
 
 namespace Aiel.Authorization;
 
 /// <summary>
-/// Checks whether the actor in an execution context holds the required permission for the requested scope.
+/// Carries the identifier of the grant to revoke.
 /// </summary>
-/// <typeparam name="TAction">The action payload type.</typeparam>
-/// <remarks>
-/// Implement this interface per action type. The <see cref="IActionGate{TAction}"/> calls this
-/// after a successful <see cref="IActionValidator{TAction}"/> pass.
-/// </remarks>
-public interface IActionAuthorizationChecker<TAction>
-    where TAction : IAction
+public sealed class RevokeAuthorizationCommand : ICommand
 {
-    /// <summary>
-    /// Checks permission for the actor and scope described by <paramref name="context"/>.
-    /// </summary>
-    /// <param name="context">The action execution context holding the payload and actor.</param>
-    /// <param name="cancellationToken">A token to observe for cancellation.</param>
-    /// <returns>
-    /// <see cref="Result.Success()"/> when the actor holds the required permission;
-    /// a failed <see cref="Result"/> carrying a <see cref="AuthorizationDeniedError"/> or
-    /// <see cref="MissingAuthorizationStoryError"/> otherwise.
-    /// </returns>
-    Task<Result> CheckPermissionAsync(IActionExecutionContext<TAction> context, CancellationToken cancellationToken = default);
+    /// <summary>Gets the unique identifier of the persisted grant to revoke.</summary>
+    public required AuthorizationGrantId GrantId { get; init; }
 }

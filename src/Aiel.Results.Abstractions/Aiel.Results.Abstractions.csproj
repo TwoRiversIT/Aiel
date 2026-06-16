@@ -13,21 +13,20 @@
 
     <Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 
-    <!-- Include the analyzer and generator DLL in the NuGet package to ensure it is available and used during compilation of consuming projects.  -->
     <ItemGroup>
         <None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    </ItemGroup>   
+        <None Include="Aiel.Results.Abstractions.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
+    </ItemGroup>
 
-    <!-- Reference the analyzer and generator project as an analyzer to ensure it is used during compilation of this project. -->
+    <!-- Reference the analyzer and generator to ensure they are built before this project and available during compilation. -->
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
-      <!--<ProjectReference Include="..\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />-->
+        <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

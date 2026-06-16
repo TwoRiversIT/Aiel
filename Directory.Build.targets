@@ -35,7 +35,7 @@
         any target runs; GenerateNuspec reads PackageDescription, not Description. -->
     <Target Name="SetPackageDescription" AfterTargets="GetBuildVersion" Condition="'$(IsPackable)' == 'true'">
         <PropertyGroup>
-            <PackageDescription>Framework and tools for implementing applications by following best practices in a developer friendly way. Built from commit $(GitCommitId).</PackageDescription>
+            <PackageDescription>Framework and tools for implementing applications by following best practices in a developer friendly way.</PackageDescription>
         </PropertyGroup>
         <PropertyGroup>
             <PackageProjectUrl>$(PackageProjectUrl)</PackageProjectUrl>

@@ -21,9 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Testing.CodeAnalysis;
 
 namespace Aiel.Results;
 
 [DependsOn(typeof(AielResults))]
+[DependsOn(typeof(AielTestingCodeAnalysis))]
 public sealed class AielResultsGeneratorsUnitTests : AielDependencyConfigurator;
-

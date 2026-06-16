@@ -22,14 +22,14 @@
 
 using Aiel.Results.TestErrors;
 
-namespace Aiel.Results.Generators;
+namespace Aiel.Results;
 
 /// <summary>
 /// Tests to verify that custom errors defined in consuming assemblies are properly generated.
 /// This also demonstrates the REGISTRATION CHALLENGE: how do these errors get registered
 /// in ErrorRegistry which lives in a different assembly?
 /// </summary>
-public sealed class CustomErrorGenerationTests
+public sealed class GeneratedErrorsTests
 {
     [Fact]
     public void OrderNotFoundError_Should_BeCreatable()

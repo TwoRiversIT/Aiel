@@ -25,10 +25,14 @@ using Microsoft.CodeAnalysis;
 
 namespace Aiel.Results.Generators;
 
-public class ErrorInf(String ns, String error, String errorCode)
+public class ErrorInfo(String ns, String error, String errorCode, String accessibility)
 {
-    public static ErrorInf FromSymbol(INamedTypeSymbol symbol)
+    public static ErrorInfo FromSymbol(INamedTypeSymbol symbol)
     {
+        var accessibility = symbol.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public
+            ? "public"
+            : "internal";
+
         var ns = symbol.ContainingNamespace.IsGlobalNamespace
             ? null
             : symbol.ContainingNamespace.ToDisplayString();
@@ -36,13 +40,15 @@ public class ErrorInf(String ns, String error, String errorCode)
         var errorName = symbol.Name;
         var codeName = errorName + GeneratorConsts.Suffix;
 
-        return new ErrorInf(ns ?? "", errorName, codeName);
+        return new ErrorInfo(ns ?? "", errorName, codeName, accessibility);
     }
 
     public String Namespace { get; } = ns;
     public String ErrorName { get; } = error;
     public String FqErrorName => HasNamespace ? $"{GeneratorConsts.Global}{Namespace}.{ErrorName}" : $"{GeneratorConsts.Global}{ErrorName}";
     public String ErrorCodeName { get; } = errorCode;
+    public String Accessibility { get; } = accessibility;
+
     public String ErrorAndCodeName => $"{ErrorName}.{ErrorCodeName}";
     public String FqErrorCodeName => HasNamespace ? $"{GeneratorConsts.Global}{Namespace}.{ErrorName}.{ErrorCodeName}" : $"{GeneratorConsts.Global}{ErrorName}.{ErrorCodeName}";
 

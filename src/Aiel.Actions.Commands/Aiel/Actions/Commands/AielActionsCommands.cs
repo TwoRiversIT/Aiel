@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Actions.Commands;
 
+[DependsOn(typeof(AielActions))]
 public sealed class AielActionsCommands : AielDependencyConfigurator
 {
     public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)

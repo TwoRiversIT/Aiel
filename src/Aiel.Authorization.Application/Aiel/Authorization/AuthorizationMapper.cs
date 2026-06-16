@@ -20,30 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions;
-using Aiel.Results;
+using Riok.Mapperly.Abstractions;
 
 namespace Aiel.Authorization;
 
-/// <summary>
-/// Validates an action's input before any permission check runs.
-/// </summary>
-/// <typeparam name="TAction">The action payload type.</typeparam>
-/// <remarks>
-/// Implement this interface per action type. The <see cref="IActionGate{TAction}"/> calls this
-/// before <see cref="IActionAuthorizationChecker{TAction}"/>; a validation failure short-circuits the gate.
-/// </remarks>
-public interface IActionValidator<TAction>
-    where TAction : IAction
+[Mapper]
+public static partial class AuthorizationMapper
 {
-    /// <summary>
-    /// Validates the action payload in the given execution context.
-    /// </summary>
-    /// <param name="context">The action execution context holding the payload and actor.</param>
-    /// <param name="cancellationToken">A token to observe for cancellation.</param>
-    /// <returns>
-    /// <see cref="Result.Success()"/> when the action is valid;
-    /// a failed <see cref="Result"/> carrying a <see cref="AuthorizationValidationError"/> otherwise.
-    /// </returns>
-    Task<Result> ValidateAsync(IActionExecutionContext<TAction> context, CancellationToken cancellationToken = default);
+    [MapProperty(nameof(AuthorizationGrant.Id), nameof(AuthorizationGrantDto.GrantId))]
+    [MapperIgnoreSource(nameof(AuthorizationGrant.PermissionStableId))]
+    [MapperIgnoreSource(nameof(AuthorizationGrant.DomainEvents))]
+    [MapperIgnoreSource(nameof(AuthorizationGrant.Version))]
+    public static partial AuthorizationGrantDto ToDto(this AuthorizationGrant grant);
+    public static partial IReadOnlyList<AuthorizationGrantDto> ToDto(this IEnumerable<AuthorizationGrant> grants);
 }

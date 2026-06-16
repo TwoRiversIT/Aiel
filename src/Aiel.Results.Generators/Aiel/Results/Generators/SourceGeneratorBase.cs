@@ -33,7 +33,7 @@ public abstract class SourceGeneratorBase
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // STEP 1: Find all class declarations with "partial" and ": Error"
+        // STEP 1: Find all class declarations with "public sealed partial" and inherit from "Error"
         var errorClasses = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (node, _) => IsCandidate(node),
@@ -82,25 +82,26 @@ public abstract class SourceGeneratorBase
 
     private static INamedTypeSymbol? GetErrorSymbol(GeneratorSyntaxContext ctx)
     {
-        var cds = (ClassDeclarationSyntax)ctx.Node;
+        if (ctx.Node is not ClassDeclarationSyntax cds)
+        {
+            return null;
+        }
 
         if (ctx.SemanticModel.GetDeclaredSymbol(cds) is not INamedTypeSymbol symbol)
         {
             return null;
         }
 
-        // Must derive from Error
-        var baseType = symbol.BaseType;
-
-        while (baseType is not null)
+        // MVP/v1: No need to walk the dependency tree since we only care about direct inheritance for this generator.
+        if (symbol.BaseType is null)
         {
-            var fullName = baseType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            if (fullName == GeneratorConsts.FqErrorType)
-            {
-                return symbol;
-            }
+            return null;
+        }
 
-            baseType = baseType.BaseType;
+        var fullName = symbol.BaseType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+        if (fullName == GeneratorConsts.FqErrorType)
+        {
+            return symbol;
         }
 
         return null;
@@ -108,8 +109,15 @@ public abstract class SourceGeneratorBase
 
     private static Boolean IsCandidate(SyntaxNode node)
     {
-        return node is ClassDeclarationSyntax cds
-            && cds.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
+        if (node is ClassDeclarationSyntax cds)
+        {
+            return cds.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.InternalKeyword))
+                && cds.Modifiers.Any(m => m.IsKind(SyntaxKind.SealedKeyword))
+                && cds.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword))
+                && cds.ParameterList is null;
+        }
+
+        return false;
     }
 
     protected static String LowerFirst(String name)

@@ -1,0 +1,6 @@
+<Project>
+    <ItemGroup>
+        <Analyzer Include="$(MSBuildThisPackageRoot)analyzers/dotnet/cs/Aiel.Framework.Analyzers.dll" />
+        <Analyzer Include="$(MSBuildThisPackageRoot)analyzers/dotnet/cs/Aiel.Framework.Generators.dll" />
+    </ItemGroup>
+</Project>

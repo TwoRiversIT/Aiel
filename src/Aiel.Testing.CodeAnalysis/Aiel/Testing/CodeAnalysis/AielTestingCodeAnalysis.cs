@@ -20,28 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Extensions;
-using System.Text;
+using Aiel.Framework;
 
-namespace Aiel.Results;
+namespace Aiel.Testing.CodeAnalysis;
 
-partial class UnrecognizedError : Error
-{
-    internal const String DefaultMessage = "An unrecognized error occurred and may not have been deserialized correctly.";
-}
-
-public partial class ApiError : Error
-{
-    internal static ApiError FromException(Exception ex)
-    {
-        var sb = new StringBuilder();
-        ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
-        return new ApiError(sb.ToString());
-    }
-}
-
-/// <summary>
-/// Represents an error that occurred during an API call. This should be used to wrap HTTP-related errors,
-/// including deserialization issues, transport errors, etc., but not Application or Domain-Specific errors.
-/// </summary>
-public partial class ResultError : Error;
+[DependsOn(typeof(AielTesting))]
+public sealed class AielTestingCodeAnalysis : AielDependencyConfigurator;

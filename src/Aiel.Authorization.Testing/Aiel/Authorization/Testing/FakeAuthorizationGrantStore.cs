@@ -60,8 +60,7 @@ public sealed class FakeAuthorizationGrantStore : IAuthorizationGrantStore
     /// Gets or initializes the result returned by <see cref="IAuthorizationGrantStore.GetGrantsForSubjectAsync"/>.
     /// Defaults to <see cref="Result.Success{T}"/> with an empty grant list.
     /// </summary>
-    public Result<IReadOnlyList<AuthorizationGrantSummary>> GetGrantsResult { get; init; } =
-        Result.Success<IReadOnlyList<AuthorizationGrantSummary>>([]);
+    public IReadOnlyList<AuthorizationGrant> GetGrantsResult { get; init; } = [];
 
     /// <summary>
     /// Gets or initializes the result returned by <see cref="IAuthorizationGrantStore.RevokeGrantAsync"/>.
@@ -91,7 +90,7 @@ public sealed class FakeAuthorizationGrantStore : IAuthorizationGrantStore
     }
 
     /// <inheritdoc />
-    public Task<Result<IReadOnlyList<AuthorizationGrantSummary>>> GetGrantsForSubjectAsync(
+    public Task<IReadOnlyList<AuthorizationGrant>> GetGrantsForSubjectAsync(
         AuthorizationSubjectTypeName subjectType,
         AuthorizationSubjectKey subjectKey,
         CancellationToken cancellationToken = default)

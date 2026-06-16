@@ -13,7 +13,7 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
-    <!-- Reference the analyzer and generator project as an analyzer to ensure it is used during compilation of this project. -->
+    <!-- Reference the analyzer and generator projects as an analyzer to ensure they are used during compilation of this project. -->
     <ItemGroup Condition="'$(IsToolingTests)' != 'true'">
         <ProjectReference Include="..\..\src\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
@@ -25,9 +25,9 @@
         <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
-    </ItemGroup>
-
-    <!-- Include the analyzer and generator DLL in the NuGet package to ensure it is available and used during compilation of consuming projects. -->
+    </ItemGroup>    
+    
+    <!-- Include the analyzer and generator DLL in the NuGet package to ensure it is available and used during compilation of consuming projects.
     <ItemGroup Condition="'$(IsToolingTests)' != 'true'">
         <None Include="..\..\src\Aiel.Framework.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\..\src\Aiel.Framework.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
@@ -40,7 +40,8 @@
         <None Include="..\..\src\Aiel.StrongIds.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\..\src\Aiel.StrongIds.Generators\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
-
+    -->
+    
     <!-- NBGV package reference -->
     <ItemGroup>
         <PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">

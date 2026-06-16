@@ -29,26 +29,26 @@ namespace Aiel.Authorization;
 /// This DTO intentionally omits domain entity internals. Callers receive only the information
 /// needed to display, audit, or revoke a grant.
 /// </remarks>
-public sealed class AuthorizationGrantSummary
+public sealed class AuthorizationGrantDto
 {
     /// <summary>Gets the unique identifier for this persisted grant.</summary>
-    public required AuthorizationGrantId GrantId { get; init; }
+    public AuthorizationGrantId GrantId { get; init; }
 
     /// <summary>Gets the name of the permission this grant covers.</summary>
-    public required PermissionName PermissionName { get; init; }
+    public PermissionName PermissionName { get; init; }
 
     /// <summary>Gets the scope type this grant applies to.</summary>
-    public required AuthorizationScopeTypeName ScopeType { get; init; }
+    public AuthorizationScopeTypeName ScopeType { get; init; }
 
     /// <summary>Gets the specific scope key this grant is bound to.</summary>
-    public required AuthorizationScopeKey ScopeKey { get; init; }
+    public AuthorizationScopeKey ScopeKey { get; init; }
 
     /// <summary>Gets the subject type this grant targets.</summary>
-    public required AuthorizationSubjectTypeName SubjectType { get; init; }
+    public AuthorizationSubjectTypeName SubjectType { get; init; }
 
     /// <summary>Gets the specific subject key this grant is bound to.</summary>
-    public required AuthorizationSubjectKey SubjectKey { get; init; }
+    public AuthorizationSubjectKey SubjectKey { get; init; }
 
     /// <summary>Gets whether this grant explicitly allows or prohibits the permission.</summary>
-    public required AuthorizationGrantDecision Decision { get; init; }
+    public AuthorizationGrantDecision Decision { get; init; }
 }

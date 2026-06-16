@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<RootNamespace />
@@ -14,6 +14,8 @@
 	<!-- Include the analyzer DLL in the NuGet package to ensure it is available and used during compilation of consuming projects. -->
 	<ItemGroup>
 		<None Include="..\Aiel.StrongIds.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="..\Aiel.StrongIds.Generators\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+		<None Include="Aiel.StrongIds.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
 	</ItemGroup>
 
 	<ItemGroup>

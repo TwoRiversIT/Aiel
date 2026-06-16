@@ -22,7 +22,7 @@
 
 using Aiel.Framework;
 
-namespace Aiel.Authorization.Aiel.Authorization;
+namespace Aiel.Authorization;
 
-[DependsOn(typeof(AielFrameworkAbstractions))]
+[DependsOn(typeof(AielAuthorizationAbstractions))]
 public sealed class AielAuthorization : AielDependencyConfigurator;

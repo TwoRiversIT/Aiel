@@ -148,21 +148,21 @@ public sealed class FakePermissionStoreTests
     [Fact]
     public async Task GetGrantsForSubjectAsync_ReturnsConfiguredResult()
     {
-        var grant = new AuthorizationGrantSummary
-        {
-            GrantId = AuthorizationTestData.GrantIdAlpha,
-            PermissionName = AuthorizationTestData.PermissionNameRead,
-            ScopeType = AuthorizationTestData.ScopeTypeAlpha,
-            ScopeKey = AuthorizationTestData.ScopeKeyAlpha,
-            SubjectType = AuthorizationTestData.SubjectTypeAlpha,
-            SubjectKey = AuthorizationTestData.SubjectKeyAlpha,
-            Decision = AuthorizationGrantDecision.Granted
-        };
+        var grant = AuthorizationGrant.Create(
+             AuthorizationTestData.GrantIdAlpha,
+             AuthorizationTestData.StableIdAlpha,
+             AuthorizationTestData.PermissionNameRead,
+             AuthorizationTestData.ScopeTypeAlpha,
+             AuthorizationTestData.ScopeKeyAlpha,
+             AuthorizationTestData.SubjectTypeAlpha,
+             AuthorizationTestData.SubjectKeyAlpha,
+             AuthorizationGrantDecision.Granted)
+         .Value;
 
-        IReadOnlyList<AuthorizationGrantSummary> grants = [grant];
+        IReadOnlyList<AuthorizationGrant> grants = [grant];
         var store = new FakeAuthorizationGrantStore
         {
-            GetGrantsResult = Result.Success(grants)
+            GetGrantsResult = grants
         };
 
         var result = await store.GetGrantsForSubjectAsync(
@@ -170,15 +170,14 @@ public sealed class FakePermissionStoreTests
             AuthorizationTestData.SubjectKeyAlpha,
             TestContext.Current.CancellationToken);
 
-        result.IsSuccess.Should().BeTrue();
-        result.Value.Should().HaveCount(1);
+        result.Should().HaveCount(1);
+        result[0].Should().Be(grant);
     }
 
     [Fact]
     public void GetGrantsResult_DefaultIsEmptyList()
     {
         var store = new FakeAuthorizationGrantStore();
-        store.GetGrantsResult.IsSuccess.Should().BeTrue();
-        store.GetGrantsResult.Value.Should().NotBeNull().And.BeEmpty();
+        store.GetGrantsResult.Should().NotBeNull().And.BeEmpty();
     }
 }

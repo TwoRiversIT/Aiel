@@ -20,4 +20,9 @@
 		<ProjectReference Include="..\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
 	</ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+    </ItemGroup>
+
 </Project>

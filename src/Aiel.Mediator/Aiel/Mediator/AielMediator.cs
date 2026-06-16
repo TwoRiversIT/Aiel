@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Aiel.Results;
 
 namespace Aiel.Mediator;
 
@@ -29,5 +28,4 @@ namespace Aiel.Mediator;
 /// Ensures that the Aiel.Mediator participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielMediatorAbstractions))]
-[DependsOn(typeof(AielResults))]
 public sealed class AielMediator : AielDependencyConfigurator;

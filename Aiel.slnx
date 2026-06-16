@@ -51,9 +51,7 @@
     <File Path="docs/analyzers/AIEL20001.md" />
     <File Path="docs/analyzers/AIEL20002.md" />
   </Folder>
-  <Folder Name="/docs/features/">
-    <File Path="docs/features/DISCUSSION.md" />
-  </Folder>
+  <Folder Name="/docs/features/" />
   <Folder Name="/docs/features/authorization/">
     <File Path="docs/features/authorization/authorization-system-design.md" />
     <File Path="docs/features/authorization/authorization-system-plan.md" />
@@ -142,6 +140,7 @@
     <Project Path="src/Aiel.AspNetCore.Blazor.WebAssembly/Aiel.AspNetCore.Blazor.WebAssembly.csproj" Id="b465f734-1d03-4d39-8fb9-11e78c1e83eb" />
     <Project Path="src/Aiel.AspNetCore.Blazor/Aiel.AspNetCore.Blazor.csproj" Id="5319b8a4-25c3-40ca-828b-0257628c768b" />
     <Project Path="src/Aiel.AspNetCore/Aiel.AspNetCore.csproj" Id="c624d3e8-2052-48bf-bd46-3232f071fa23" />
+    <Project Path="src/Aiel.Authorization.Abstractions/Aiel.Authorization.Abstractions.csproj" Id="564025d9-bc28-4406-b7c5-6db12da3b3d1" />
     <Project Path="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
     <Project Path="src/Aiel.Authorization.Application.Contracts/Aiel.Authorization.Application.Contracts.csproj">
       <BuildDependency Project="src/Aiel.Authorization.Generators/Aiel.Authorization.Generators.csproj" />
@@ -196,6 +195,7 @@
     <Project Path="src/Aiel.StrongIds.EntityFrameworkCore/Aiel.StrongIds.EntityFrameworkCore.csproj" />
     <Project Path="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
     <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj" />
+    <Project Path="src/Aiel.Testing.CodeAnalysis/Aiel.Testing.CodeAnalysis.csproj" />
     <Project Path="src/Aiel.Testing/Aiel.Testing.csproj" />
     <Project Path="src/Aiel.Utilities/Aiel.Utilities.csproj">
       <BuildDependency Project="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
@@ -267,7 +267,7 @@
     <Project Path="tests/Aiel.StrongIds.UnitTests/Aiel.StrongIds.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.Integration.UnitTests/Aiel.Testing.Integration.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
-    <Project Path="tests/Aiel.UnitTests/Aiel.UnitTests.csproj" />
+    <Project Path="tests/Aiel.UnitTests/Aiel.Utilities.UnitTests.csproj" />
     <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
     <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />
   </Folder>

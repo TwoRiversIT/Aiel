@@ -12,8 +12,17 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Aiel.Authorization.Abstractions\Aiel.Authorization.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
-        <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

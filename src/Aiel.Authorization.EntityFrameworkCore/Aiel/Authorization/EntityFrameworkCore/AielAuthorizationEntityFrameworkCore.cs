@@ -25,7 +25,6 @@ using Aiel.Results;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
-[DependsOn(typeof(AielAuthorizationApplicationContracts))]
 [DependsOn(typeof(AielAuthorizationDomain))]
 [DependsOn(typeof(AielResults))]
 public sealed class AielAuthorizationEntityFrameworkCore : AielDependencyConfigurator;

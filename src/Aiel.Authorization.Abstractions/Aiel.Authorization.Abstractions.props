@@ -1,0 +1,6 @@
+<Project>
+    <ItemGroup>
+        <Analyzer Include="$(MSBuildThisPackageRoot)analyzers/dotnet/cs/Aiel.Authorization.Analyzers.dll" />
+        <Analyzer Include="$(MSBuildThisPackageRoot)analyzers/dotnet/cs/Aiel.Authorization.Generators.dll" />
+    </ItemGroup>
+</Project>

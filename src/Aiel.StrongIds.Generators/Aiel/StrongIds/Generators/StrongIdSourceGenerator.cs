@@ -250,11 +250,11 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         if (model.TypeSymbol.TypeKind == TypeKind.Struct)
         {
             var readOnlyModifier = model.IsReadOnlyRecordStruct ? "readonly " : String.Empty;
-            return $"{accessibility}{readOnlyModifier}partial record struct {model.TypeSymbol.Name} : IStrongId<{model.BackingTypeName}>";
+            return $"{accessibility}{readOnlyModifier}partial record struct {model.TypeSymbol.Name} : global::Aiel.StrongIds.IStrongId<{model.BackingTypeName}>";
         }
 
         var sealedModifier = model.TypeSymbol.IsSealed ? "sealed " : String.Empty;
-        return $"{accessibility}{sealedModifier}partial record {model.TypeSymbol.Name} : IStrongId<{model.BackingTypeName}>";
+        return $"{accessibility}{sealedModifier}partial record {model.TypeSymbol.Name} : global::Aiel.StrongIds.IStrongId<{model.BackingTypeName}>";
     }
 
     private static String GetDefaultAssignment(StrongIdModel model)

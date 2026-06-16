@@ -16,7 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Aiel.Authorization.Application\Aiel.Authorization.Application.csproj" />
+        <ProjectReference Include="..\Aiel.Authorization.Domain\Aiel.Authorization.Domain.csproj" />
     </ItemGroup>
 
 </Project>

@@ -26,24 +26,26 @@ namespace Aiel.IdGeneration;
 
 public sealed class KeyGenerator : IKeyGenerator, IDisposable
 {
-    private static readonly RandomNumberGenerator RNG = RandomNumberGenerator.Create();
-
     // Intentionally not used: a-z
-    private readonly Char[] _chars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    internal static readonly Char[] AllowedChars = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    private readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
 
     private Boolean _disposed;
 
     public String Generate(Int32 length)
     {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(KeyGenerator));
+
         var buffer = new Char[length];
         var bytes = new Byte[4];
-        RNG.GetBytes(bytes);
+        _rng.GetBytes(bytes);
         var random = new Random(BitConverter.ToInt32(bytes, 0));
 
         for (var i = 0; i < length; i++)
         {
-            var offset = random.Next(0, _chars.Length);
-            buffer[i] = _chars[offset];
+            var offset = random.Next(0, AllowedChars.Length);
+            buffer[i] = AllowedChars[offset];
         }
 
         return new String(buffer);
@@ -61,7 +63,7 @@ public sealed class KeyGenerator : IKeyGenerator, IDisposable
         {
             if (disposing)
             {
-                RNG.Dispose();
+                _rng.Dispose();
             }
 
             _disposed = true;

@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Microsoft.Extensions.DependencyInjection;
+using static AwesomeAssertions.FluentActions;
 
-namespace Aiel.Extensions;
+namespace Aiel.Framework;
 
 public sealed class DecoratorExtensionsTests
 {
@@ -32,7 +32,7 @@ public sealed class DecoratorExtensionsTests
     {
         IServiceCollection services = null!;
 
-        Assert.Throws<ArgumentNullException>(services.DecorateCollection<String>);
+        Invoking(() => services.DecorateCollection<String>()).Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public sealed class DecoratorExtensionsTests
         var provider = services.BuildServiceProvider();
         var collection = provider.GetRequiredService<ICollection<String>>();
 
-        Assert.IsType<CollectionDecorator<String>>(collection);
+        collection.Should().BeOfType<CollectionDecorator<String>>();
     }
 
     [Fact]
@@ -58,8 +58,9 @@ public sealed class DecoratorExtensionsTests
 
         var provider = services.BuildServiceProvider();
         var collection = provider.GetRequiredService<ICollection<String>>();
-        var decorator = Assert.IsType<CollectionDecorator<String>>(collection);
-
+        collection.Should().BeOfType<CollectionDecorator<String>>();
+        var decorator = collection as CollectionDecorator<String>;
+        decorator.Should().NotBeNull();
         decorator.Changing += (_, eventArgs) =>
         {
             if (eventArgs.Action == CollectionChangeAction.Add)
@@ -70,6 +71,6 @@ public sealed class DecoratorExtensionsTests
 
         collection.Add("decorated");
 
-        Assert.Contains("DECORATED", collection);
+        collection.Should().Contain("DECORATED");
     }
 }

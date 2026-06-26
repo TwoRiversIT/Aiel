@@ -37,8 +37,8 @@ public class EmailAddressTests
         var emailAddress = new EmailAddress(name, email);
 
         // Assert
-        Assert.Equal(name, emailAddress.Name);
-        Assert.Equal(email, emailAddress.Email);
+        emailAddress.Name.Should().Be(name);
+        emailAddress.Email.Should().Be(email);
     }
 
     [Fact]
@@ -54,7 +54,7 @@ public class EmailAddressTests
         var result = emailAddress.ToString();
 
         // Assert
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class EmailAddressTests
         var result = emailAddress.ToString();
 
         // Assert
-        Assert.Equal(email, result);
+        result.Should().Be(email);
     }
 
     [Fact]
@@ -83,8 +83,8 @@ public class EmailAddressTests
         var emailAddress = EmailAddress.Parse(emailAddressString);
 
         // Assert
-        Assert.Equal(expectedName, emailAddress.Name);
-        Assert.Equal(expectedEmail, emailAddress.Email);
+        emailAddress.Name.Should().Be(expectedName);
+        emailAddress.Email.Should().Be(expectedEmail);
     }
 
     [Fact]
@@ -99,8 +99,8 @@ public class EmailAddressTests
         var emailAddress = EmailAddress.Parse(emailAddressString);
 
         // Assert
-        Assert.Equal(expectedName, emailAddress.Name);
-        Assert.Equal(expectedEmail, emailAddress.Email);
+        emailAddress.Name.Should().Be(expectedName);
+        emailAddress.Email.Should().Be(expectedEmail);
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class EmailAddressTests
         String result = new EmailAddress(name, email);
 
         // Assert
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Fact]
@@ -128,7 +128,7 @@ public class EmailAddressTests
         String result = new EmailAddress(String.Empty, email);
 
         // Assert
-        Assert.Equal(email, result);
+        result.Should().Be(email);
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class EmailAddressTests
         EmailAddress emailAddress = emailAddressString;
 
         // Assert
-        Assert.Equal(expectedName, emailAddress.Name);
-        Assert.Equal(expectedEmail, emailAddress.Email);
+        emailAddress.Name.Should().Be(expectedName);
+        emailAddress.Email.Should().Be(expectedEmail);
     }
 }

@@ -44,7 +44,7 @@ public class NmeaBatchReaderTests
         }
 
         // Assert
-        messages.Should().HaveCount(1);
+        messages.Should().ContainSingle();
         messages[0].Type.Should().Be(NmeaMessageType.GLL);
     }
 
@@ -144,7 +144,7 @@ public class NmeaBatchReaderTests
         await messagesTask;
 
         // Assert
-        errors.Should().HaveCount(1);
+        errors.Should().ContainSingle();
         errors[0].Sentence.Should().Contain("UNKNOWN");
     }
 
@@ -169,7 +169,7 @@ public class NmeaBatchReaderTests
         reader.Statistics.TotalSentences.Should().Be(3);
         reader.Statistics.ParsedMessages.Should().Be(2);
         reader.Statistics.Errors.Should().Be(1);
-        reader.Statistics.BytesRead.Should().BeGreaterThan(0);
+        reader.Statistics.BytesRead.Should().BePositive();
     }
 
     [Fact]
@@ -197,7 +197,7 @@ public class NmeaBatchReaderTests
         }
 
         // Assert
-        messages.Should().HaveCount(1);
+        messages.Should().ContainSingle();
     }
 
     [Fact]
@@ -218,7 +218,7 @@ public class NmeaBatchReaderTests
         }
 
         // Assert - should only parse the complete sentence
-        messages.Should().HaveCount(1);
+        messages.Should().ContainSingle();
     }
 
     [Fact]
@@ -239,7 +239,7 @@ public class NmeaBatchReaderTests
         }
 
         // Assert
-        messages.Should().HaveCount(1);
+        messages.Should().ContainSingle();
         messages[0].Type.Should().Be(NmeaMessageType.GLL);
     }
 

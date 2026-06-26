@@ -39,14 +39,14 @@ public class CustomerServiceTests(CustomersFixture fixture, ITestOutputHelper ou
         var result = await SUT.CreateCustomerAsync(command, CancellationToken);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.True(result.IsSuccess);
-        Assert.Equal(id, result.Value);
+        result.Should().NotBeNull();
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be(id);
 
         var repository = Services.GetRequiredService<ICustomerRepository>();
         var created = await repository.GetByIdAsync(id, CancellationToken);
-        Assert.Equal("Acme Corporation", created.Name);
-        Assert.Equal("contact@acme.com", created.Email);
+        created.Name.Should().Be("Acme Corporation");
+        created.Email.Should().Be("contact@acme.com");
     }
 
     [Fact]
@@ -63,12 +63,12 @@ public class CustomerServiceTests(CustomersFixture fixture, ITestOutputHelper ou
         var result = await SUT.GetCustomerByIdAsync(query, CancellationToken);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.True(result.IsSuccess);
-        Assert.NotNull(result.Value);
-        Assert.Equal(id, result.Value.Id);
-        Assert.Equal("Test Corp", result.Value.Name);
-        Assert.Matches(String.Empty, result.Value.Email);
+        result.Should().NotBeNull();
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value.Id.Should().Be(id);
+        result.Value.Name.Should().Be("Test Corp");
+        result.Value.Email.Should().BeEmpty();
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class CustomerServiceTests(CustomersFixture fixture, ITestOutputHelper ou
 
         // Assert
         var updated = await repository.GetByIdAsync(id, CancellationToken);
-        Assert.Equal("Updated Name", updated.Name);
-        Assert.Equal("user@example.com", updated.Email);
+        updated.Name.Should().Be("Updated Name");
+        updated.Email.Should().Be("user@example.com");
     }
 }

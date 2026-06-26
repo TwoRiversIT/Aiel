@@ -59,8 +59,8 @@ public class DisposableBaseTests
 
         disposable.Dispose();
 
-        Assert.True(disposable.DisposeCalled);
-        Assert.True(disposable.IsObjectDisposed);
+        disposable.DisposeCalled.Should().BeTrue();
+        disposable.IsObjectDisposed.Should().BeTrue();
     }
 
     [Fact]
@@ -70,8 +70,8 @@ public class DisposableBaseTests
 
         await disposable.DisposeAsync();
 
-        Assert.True(disposable.DisposeAsyncCalled);
-        Assert.True(disposable.IsObjectDisposed);
+        disposable.DisposeAsyncCalled.Should().BeTrue();
+        disposable.IsObjectDisposed.Should().BeTrue();
     }
 
     [Fact]
@@ -82,8 +82,8 @@ public class DisposableBaseTests
         disposable.Dispose();
         disposable.Dispose();
 
-        Assert.True(disposable.DisposeCalled);
-        Assert.True(disposable.IsObjectDisposed);
+        disposable.DisposeCalled.Should().BeTrue();
+        disposable.IsObjectDisposed.Should().BeTrue();
     }
 
     [Fact]
@@ -94,8 +94,8 @@ public class DisposableBaseTests
         await disposable.DisposeAsync();
         await disposable.DisposeAsync();
 
-        Assert.True(disposable.DisposeAsyncCalled);
-        Assert.True(disposable.IsObjectDisposed);
+        disposable.DisposeAsyncCalled.Should().BeTrue();
+        disposable.IsObjectDisposed.Should().BeTrue();
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class DisposableBaseTests
     {
         var disposable = new TestDisposable();
 
-        Assert.False(disposable.IsObjectDisposed);
+        disposable.IsObjectDisposed.Should().BeFalse();
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class DisposableBaseTests
 
         disposable.Dispose();
 
-        Assert.True(disposable.IsObjectDisposed);
+        disposable.IsObjectDisposed.Should().BeTrue();
     }
 
     [Fact]
@@ -123,6 +123,6 @@ public class DisposableBaseTests
 
         await disposable.DisposeAsync();
 
-        Assert.True(disposable.IsObjectDisposed);
+        disposable.IsObjectDisposed.Should().BeTrue();
     }
 }

@@ -34,11 +34,11 @@ public sealed class AssemblyDescriptorTests
             configurators: [typeof(TestConfigurator)],
             initializers: [typeof(TestInitializer)]);
 
-        Assert.Equal("Test.Assembly", descriptor.Name);
-        Assert.Equal(typeof(TestAssembly), descriptor.DependencyType);
-        Assert.Contains(typeof(Dependency), descriptor.Dependencies);
-        Assert.Contains(typeof(TestConfigurator), descriptor.Configurators);
-        Assert.Contains(typeof(TestInitializer), descriptor.Initializers);
+        descriptor.Name.Should().Be("Test.Assembly");
+        descriptor.DependencyType.Should().Be<TestAssembly>();
+        descriptor.Dependencies.Should().Contain(typeof(Dependency));
+        descriptor.Configurators.Should().Contain(typeof(TestConfigurator));
+        descriptor.Initializers.Should().Contain(typeof(TestInitializer));
     }
 
     private sealed class TestAssembly;

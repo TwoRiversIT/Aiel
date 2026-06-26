@@ -66,7 +66,7 @@ public class EmailComparerTests
         var result = comparer.Compare(email, bob);
 
         // Assert
-        result.Should().BeLessThan(0);
+        result.Should().BeNegative();
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class EmailComparerTests
         var result = comparer.Compare(alice, null);
 
         // Assert
-        result.Should().BeGreaterThan(0);
+        result.Should().BePositive();
     }
 
     public class When_Mode_is_LocalDomain
@@ -92,8 +92,8 @@ public class EmailComparerTests
             var alice = new Email("alice@BOB.org");
             var bob = new Email("bob@alice.org");
 
-            comparer.Compare(alice, bob).Should().BeLessThan(0);
-            comparer.Compare(bob, alice).Should().BeGreaterThan(0);
+            comparer.Compare(alice, bob).Should().BeNegative();
+            comparer.Compare(bob, alice).Should().BePositive();
         }
 
         [Fact]
@@ -121,8 +121,8 @@ public class EmailComparerTests
             var alice = new Email("alice@bob.org");
             var bob = new Email("bob@ALICE.ORG");
 
-            comparer.Compare(alice, bob).Should().BeGreaterThan(0);
-            comparer.Compare(bob, alice).Should().BeLessThan(0);
+            comparer.Compare(alice, bob).Should().BePositive();
+            comparer.Compare(bob, alice).Should().BeNegative();
         }
 
         [Fact]

@@ -32,11 +32,11 @@ public class MiscExtensionsTests
 
         exception.Visit(ex =>
         {
-            Assert.Equal("Test exception", ex.Message);
+            ex.Message.Should().Be("Test exception");
             visited = true;
         });
 
-        Assert.True(visited);
+        visited.Should().BeTrue();
     }
 
     [Fact]
@@ -50,10 +50,10 @@ public class MiscExtensionsTests
 
         outer.Visit(ex => messages.Add(ex.Message));
 
-        Assert.Equal(3, messages.Count);
-        Assert.Contains("Outer", messages);
-        Assert.Contains("Middle", messages);
-        Assert.Contains("Inner most", messages);
+        messages.Should().HaveCount(3);
+        messages.Should().Contain("Outer");
+        messages.Should().Contain("Middle");
+        messages.Should().Contain("Inner most");
     }
 
     [Fact]
@@ -66,8 +66,8 @@ public class MiscExtensionsTests
 
         outer.Visit(ex => messages.Add(ex.Message));
 
-        Assert.Equal("Outer", messages[0]);
-        Assert.Equal("Inner", messages[1]);
+        messages[0].Should().Be("Outer");
+        messages[1].Should().Be("Inner");
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class MiscExtensionsTests
     {
         var result = 5.Clamp(1, 10);
 
-        Assert.Equal(5, result);
+        result.Should().Be(5);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class MiscExtensionsTests
     {
         var result = 0.Clamp(1, 10);
 
-        Assert.Equal(1, result);
+        result.Should().Be(1);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class MiscExtensionsTests
     {
         var result = 15.Clamp(1, 10);
 
-        Assert.Equal(10, result);
+        result.Should().Be(10);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class MiscExtensionsTests
     {
         var result = 5.5.Clamp(1.0, 10.0);
 
-        Assert.Equal(5.5, result);
+        result.Should().Be(5.5);
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public class MiscExtensionsTests
 
         var result = value.Clamp(min, max);
 
-        Assert.Equal(value, result);
+        result.Should().Be(value);
     }
 
     [Fact]
@@ -119,7 +119,7 @@ public class MiscExtensionsTests
     {
         var result = 1.Clamp(1, 10);
 
-        Assert.Equal(1, result);
+        result.Should().Be(1);
     }
 
     [Fact]
@@ -127,6 +127,6 @@ public class MiscExtensionsTests
     {
         var result = 10.Clamp(1, 10);
 
-        Assert.Equal(10, result);
+        result.Should().Be(10);
     }
 }

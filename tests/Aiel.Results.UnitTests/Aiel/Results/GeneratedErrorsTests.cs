@@ -41,9 +41,9 @@ public sealed class GeneratedErrorsTests
         };
 
         // Assert
-        Assert.Equal("ORD-12345", error.OrderId);
-        Assert.Equal("Order ORD-12345 was not found in the system", error.Message);
-        Assert.NotNull(error.ErrorCode);
+        error.OrderId.Should().Be("ORD-12345");
+        error.Message.Should().Be("Order ORD-12345 was not found in the system");
+        error.ErrorCode.Should().NotBeNull();
     }
 
     [Fact]
@@ -58,10 +58,10 @@ public sealed class GeneratedErrorsTests
         };
 
         // Assert
-        Assert.Equal("WIDGET-001", error.ProductSku);
-        Assert.Equal(100, error.RequestedQuantity);
-        Assert.Equal(25, error.AvailableQuantity);
-        Assert.Equal("Insufficient inventory for WIDGET-001", error.Message);
+        error.ProductSku.Should().Be("WIDGET-001");
+        error.RequestedQuantity.Should().Be(100);
+        error.AvailableQuantity.Should().Be(25);
+        error.Message.Should().Be("Insufficient inventory for WIDGET-001");
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public sealed class GeneratedErrorsTests
         var error = new DatabaseConnectionError("Failed to connect to database");
 
         // Assert
-        Assert.Equal("Failed to connect to database", error.Message);
-        Assert.NotNull(error.ErrorCode);
+        error.Message.Should().Be("Failed to connect to database");
+        error.ErrorCode.Should().NotBeNull();
     }
 }

@@ -44,7 +44,7 @@ public class ErrorClassGeneratorTests
         var result = Driver.Generate(testCode);
 
         result.Should().NotBeNull();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("internal partial class InternalError : global::Aiel.Results.Error")
@@ -74,7 +74,7 @@ public class ErrorClassGeneratorTests
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
         result.GeneratorDiagnostics.Should().BeEmpty();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class AlphaError : global::Aiel.Results.Error")
@@ -106,9 +106,9 @@ public class ErrorClassGeneratorTests
 
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
-        result.GeneratedSources.Should().HaveCount(0);
+        result.GeneratedSources.Should().BeEmpty();
 
-        result.CompilationDiagnostics.Should().HaveCount(1);
+        result.CompilationDiagnostics.Should().ContainSingle();
         // CS7036: There is no argument given that corresponds to the required parameter 'errorCode' of 'Error.Error(ErrorCode, string)'}.
         result.CompilationDiagnostics[0].Id.Should().Be("CS7036");
     }
@@ -128,9 +128,9 @@ public class ErrorClassGeneratorTests
 
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
-        result.GeneratedSources.Should().HaveCount(0);
+        result.GeneratedSources.Should().BeEmpty();
 
-        result.CompilationDiagnostics.Should().HaveCount(1);
+        result.CompilationDiagnostics.Should().ContainSingle();
         // CS7036: There is no argument given that corresponds to the required parameter 'errorCode' of 'Error.Error(ErrorCode, string)'}.
         result.CompilationDiagnostics[0].Id.Should().Be("CS7036");
     }
@@ -151,7 +151,7 @@ public class ErrorClassGeneratorTests
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
         result.GeneratorDiagnostics.Should().BeEmpty();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
@@ -180,9 +180,9 @@ public class ErrorClassGeneratorTests
 
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
-        result.GeneratedSources.Should().HaveCount(0);
+        result.GeneratedSources.Should().BeEmpty();
 
-        result.CompilationDiagnostics.Should().HaveCount(1);
+        result.CompilationDiagnostics.Should().ContainSingle();
         // CS7036: There is no argument given that corresponds to the required parameter 'errorCode' of 'Error.Error(ErrorCode, string)'}.
         result.CompilationDiagnostics[0].Id.Should().Be("CS7036");
     }
@@ -207,7 +207,7 @@ public class ErrorClassGeneratorTests
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
         result.GeneratorDiagnostics.Should().BeEmpty();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
@@ -236,7 +236,7 @@ public class ErrorClassGeneratorTests
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
         result.GeneratorDiagnostics.Should().BeEmpty();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")

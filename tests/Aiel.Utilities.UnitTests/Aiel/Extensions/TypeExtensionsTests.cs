@@ -27,8 +27,8 @@ public class TypeExtensionsTests
     [Fact]
     public void GetAllProperties_returns_inherited_properties()
     {
-        CommonTypeExtensions.GetAllProperties(typeof(Foo)).Count().Should().Be(1);
-        CommonTypeExtensions.GetAllProperties(typeof(Bar)).Count().Should().Be(2);
+        CommonTypeExtensions.GetAllProperties(typeof(Foo)).Should().ContainSingle();
+        CommonTypeExtensions.GetAllProperties(typeof(Bar)).Should().HaveCount(2);
     }
 
     private class Foo

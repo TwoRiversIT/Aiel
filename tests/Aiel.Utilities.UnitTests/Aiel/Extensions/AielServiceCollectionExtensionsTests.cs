@@ -22,7 +22,7 @@
 
 using Aiel.Collections;
 using Microsoft.Extensions.DependencyInjection;
-using static FluentAssertions.FluentActions;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Extensions;
 
@@ -35,7 +35,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Same(expectedInstance, result);
+        result.Should().BeSameAs(expectedInstance);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -96,7 +96,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Same(thirdInstance, result);
+        result.Should().BeSameAs(thirdInstance);
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Same(instanceTwo, result);
+        result.Should().BeSameAs(instanceTwo);
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<TestService>();
 
-        Assert.Same(instance, result);
+        result.Should().BeSameAs(instance);
     }
 
     [Fact]
@@ -136,7 +136,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<ITestService>();
 
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<Object>();
 
-        Assert.Equal(expectedValue, result);
+        result.Should().Be(expectedValue);
     }
 
     [Fact]
@@ -158,7 +158,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.GetInstance<String>();
 
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -189,7 +189,7 @@ public class AielServiceCollectionExtensionsTests
 
         var result = services.OnAdding(_ => { });
 
-        Assert.Same(services, result);
+        result.Should().BeSameAs(services);
     }
 
     [Fact]
@@ -200,7 +200,7 @@ public class AielServiceCollectionExtensionsTests
 
         services.OnAdding(_ => invoked = true);
 
-        Assert.False(invoked);
+        invoked.Should().BeFalse();
     }
 
     [Fact]
@@ -212,7 +212,7 @@ public class AielServiceCollectionExtensionsTests
 
         services.AddSingleton<ITestService, TestService>();
 
-        Assert.True(invoked);
+        invoked.Should().BeTrue();
     }
 
     [Fact]
@@ -224,10 +224,11 @@ public class AielServiceCollectionExtensionsTests
 
         services.AddSingleton<ITestService, TestService>();
 
-        Assert.NotNull(captured);
-        Assert.Equal(typeof(ITestService), captured.ServiceType);
-        Assert.Equal(typeof(TestService), captured.ImplementationType);
-        Assert.Equal(ServiceLifetime.Singleton, captured.Lifetime);
+        captured.Should().NotBeNull();
+        captured.Should().NotBeNull();
+        captured.ServiceType.Should().Be<ITestService>();
+        captured.ImplementationType.Should().Be<TestService>();
+        captured.Lifetime.Should().Be(ServiceLifetime.Singleton);
     }
 
     [Fact]
@@ -240,7 +241,7 @@ public class AielServiceCollectionExtensionsTests
         services.AddSingleton<ITestService, TestService>();
         services.AddTransient<IOtherService, OtherService>();
 
-        Assert.Equal(2, callCount);
+        callCount.Should().Be(2);
     }
 
     [Fact]
@@ -252,7 +253,7 @@ public class AielServiceCollectionExtensionsTests
         var invoked = false;
         services.OnAdding(_ => invoked = true);
 
-        Assert.False(invoked);
+        invoked.Should().BeFalse();
     }
 
     [Fact]
@@ -266,8 +267,8 @@ public class AielServiceCollectionExtensionsTests
 
         services.AddSingleton<ITestService, TestService>();
 
-        Assert.Equal(1, firstCount);
-        Assert.Equal(1, secondCount);
+        firstCount.Should().Be(1);
+        secondCount.Should().Be(1);
     }
 
     private interface ITestService;

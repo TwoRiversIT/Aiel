@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using static AwesomeAssertions.FluentActions;
+
 namespace Aiel.IdGeneration;
 
 public class CombGuidFactoryTests
@@ -29,7 +31,7 @@ public class CombGuidFactoryTests
     {
         var guid = CombGuid.NewGuid(DatabaseType.SqlServer);
 
-        Assert.NotEqual(Guid.Empty, guid);
+        guid.Should().NotBe(Guid.Empty);
     }
 
     [Fact]
@@ -37,14 +39,13 @@ public class CombGuidFactoryTests
     {
         var guid = CombGuid.NewGuid(DatabaseType.PostgreSql);
 
-        Assert.NotEqual(Guid.Empty, guid);
+        guid.Should().NotBe(Guid.Empty);
     }
 
     [Fact]
     public void NewGuid_WithInvalidDatabaseType_ThrowsArgumentOutOfRangeException()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            CombGuid.NewGuid((DatabaseType)999));
+        Invoking(() => CombGuid.NewGuid((DatabaseType)999)).Should().Throw<ArgumentOutOfRangeException>();
     }
 }
 
@@ -55,7 +56,7 @@ public class SqlServerCombGuidTests
     {
         var guid = new SqlServerCombGuid().NewGuid();
 
-        Assert.NotEqual(Guid.Empty, guid);
+        guid.Should().NotBe(Guid.Empty);
     }
 
     [Fact]
@@ -66,7 +67,7 @@ public class SqlServerCombGuidTests
         for (var i = 0; i < 1000; i++)
         {
             var guid = new SqlServerCombGuid().NewGuid();
-            Assert.True(guids.Add(guid), $"Duplicate GUID generated: {guid}");
+            guids.Add(guid).Should().BeTrue($"Duplicate GUID generated: {guid}");
         }
     }
 
@@ -76,7 +77,7 @@ public class SqlServerCombGuidTests
         var guid1 = new SqlServerCombGuid().NewGuid();
         var guid2 = new SqlServerCombGuid().NewGuid();
 
-        Assert.NotEqual(guid1, guid2);
+        guid1.Should().NotBe(guid2);
     }
 
     [Fact]
@@ -92,8 +93,7 @@ public class SqlServerCombGuidTests
         var lastSixBytes1 = bytes1.Skip(10).ToArray();
         var lastSixBytes2 = bytes2.Skip(10).ToArray();
 
-        Assert.False(lastSixBytes1.SequenceEqual(lastSixBytes2),
-            "The timestamp portion (last 6 bytes) should differ for SQL Server");
+        lastSixBytes1.SequenceEqual(lastSixBytes2).Should().BeFalse("The timestamp portion (last 6 bytes) should differ for SQL Server");
     }
 }
 
@@ -104,7 +104,7 @@ public class PostgreSqlCombGuidTests
     {
         var guid = new PostgreSqlCombGuid().NewGuid();
 
-        Assert.NotEqual(Guid.Empty, guid);
+        guid.Should().NotBe(Guid.Empty);
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class PostgreSqlCombGuidTests
         for (var i = 0; i < 1000; i++)
         {
             var guid = new PostgreSqlCombGuid().NewGuid();
-            Assert.True(guids.Add(guid), $"Duplicate GUID generated: {guid}");
+            guids.Add(guid).Should().BeTrue($"Duplicate GUID generated: {guid}");
         }
     }
 
@@ -125,7 +125,7 @@ public class PostgreSqlCombGuidTests
         var guid1 = new PostgreSqlCombGuid().NewGuid();
         var guid2 = new PostgreSqlCombGuid().NewGuid();
 
-        Assert.NotEqual(guid1, guid2);
+        guid1.Should().NotBe(guid2);
     }
 
     [Fact]
@@ -141,7 +141,6 @@ public class PostgreSqlCombGuidTests
         var firstSixBytes1 = bytes1.Take(6).ToArray();
         var firstSixBytes2 = bytes2.Take(6).ToArray();
 
-        Assert.False(firstSixBytes1.SequenceEqual(firstSixBytes2),
-            "The timestamp portion (first 6 bytes) should differ for PostgreSQL");
+        firstSixBytes1.SequenceEqual(firstSixBytes2).Should().BeFalse("The timestamp portion (first 6 bytes) should differ for PostgreSQL");
     }
 }

@@ -58,7 +58,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         // All four nodes of the transitive closure must be present
@@ -102,7 +102,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("\"Aiel.WorkerService.AielWorkerService\"");
@@ -214,7 +214,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("\"Aiel.WorkerService.AielWorkerService\"");
@@ -253,7 +253,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("\"Test.Root\"");
@@ -292,7 +292,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true, includeWebApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("// Project Type: WebApplication");
@@ -326,7 +326,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true, includeWebApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("// Project Type: HostApplication");
@@ -395,7 +395,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("// Project Type: HostApplication");
@@ -428,7 +428,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true, includeWebApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("Project Type: HostApplication");
@@ -461,7 +461,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true, includeWebApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("public static async Task<global::Microsoft.AspNetCore.Builder.WebApplicationBuilder> AddApplicationAsync");
@@ -494,7 +494,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: true, includeWebApplication: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("public static async Task<global::Microsoft.AspNetCore.Builder.WebApplicationBuilder> AddApplicationAsync");
@@ -517,7 +517,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeWebAssembly: true);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("public static async Task<global::Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder> AddApplicationAsync");
@@ -541,7 +541,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode, includeHostApplication: false, includeWebAssembly: false);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("Project Type: Unknown");
@@ -565,7 +565,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("typeof(global::Test.MyApplication)");
@@ -587,7 +587,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("typeof(global::MyCompany.MyProduct.MyApplication)");
@@ -609,7 +609,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("new global::Aiel.Framework.DependencyDescriptor(");
@@ -639,7 +639,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         result.Diagnostics.Should().BeEmpty();
 
         var generatedSource = result.GeneratedSources[0].SourceText.ToString();
@@ -666,8 +666,8 @@ public class DependencyGraphSourceGeneratorTests
         var first = GenerateCS.Generate(testCode);
         var second = GenerateCS.Generate(testCode);
 
-        first.GeneratedSources.Should().HaveCount(1);
-        second.GeneratedSources.Should().HaveCount(1);
+        first.GeneratedSources.Should().ContainSingle();
+        second.GeneratedSources.Should().ContainSingle();
 
         var firstText = first.GeneratedSources[0].SourceText.ToString();
         var secondText = second.GeneratedSources[0].SourceText.ToString();
@@ -692,7 +692,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         // The dependency type itself must appear as a configurator entry, not Array.Empty.
@@ -715,7 +715,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         // Configurators array must contain the type; initializers array must remain empty.
@@ -743,7 +743,7 @@ public class DependencyGraphSourceGeneratorTests
 
         var result = GenerateCS.Generate(testCode);
 
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         // Both configurators and initializers must contain the type.

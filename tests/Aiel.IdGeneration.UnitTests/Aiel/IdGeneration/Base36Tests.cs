@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.IdGeneration.Internal;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.IdGeneration;
 
@@ -40,7 +41,7 @@ public class Base36Tests
     {
         var result = Base36.Encode(input);
 
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Theory]
@@ -55,7 +56,7 @@ public class Base36Tests
     {
         var result = Base36.Encode(input);
 
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Theory]
@@ -72,7 +73,7 @@ public class Base36Tests
     {
         var result = Base36.Decode(input);
 
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Theory]
@@ -87,7 +88,7 @@ public class Base36Tests
     {
         var result = Base36.Decode(input);
 
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Theory]
@@ -98,7 +99,7 @@ public class Base36Tests
     {
         var result = Base36.Decode(input);
 
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Theory]
@@ -108,7 +109,7 @@ public class Base36Tests
     {
         var result = Base36.Decode(input);
 
-        Assert.Equal(expected, result);
+        result.Should().Be(expected);
     }
 
     [Theory]
@@ -124,7 +125,7 @@ public class Base36Tests
         var encoded = Base36.Encode(original);
         var decoded = Base36.Decode(encoded);
 
-        Assert.Equal(original, decoded);
+        decoded.Should().Be(original);
     }
 
     [Theory]
@@ -133,7 +134,7 @@ public class Base36Tests
     [InlineData("   ")]
     public void Decode_ThrowsOnInvalidInput(String? input)
     {
-        Assert.ThrowsAny<ArgumentException>(() => Base36.Decode(input!));
+        Invoking(() => Base36.Decode(input!)).Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -143,7 +144,7 @@ public class Base36Tests
     [InlineData("!@#$")]
     public void Decode_ThrowsOnInvalidCharacters(String input)
     {
-        Assert.ThrowsAny<ArgumentException>(() => Base36.Decode(input));
+        Invoking(() => Base36.Decode(input)).Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -151,7 +152,7 @@ public class Base36Tests
     [InlineData("ZZZZZZZZZZZZZ")]
     public void Decode_ThrowsOnOverflow_TooLarge(String input)
     {
-        Assert.ThrowsAny<ArgumentException>(() => Base36.Decode(input));
+        Invoking(() => Base36.Decode(input)).Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -159,7 +160,7 @@ public class Base36Tests
     [InlineData("-ZZZZZZZZZZZZZ")]
     public void Decode_ThrowsOnOverflow_TooSmall(String input)
     {
-        Assert.ThrowsAny<ArgumentException>(() => Base36.Decode(input));
+        Invoking(() => Base36.Decode(input)).Should().Throw<ArgumentException>();
     }
 
     [Theory]
@@ -176,15 +177,15 @@ public class Base36Tests
 
         if (expectedSign < 0)
         {
-            Assert.True(result < 0, $"Expected {valueA} comparison to {valueB} to be negative, but got {result}");
+            result.Should().BeNegative($"Expected {valueA} comparison to {valueB} to be negative, but got {result}");
         }
         else if (expectedSign > 0)
         {
-            Assert.True(result > 0, $"Expected {valueA} comparison to {valueB} to be positive, but got {result}");
+            result.Should().BePositive($"Expected {valueA} comparison to {valueB} to be positive, but got {result}");
         }
         else
         {
-            Assert.Equal(0, result);
+            result.Should().Be(0, $"Expected {valueA} comparison to {valueB} to be zero, but got {result}");
         }
     }
 
@@ -199,6 +200,6 @@ public class Base36Tests
     {
         var result = Base36.WouldOverflow(value);
 
-        Assert.Equal(expectedToOverflow, result);
+        result.Should().Be(expectedToOverflow);
     }
 }

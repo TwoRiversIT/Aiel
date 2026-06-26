@@ -235,10 +235,10 @@ public class NmeaBatchReaderWithRegistryTests
         await customTask;
 
         // Assert
-        messages.Should().HaveCount(1);
+        messages.Should().ContainSingle();
         messages[0].Type.Should().Be(NmeaMessageType.GLL);
 
-        customMessages.Should().HaveCount(1);
+        customMessages.Should().ContainSingle();
         customMessages[0].Should().BeOfType<CustomTestMessage>();
         ((CustomTestMessage)customMessages[0]).Value1.Should().Be(42);
     }
@@ -298,7 +298,7 @@ public class NmeaBatchReaderWithRegistryTests
         }
 
         // Assert - only built-in GLL should be parsed
-        messages.Should().HaveCount(1);
+        messages.Should().ContainSingle();
         messages[0].Type.Should().Be(NmeaMessageType.GLL);
     }
 }

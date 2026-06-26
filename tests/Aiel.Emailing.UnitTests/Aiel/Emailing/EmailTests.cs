@@ -24,7 +24,7 @@ using Aiel.Emailing.Abstractions.Aiel.Emailing;
 using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
-using static FluentAssertions.FluentActions;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Emailing;
 

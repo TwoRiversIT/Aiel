@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Text;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Gps;
 
@@ -150,8 +151,8 @@ public class NmeaReaderTests
         var message1 = await reader.ReadNextAsync(cts1.Token);
         message1.Should().NotBeNull();
 
-        await Assert.ThrowsAsync<InvalidOperationException>(async () =>
-            await reader.ReadNextAsync(cts2.Token));
+        await Invoking(async () => await reader.ReadNextAsync(cts2.Token))
+            .Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]

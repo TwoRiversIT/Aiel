@@ -39,7 +39,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = principal.FullName();
 
-        Assert.Equal("John Doe", result);
+        result.Should().Be("John Doe");
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.FullName();
 
-        Assert.Equal("Jane Smith", result);
+        result.Should().Be("Jane Smith");
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.FullName();
 
-        Assert.Equal("John", result);
+        result.Should().Be("John");
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.FullName();
 
-        Assert.Equal("Doe", result);
+        result.Should().Be("Doe");
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.FullName();
 
-        Assert.Equal(String.Empty, result);
+        result.Should().Be(String.Empty);
     }
 
     [Fact]
@@ -103,7 +103,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.FullName();
 
-        Assert.Equal("John Doe", result);
+        result.Should().Be("John Doe");
     }
 
     [Fact]
@@ -118,7 +118,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = principal.Email();
 
-        Assert.Equal("john@example.com", result);
+        result.Should().Be("john@example.com");
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.Email();
 
-        Assert.Equal("jane@example.com", result);
+        result.Should().Be("jane@example.com");
     }
 
     [Fact]
@@ -148,8 +148,8 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = principal.EmailAddress();
 
-        Assert.Equal("John Doe", result.Name);
-        Assert.Equal("john@example.com", result.Email.ToString());
+        result.Name.Should().Be("John Doe");
+        result.Email.ToString().Should().Be("john@example.com");
     }
 
     [Fact]
@@ -164,8 +164,8 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.EmailAddress();
 
-        Assert.Equal("Jane Smith", result.Name);
-        Assert.Equal("jane@example.com", result.Email.ToString());
+        result.Name.Should().Be("Jane Smith");
+        result.Email.ToString().Should().Be("jane@example.com");
     }
 
     [Fact]
@@ -180,7 +180,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = principal.ZoneInfo();
 
-        Assert.Equal("America/New_York", result);
+        result.Should().Be("America/New_York");
     }
 
     [Fact]
@@ -193,7 +193,7 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.ZoneInfo();
 
-        Assert.Equal("Europe/London", result);
+        result.Should().Be("Europe/London");
     }
 
     [Fact]
@@ -203,6 +203,6 @@ public class ClaimsPrincipalExtensionsTests
 
         var result = claims.ZoneInfo();
 
-        Assert.Equal(AielDefaults.TimeZone, result);
+        result.Should().Be(AielDefaults.TimeZone);
     }
 }

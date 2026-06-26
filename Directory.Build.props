@@ -64,12 +64,12 @@
         <Using Include="System.Diagnostics.CodeAnalysis" />
         <Using Include="System.Linq" />
     </ItemGroup>
-    
+
     <!-- NBGV package reference -->
     <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.86">
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.85">
             <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 

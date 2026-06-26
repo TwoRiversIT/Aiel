@@ -207,10 +207,10 @@ public class PermissionDefinitionSourceGeneratorTests
         var result = RunGenerator(ActionSource);
 
         var checkerTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("PermissionChecker"));
-        Assert.NotNull(checkerTree);
+        checkerTree.Should().NotBeNull();
         var text = checkerTree.GetText(TestContext.Current.CancellationToken).ToString();
-        Assert.Contains("RescheduleAppointmentPermissionChecker", text);
-        Assert.Contains("IActionAuthorizationChecker<", text);
+        text.Should().Contain("RescheduleAppointmentPermissionChecker");
+        text.Should().Contain("IActionAuthorizationChecker<");
     }
 
     [Fact]
@@ -219,10 +219,10 @@ public class PermissionDefinitionSourceGeneratorTests
         var result = RunGenerator(ActionSource);
 
         var aggregateTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("GeneratedPermissions"));
-        Assert.NotNull(aggregateTree);
+        aggregateTree.Should().NotBeNull();
         var text = aggregateTree.GetText(TestContext.Current.CancellationToken).ToString();
-        Assert.Contains("GeneratedAuthorizationNames", text);
-        Assert.Contains("scheduling.RescheduleAppointment", text);
+        text.Should().Contain("GeneratedAuthorizationNames");
+        text.Should().Contain("scheduling.RescheduleAppointment");
     }
 
     [Fact]
@@ -231,10 +231,10 @@ public class PermissionDefinitionSourceGeneratorTests
         var result = RunGenerator(ActionSource);
 
         var aggregateTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("GeneratedPermissions"));
-        Assert.NotNull(aggregateTree);
+        aggregateTree.Should().NotBeNull();
         var text = aggregateTree.GetText(TestContext.Current.CancellationToken).ToString();
-        Assert.Contains("GeneratedAuthorizationManifests", text);
-        Assert.Contains("GetManifests()", text);
+        text.Should().Contain("GeneratedAuthorizationManifests");
+        text.Should().Contain("GetManifests()");
     }
 
     [Fact]
@@ -258,13 +258,13 @@ public class PermissionDefinitionSourceGeneratorTests
         var result = RunGenerator(source);
 
         var aggregateTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("GeneratedPermissions"));
-        Assert.NotNull(aggregateTree);
+        aggregateTree.Should().NotBeNull();
         var text = aggregateTree.GetText(TestContext.Current.CancellationToken).ToString();
-        Assert.Contains("PermissionName = global::Aiel.Authorization.PermissionName.From(\"scheduling.RescheduleAppointment\")", text);
-        Assert.Contains("ActionType = typeof(global::Sample.RescheduleAppointment)", text);
-        Assert.Contains("Lifecycle = global::Aiel.Authorization.PermissionLifecycle.Deprecated", text);
-        Assert.Contains("PreviousNames = new global::Aiel.Authorization.PermissionName[]", text);
-        Assert.Contains("global::Aiel.Authorization.PermissionName.From(\"scheduling.ChangeAppointment\")", text);
+        text.Should().Contain("PermissionName = global::Aiel.Authorization.PermissionName.From(\"scheduling.RescheduleAppointment\")");
+        text.Should().Contain("ActionType = typeof(global::Sample.RescheduleAppointment)");
+        text.Should().Contain("Lifecycle = global::Aiel.Authorization.PermissionLifecycle.Deprecated");
+        text.Should().Contain("PreviousNames = new global::Aiel.Authorization.PermissionName[]");
+        text.Should().Contain("global::Aiel.Authorization.PermissionName.From(\"scheduling.ChangeAppointment\")");
     }
 
     [Fact]
@@ -273,10 +273,10 @@ public class PermissionDefinitionSourceGeneratorTests
         var result = RunGenerator(ActionSource);
 
         var aggregateTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("GeneratedPermissions"));
-        Assert.NotNull(aggregateTree);
+        aggregateTree.Should().NotBeNull();
         var text = aggregateTree.GetText(TestContext.Current.CancellationToken).ToString();
         // StableId should use the permission name when not explicitly set
-        Assert.Contains("PermissionStableId.From(\"scheduling.RescheduleAppointment\")", text);
+        text.Should().Contain("PermissionStableId.From(\"scheduling.RescheduleAppointment\")");
     }
 
     [Fact]
@@ -300,10 +300,10 @@ public class PermissionDefinitionSourceGeneratorTests
         var result = RunGenerator(source);
 
         var aggregateTree = result.GeneratedTrees.FirstOrDefault(t => t.FilePath.Contains("GeneratedPermissions"));
-        Assert.NotNull(aggregateTree);
+        aggregateTree.Should().NotBeNull();
         var text = aggregateTree.GetText(TestContext.Current.CancellationToken).ToString();
-        Assert.Contains("PermissionStableId.From(\"my-explicit-stable-id\")", text);
-        Assert.DoesNotContain("PermissionStableId.From(\"scheduling.RescheduleAppointment\")", text);
+        text.Should().Contain("PermissionStableId.From(\"my-explicit-stable-id\")");
+        text.Should().NotContain("PermissionStableId.From(\"scheduling.RescheduleAppointment\")");
     }
 
     [Fact]
@@ -312,12 +312,11 @@ public class PermissionDefinitionSourceGeneratorTests
         var result1 = RunGenerator(ActionSource);
         var result2 = RunGenerator(ActionSource);
 
-        Assert.Equal(result1.GeneratedTrees.Length, result2.GeneratedTrees.Length);
+        result2.GeneratedTrees.Should().HaveCount(result1.GeneratedTrees.Length);
         for (var i = 0; i < result1.GeneratedTrees.Length; i++)
         {
-            Assert.Equal(
-                result1.GeneratedTrees[i].GetText(TestContext.Current.CancellationToken).ToString(),
-                result2.GeneratedTrees[i].GetText(TestContext.Current.CancellationToken).ToString());
+            result2.GeneratedTrees[i].GetText(TestContext.Current.CancellationToken).ToString().Should().Be(
+                result1.GeneratedTrees[i].GetText(TestContext.Current.CancellationToken).ToString());
         }
     }
 
@@ -331,7 +330,7 @@ public class PermissionDefinitionSourceGeneratorTests
 
         var result = RunGenerator(source);
 
-        Assert.Empty(result.GeneratedTrees);
+        result.GeneratedTrees.Should().BeEmpty();
     }
 
     [Fact]
@@ -339,7 +338,7 @@ public class PermissionDefinitionSourceGeneratorTests
     {
         // Run the generator first to produce checker source
         var (_, generatorResult) = RunGeneratorWithUpdatedCompilation(ActionSource);
-        Assert.NotEmpty(generatorResult.GeneratedTrees);
+        generatorResult.GeneratedTrees.Should().NotBeEmpty();
 
         // Build a new compilation that includes the generated source alongside the original
         var trees = new List<SyntaxTree>
@@ -369,7 +368,7 @@ public class PermissionDefinitionSourceGeneratorTests
         var diagnostics = await compilationWithAnalyzers.GetAnalyzerDiagnosticsAsync(TestContext.Current.CancellationToken);
 
         // The generated checker satisfies condition 1 — no AIEL00006 diagnostic
-        Assert.Empty(diagnostics.Where(d => d.Id == "AIEL00006"));
+        diagnostics.Where(d => d.Id == "AIEL00006").Should().BeEmpty();
     }
 
     [Fact]
@@ -381,7 +380,7 @@ public class PermissionDefinitionSourceGeneratorTests
             .Where(d => d.Severity == DiagnosticSeverity.Error)
             .ToArray();
 
-        Assert.Empty(errors);
+        errors.Should().BeEmpty();
     }
 
     private static GeneratorDriverRunResult RunGenerator(String source)

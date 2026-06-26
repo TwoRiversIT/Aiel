@@ -32,7 +32,7 @@ public sealed class ErrorCodeRegistryTests(ResultsIntegrationTestFixture fixture
     {
         var code = ErrorRegistry.GetErrorCodeFor<SimpleError>();
 
-        Assert.Same(SimpleError.SimpleErrorCode.Instance, code);
+        code.Should().BeSameAs(SimpleError.SimpleErrorCode.Instance);
     }
 
     public sealed class NoInstanceError(String description)
@@ -55,10 +55,10 @@ public sealed class ErrorCodeRegistryTests(ResultsIntegrationTestFixture fixture
         var code1 = ErrorRegistry.GetErrorCodeFor<NoInstanceError>();
         var code2 = ErrorRegistry.GetErrorCodeFor<NoInstanceError>();
 
-        Assert.NotNull(code1);
-        Assert.IsType<NoInstanceError.NoInstanceErrorCode>(code1);
+        code1.Should().NotBeNull();
+        code1.Should().BeOfType<NoInstanceError.NoInstanceErrorCode>();
 
         // Should be cached — same instance returned
-        Assert.Same(code1, code2);
+        code2.Should().BeSameAs(code1);
     }
 }

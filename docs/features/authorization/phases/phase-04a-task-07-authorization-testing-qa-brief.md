@@ -87,7 +87,7 @@ The `FakePermissionStore` MUST expose call-recording lists (`IReadOnlyList<T>` o
 
 Task 7 is NOT done until ALL of the following are true:
 
-1. `dotnet test .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. All 17 Tasks 5+6 tests still pass. New `Aiel.Authorization.Testing.UnitTests` tests also pass.
+1. `dotnet test --solution .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. All 17 Tasks 5+6 tests still pass. New `Aiel.Authorization.Testing.UnitTests` tests also pass.
 2. `Aiel.Authorization.Testing.csproj` does NOT reference `Aiel.Authorization.Application` or any infrastructure package.
 3. Every public property on every public type in `Aiel.Authorization.Testing` is non-nullable and returns a valid non-default value (verified by dedicated surface tests described below).
 4. Every fixture action type and every constant in `PermissionTestData` and `PermissionTestKeys` uses an opaque test-sentinel name (no domain business names).

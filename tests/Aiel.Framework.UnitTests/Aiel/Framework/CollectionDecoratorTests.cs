@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using static AwesomeAssertions.FluentActions;
+
 namespace Aiel.Framework;
 
 public sealed class CollectionDecoratorTests
@@ -27,7 +29,8 @@ public sealed class CollectionDecoratorTests
     [Fact]
     public void Constructor_Throws_When_InnerCollection_IsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => new CollectionDecorator<String>(inner: null!));
+        Invoking(() => new CollectionDecorator<String>(inner: null!))
+            .Should().ThrowExactly<ArgumentNullException>();
     }
 
     [Fact]
@@ -48,9 +51,9 @@ public sealed class CollectionDecoratorTests
 
         sut.Add("two-rivers");
 
-        Assert.Contains("TWO-RIVERS", inner);
-        Assert.NotNull(changedEventArgs);
-        Assert.Equal("TWO-RIVERS", changedEventArgs!.Item);
+        inner.Should().Contain("TWO-RIVERS");
+        changedEventArgs.Should().NotBeNull();
+        changedEventArgs!.Item.Should().Be("TWO-RIVERS");
     }
 
     [Fact]
@@ -65,8 +68,8 @@ public sealed class CollectionDecoratorTests
 
         sut.Add("blocked");
 
-        Assert.Empty(inner);
-        Assert.False(changedRaised);
+        inner.Should().BeEmpty();
+        changedRaised.Should().BeFalse();
     }
 
     [Fact]
@@ -85,9 +88,9 @@ public sealed class CollectionDecoratorTests
 
         var wasRemoved = sut.Remove("one");
 
-        Assert.True(wasRemoved);
-        Assert.DoesNotContain("two", inner);
-        Assert.Contains("one", inner);
+        wasRemoved.Should().BeTrue();
+        inner.Should().NotContain("two");
+        inner.Should().Contain("one");
     }
 
     [Fact]
@@ -106,6 +109,6 @@ public sealed class CollectionDecoratorTests
 
         sut.Clear();
 
-        Assert.Single(inner);
+        inner.Should().ContainSingle();
     }
 }

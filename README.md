@@ -282,10 +282,10 @@ Yeah, it is that simple.
 ### Running Tests
 
 ```bash
-dotnet test
+dotnet test --solution Aiel.slnx
 ```
 
-Currently includes 460 passing tests across all projects.
+Currently includes 1200+ passing tests across all projects.
 
 ## License
 

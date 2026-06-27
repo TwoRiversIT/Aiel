@@ -47,9 +47,9 @@ public class ReflectionUtilsTests
     {
         var constants = typeof(TestConstants).GetConstants();
 
-        Assert.Contains("Constant1", constants);
-        Assert.Contains("Constant2", constants);
-        Assert.Contains("42", constants);
+        constants.Should().Contain("Constant1");
+        constants.Should().Contain("Constant2");
+        constants.Should().Contain("42");
     }
 
     [Fact]
@@ -57,8 +57,8 @@ public class ReflectionUtilsTests
     {
         var constants = typeof(TestConstants).GetConstants();
 
-        Assert.Contains("NestedConstant", constants);
-        Assert.Contains("AnotherNested", constants);
+        constants.Should().Contain("NestedConstant");
+        constants.Should().Contain("AnotherNested");
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class ReflectionUtilsTests
     {
         var constants = typeof(TestConstants).GetConstants();
 
-        Assert.Contains("DoublyNestedConstant", constants);
+        constants.Should().Contain("DoublyNestedConstant");
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class ReflectionUtilsTests
     {
         var constants = typeof(TestConstants).GetConstants();
 
-        Assert.Equal(6, constants.Length);
+        constants.Should().HaveCount(6);
     }
 
     public static class EmptyClass;
@@ -84,7 +84,7 @@ public class ReflectionUtilsTests
     {
         var constants = typeof(EmptyClass).GetConstants();
 
-        Assert.Empty(constants);
+        constants.Should().BeEmpty();
     }
 
     public static class MixedMembers
@@ -99,9 +99,9 @@ public class ReflectionUtilsTests
     {
         var constants = typeof(MixedMembers).GetConstants();
 
-        Assert.Single(constants);
-        Assert.Contains("Const", constants);
-        Assert.DoesNotContain("ReadOnly", constants);
-        Assert.DoesNotContain("Property", constants);
+        constants.Should().ContainSingle();
+        constants.Should().Contain("Const");
+        constants.Should().NotContain("ReadOnly");
+        constants.Should().NotContain("Property");
     }
 }

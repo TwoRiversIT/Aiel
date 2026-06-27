@@ -45,7 +45,7 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
             .Add(stableId, AuthorizationTestData.PermissionNameChangeAppointment, AuthorizationTestData.ScopeTypeAlpha);
 
         var addResult = await runner.ApplyAsync(addPlan, CancellationToken);
-        Assert.True(addResult.IsSuccess, $"Add migration failed: {addResult}");
+        addResult.IsSuccess.Should().BeTrue($"Add migration failed: {addResult}");
 
         var store = Services.GetRequiredService<IAuthorizationGrantStore>();
         var createResult = await store.CreateGrantAsync(
@@ -57,7 +57,7 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
             AuthorizationGrantDecision.Granted,
             CancellationToken);
 
-        Assert.True(createResult.IsSuccess, $"CreateGrantAsync failed: {createResult}");
+        createResult.IsSuccess.Should().BeTrue($"CreateGrantAsync failed: {createResult}");
 
         // Act — rename the permission
         var renamePlan = new PermissionMigrationPlan()
@@ -108,18 +108,18 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
         var result = await runner.ApplyAsync(plan, CancellationToken);
 
         // Assert
-        Assert.True(result.IsSuccess, $"Migration plan failed: {result}");
+        result.IsSuccess.Should().BeTrue($"Migration plan failed: {result}");
 
         var dbContext = Services.GetRequiredService<AuthorizationDbContext>();
         var snapshot = await dbContext.Snapshots.SingleAsync(CancellationToken);
-        Assert.Equal(AuthorizationTestData.PermissionNameChangeAppointment.Value, snapshot.PreviousPermissionName);
-        Assert.Equal(AuthorizationTestData.PermissionNameRescheduleAppointment.Value, snapshot.NewPermissionName);
+        snapshot.PreviousPermissionName.Should().Be(AuthorizationTestData.PermissionNameChangeAppointment.Value);
+        snapshot.NewPermissionName.Should().Be(AuthorizationTestData.PermissionNameRescheduleAppointment.Value);
 
         var manifestFound = Services.GetRequiredService<IAuthorizationDefinitionRegistry>()
             .TryGet(AuthorizationTestData.PermissionNameRescheduleAppointment, out var manifest);
-        Assert.True(manifestFound);
-        Assert.Contains(AuthorizationTestData.PermissionNameChangeAppointment, manifest.PreviousNames);
-        Assert.Equal(PermissionLifecycle.Active, manifest.Lifecycle);
+        manifestFound.Should().BeTrue();
+        manifest.PreviousNames.Should().Contain(AuthorizationTestData.PermissionNameChangeAppointment);
+        manifest.Lifecycle.Should().Be(PermissionLifecycle.Active);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
             .Add(stableId, AuthorizationTestData.PermissionNameChangeAppointment, AuthorizationTestData.ScopeTypeAlpha);
 
         var addResult = await runner.ApplyAsync(addPlan, CancellationToken);
-        Assert.True(addResult.IsSuccess, $"Add migration failed: {addResult}");
+        addResult.IsSuccess.Should().BeTrue($"Add migration failed: {addResult}");
 
         var store = Services.GetRequiredService<IAuthorizationGrantStore>();
         var createResult = await store.CreateGrantAsync(
@@ -147,7 +147,7 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
             AuthorizationGrantDecision.Granted,
             CancellationToken);
 
-        Assert.True(createResult.IsSuccess, $"CreateGrantAsync failed: {createResult}");
+        createResult.IsSuccess.Should().BeTrue($"CreateGrantAsync failed: {createResult}");
 
         var renamePlan = new PermissionMigrationPlan()
             .Rename(
@@ -157,11 +157,11 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
 
         var renameResult = await runner.ApplyAsync(renamePlan, CancellationToken);
 
-        Assert.False(renameResult.IsSuccess);
+        renameResult.IsSuccess.Should().BeFalse();
 
         var dbContext = Services.GetRequiredService<AuthorizationDbContext>();
         var catalog = await dbContext.Catalog.SingleAsync(item => item.StableId == stableId.Value, CancellationToken);
-        Assert.Equal(AuthorizationTestData.PermissionNameChangeAppointment.Value, catalog.PermissionName);
+        catalog.PermissionName.Should().Be(AuthorizationTestData.PermissionNameChangeAppointment.Value);
 
         var grantsResult = await store.GetGrantsForSubjectAsync(
             AuthorizationTestData.SubjectTypeAlpha,
@@ -190,14 +190,14 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
 
         var result = await runner.ApplyAsync(plan, CancellationToken);
 
-        Assert.False(result.IsSuccess);
+        result.IsSuccess.Should().BeFalse();
 
         var dbContext = Services.GetRequiredService<AuthorizationDbContext>();
         await dbContext.SaveChangesAsync(CancellationToken);
 
         var catalogEntries = await dbContext.Catalog.ToListAsync(CancellationToken);
-        Assert.Empty(catalogEntries);
-        Assert.Empty(dbContext.ChangeTracker.Entries());
+        catalogEntries.Should().BeEmpty();
+        dbContext.ChangeTracker.Entries().Should().BeEmpty();
     }
 
     [Fact]
@@ -244,8 +244,8 @@ public sealed class PermissionMigrationTests(AuthorizationEfCoreFixture fixture,
         var result = await runner.ApplyAsync(plan, CancellationToken);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.IsType<MigrationCatalogEntryNotFoundError>(result.Error);
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().BeOfType<MigrationCatalogEntryNotFoundError>();
     }
 
     private async Task ResetDatabaseAsync()

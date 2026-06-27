@@ -20,12 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Security;
+using System.Runtime.CompilerServices;
 
-public static class AielClaims
-{
-    public const String ZoneInfo = "aiel_timezone";
-    public const String GivenName = "aiel_given_name";
-    public const String FamilyName = "aiel_family_name";
-    public const String EmailAddress = "aiel_email_address";
-}
+[assembly: InternalsVisibleTo("Aiel.IdGeneration.UnitTests")]

@@ -48,7 +48,7 @@ public class ErrorCodeRegistryReflectionTests
         errorTypes.Should().Contain(typeof(TransactionError));
 
         // Verify we have the expected count (at least our 5 custom errors)
-        errorTypes.Count.Should().BeGreaterThanOrEqualTo(5, because: $"Expected at least 5 error types to be registered, but only found {errorTypes.Count}");
+        errorTypes.Should().HaveCountGreaterThanOrEqualTo(5, because: $"Expected at least 5 error types to be registered, but only found {errorTypes.Count}");
     }
 
     private static readonly Type ErrorType = typeof(Error);

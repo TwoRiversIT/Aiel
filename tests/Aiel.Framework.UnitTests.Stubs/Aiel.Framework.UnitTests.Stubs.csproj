@@ -5,7 +5,7 @@
         <AssemblyName>Aiel.Framework.UnitTests.Stubs</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
+        <IsTestProject>false</IsTestProject>
         <IsToolingTests>true</IsToolingTests>
     </PropertyGroup>
 

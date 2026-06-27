@@ -24,7 +24,7 @@ Tests dependency injection integration:
 ## Running the Tests
 
 ```bash
-dotnet test tests/Aiel.Dapper.UnitTests/Aiel.Dapper.UnitTests.csproj
+dotnet test --project tests/Aiel.DataAccess.Dapper.UnitTests/Aiel.DataAccess.Dapper.UnitTests.csproj
 ```
 
 ## Test Database

@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Framework;
 
@@ -42,7 +43,8 @@ public sealed class AielDependencyManagerTests
 
         var descriptors = new[] { descriptor, descriptor };
 
-        Assert.Throws<InvalidOperationException>(() => new DependencyManager(descriptors));
+        Invoking(() => new DependencyManager(descriptors))
+            .Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -55,7 +57,8 @@ public sealed class AielDependencyManagerTests
             configurators: [],
             initializers: []);
 
-        Assert.Throws<InvalidOperationException>(() => new DependencyManager([descriptor]));
+        Invoking(() => new DependencyManager([descriptor]))
+            .Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -75,7 +78,8 @@ public sealed class AielDependencyManagerTests
             configurators: [],
             initializers: []);
 
-        Assert.Throws<CircularDependencyException>(() => new DependencyManager([a, b]));
+        Invoking(() => new DependencyManager([a, b]))
+            .Should().ThrowExactly<CircularDependencyException>();
     }
 
     [Fact]
@@ -122,10 +126,10 @@ public sealed class AielDependencyManagerTests
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, DependencyDConfigurator.InvokeCount);
-        Assert.Equal(1, DependencyBConfigurator.InvokeCount);
-        Assert.Equal(1, DependencyCConfigurator.InvokeCount);
-        Assert.Equal(1, DependencyAConfigurator.InvokeCount);
+        DependencyDConfigurator.InvokeCount.Should().Be(1);
+        DependencyBConfigurator.InvokeCount.Should().Be(1);
+        DependencyCConfigurator.InvokeCount.Should().Be(1);
+        DependencyAConfigurator.InvokeCount.Should().Be(1);
     }
 
     [Fact]
@@ -162,8 +166,8 @@ public sealed class AielDependencyManagerTests
 
         await manager.InitializeAsync(context, CancellationToken.None);
 
-        Assert.Equal(1, DependencyBInitializer.InvokeCount);
-        Assert.Equal(1, DependencyAInitializer.InvokeCount);
+        DependencyBInitializer.InvokeCount.Should().Be(1);
+        DependencyAInitializer.InvokeCount.Should().Be(1);
     }
 
     [Fact]
@@ -209,10 +213,10 @@ public sealed class AielDependencyManagerTests
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, DependencyDPreConfigurator.PreConfigureCount);
-        Assert.Equal(1, DependencyBPreConfigurator.PreConfigureCount);
-        Assert.Equal(1, DependencyCPreConfigurator.PreConfigureCount);
-        Assert.Equal(1, DependencyAPreConfigurator.PreConfigureCount);
+        DependencyDPreConfigurator.PreConfigureCount.Should().Be(1);
+        DependencyBPreConfigurator.PreConfigureCount.Should().Be(1);
+        DependencyCPreConfigurator.PreConfigureCount.Should().Be(1);
+        DependencyAPreConfigurator.PreConfigureCount.Should().Be(1);
     }
 
     [Fact]
@@ -242,7 +246,7 @@ public sealed class AielDependencyManagerTests
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
-        Assert.Equal(4, PhaseLog.Count);
+        PhaseLog.Should().HaveCount(4);
 
         var lastPreIndex = PhaseLog
             .Select(static (entry, i) => (entry, i))
@@ -254,8 +258,7 @@ public sealed class AielDependencyManagerTests
             .Where(static x => x.entry.EndsWith(":Configure"))
             .Min(static x => x.i);
 
-        Assert.True(
-            lastPreIndex < firstConfigureIndex,
+        (lastPreIndex < firstConfigureIndex).Should().BeTrue(
             $"All PreConfigureAsync calls must complete before any ConfigureAsync begins. Actual order: [{String.Join(", ", PhaseLog)}]");
     }
 

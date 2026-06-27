@@ -155,7 +155,7 @@ Both diagnostics MUST appear in `AnalyzerReleases.Unshipped.md` before the PR ca
 
 Task 8 is NOT done until ALL of the following are true:
 
-1. `dotnet test .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. All previous tests still pass. New `Aiel.Authorization.Analyzers.UnitTests` tests pass.
+1. `dotnet test --solution .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. All previous tests still pass. New `Aiel.Authorization.Analyzers.UnitTests` tests pass.
 2. `AIEL00006` has `DefaultSeverity = DiagnosticSeverity.Error` and is NOT in the suppression allow-list.
 3. `AIEL00007` has `DefaultSeverity = DiagnosticSeverity.Error`.
 4. `Aiel.Authorization.Analyzers.csproj` carries NO project or package reference to any `Aiel.*` package.

@@ -37,8 +37,8 @@ public sealed class ResultOfTUnitTestBase(ResultsIntegrationTestFixture fixture,
         var json = JsonSerializer.Serialize(original, Results.JSO);
         var roundTrip = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);
 
-        Assert.True(roundTrip!.IsSuccess);
-        Assert.Equal(42, roundTrip.Value);
+        roundTrip!.IsSuccess.Should().BeTrue();
+        roundTrip.Value.Should().Be(42);
     }
 
     [Fact]
@@ -49,8 +49,9 @@ public sealed class ResultOfTUnitTestBase(ResultsIntegrationTestFixture fixture,
         var json = JsonSerializer.Serialize(original, Results.JSO);
         var roundTrip = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);
 
-        Assert.False(roundTrip!.IsSuccess);
-        Assert.Equal(original.Error.Message, roundTrip.Error.Message);
-        Assert.Equal(original.Error.ErrorCode.GetType(), roundTrip.Error.ErrorCode.GetType());
+        roundTrip!.IsSuccess.Should().BeFalse();
+        roundTrip.Error.Message.Should().Be(original.Error.Message);
+        roundTrip.Error.ErrorCode.Should().BeOfType(original.Error.ErrorCode.GetType());
+        roundTrip.Error.ErrorCode.Should().Be(original.Error.ErrorCode);
     }
 }

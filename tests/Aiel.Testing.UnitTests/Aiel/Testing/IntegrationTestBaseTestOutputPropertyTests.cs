@@ -45,7 +45,7 @@ public class IntegrationTestBaseTestOutputPropertyTests(TestFixture fixture, ITe
         var result = TestOutput;
 
         // Assert
-        Assert.Same(mockOutput.Object, result);
+        result.Should().BeSameAs(mockOutput.Object);
     }
 
     /// <summary>
@@ -101,9 +101,9 @@ public class IntegrationTestBaseTestOutputPropertyTests(TestFixture fixture, ITe
         var third = TestOutput;
 
         // Assert
-        Assert.Same(first, second);
-        Assert.Same(second, third);
-        Assert.Same(first, mockOutput.Object);
+        second.Should().BeSameAs(first);
+        third.Should().BeSameAs(second);
+        mockOutput.Object.Should().BeSameAs(first);
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class IntegrationTestBaseTestOutputPropertyTests(TestFixture fixture, ITe
         var fixtureOutput = Fixture.TestOutputHelper;
 
         // Assert
-        Assert.Same(testOutput, fixtureOutput);
+        fixtureOutput.Should().BeSameAs(testOutput);
     }
 }
 
@@ -145,7 +145,7 @@ public class IntegrationTestBaseGenericTestOutputPropertyTests(TestFixture fixtu
         var result = TestOutput;
 
         // Assert
-        Assert.Same(mockOutput.Object, result);
+        result.Should().BeSameAs(mockOutput.Object);
     }
 
     /// <summary>
@@ -182,7 +182,7 @@ public class IntegrationTestBaseGenericTestOutputPropertyTests(TestFixture fixtu
         testOutput.WriteLine("Test from SUT");
 
         // Assert
-        Assert.NotNull(sut);
+        sut.Should().NotBeNull();
         mockOutput.Verify(x => x.WriteLine("Test from SUT"), Times.Once);
     }
 }

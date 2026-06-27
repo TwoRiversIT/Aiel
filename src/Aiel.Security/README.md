@@ -40,10 +40,10 @@ Extension methods for working with `IEnumerable<Claim>` collections:
 
 Standard claim type constants for the Aiel framework:
 
-- **ZoneInfo**: `"tr_timezone"` - User's timezone identifier
-- **GivenName**: `"tr_given_name"` - User's first name
-- **FamilyName**: `"tr_family_name"` - User's last name
-- **EmailAddress**: `"tr_email_address"` - User's email address
+- **ZoneInfo**: `"aiel_timezone"` - User's timezone identifier
+- **GivenName**: `"aiel_given_name"` - User's first name
+- **FamilyName**: `"aiel_family_name"` - User's last name
+- **EmailAddress**: `"aiel_email_address"` - User's email address
 
 ## Usage
 
@@ -151,7 +151,7 @@ Always use `AielClaims` constants instead of magic strings:
 var email = claims.FirstOrDefaultString(AielClaims.EmailAddress);
 
 // Avoid
-var email = claims.FirstOrDefaultString("tr_email_address");
+var email = claims.FirstOrDefaultString("aiel_email_address");
 ```
 
 ### Provide Sensible Defaults

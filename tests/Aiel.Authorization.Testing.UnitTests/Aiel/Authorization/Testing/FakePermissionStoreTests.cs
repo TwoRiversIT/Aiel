@@ -170,8 +170,8 @@ public sealed class FakePermissionStoreTests
             AuthorizationTestData.SubjectKeyAlpha,
             TestContext.Current.CancellationToken);
 
-        result.Should().HaveCount(1);
-        result[0].Should().Be(grant);
+        result.Should().ContainSingle();
+        result.Should().HaveElementAt(0, grant);
     }
 
     [Fact]

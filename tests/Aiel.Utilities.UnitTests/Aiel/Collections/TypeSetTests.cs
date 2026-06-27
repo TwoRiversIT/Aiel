@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using static FluentAssertions.FluentActions;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Collections;
 
@@ -74,7 +74,7 @@ public sealed class TypeSetTests
 
         sut.UnionWith([typeof(Dog), typeof(Cat)]);
 
-        sut.Count.Should().Be(2);
+        sut.Should().HaveCount(2);
     }
 
     [Fact]

@@ -110,7 +110,7 @@ All three MUST be registered in `TwoRivers.slnx`, `Aiel/Aiel.slnx`, and `Aiel/vi
 |---|---|---|
 | `Aiel.Authorization.EntityFrameworkCore` | `Aiel.Authorization.Application.Contracts`, `Aiel.Authorization.Domain`, `Aiel.Authorization.Domain.Shared`, `Aiel.StrongIds.EntityFrameworkCore`, `Microsoft.EntityFrameworkCore` (provider-neutral), `Aiel.Common` | Any `Npgsql.*`, any presentation layer, `Aiel.Authorization.Application` (service implementations) |
 | `Aiel.Authorization.EntityFrameworkCore.PostgreSql` | `Aiel.Authorization.EntityFrameworkCore`, `Npgsql.EntityFrameworkCore.PostgreSQL` | Direct `Aiel.Authorization.Domain` reference beyond what flows transitively, any business-logic code |
-| `Aiel.Authorization.EntityFrameworkCore.IntegrationTests` | `Aiel.Authorization.EntityFrameworkCore`, `Aiel.Authorization.EntityFrameworkCore.PostgreSql`, `Aiel.Authorization.Testing`, `Aiel.Authorization.Application`, `Aiel.Testing`, `Npgsql.EntityFrameworkCore.PostgreSQL`, `Testcontainers.PostgreSql`, xUnit, FluentAssertions | `Aiel.Authorization.Generators` (test code must not depend on generator internals), any presentation layer |
+| `Aiel.Authorization.EntityFrameworkCore.IntegrationTests` | `Aiel.Authorization.EntityFrameworkCore`, `Aiel.Authorization.EntityFrameworkCore.PostgreSql`, `Aiel.Authorization.Testing`, `Aiel.Authorization.Application`, `Aiel.Testing`, `Npgsql.EntityFrameworkCore.PostgreSQL`, `Testcontainers.PostgreSql`, xUnit, AwesomeAssertions | `Aiel.Authorization.Generators` (test code must not depend on generator internals), any presentation layer |
 
 ---
 

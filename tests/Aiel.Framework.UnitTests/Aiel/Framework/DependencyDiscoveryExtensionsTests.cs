@@ -42,8 +42,8 @@ public sealed class DependencyDiscoveryExtensionsTests
 
         await root.ConfigureDependenciesAsync(context, TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, DiamondSharedDependency.PreConfigureCount);
-        Assert.Equal(1, DiamondSharedDependency.ConfigureCount);
+        DiamondSharedDependency.PreConfigureCount.Should().Be(1);
+        DiamondSharedDependency.ConfigureCount.Should().Be(1);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public sealed class DependencyDiscoveryExtensionsTests
 
         await host.InitializeApplicationAsync(TestContext.Current.CancellationToken);
 
-        Assert.Equal(1, InitializerSharedDependency.InitializeCount);
+        InitializerSharedDependency.InitializeCount.Should().Be(1);
     }
 
     [DependsOn(typeof(DiamondLeftDependency))]

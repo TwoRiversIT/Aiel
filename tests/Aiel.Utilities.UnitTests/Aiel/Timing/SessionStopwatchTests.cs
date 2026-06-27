@@ -59,7 +59,7 @@ public class SessionStopwatchTests
         // Assert
         sessionLower.Should().BeSameAs(sessionUpper);
         sessionLower.Should().BeSameAs(sessionMixed);
-        stopwatch.Sessions.Should().HaveCount(1);
+        stopwatch.Sessions.Should().ContainSingle();
     }
 
     [Fact]
@@ -242,8 +242,10 @@ public class SessionStopwatchTests
         session1.IsRunning.Should().BeFalse();
         session2.IsRunning.Should().BeFalse();
         // After disposal, both should have a "Disposed" mark
-        session1.Marks.Last().Description.Should().Be("Disposed");
-        session2.Marks.Last().Description.Should().Be("Disposed");
+        session1.Marks[
+        // After disposal, both should have a "Disposed" mark
+        session1.Marks.Count - 1].Description.Should().Be("Disposed");
+        session2.Marks[session2.Marks.Count - 1].Description.Should().Be("Disposed");
     }
 
     [Fact]
@@ -490,7 +492,7 @@ public class SessionStopwatchTests
         var sessions = stopwatch.Sessions;
 
         // Assert
-        sessions.Should().HaveCount(1);
+        sessions.Should().ContainSingle();
         sessions[0].Name.Should().Be("Session");
     }
 

@@ -44,7 +44,7 @@ public class PolymorphismHookGeneratorTests
         var result = Driver.Generate(testCode);
 
         result.Should().NotBeNull();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("internal static class _PolymorphismInitializer")
@@ -76,7 +76,7 @@ public class PolymorphismHookGeneratorTests
         var result = Generate(testCode);
 
         result.Should().NotBeNull();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("internal static class _PolymorphismInitializer")
@@ -116,7 +116,7 @@ public class PolymorphismHookGeneratorTests
         var result = Generate(testCode);
 
         result.Should().NotBeNull();
-        result.GeneratedSources.Should().HaveCount(1);
+        result.GeneratedSources.Should().ContainSingle();
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("internal static class _PolymorphismInitializer")

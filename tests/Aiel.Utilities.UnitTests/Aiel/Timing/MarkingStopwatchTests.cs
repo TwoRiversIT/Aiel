@@ -73,7 +73,7 @@ public class MarkingStopwatchTests
 
         // Assert
         stopwatch.IsRunning.Should().BeTrue();
-        stopwatch.Marks.Should().HaveCount(1);
+        stopwatch.Marks.Should().ContainSingle();
         stopwatch.Marks[0].Description.Should().Be("Started");
     }
 
@@ -219,7 +219,7 @@ public class MarkingStopwatchTests
         stopwatch.Mark(message);
 
         // Assert
-        stopwatch.Marks.Should().HaveCount(1);
+        stopwatch.Marks.Should().ContainSingle();
         stopwatch.Marks[0].Description.Should().Be(message);
         stopwatch.Marks[0].Elapsed.Should().Be(TimeSpan.Zero);
     }
@@ -380,7 +380,7 @@ public class MarkingStopwatchTests
         snapshot1.Count.Should().Be(snapshot2.Count);
 
         // Assert: Index and Delta semantics
-        deltas.Count.Should().Be(4);
+        deltas.Should().HaveCount(4);
 
         deltas.Select(m => m.Index).Should().BeEquivalentTo([0, 1, 2, 3]);
 
@@ -698,7 +698,7 @@ public class MarkingStopwatchTests
         var marks = sw.GetMarksWithDeltas();
 
         // 1. No negative elapsed times
-        marks.All(m => m.Elapsed >= TimeSpan.Zero).Should().BeTrue();
+        marks.Should().OnlyContain(m => m.Elapsed >= TimeSpan.Zero);
 
         // 2. Elapsed must be monotonic non-decreasing
         for (var i = 1; i < marks.Count; i++)
@@ -707,7 +707,7 @@ public class MarkingStopwatchTests
         }
 
         // 3. Delta must be >= 0
-        marks.All(m => m.Delta >= TimeSpan.Zero).Should().BeTrue();
+        marks.Should().OnlyContain(m => m.Delta >= TimeSpan.Zero);
 
         // 4. Index must be correct
         for (var i = 0; i < marks.Count; i++)

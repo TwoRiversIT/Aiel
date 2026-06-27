@@ -69,9 +69,9 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId, diagnostic.Id);
-        Assert.Contains("MyAction", diagnostic.GetMessage());
+        diagnostics.Should().ContainSingle();
+        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId);
+        diagnostics[0].GetMessage().Should().Contain("MyAction");
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -128,9 +128,8 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticRuleIDs.AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
-        Assert.Contains("MyAction", diagnostic.GetMessage());
+        diagnostics.Should().ContainSingle(d => d.Id == DiagnosticRuleIDs.AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId);
+        diagnostics[0].GetMessage().Should().Contain("MyAction");
     }
 
     [Fact]
@@ -145,8 +144,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticRuleIDs.AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId, diagnostic.Id);
+        diagnostics.Should().ContainSingle(d => d.Id == DiagnosticRuleIDs.AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId);
     }
 
     [Fact]
@@ -159,7 +157,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -173,7 +171,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source, includeStub: false);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -187,8 +185,8 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Equal(2, diagnostics.Length);
-        Assert.All(diagnostics, d => Assert.Equal(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId, d.Id));
+        diagnostics.Should().HaveCount(2);
+        diagnostics.Should().OnlyContain(d => d.Id == DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId);
     }
 
     [Fact]
@@ -205,7 +203,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.DoesNotContain(diagnostics, d => d.Id == DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId);
+        diagnostics.Should().NotContain(d => d.Id == DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId);
     }
 
     [Fact]
@@ -218,7 +216,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -233,7 +231,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -247,7 +245,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -263,9 +261,9 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var diagnostic = Assert.Single(diagnostics);
-        Assert.Equal(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId, diagnostic.Id);
-        Assert.Contains("SampleActionB", diagnostic.GetMessage());
+        diagnostics.Should().ContainSingle();
+        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00006_ActionHasNoAuthorizationStoryId);
+        diagnostics[0].GetMessage().Should().Contain("SampleActionB");
     }
 
     [Fact]
@@ -282,7 +280,7 @@ public class ActionAuthorizationAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     private static async Task<ImmutableArray<Diagnostic>> AnalyzeAsync(String source, Boolean includeStub = true)

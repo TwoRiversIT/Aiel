@@ -13,13 +13,13 @@ Aiel is a collection of NuGet packages for building .NET applications following 
 dotnet build Aiel.slnx -c Debug --nologo
 
 # Test all
-dotnet test Aiel.slnx --no-restore --verbosity minimal
+dotnet test --solution Aiel.slnx --no-restore --verbosity minimal
 
 # Test one project
-dotnet test tests\Aiel.Results.UnitTests --no-restore --verbosity minimal
+dotnet test --project tests\Aiel.Results.UnitTests\Aiel.Results.UnitTests.csproj --no-restore --verbosity minimal
 
 # Test by name filter
-dotnet test tests\Aiel.Results.UnitTests --filter "FullyQualifiedName~MyTest"
+dotnet test --project tests\Aiel.Results.UnitTests\Aiel.Results.UnitTests.csproj --filter "FullyQualifiedName~MyTest"
 ```
 
 ## Project Conventions

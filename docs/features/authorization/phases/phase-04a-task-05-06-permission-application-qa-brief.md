@@ -27,9 +27,9 @@ Treat `Aiel/tests/Aiel.Authorization.Application.UnitTests/Aiel.Authorization.Ap
 Tasks 5+6 are not done until all of the following are true:
 
 1. All three new projects exist and are registered in `TwoRivers.slnx`, `Aiel/Aiel.slnx`, and `Aiel/virtual-folders.json`.
-2. `dotnet test .\Aiel\tests\Aiel.Authorization.Application.UnitTests\Aiel.Authorization.Application.UnitTests.csproj --nologo --verbosity minimal` passes cleanly.
-3. `dotnet test .\Aiel\tests\Aiel.Authorization.Domain.UnitTests\Aiel.Authorization.Domain.UnitTests.csproj --nologo --verbosity minimal` still passes. Tasks 5+6 must not weaken the Task 4 domain contract.
-4. `dotnet test .\Aiel\tests\Aiel.Authorization.Domain.Shared.UnitTests\Aiel.Authorization.Domain.Shared.UnitTests.csproj --nologo --verbosity minimal` still passes.
+2. `dotnet test --project .\Aiel\tests\Aiel.Authorization.Application.UnitTests\Aiel.Authorization.Application.UnitTests.csproj --nologo --verbosity minimal` passes cleanly.
+3. `dotnet test --project .\Aiel\tests\Aiel.Authorization.Domain.UnitTests\Aiel.Authorization.Domain.UnitTests.csproj --nologo --verbosity minimal` still passes. Tasks 5+6 must not weaken the Task 4 domain contract.
+4. `dotnet test --project .\Aiel\tests\Aiel.Authorization.Domain.Shared.UnitTests\Aiel.Authorization.Domain.Shared.UnitTests.csproj --nologo --verbosity minimal` still passes.
 5. The contracts project depends only on `Aiel.Application.Contracts`, `Aiel.Authorization.Domain`, and `Aiel.Results`. It must not carry references to EF, HTTP, or any other infrastructure assembly.
 6. The implementation project depends only on `Aiel.Authorization.Application.Contracts` and `Aiel.Authorization.Domain`. It must not reference EF, HTTP, or any concrete infrastructure assembly.
 7. The test project depends on `Aiel.Authorization.Application.Contracts`, `Aiel.Authorization.Application`, and xUnit. All test doubles (fakes for `IPermissionStore`, `IActionValidator<TAction>`, `IActionPermissionChecker<TAction>`) are hand-written inline in the test project; no mocking framework is required.

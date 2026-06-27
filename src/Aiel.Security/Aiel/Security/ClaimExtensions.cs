@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace Aiel.Security;
@@ -70,10 +69,10 @@ public static class ClaimExtensions
         return claimOrNull.Value.Trim();
     }
 
-    public static Claim? FirstOrDefault([NotNull] this IEnumerable<Claim> claims, String claimType)
+    public static Claim? FirstOrDefault([NotNull] this IEnumerable<Claim> claims, String claimType, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
     {
         ArgumentNullException.ThrowIfNull(claims);
 
-        return claims.FirstOrDefault(c => String.Equals(c.Type, claimType, StringComparison.OrdinalIgnoreCase));
+        return claims.FirstOrDefault(c => String.Equals(c.Type, claimType, comparisonType));
     }
 }

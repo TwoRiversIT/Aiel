@@ -96,7 +96,7 @@ public class ColumnMapperTests : IAsyncLifetime
 
         // Assert
         products.Should().NotBeNull();
-        products.Count.Should().Be(1);
+        products.Should().ContainSingle();
         var product = products[0];
         product.Id.Should().Be(productId);
         product.Name.Should().Be(productName);

@@ -25,7 +25,7 @@ using Aiel.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using static FluentAssertions.FluentActions;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Extensions;
 
@@ -121,7 +121,7 @@ public class ApplicationConfigurationTests
         // Verify ApplicationContractsAssembly
         var appContractsAssembly = appAssembly.Dependencies.First(d => d.Type == typeof(ApplicationContractsAssembly));
         appContractsAssembly.Depth.Should().Be(2, "ApplicationContractsAssembly is discovered while processing ApplicationAssembly");
-        appContractsAssembly.Dependencies.Should().HaveCount(1, "ApplicationContractsAssembly depends on DomainSharedAssembly");
+        appContractsAssembly.Dependencies.Should().ContainSingle("ApplicationContractsAssembly depends on DomainSharedAssembly");
         appContractsAssembly.Dependencies.Select(d => d.Type).Should().Contain(typeof(DomainShared));
         AssertWasConfiguredOnceOnly(appContractsAssembly.Instance);
 
@@ -134,7 +134,7 @@ public class ApplicationConfigurationTests
         // Verify DomainAssembly from DataBaseAssembly (this is the fully populated instance)
         var domainAssemblyFromDb = dbAssembly.Dependencies.First(d => d.Type == typeof(DomainAssembly));
         domainAssemblyFromDb.Depth.Should().Be(2, "DomainAssembly (from DataBaseAssembly) is at depth 2");
-        domainAssemblyFromDb.Dependencies.Should().HaveCount(1, "DomainAssembly depends on DomainSharedAssembly");
+        domainAssemblyFromDb.Dependencies.Should().ContainSingle("DomainAssembly depends on DomainSharedAssembly");
         domainAssemblyFromDb.Dependencies.Select(d => d.Type).Should().Contain(typeof(DomainShared));
         AssertWasConfiguredOnceOnly(domainAssemblyFromDb.Instance);
 
@@ -210,17 +210,17 @@ public class ApplicationConfigurationTests
         rootAssembly.Depth.Should().Be(0);
 
         // Verify linear chain
-        rootAssembly.Dependencies.Should().HaveCount(1);
+        rootAssembly.Dependencies.Should().ContainSingle();
         var assembly3 = rootAssembly.Dependencies[0];
         assembly3.Type.Should().Be<LinearAssembly3>();
         assembly3.Depth.Should().Be(1);
 
-        assembly3.Dependencies.Should().HaveCount(1);
+        assembly3.Dependencies.Should().ContainSingle();
         var assembly2 = assembly3.Dependencies[0];
         assembly2.Type.Should().Be<LinearAssembly2>();
         assembly2.Depth.Should().Be(2);
 
-        assembly2.Dependencies.Should().HaveCount(1);
+        assembly2.Dependencies.Should().ContainSingle();
         var assembly1 = assembly2.Dependencies[0];
         assembly1.Type.Should().Be<LinearAssembly1>();
         assembly1.Depth.Should().Be(3);
@@ -261,12 +261,12 @@ public class ApplicationConfigurationTests
         var rightAssembly = rootAssembly.Dependencies.First(d => d.Type == typeof(DiamondRightAssembly));
 
         // DiamondLeftAssembly is processed first, so its DiamondBottomAssembly dependency is fully populated
-        leftAssembly.Dependencies.Should().HaveCount(1);
+        leftAssembly.Dependencies.Should().ContainSingle();
         leftAssembly.Dependencies[0].Type.Should().Be<DiamondBottomAssembly>();
 
         // DiamondRightAssembly is processed second, so it also has DiamondBottomAssembly
         // but that instance won't be fully processed (already visited)
-        rightAssembly.Dependencies.Should().HaveCount(1);
+        rightAssembly.Dependencies.Should().ContainSingle();
         rightAssembly.Dependencies[0].Type.Should().Be<DiamondBottomAssembly>();
 
         // Verify DiamondBottomAssembly only configured once despite being depended on twice
@@ -349,7 +349,7 @@ public class ApplicationConfigurationTests
 
         rootAssembly.Should().NotBeNull();
         // Duplicate attributes for the same dependency type are deduplicated.
-        rootAssembly!.Dependencies.Should().HaveCount(1, "duplicate DependsOn attributes for the same dependency type are merged");
+        rootAssembly!.Dependencies.Should().ContainSingle("duplicate DependsOn attributes for the same dependency type are merged");
 
         // Both should reference the same type
         rootAssembly.Dependencies.Select(d => d.Type).Should().OnlyContain(t => t == typeof(DomainShared));

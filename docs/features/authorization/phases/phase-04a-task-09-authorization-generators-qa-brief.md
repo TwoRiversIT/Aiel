@@ -362,7 +362,7 @@ All generator unit tests MUST use `RescheduleAppointmentAction` (or `RescheduleA
 
 Task 9 is NOT done until ALL of the following are true:
 
-1. `dotnet test .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. **All 14 existing `ActionAuthorizationAnalyzerTests` still pass.** All new generator and analyzer-extension tests pass.
+1. `dotnet test --solution .\Aiel\Aiel.slnx --nologo --tl:off -v minimal` passes cleanly. **All 14 existing `ActionAuthorizationAnalyzerTests` still pass.** All new generator and analyzer-extension tests pass.
 2. `Aiel.Authorization.Generators.csproj` has `TargetFramework=netstandard2.0`, `IsGenerator=true`, `Deterministic=false`, `IncludeBuildOutput=false`, `EnforceExtendedAnalyzerRules=true`.
 3. The generator DLL appears at `analyzers/dotnet/cs` in the NuGet pack, NOT in `lib/`.
 4. `Aiel.Authorization.Application.Contracts.csproj` references `Aiel.Authorization.Generators` as `OutputItemType="Analyzer"` and includes the DLL in the NuGet payload via `<None Pack="true" PackagePath="analyzers/dotnet/cs" />`.

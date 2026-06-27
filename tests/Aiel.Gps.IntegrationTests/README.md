@@ -78,15 +78,16 @@ All test data is stored as embedded resources in the `Aiel\Gps\TestData\` direct
 
 ```powershell
 # Run all GPS integration tests
-dotnet test tests\Aiel.Gps.IntegrationTests\Aiel.Gps.IntegrationTests.csproj
+dotnet test --project tests\Aiel.Gps.IntegrationTests\Aiel.Gps.IntegrationTests.csproj
 
 # Run all GPS tests (unit + integration)
-dotnet test --filter "FullyQualifiedName~Aiel.Gps"
+dotnet test --filter-trait "FullyQualifiedName~Aiel.Gps"
 ```
 
 ## Performance Characteristics
 
 Integration tests validate that the library can:
+
 - Process large streams (920KB+ of NMEA data)
 - Handle mixed message types efficiently
 - Maintain message ordering and accuracy

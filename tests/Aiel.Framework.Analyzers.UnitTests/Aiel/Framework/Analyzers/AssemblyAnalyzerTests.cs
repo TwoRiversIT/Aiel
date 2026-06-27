@@ -42,7 +42,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode, referenceAielCore: false);
 
-        diagnostics.Should().HaveCount(0);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode);
 
-        diagnostics.Should().HaveCount(0);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode);
 
-        diagnostics.Should().HaveCount(0);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode);
 
-        diagnostics.Should().HaveCount(1);
+        diagnostics.Should().ContainSingle();
         diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
     }
 
@@ -111,7 +111,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode);
 
-        diagnostics.Should().HaveCount(1);
+        diagnostics.Should().ContainSingle();
 
         diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00020_DependencyIsNotSealedId);
     }
@@ -133,7 +133,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode);
 
-        diagnostics.Should().HaveCount(1);
+        diagnostics.Should().ContainSingle();
 
         diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
     }
@@ -151,7 +151,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode);
 
-        diagnostics.Should().HaveCount(1);
+        diagnostics.Should().ContainSingle();
         diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
     }
 
@@ -169,7 +169,7 @@ public class AssemblyAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(testCode);
 
-        diagnostics.Should().HaveCount(1);
+        diagnostics.Should().ContainSingle();
         diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
     }
 

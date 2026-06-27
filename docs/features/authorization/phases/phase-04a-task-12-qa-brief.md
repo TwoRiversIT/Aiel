@@ -72,11 +72,11 @@ Task 12 starts with failing transport tests, not package plumbing.
 Run these in order:
 
 ```powershell
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.AspNetCore.IntegrationTests\Aiel.Authorization.AspNetCore.IntegrationTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Application.UnitTests\Aiel.Authorization.Application.UnitTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Results.IntegrationTests\Aiel.Results.IntegrationTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Results.Generators.UnitTests\Aiel.Results.Generators.UnitTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\Aiel.slnx --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.AspNetCore.IntegrationTests\Aiel.Authorization.AspNetCore.IntegrationTests.csproj --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Application.UnitTests\Aiel.Authorization.Application.UnitTests.csproj --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Results.IntegrationTests\Aiel.Results.IntegrationTests.csproj --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Results.Generators.UnitTests\Aiel.Results.Generators.UnitTests.csproj --no-restore -v minimal
+dotnet test --solution D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\Aiel.slnx --no-restore -v minimal
 ```
 
 Interpretation:

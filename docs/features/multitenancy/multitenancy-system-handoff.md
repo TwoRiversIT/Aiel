@@ -142,7 +142,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
 1. Before implementation: confirm a Moiraine ADR/decision exists and resolves the public API direction for tenant identifier, tenant identity wrapper, scoped tenant accessor/resolver, resolution outcomes, constants, `AielDbContext`, and storage ownership.
 2. For each implementation PR: require the new or changed tests to fail before implementation, then pass after implementation.
 3. Run `Set-Location d:/source/TwoRivers/Aiel; dotnet build Aiel.slnx -c Debug -warnaserror`.
-4. Run `Set-Location d:/source/TwoRivers/Aiel; dotnet test Aiel.slnx -c Debug --no-build`.
+4. Run `Set-Location d:/source/TwoRivers/Aiel; dotnet test --solution Aiel.slnx -c Debug --no-build`.
 5. For ASP.NET middleware work: add integration tests using a test host/web application covering required, optional, missing, forbidden/conflict, and error outcomes.
 6. For EF discriminator work: run `Aiel.DataAccess.EntityFrameworkCore.IntegrationTests` and verify no cross-tenant leakage and no nullable public tenant outcomes remain.
 7. For migration primitives: add tests showing production startup does not enumerate/fan out tenant targets and that out-of-band runner checkpoints/resumes correctly.

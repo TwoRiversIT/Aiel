@@ -117,6 +117,6 @@ public class NmeaSingleParserTests
 
         // Assert - if we got here without running out of memory, good enough for a unit test
         // Real verification should be done with benchmarks
-        Assert.True(true);
+        true.Should().BeTrue();
     }
 }

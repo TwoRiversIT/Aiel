@@ -24,8 +24,8 @@ namespace Aiel.Security;
 
 public static class AielClaims
 {
-    public const String ZoneInfo = "tr_timezone";
-    public const String GivenName = "tr_given_name";
-    public const String FamilyName = "tr_family_name";
-    public const String EmailAddress = "tr_email_address";
+    public const String ZoneInfo = "aiel_timezone";
+    public const String GivenName = "aiel_given_name";
+    public const String FamilyName = "aiel_family_name";
+    public const String EmailAddress = "aiel_email_address";
 }

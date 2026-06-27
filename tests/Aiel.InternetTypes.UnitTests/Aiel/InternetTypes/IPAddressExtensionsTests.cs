@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Internet;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.InternetTypes;
 
@@ -52,5 +53,5 @@ public class IPAddressExtensionsTests
     [InlineData("a.b.c.d")]
     [InlineData("256.256.256.256")]
     public void IpAddressToUInt32_throws_FormatException_on_invalid_IPv4_Address(String input)
-        => Assert.Throws<FormatException>(() => input.IpAddressToUInt32());
+        => Invoking(() => input.IpAddressToUInt32()).Should().Throw<FormatException>();
 }

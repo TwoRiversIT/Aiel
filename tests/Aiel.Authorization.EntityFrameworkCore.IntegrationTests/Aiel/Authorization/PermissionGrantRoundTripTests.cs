@@ -41,7 +41,7 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             .Add(stableId, AuthorizationTestData.PermissionNameRead, AuthorizationTestData.ScopeTypeAlpha);
 
         var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
-        Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
+        migrationResult.IsSuccess.Should().BeTrue($"Migration failed: {migrationResult}");
 
         var store = Services.GetRequiredService<IAuthorizationGrantStore>();
 
@@ -56,8 +56,8 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             CancellationToken);
 
         // Assert
-        Assert.True(result.IsSuccess, $"Expected success but got: {result}");
-        Assert.NotEqual(default, result.Value.Value);
+        result.IsSuccess.Should().BeTrue($"Expected success but got: {result}");
+        result.Value.Value.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             .Add(stableId, AuthorizationTestData.PermissionNameRead, AuthorizationTestData.ScopeTypeAlpha);
 
         var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
-        Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
+        migrationResult.IsSuccess.Should().BeTrue($"Migration failed: {migrationResult}");
 
         var store = Services.GetRequiredService<IAuthorizationGrantStore>();
         var createResult = await store.CreateGrantAsync(
@@ -85,7 +85,7 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             AuthorizationGrantDecision.Granted,
             CancellationToken);
 
-        Assert.True(createResult.IsSuccess);
+        createResult.IsSuccess.Should().BeTrue();
 
         // Act
         var result = await store.GetGrantsForSubjectAsync(
@@ -95,8 +95,8 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
 
         // Assert
         result.Should().NotBeNull().And.HaveCount(1);
-        Assert.Equal(AuthorizationTestData.PermissionNameRead.Value, result[0].PermissionName.Value);
-        Assert.Equal(AuthorizationGrantDecision.Granted, result[0].Decision);
+        result[0].PermissionName.Value.Should().Be(AuthorizationTestData.PermissionNameRead.Value);
+        result[0].Decision.Should().Be(AuthorizationGrantDecision.Granted);
     }
 
     [Fact]
@@ -112,7 +112,7 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             .Add(stableId, AuthorizationTestData.PermissionNameRead, AuthorizationTestData.ScopeTypeAlpha);
 
         var migrationResult = await runner.ApplyAsync(plan, CancellationToken);
-        Assert.True(migrationResult.IsSuccess, $"Migration failed: {migrationResult}");
+        migrationResult.IsSuccess.Should().BeTrue($"Migration failed: {migrationResult}");
 
         var store = Services.GetRequiredService<IAuthorizationGrantStore>();
         var createResult = await store.CreateGrantAsync(
@@ -124,13 +124,13 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             AuthorizationGrantDecision.Granted,
             CancellationToken);
 
-        Assert.True(createResult.IsSuccess);
+        createResult.IsSuccess.Should().BeTrue();
 
         // Act
         var revokeResult = await store.RevokeGrantAsync(createResult.Value, CancellationToken);
 
         // Assert
-        Assert.True(revokeResult.IsSuccess, $"Expected success but got: {revokeResult}");
+        revokeResult.IsSuccess.Should().BeTrue($"Expected success but got: {revokeResult}");
 
         var grantsResult = await store.GetGrantsForSubjectAsync(
             AuthorizationTestData.SubjectTypeAlpha,
@@ -160,8 +160,8 @@ public sealed class PermissionGrantRoundTripTests(AuthorizationEfCoreFixture fix
             CancellationToken);
 
         // Assert
-        Assert.False(result.IsSuccess);
-        Assert.IsType<PermissionCatalogEntryNotFoundError>(result.Error);
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().BeOfType<PermissionCatalogEntryNotFoundError>();
     }
 
     private async Task ResetDatabaseAsync()

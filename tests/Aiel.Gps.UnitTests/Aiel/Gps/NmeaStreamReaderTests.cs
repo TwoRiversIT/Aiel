@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Text;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Gps;
 
@@ -32,7 +33,8 @@ public class NmeaStreamReaderTests
         await using (var stream = new MemoryStream())
         {
             var nsr = new NmeaStreamReader();
-            await Assert.ThrowsAsync<InvalidOperationException>(async () => await nsr.ParseStreamAsync(stream, _ => { }, TestContext.Current.CancellationToken));
+            await Invoking(async () => await nsr.ParseStreamAsync(stream, _ => { }, TestContext.Current.CancellationToken))
+                .Should().ThrowAsync<InvalidOperationException>();
         }
     }
 

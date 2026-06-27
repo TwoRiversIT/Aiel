@@ -22,7 +22,7 @@
 
 using Aiel.Internet;
 using System.Diagnostics.CodeAnalysis;
-using static FluentAssertions.FluentActions;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.InternetTypes;
 

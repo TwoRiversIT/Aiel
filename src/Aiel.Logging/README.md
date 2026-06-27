@@ -119,14 +119,14 @@ dotnet_diagnostic.AIEL00012.severity = error
 git clone https://github.com/TwoRiversIT/Aiel
 cd Aiel
 
-# Build
-dotnet restore Aiel.Logging.sln
-dotnet build   Aiel.Logging.sln -c Release
+# Restore + build
+dotnet restore src/Aiel.Logging/Aiel.Logging.csproj
+dotnet build src/Aiel.Logging/Aiel.Logging.csproj
 
-# Test
-dotnet test Aiel.Logging.sln --logger "console;verbosity=normal"
+# Run all tests
+dotnet test --project tests/Aiel.Logging.Analyzers.UnitTests/Aiel.Logging.Analyzers.UnitTests.csproj --logger "console;verbosity=normal"
 
-# Pack
+# Pack the analyzer NuGet
 dotnet pack src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj -c Release
 ```
 

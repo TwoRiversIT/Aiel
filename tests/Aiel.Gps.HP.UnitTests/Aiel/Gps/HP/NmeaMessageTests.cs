@@ -207,6 +207,6 @@ public class NmeaMessageTests
         }
 
         // Assert - if we got here without running out of memory, good enough for a unit test
-        Assert.True(true);
+        true.Should().BeTrue();
     }
 }

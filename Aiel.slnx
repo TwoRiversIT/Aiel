@@ -20,7 +20,7 @@
     <File Path="copilot.txt" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
-    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
     <File Path="LICENSE.md" />
     <File Path="NuGet.config" />
     <File Path="README.md" />
@@ -267,7 +267,7 @@
     <Project Path="tests/Aiel.StrongIds.UnitTests/Aiel.StrongIds.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.Integration.UnitTests/Aiel.Testing.Integration.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
-    <Project Path="tests/Aiel.UnitTests/Aiel.Utilities.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Utilities.UnitTests/Aiel.Utilities.UnitTests.csproj" />
     <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
     <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />
   </Folder>

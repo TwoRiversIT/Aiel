@@ -17,8 +17,8 @@ Treat `Aiel/tests/Aiel.Authorization.Domain.UnitTests/Aiel.Authorization.Domain.
 Task 4 is not done until all of the following are true:
 
 1. `Aiel/src/Aiel.Authorization.Domain/Aiel.Authorization.Domain.csproj` and `Aiel/tests/Aiel.Authorization.Domain.UnitTests/Aiel.Authorization.Domain.UnitTests.csproj` exist and are added to `TwoRivers.slnx`, `Aiel.slnx`, and `virtual-folders.json`.
-2. `dotnet test .\Aiel\tests\Aiel.Authorization.Domain.UnitTests\Aiel.Authorization.Domain.UnitTests.csproj --nologo --verbosity minimal` passes cleanly.
-3. `dotnet test .\Aiel\tests\Aiel.Authorization.Domain.Shared.UnitTests\Aiel.Authorization.Domain.Shared.UnitTests.csproj --nologo --verbosity minimal` still passes. Task 4 must not weaken the Task 3 shared contract.
+2. `dotnet test --project .\Aiel\tests\Aiel.Authorization.Domain.UnitTests\Aiel.Authorization.Domain.UnitTests.csproj --nologo --verbosity minimal` passes cleanly.
+3. `dotnet test --project .\Aiel\tests\Aiel.Authorization.Domain.Shared.UnitTests\Aiel.Authorization.Domain.Shared.UnitTests.csproj --nologo --verbosity minimal` still passes. Task 4 must not weaken the Task 3 shared contract.
 4. The domain tests prove the public slice contains:
    - a behavior-owning `PermissionGrant` aggregate, not a passive persistence DTO
    - one explicit permission catalog root (`PermissionCatalogEntry`, `PermissionDefinition`, or equivalent) that owns published permission identity/name/lifecycle invariants

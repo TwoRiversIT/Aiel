@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Security.Claims;
+using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Security;
 
@@ -37,8 +38,8 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefault(AielClaims.GivenName);
 
-        Assert.NotNull(result);
-        Assert.Equal("John", result.Value);
+        result.Should().NotBeNull();
+        result.Value.Should().Be("John");
     }
 
     [Fact]
@@ -51,7 +52,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefault(AielClaims.FamilyName);
 
-        Assert.Null(result);
+        result.Should().BeNull();
     }
 
     [Fact]
@@ -59,13 +60,13 @@ public class ClaimExtensionsTests
     {
         var claims = new List<Claim>
         {
-            new("TR_GIVEN_NAME", "John")
+            new("AIEL_GIVEN_NAME", "John")
         };
 
         var result = claims.FirstOrDefault(AielClaims.GivenName);
 
-        Assert.NotNull(result);
-        Assert.Equal("John", result.Value);
+        result.Should().NotBeNull();
+        result.Value.Should().Be("John");
     }
 
     [Fact]
@@ -73,7 +74,7 @@ public class ClaimExtensionsTests
     {
         IEnumerable<Claim> claims = null!;
 
-        Assert.Throws<ArgumentNullException>(() => claims.FirstOrDefault(AielClaims.GivenName));
+        Invoking(() => claims.FirstOrDefault(AielClaims.GivenName)).Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
@@ -86,7 +87,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultString(AielClaims.GivenName);
 
-        Assert.Equal("John", result);
+        result.Should().Be("John");
     }
 
     [Fact]
@@ -99,7 +100,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultString(AielClaims.GivenName);
 
-        Assert.Equal("John", result);
+        result.Should().Be("John");
     }
 
     [Fact]
@@ -109,7 +110,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultString(AielClaims.GivenName, "DefaultValue");
 
-        Assert.Equal("DefaultValue", result);
+        result.Should().Be("DefaultValue");
     }
 
     [Fact]
@@ -122,7 +123,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultString(AielClaims.GivenName, "DefaultValue");
 
-        Assert.Equal("DefaultValue", result);
+        result.Should().Be("DefaultValue");
     }
 
     [Fact]
@@ -135,7 +136,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultString(AielClaims.GivenName, "DefaultValue");
 
-        Assert.Equal("DefaultValue", result);
+        result.Should().Be("DefaultValue");
     }
 
     [Fact]
@@ -148,7 +149,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultInt32("age");
 
-        Assert.Equal(42, result);
+        result.Should().Be(42);
     }
 
     [Fact]
@@ -158,7 +159,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultInt32("age", 99);
 
-        Assert.Equal(99, result);
+        result.Should().Be(99);
     }
 
     [Fact]
@@ -171,7 +172,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultInt32("age", 99);
 
-        Assert.Equal(99, result);
+        result.Should().Be(99);
     }
 
     [Fact]
@@ -184,7 +185,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultInt32("age", 99);
 
-        Assert.Equal(99, result);
+        result.Should().Be(99);
     }
 
     [Fact]
@@ -198,7 +199,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultGuid("id");
 
-        Assert.Equal(guid, result);
+        result.Should().Be(guid);
     }
 
     [Fact]
@@ -209,7 +210,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultGuid("id", defaultGuid);
 
-        Assert.Equal(defaultGuid, result);
+        result.Should().Be(defaultGuid);
     }
 
     [Fact]
@@ -223,7 +224,7 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultGuid("id", defaultGuid);
 
-        Assert.Equal(defaultGuid, result);
+        result.Should().Be(defaultGuid);
     }
 
     [Fact]
@@ -237,6 +238,6 @@ public class ClaimExtensionsTests
 
         var result = claims.FirstOrDefaultGuid("id", defaultGuid);
 
-        Assert.Equal(defaultGuid, result);
+        result.Should().Be(defaultGuid);
     }
 }

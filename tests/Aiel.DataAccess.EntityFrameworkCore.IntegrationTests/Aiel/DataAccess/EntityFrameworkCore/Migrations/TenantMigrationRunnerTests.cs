@@ -120,9 +120,9 @@ public sealed class TenantMigrationRunnerTests
 
         var result = await runner.ResumeAsync(checkpoint, TestContext.Current.CancellationToken);
 
-        Assert.Equal([t1.Key, t3.Key], result.Succeeded);
-        Assert.Empty(result.Failed);
-        Assert.DoesNotContain(t2.Key, migrator.Migrated);
+        result.Succeeded.Should().BeEquivalentTo([t1.Key, t3.Key]);
+        result.Failed.Should().BeEmpty();
+        migrator.Migrated.Should().NotContain(t2.Key);
     }
 
     [Fact]
@@ -136,9 +136,9 @@ public sealed class TenantMigrationRunnerTests
 
         var result = await runner.ResumeAsync(checkpoint, TestContext.Current.CancellationToken);
 
-        Assert.Empty(result.Succeeded);
-        Assert.Empty(result.Failed);
-        Assert.Empty(migrator.Migrated);
+        result.Succeeded.Should().BeEmpty();
+        result.Failed.Should().BeEmpty();
+        migrator.Migrated.Should().BeEmpty();
     }
 
     [Fact]
@@ -149,9 +149,9 @@ public sealed class TenantMigrationRunnerTests
 
         var result = await runner.ResumeAsync(MigrationCheckpoint.Empty, TestContext.Current.CancellationToken);
 
-        Assert.Empty(result.Succeeded);
-        Assert.Empty(result.Failed);
-        Assert.False(result.HasFailures);
+        result.Succeeded.Should().BeEmpty();
+        result.Failed.Should().BeEmpty();
+        result.HasFailures.Should().BeFalse();
     }
 
     // ---------------------------------------------------------------------------
@@ -169,13 +169,13 @@ public sealed class TenantMigrationRunnerTests
 
         var result = await runner.ResumeAsync(MigrationCheckpoint.Empty, TestContext.Current.CancellationToken);
 
-        Assert.Equal([t1.Key, t3.Key], result.Succeeded);
-        Assert.Single(result.Failed);
-        Assert.True(result.HasFailures);
-        Assert.Equal(t2.Key, result.Failed[0].Key);
-        Assert.Equal(t2.Label, result.Failed[0].Label);
-        Assert.Equal(nameof(InvalidOperationException), result.Failed[0].ExceptionTypeName);
-        Assert.Equal([t1.Key, t2.Key, t3.Key], migrator.Attempted);
+        result.Succeeded.Should().BeEquivalentTo([t1.Key, t3.Key]);
+        result.Failed.Should().ContainSingle();
+        result.HasFailures.Should().BeTrue();
+        result.Failed[0].Key.Should().Be(t2.Key);
+        result.Failed[0].Label.Should().Be(t2.Label);
+        result.Failed[0].ExceptionTypeName.Should().Be(nameof(InvalidOperationException));
+        migrator.Attempted.Should().BeEquivalentTo([t1.Key, t2.Key, t3.Key]);
     }
 
     [Fact]
@@ -188,9 +188,9 @@ public sealed class TenantMigrationRunnerTests
 
         var result = await runner.ResumeAsync(MigrationCheckpoint.Empty, TestContext.Current.CancellationToken);
 
-        Assert.Empty(result.Succeeded);
-        Assert.Equal(2, result.Failed.Count);
-        Assert.True(result.HasFailures);
+        result.Succeeded.Should().BeEmpty();
+        result.Failed.Should().HaveCount(2);
+        result.HasFailures.Should().BeTrue();
     }
 
     // ---------------------------------------------------------------------------
@@ -207,9 +207,9 @@ public sealed class TenantMigrationRunnerTests
 
         await runner.ResumeAsync(MigrationCheckpoint.Empty, TestContext.Current.CancellationToken);
 
-        Assert.Equal([t1.Key, t2.Key], hook.Started);
-        Assert.Equal([t1.Key, t2.Key], hook.Completed);
-        Assert.Empty(hook.Failed);
+        hook.Started.Should().BeEquivalentTo([t1.Key, t2.Key]);
+        hook.Completed.Should().BeEquivalentTo([t1.Key, t2.Key]);
+        hook.Failed.Should().BeEmpty();
     }
 
     [Fact]
@@ -221,10 +221,10 @@ public sealed class TenantMigrationRunnerTests
 
         await runner.ResumeAsync(MigrationCheckpoint.Empty, TestContext.Current.CancellationToken);
 
-        Assert.Single(hook.Started);
-        Assert.Empty(hook.Completed);
-        Assert.Single(hook.Failed);
-        Assert.Equal(t1.Key, hook.Failed[0].Key);
+        hook.Started.Should().ContainSingle();
+        hook.Completed.Should().BeEmpty();
+        hook.Failed.Should().ContainSingle();
+        hook.Failed[0].Key.Should().Be(t1.Key);
     }
 
     [Fact]
@@ -237,9 +237,9 @@ public sealed class TenantMigrationRunnerTests
 
         await runner.ResumeAsync(checkpoint, TestContext.Current.CancellationToken);
 
-        Assert.Empty(hook.Started);
-        Assert.Empty(hook.Completed);
-        Assert.Empty(hook.Failed);
+        hook.Started.Should().BeEmpty();
+        hook.Completed.Should().BeEmpty();
+        hook.Failed.Should().BeEmpty();
     }
 
     // ---------------------------------------------------------------------------
@@ -260,8 +260,8 @@ public sealed class TenantMigrationRunnerTests
 
         var runner = scope.ServiceProvider.GetService<ITenantMigrationRunner>();
 
-        Assert.NotNull(runner);
-        Assert.IsType<TenantMigrationRunner>(runner);
+        runner.Should().NotBeNull();
+        runner.Should().BeOfType<TenantMigrationRunner>();
     }
 
     [Fact]
@@ -272,7 +272,7 @@ public sealed class TenantMigrationRunnerTests
 
         var hook = provider.GetService<IMigrationTelemetryHook>();
 
-        Assert.IsType<NullMigrationTelemetryHook>(hook);
+        hook.Should().BeOfType<NullMigrationTelemetryHook>();
     }
 
     [Fact]
@@ -286,6 +286,6 @@ public sealed class TenantMigrationRunnerTests
         using var provider = services.BuildServiceProvider();
         var hook = provider.GetService<IMigrationTelemetryHook>();
 
-        Assert.Same(custom, hook);
+        hook.Should().BeSameAs(custom);
     }
 }

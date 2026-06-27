@@ -36,8 +36,8 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         var json = JsonSerializer.Serialize(original, Results.JSO);
         var roundTrip = JsonSerializer.Deserialize<Result>(json, Results.JSO);
 
-        Assert.True(roundTrip!.IsSuccess);
-        Assert.Equal(Result.NoError, roundTrip.Error);
+        roundTrip!.IsSuccess.Should().BeTrue();
+        roundTrip.Error.Should().Be(Result.NoError);
     }
 
     [Fact]
@@ -48,9 +48,9 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         var json = JsonSerializer.Serialize(original, Results.JSO);
         var roundTrip = JsonSerializer.Deserialize<Result>(json, Results.JSO);
 
-        Assert.False(roundTrip!.IsSuccess);
-        Assert.Equal(original.Error.Message, roundTrip.Error.Message);
-        Assert.Equal(original.Error.ErrorCode.GetType(), roundTrip.Error.ErrorCode.GetType());
+        roundTrip!.IsSuccess.Should().BeFalse();
+        roundTrip.Error.Message.Should().Be(original.Error.Message);
+        roundTrip.Error.ErrorCode.GetType().Should().Be(original.Error.ErrorCode.GetType());
     }
 
     [Fact]
@@ -62,14 +62,14 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
-        Assert.True(root.TryGetProperty("isSuccess", out var isSuccess));
-        Assert.True(isSuccess.GetBoolean());
+        root.TryGetProperty("isSuccess", out var isSuccess).Should().BeTrue();
+        isSuccess.GetBoolean().Should().BeTrue();
 
-        Assert.True(root.TryGetProperty("error", out var error));
-        Assert.Equal(JsonValueKind.Object, error.ValueKind);
+        root.TryGetProperty("error", out var error).Should().BeTrue();
+        error.ValueKind.Should().Be(JsonValueKind.Object);
 
-        Assert.True(error.TryGetProperty("$errorType", out var errorType));
-        Assert.Contains("NoError", errorType.GetString());
+        error.TryGetProperty("$errorType", out var errorType).Should().BeTrue();
+        errorType.GetString().Should().Contain("NoError");
     }
 
     [Fact]
@@ -81,17 +81,17 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
-        Assert.True(root.TryGetProperty("isSuccess", out var isSuccess));
-        Assert.False(isSuccess.GetBoolean());
+        root.TryGetProperty("isSuccess", out var isSuccess).Should().BeTrue();
+        isSuccess.GetBoolean().Should().BeFalse();
 
-        Assert.True(root.TryGetProperty("error", out var error));
-        Assert.Equal(JsonValueKind.Object, error.ValueKind);
+        root.TryGetProperty("error", out var error).Should().BeTrue();
+        error.ValueKind.Should().Be(JsonValueKind.Object);
 
-        Assert.True(error.TryGetProperty("$errorType", out var errorType));
-        Assert.Contains("SimpleError", errorType.GetString());
+        error.TryGetProperty("$errorType", out var errorType).Should().BeTrue();
+        errorType.GetString().Should().Contain("SimpleError");
 
-        Assert.True(error.TryGetProperty("message", out var message));
-        Assert.Equal("Not found", message.GetString());
+        error.TryGetProperty("message", out var message).Should().BeTrue();
+        message.GetString().Should().Be("Not found");
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         var policy = Results.JSO.PropertyNamingPolicy;
 
         // Web defaults use camelCase naming
-        Assert.NotNull(policy);
-        Assert.Equal("JsonCamelCaseNamingPolicy", policy.GetType().Name);
+        policy.Should().NotBeNull();
+        policy.GetType().Name.Should().Be("JsonCamelCaseNamingPolicy");
     }
 }

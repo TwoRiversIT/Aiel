@@ -72,10 +72,10 @@ public sealed class RealWorldDataTests
         messages.OfType<GGA>().Should().HaveCount(4490);
         messages.OfType<RMC>().Should().HaveCount(4490);
         messages.OfType<GSA>().Should().HaveCount(4490);
-        messages.OfType<GSV>().Should().HaveCount(0);
-        messages.OfType<GLL>().Should().HaveCount(0);
-        messages.OfType<VTG>().Should().HaveCount(0);
-        messages.OfType<GFDTA>().Should().HaveCount(0);
+        messages.OfType<GSV>().Should().BeEmpty();
+        messages.OfType<GLL>().Should().BeEmpty();
+        messages.OfType<VTG>().Should().BeEmpty();
+        messages.OfType<GFDTA>().Should().BeEmpty();
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public sealed class RealWorldDataTests
         messages.OfType<GSV>().Should().HaveCount(147);
         messages.OfType<GLL>().Should().HaveCount(40);
         messages.OfType<VTG>().Should().HaveCount(39);
-        messages.OfType<GFDTA>().Should().HaveCount(0);
+        messages.OfType<GFDTA>().Should().BeEmpty();
     }
 
     [Fact]
@@ -154,12 +154,12 @@ public sealed class RealWorldDataTests
         }
 
         messages.Should().HaveCount(121);
-        messages.OfType<GGA>().Should().HaveCount(0);
-        messages.OfType<RMC>().Should().HaveCount(0);
-        messages.OfType<GSA>().Should().HaveCount(0);
-        messages.OfType<GSV>().Should().HaveCount(0);
-        messages.OfType<GLL>().Should().HaveCount(0);
-        messages.OfType<VTG>().Should().HaveCount(0);
+        messages.OfType<GGA>().Should().BeEmpty();
+        messages.OfType<RMC>().Should().BeEmpty();
+        messages.OfType<GSA>().Should().BeEmpty();
+        messages.OfType<GSV>().Should().BeEmpty();
+        messages.OfType<GLL>().Should().BeEmpty();
+        messages.OfType<VTG>().Should().BeEmpty();
         messages.OfType<GFDTA>().Should().HaveCount(121);
     }
 
@@ -181,7 +181,7 @@ public sealed class RealWorldDataTests
             }
         }
 
-        validPositions.Should().BeGreaterThan(0, "real-world data should contain valid GPS positions");
+        validPositions.Should().BePositive("real-world data should contain valid GPS positions");
     }
 
     [Fact]

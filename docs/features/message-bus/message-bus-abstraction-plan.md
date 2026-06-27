@@ -161,11 +161,11 @@ Under the existing `/src/` folder and `/tests/` folder, no new solution folders 
 dotnet build src\Aiel.MessageBus.Abstractions --no-restore --nologo
 
 # Run targeted tests
-dotnet test tests\Aiel.MessageBus.UnitTests --no-restore --verbosity minimal
-dotnet test tests\Aiel.MessageBus.Sagas.UnitTests --no-restore --verbosity minimal
-dotnet test tests\Aiel.MessageBus.Testing.UnitTests --no-restore --verbosity minimal
+dotnet test --project tests\Aiel.MessageBus.UnitTests\Aiel.MessageBus.UnitTests.csproj --no-restore --verbosity minimal
+dotnet test --project tests\Aiel.MessageBus.Sagas.UnitTests\Aiel.MessageBus.Sagas.UnitTests.csproj --no-restore --verbosity minimal
+dotnet test --project tests\Aiel.MessageBus.Testing.UnitTests\Aiel.MessageBus.Testing.UnitTests.csproj --no-restore --verbosity minimal
 
 # Full solution must remain clean
 dotnet build Aiel.slnx -c Debug --nologo
-dotnet test Aiel.slnx --no-restore --verbosity minimal
+dotnet test --solution Aiel.slnx --no-restore --verbosity minimal
 ```

@@ -20,24 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Extensions;
+using System.Runtime.CompilerServices;
 
-public class TypeExtensionsTests
-{
-    [Fact]
-    public void GetAllProperties_returns_inherited_properties()
-    {
-        CommonTypeExtensions.GetAllProperties(typeof(Foo)).Count().Should().Be(1);
-        CommonTypeExtensions.GetAllProperties(typeof(Bar)).Count().Should().Be(2);
-    }
-
-    private class Foo
-    {
-        public String Name { get; set; } = String.Empty;
-    }
-
-    private class Bar : Foo
-    {
-        public Int32 Age { get; set; }
-    }
-}
+[assembly: InternalsVisibleTo("Aiel.IdGeneration.UnitTests")]

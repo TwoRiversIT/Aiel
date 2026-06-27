@@ -83,11 +83,11 @@ public sealed class MultipleDispatchCallsAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var d = Assert.Single(diagnostics);
-        Assert.Equal("AIEL00005", d.Id);
-        Assert.Equal(DiagnosticSeverity.Warning, d.Severity);
-        Assert.Contains("DoWorkAsync", d.GetMessage());
-        Assert.Contains("2", d.GetMessage());
+        diagnostics.Should().ContainSingle();
+        diagnostics[0].Id.Should().Be("AIEL00005");
+        diagnostics[0].Severity.Should().Be(DiagnosticSeverity.Warning);
+        diagnostics[0].GetMessage().Should().Contain("DoWorkAsync");
+        diagnostics[0].GetMessage().Should().Contain("2");
     }
 
     [Fact]
@@ -113,8 +113,8 @@ public sealed class MultipleDispatchCallsAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var d = Assert.Single(diagnostics);
-        Assert.Equal("AIEL00005", d.Id);
+        diagnostics.Should().ContainSingle();
+        diagnostics[0].Id.Should().Be("AIEL00005");
     }
 
     [Fact]
@@ -140,9 +140,9 @@ public sealed class MultipleDispatchCallsAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var d = Assert.Single(diagnostics);
-        Assert.Equal("AIEL00005", d.Id);
-        Assert.Contains("2", d.GetMessage());
+        diagnostics.Should().ContainSingle();
+        diagnostics[0].Id.Should().Be("AIEL00005");
+        diagnostics[0].GetMessage().Should().Contain("2");
     }
 
     [Fact]
@@ -168,8 +168,8 @@ public sealed class MultipleDispatchCallsAnalyzerTests
 
         var diagnostics = await AnalyzeAsync(source);
 
-        var d = Assert.Single(diagnostics);
-        Assert.Contains("3", d.GetMessage());
+        diagnostics.Should().ContainSingle();
+        diagnostics[0].GetMessage().Should().Contain("3");
     }
 
     // -------------------------------------------------------------------------
@@ -196,7 +196,7 @@ public sealed class MultipleDispatchCallsAnalyzerTests
             """;
 
         var diagnostics = await AnalyzeAsync(source);
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -221,7 +221,7 @@ public sealed class MultipleDispatchCallsAnalyzerTests
             """;
 
         var diagnostics = await AnalyzeAsync(source);
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -251,7 +251,7 @@ public sealed class MultipleDispatchCallsAnalyzerTests
             """;
 
         var diagnostics = await AnalyzeAsync(source);
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     [Fact]
@@ -268,7 +268,7 @@ public sealed class MultipleDispatchCallsAnalyzerTests
             """;
 
         var diagnostics = await AnalyzeAsync(source);
-        Assert.Empty(diagnostics);
+        diagnostics.Should().BeEmpty();
     }
 
     // -------------------------------------------------------------------------

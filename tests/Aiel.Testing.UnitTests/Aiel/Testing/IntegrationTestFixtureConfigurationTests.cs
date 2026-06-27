@@ -35,8 +35,8 @@ public class IntegrationTestFixtureConfigurationTests
 
         await fixture.InitializeAsync();
 
-        Assert.NotNull(fixture.Configuration);
-        Assert.Null(fixture.Configuration["Sample:Value"]);
+        fixture.Configuration.Should().NotBeNull();
+        fixture.Configuration["Sample:Value"].Should().BeNull();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class IntegrationTestFixtureConfigurationTests
 
         await fixture.InitializeAsync();
 
-        Assert.Equal("Configured", fixture.Configuration["Sample:Value"]);
+        fixture.Configuration["Sample:Value"].Should().Be("Configured");
     }
 
     private sealed class ConfigurableIntegrationTestFixture(String configurationBasePath) : IntegrationTestFixture

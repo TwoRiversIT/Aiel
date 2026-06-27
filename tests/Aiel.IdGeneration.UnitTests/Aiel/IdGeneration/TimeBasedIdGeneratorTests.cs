@@ -31,7 +31,7 @@ public class TimeBasedIdGeneratorTests
 
         var id = generator.NextId();
 
-        Assert.NotEmpty(id);
+        id.Should().NotBeNullOrEmpty();
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class TimeBasedIdGeneratorTests
         for (var i = 0; i < 1000; i++)
         {
             var id = generator.NextId();
-            Assert.True(ids.Add(id), $"Duplicate ID generated: {id}");
+            ids.Add(id).Should().BeTrue($"Duplicate ID generated: {id}");
         }
     }
 
@@ -56,8 +56,7 @@ public class TimeBasedIdGeneratorTests
         for (var i = 0; i < 100; i++)
         {
             var currentId = generator.NextId();
-            Assert.True(String.CompareOrdinal(currentId, previousId) > 0,
-                $"IDs not in increasing order: {previousId} >= {currentId}");
+            String.CompareOrdinal(currentId, previousId).Should().BePositive($"IDs not in increasing order: {previousId} >= {currentId}");
             previousId = currentId;
         }
     }
@@ -83,7 +82,7 @@ public class TimeBasedIdGeneratorTests
         await Task.WhenAll(tasks);
 
         var uniqueIds = ids.Distinct().ToList();
-        Assert.Equal(1000, uniqueIds.Count);
+        uniqueIds.Should().HaveCount(1000);
     }
 
     [Fact]
@@ -98,7 +97,7 @@ public class TimeBasedIdGeneratorTests
         }
 
         var uniqueIds = ids.Distinct().ToList();
-        Assert.Equal(10000, uniqueIds.Count);
+        uniqueIds.Should().HaveCount(10000);
     }
 
     [Fact]
@@ -112,7 +111,8 @@ public class TimeBasedIdGeneratorTests
         var afterGeneration = DateTimeOffset.UtcNow;
         var decoded = TimeBasedIdGenerator.Decode(id);
 
-        Assert.InRange(decoded, beforeGeneration.AddSeconds(-1), afterGeneration.AddSeconds(1));
+        decoded.Should().BeAfter(beforeGeneration.AddSeconds(-1));
+        decoded.Should().BeBefore(afterGeneration.AddSeconds(1));
     }
 
     [Fact]
@@ -126,8 +126,7 @@ public class TimeBasedIdGeneratorTests
         var timestamp1 = TimeBasedIdGenerator.Decode(id1);
         var timestamp2 = TimeBasedIdGenerator.Decode(id2);
 
-        Assert.True(timestamp2 >= timestamp1,
-            $"Decoded timestamps not in order: {timestamp1} >= {timestamp2}");
+        timestamp2.Should().BeAfter(timestamp1, $"Decoded timestamps not in order: {timestamp1} >= {timestamp2}");
     }
 
     [Fact]
@@ -140,8 +139,8 @@ public class TimeBasedIdGeneratorTests
         var id1 = generator.NextId();
         var id2 = generator.NextId();
 
-        Assert.NotEqual(id1, id2);
-        Assert.True(String.CompareOrdinal(id2, id1) > 0);
+        id1.Should().NotBe(id2);
+        String.CompareOrdinal(id2, id1).Should().BePositive();
     }
 
     [Fact]
@@ -154,9 +153,10 @@ public class TimeBasedIdGeneratorTests
         var id = generator.NextId();
         var decoded = TimeBasedIdGenerator.Decode(id);
 
-        Assert.Equal(fakeTime.ToUnixTimeMilliseconds(), decoded.ToUnixTimeMilliseconds());
+        decoded.ToUnixTimeMilliseconds().Should().Be(fakeTime.ToUnixTimeMilliseconds(), $"Decoded time {decoded} does not match original time {fakeTime}");
     }
 
+    // ToDo: Use Microsoft.Extensions.TimeProvider.Testing when available to avoid custom FakeTimeProvider implementation
     private class FakeTimeProvider(DateTimeOffset fixedTime) : TimeProvider
     {
         private readonly DateTimeOffset _fixedTime = fixedTime;

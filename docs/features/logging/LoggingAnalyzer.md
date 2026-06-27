@@ -239,11 +239,11 @@ dotnet_diagnostic.AIEL005.severity = error
 
 ```bash
 # Restore + build
-dotnet restore Aiel.Logging.sln
-dotnet build   Aiel.Logging.sln
+dotnet restore src/Aiel.Logging/Aiel.Logging.csproj
+dotnet build src/Aiel.Logging/Aiel.Logging.csproj
 
 # Run all tests
-dotnet test Aiel.Logging.sln --logger "console;verbosity=normal"
+dotnet test --project tests/Aiel.Logging.Analyzers.UnitTests/Aiel.Logging.Analyzers.UnitTests.csproj --logger "console;verbosity=normal"
 
 # Pack the analyzer NuGet
 dotnet pack src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj -c Release

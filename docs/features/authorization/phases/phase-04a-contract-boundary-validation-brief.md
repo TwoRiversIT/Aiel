@@ -49,8 +49,8 @@
 
 Treat this command pair as authoritative for the first 04a slice:
 
-1. `dotnet test .\Aiel\tests\Aiel.Application.Contracts.UnitTests\Aiel.Application.Contracts.UnitTests.csproj --nologo --verbosity minimal`
-2. `dotnet test .\Aiel\tests\Aiel.Application.UnitTests\Aiel.Application.UnitTests.csproj --nologo --verbosity minimal`
+1. `dotnet test --project .\Aiel\tests\Aiel.Application.Contracts.UnitTests\Aiel.Application.Contracts.UnitTests.csproj --nologo --verbosity minimal`
+2. `dotnet test --project .\Aiel\tests\Aiel.Application.UnitTests\Aiel.Application.UnitTests.csproj --nologo --verbosity minimal`
 
 Use `Aiel.Framework.Analyzers.UnitTests` only as a secondary smoke check for this slice. It is green today, but it does not prove the move-delete boundary is complete.
 

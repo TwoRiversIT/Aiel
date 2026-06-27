@@ -16,7 +16,7 @@ Treat `Aiel/tests/Aiel.Authorization.Domain.Shared.UnitTests/Aiel.Authorization.
 Task 3 is not done until all of the following are true:
 
 1. `Aiel/src/Aiel.Authorization.Domain.Shared/Aiel.Authorization.Domain.Shared.csproj` and `Aiel/tests/Aiel.Authorization.Domain.Shared.UnitTests/Aiel.Authorization.Domain.Shared.UnitTests.csproj` exist and are added to `TwoRivers.slnx`, `Aiel.slnx`, and `virtual-folders.json`.
-2. `dotnet test .\Aiel\tests\Aiel.Authorization.Domain.Shared.UnitTests\Aiel.Authorization.Domain.Shared.UnitTests.csproj --nologo --verbosity minimal` passes cleanly.
+2. `dotnet test --project .\Aiel\tests\Aiel.Authorization.Domain.Shared.UnitTests\Aiel.Authorization.Domain.Shared.UnitTests.csproj --nologo --verbosity minimal` passes cleanly.
 3. That test project proves the public surface contains exactly the Task 3 shared types that downstream slices need first:
    - `PermissionName`
    - `PermissionStableId`

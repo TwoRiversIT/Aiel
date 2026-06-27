@@ -67,11 +67,11 @@ Task 11 does not start with production code. It starts with failing tests that p
 Run these in order:
 
 ```powershell
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Application.UnitTests\Aiel.Authorization.Application.UnitTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Testing.UnitTests\Aiel.Authorization.Testing.UnitTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Generators.UnitTests\Aiel.Authorization.Generators.UnitTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.EntityFrameworkCore.IntegrationTests\Aiel.Authorization.EntityFrameworkCore.IntegrationTests.csproj --no-restore -v minimal
-dotnet test D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\Aiel.slnx --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Application.UnitTests\Aiel.Authorization.Application.UnitTests.csproj --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Testing.UnitTests\Aiel.Authorization.Testing.UnitTests.csproj --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.Generators.UnitTests\Aiel.Authorization.Generators.UnitTests.csproj --no-restore -v minimal
+dotnet test --project D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\tests\Aiel.Authorization.EntityFrameworkCore.IntegrationTests\Aiel.Authorization.EntityFrameworkCore.IntegrationTests.csproj --no-restore -v minimal
+dotnet test --solution D:\source\worktrees\tr\squad\copilot-aiel-permissions-04a-contracts\Aiel\Aiel.slnx --no-restore -v minimal
 ```
 
 Interpretation:

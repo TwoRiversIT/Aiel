@@ -9,8 +9,18 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!--
+        Microsoft.Data.Sqlite v10.0.9 package has a transitive dependency on SQLitePCLRaw.lib.e_sqlite3 v2.1.11,
+        which contains a known high severity security vulnerability (GHSA-2m69-gcr7-jv3q). Adding a direct 
+        dependency on SQLitePCLRaw.lib.e_sqlite3 version 3.50.3, which is the patched version, overrides the
+        transitive dependency from Microsoft.Data.Sqlite and ensures we are using the secure version.
+        -->
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.9" />
+        <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.50.3" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.9" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
     </ItemGroup>
 

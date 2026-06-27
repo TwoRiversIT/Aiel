@@ -6,10 +6,6 @@
         <Nullable>enable</Nullable>
         <NeutralLanguage>en</NeutralLanguage>
 
-        <!-- Opt-In to Microsoft.Testing.Platform -->
-        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-        <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
-        
         <!-- NBGV versioning -->
         <NBGV_ThisAssemblyNamespace>$(AssemblyName)</NBGV_ThisAssemblyNamespace>
         <NBGV_ThisAssemblyIncludesPackageVersion>true</NBGV_ThisAssemblyIncludesPackageVersion>

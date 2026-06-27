@@ -63,8 +63,6 @@ jobs:
           dotnet test --solution Aiel.slnx \
             --configuration Release \
             --no-build \
-            --logger "trx;LogFileName=test-results.trx" \
-            --collect:"XPlat Code Coverage" \
             --results-directory ./TestResults
 
       - name: Publish test results

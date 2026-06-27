@@ -20,11 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Application;
 using Aiel.Framework;
 
-namespace Aiel;
+namespace Aiel.Application;
 
 [DependsOn(typeof(AielApplicationContracts))]
 public sealed class AielApplicationContractsUnitTests : AielDependencyConfigurator;
-

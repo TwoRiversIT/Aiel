@@ -18,6 +18,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
     </ItemGroup>
 

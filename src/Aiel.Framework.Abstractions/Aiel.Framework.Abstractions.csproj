@@ -12,9 +12,11 @@
         <None Include="./README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
+    <!-- Include the analyzer and generator DLLs in the NuGet package to ensure they are available and used during compilation of consuming projects. -->
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
-        <ProjectReference Include="..\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" ReferenceOutputAssembly="false" PackAsAnalyzer="true" />
+        <None Include="..\Aiel.Framework.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\Aiel.Framework.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="Aiel.Framework.Abstractions.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
     </ItemGroup>
 
     <ItemGroup>

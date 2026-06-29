@@ -24,20 +24,106 @@ The following documents are the basis for the framework. While not required read
 - [Domain Primitives Contract](./docs/features/ddd/DomainPrimitives.md)
 - [Aggregate Root Discussion](./docs/features/ddd/AggregateRootDiscussion.md)
 
-## Core Packages
+## Framework Core
 
-### [Aiel](./src/Aiel/README.md)
+### [Aiel.Framework](./src/Aiel.Framework/README.md)
+
+Module system and dependency graph for composing Aiel-based applications.
+
+**Features**:
+
+- `AielDependency` — base class for all Aiel modules; override `ConfigureAsync` to register services
+- `[DependsOn]` — attribute-driven module dependency graph resolved at startup
+- `DependencyManager` / `DependencyRoot` — runtime module orchestration
+- `DisposableExtensions` — safe disposal helpers
+
+### [Aiel.Utilities](./src/Aiel.Utilities/README.md)
 
 Fundamental utilities, value objects, and extensions used across the framework.
 
 **Features**:
 
-- `DisposableBase` - Safe IAsyncDisposable and IDisposable pattern implementation
-- `Email` and `EmailAddress` - Strongly-typed email value objects
-- `NaturalComparer<T>` - Human-friendly string sorting
-- Extension methods for String, IPAddress, and more
-- `ReflectionUtils` - Reflection utilities for extracting constants and metadata
-- IP address comparers and enumerable comparers
+- `DisposableBase` — safe `IAsyncDisposable` and `IDisposable` pattern implementation
+- `NaturalComparer<T>` — human-friendly string sorting
+- Extension methods for `String`, `IPAddress`, and more
+- `ReflectionUtils` — extract constants and metadata via reflection
+- `EnumerableComparer` — sequence comparison
+- IP address comparers
+
+## Domain & Application Layer
+
+### [Aiel.Domain](./src/Aiel.Domain/README.md)
+
+Domain-layer base types: aggregates, entities, repositories, and domain events.
+
+**Features**:
+
+- `Entity<TKey>` and `AggregateRoot<TKey>` — base classes for domain objects
+- `IAggregateRepository<TAggregate, TKey>` — repository contract
+- `IDomainEvent` — marker interface for domain events
+
+### [Aiel.Application.Contracts](./src/Aiel.Application.Contracts/README.md)
+
+Application-layer contracts for commands, queries, specifications, and read-side shaping concerns.
+
+**Features**:
+
+- `ISpecification<T>` — pure business-rule composition
+- `IQuerySpecification<T>` — provider-translatable read-side filtering
+- `ICommand`, `IQuery<TResult>` — command and query markers
+- `IExecutionContext` — operation, correlation, causation, and actor metadata
+- `IDomainEventDispatcher` — domain event dispatch contract
+- `PageRequest`, `SortRequest`, and `PagedResult<T>` — read-side shaping
+
+### [Aiel.Application](./src/Aiel.Application/README.md)
+
+Application-layer implementations.
+
+## CQRS & Mediator
+
+### [Aiel.Mediator](./src/Aiel.Mediator/README.md)
+
+In-process CQRS dispatcher with pipeline behavior support.
+
+**Features**:
+
+- `ISender` / `IPublisher` — dispatch commands, queries, and notifications
+- Assembly-scanned handler registration
+- `IPipelineBehavior<T>` — composable cross-cutting behaviors
+- Built-in `ValidationBehavior` (FluentValidation) and `LoggingBehavior`
+- Scoped execution per request
+
+### Aiel.Actions
+
+CQRS action primitives: `IAction`, `IExecutionContext`, `IActor`, `SystemActor`.
+
+### [Aiel.Actions.Commands](./src/Aiel.Actions.Commands/README.md)
+
+Command-side CQRS contracts and dispatching.
+
+**Features**:
+
+- `ICommand`, `ICommandHandler<T>`, `ICommandDispatcher`
+- `ICommandPipelineBehavior<T>` — command-scoped pipeline
+- `IUnitOfWork` + `UnitOfWorkCommandPipelineBehavior`
+- Structured logging via `CommandLoggingPipelineBehavior`
+
+### [Aiel.Actions.Queries](./src/Aiel.Actions.Queries/README.md)
+
+Query-side CQRS contracts and dispatching.
+
+**Features**:
+
+- `IQuery<TResult>`, `IQueryHandler<TQuery, TResult>`, `IQueryDispatcher`
+- `IQueryPipelineBehavior<T>` — query-scoped pipeline
+- `PageRequest` and `PagedResult<T>` for paged reads
+- Structured logging via `QueryLoggingPipelineBehavior`
+
+### [Aiel.Actions.Queries.EntityFrameworkCore](./src/Aiel.Actions.Queries.EntityFrameworkCore/README.md)
+
+EF Core query execution over `IQuerySpecification<T>`.
+
+## Result Pattern
 
 ### [Aiel.Results](./src/Aiel.Results/README.md)
 
@@ -45,26 +131,36 @@ Result Pattern implementation for representing operation outcomes without except
 
 **Features**:
 
-- `Result` and `Result<T>` - Type-safe operation results
-- `Error` types with standard error codes (NotFound, Conflict, Validation, etc.)
+- `Result` and `Result<T>` — type-safe operation results
+- `Error` types with standard error codes (`NotFound`, `Conflict`, `Validation`, etc.)
 - Functional operations: `Map`, `Bind`, `Match`, `Tap`
 - Async support with `MapAsync`, `BindAsync`, `MatchAsync`
 - Trimming and AOT compatible
 - JSON serialization support
 
-### Aiel.Results.AspNetCore
+### [Aiel.Results.Generators](./src/Aiel.Results.Generators/README.md)
 
-ASP.NET Core integration for the Result Pattern with ProblemDetails support.
+Source generators for custom error types (see [Aiel.Results](./src/Aiel.Results/README.md) for documentation).
+
+## Strong IDs
+
+### [Aiel.StrongIds](./src/Aiel.StrongIds/README.md)
+
+Source-generated strongly-typed identifiers.
 
 **Features**:
 
-- Automatic conversion of `Result<T>` to HTTP responses
-- ProblemDetails integration for standardized error responses
-- Minimal API and MVC controller support
+- `[StrongId<Guid>]` attribute on a `partial record struct` — generates equality, converters, and factory methods
+- `IStrongId<T>` — shared interface for typed ID constraints
+- Bundled source generator (`Aiel.StrongIds.Generators`)
 
-### [Aiel.Results.Generators](./src/Aiel.Results.Generators/README.md)
+### [Aiel.StrongIds.AspNetCore](./src/Aiel.StrongIds.AspNetCore/README.md)
 
-Source generators for the Result Pattern (see [Aiel.Results](./src/Aiel.Results/README.md) for documentation).
+ASP.NET Core binding for Strong IDs: `TypeConverter` registration and `System.Text.Json` integration.
+
+### [Aiel.StrongIds.EntityFrameworkCore](./src/Aiel.StrongIds.EntityFrameworkCore/README.md)
+
+EF Core value converters for Strong IDs via `HasStrongIdConversion<TStrongId, TValue>()`.
 
 ## Security & Identity
 
@@ -74,10 +170,41 @@ Claims-based authentication extensions for extracting and working with user clai
 
 **Features**:
 
-- `ClaimsPrincipalExtensions` - Extract user information (FullName, Email, TimeZone)
-- `ClaimExtensions` - Type-safe claim value extraction (String, Int32, Guid)
-- `AielClaims` - Standard claim type constants
+- `ClaimsPrincipalExtensions` — extract user information (`FullName`, `Email`, `TimeZone`)
+- `ClaimExtensions` — type-safe claim value extraction (`String`, `Int32`, `Guid`)
+- `AielClaims` — standard claim type constants
 - `EmailAddress` integration with claims
+
+## Authorization
+
+### [Aiel.Authorization](./src/Aiel.Authorization/README.md)
+
+Full authorization stack: domain, application, client, EF Core, generators, and analyzers.
+
+| Package | Purpose |
+|---|---|
+| `Aiel.Authorization.Domain` / `.Domain.Shared` | Authorization domain model and shared types |
+| `Aiel.Authorization.Application` / `.Application.Contracts` | Application-layer authorization handlers and contracts |
+| `Aiel.Authorization.Client` | Client-side `IActionCapabilitySnapshotCache` and `CanExecute` helpers |
+| `Aiel.Authorization.Client.Blazor` | Blazor `<CanExecute>` component for capability-driven visibility |
+| `Aiel.Authorization.EntityFrameworkCore` / `.PostgreSql` | EF Core persistence for authorization data |
+| `Aiel.Authorization.Generators` | Source generator: emits `IActionAuthorizationChecker<T>` and permission name constants from `[AuthorizationDefinition]` |
+| `Aiel.Authorization.Analyzers` | Roslyn analyzers enforcing authorization conventions |
+| `Aiel.Authorization.Testing` | Test doubles for authorization |
+
+## Multi-Tenancy
+
+### [Aiel.MultiTenancy](./src/Aiel.MultiTenancy/README.md)
+
+Multi-tenancy contracts for tenant-scoped entities and current-tenant resolution.
+
+**Features**:
+
+- `TenantId` — `readonly record struct` strong identifier
+- `TenantIdentity` — resolved tenant identity with optional host routing hint
+- `TenantResolution` — discriminated union of resolution outcomes (`Resolved`, `Missing`, `Ambiguous`, `Rejected`, `Error`)
+- `ITenantResolver` / `ITenantAccessor` — resolution and access contracts
+- `IMultiTenant` — marker for tenant-scoped entities
 
 ## Data Access
 
@@ -93,29 +220,78 @@ Column mapping for Dapper enabling property-to-column name mapping via attribute
 
 ### [Aiel.DataAccess.EntityFrameworkCore](./src/Aiel.DataAccess.EntityFrameworkCore/README.md)
 
-Entity Framework Core utilities and extensions (in development).
-
-### [Aiel.Application](./src/Aiel.Application/README.md)
-
-Application-layer contracts for commands, queries, specifications, and read-side shaping concerns.
+EF Core migration and seeding infrastructure.
 
 **Features**:
 
-- `ISpecification<T>` for pure business-rule composition
-- `IQuerySpecification<T>` for provider-translatable read-side filtering
-- `ICommand`, `IQuery<TResult>`, handlers, and dispatchers
-- `PageRequest`, `SortRequest`, and `PagedResult<T>` for read-side shaping
+- `IDatabaseMigrator` / `DatabaseMigratorBase` — migration contracts with retry-with-jitter
+- `DbContextMigrator<TDbContext>` — applies EF Core resilience execution strategy before migrating
+- `SeedingExtensions` — `SeedAsync` overloads on `IHost`, `IServiceProvider`, `IServiceScope`
+- OpenTelemetry tracing for migration runs (`"Migrations"` activity source)
+- Auto-discovery of `IDatabaseMigrator` registrations
 
-### [Aiel.DataAccess.EntityFrameworkCore](./src/Aiel.DataAccess.EntityFrameworkCore/README.md)
+## ASP.NET Core & Blazor
 
-Entity Framework Core integration for repositories, strong IDs, and read-side query specifications.
+### [Aiel.AspNetCore](./src/Aiel.AspNetCore/README.md)
+
+ASP.NET Core integration for the Aiel framework.
 
 **Features**:
 
-- `QuerySpecificationRepository<TEntity, TDbContext>` for read-side filtering
-- `QuerySpecificationEvaluator<TEntity>` for applying query specs, sorting, and paging
-- EF Core extensions and infrastructure integration points
-- Async query execution over provider-translatable specifications
+- `UseAielTenantResolution()` — per-request tenant resolution middleware
+- `RequireTenant()` — endpoint extension for fail-closed tenant enforcement
+- `AddAielTenantAccess()` — registers HTTP-context-backed `ITenantAccessor`
+- `GetTenantResolution()` — per-request `TenantResolution` via `HttpContext`
+
+### Aiel.AspNetCore.Blazor / Aiel.AspNetCore.Blazor.WebAssembly
+
+Blazor server and WebAssembly integration points (in development).
+
+## Messaging
+
+### [Aiel.MessageBus.Abstractions](./src/Aiel.MessageBus.Abstractions/README.md)
+
+Transport-agnostic integration messaging contracts.
+
+**Features**:
+
+- `IIntegrationMessage` — marker for transport-publishable messages
+- `MessageEnvelope<TMessage>` — payload plus strongly-typed metadata
+- `MessageMetadata` — correlation, causation, actor, tenant, and message identifiers
+- `IMessagePublisher` / `IMessageHandler<T>` — publish and consume contracts
+- `IMessageSerializer` / `SerializedMessage` — serialization boundary for adapters and outbox
+
+### [Aiel.MessageBus.Sagas](./src/Aiel.MessageBus.Sagas/README.md)
+
+Durable, correlated saga orchestration contracts.
+
+**Features**:
+
+- `SagaState` — abstract base class for saga state bags
+- `IAmStartedByMessage<T>` / `IHandleSagaMessage<T>` — lifecycle markers
+- `ICorrelateMessage<TSagaState, TMessage>` — type-safe message-to-saga correlation
+- `ISagaRepository<TSagaState>` — persistence seam
+
+### [Aiel.MessageBus.Testing](./src/Aiel.MessageBus.Testing/README.md)
+
+Test doubles for message bus: `RecordingMessagePublisher` and `FakeInboundMessageContextBuilder<T>`.
+
+## GPS / NMEA Parsing
+
+### [Aiel.Gps](./src/Aiel.Gps/README.md)
+
+NMEA 0183 sentence parser built on `System.IO.Pipelines` and `ReadOnlySequence<byte>`.
+
+### [Aiel.Gps.HP](./src/Aiel.Gps.HP/README.md)
+
+High-performance, zero-allocation NMEA 0183 parser for .NET — the next-generation replacement for `Aiel.Gps`.
+
+**Features**:
+
+- True zero-allocation parsing via `ReadOnlySpan<Byte>` and `ref struct` lexer
+- ~84 ns per message; 10× faster than `Aiel.Gps`
+- Source-generated discriminated union (`NmeaMessage`) for exhaustive type-safe pattern matching
+- Async stream processing with `System.IO.Pipelines`
 
 ## ID Generation & GUIDs
 
@@ -125,27 +301,15 @@ Unique identifier generation for various scenarios including database-optimized 
 
 **Features**:
 
-- `TimeBasedIdGenerator` - Time-based IDs with Base36 encoding
-- `KeyGenerator` - Cryptographically secure random keys
-- `CombGuid` - Factory for database-specific sequential GUIDs
-- `SqlServerCombGuid` - SQL Server-optimized sequential GUIDs
-- `PostgreSqlCombGuid` - PostgreSQL/MySQL/Oracle-optimized sequential GUIDs
+- `TimeBasedIdGenerator` — time-based IDs with Base36 encoding
+- `KeyGenerator` — cryptographically secure random keys
+- `CombGuid` — factory for database-specific sequential GUIDs
+- `SqlServerCombGuid` — SQL Server-optimized sequential GUIDs
+- `PostgreSqlCombGuid` — PostgreSQL/MySQL/Oracle-optimized sequential GUIDs
 - `DatabaseType` enum for selecting appropriate GUID strategy
 - `Base36` encoding/decoding utilities
 
-## Messaging & Email
-
-### [Aiel.Emailing](./src/Aiel.Emailing/README.md)
-
-Email validation, composition, and sending abstractions.
-
-**Features**:
-
-- `MailMessageBuilder` - Fluent API for building emails with Markdown support
-- `IEmailSender` - Abstraction for sending emails
-- Multiple email validators (W3C, Strict, Pattern-based, Parsing)
-- `Email` and `EmailAddress` value objects
-- FluentValidation integration
+## Internet Types & Email
 
 ### [Aiel.InternetTypes](./src/Aiel.InternetTypes/README.md)
 
@@ -153,10 +317,38 @@ Internet-related value objects and types.
 
 **Features**:
 
-- `DomainName` - Strongly-typed domain names
-- `Serial` - DNS serial numbers with automatic incrementing
-- `TTL` - Time-to-live values for DNS records
-- `Label` - DNS label validation
+- `DomainName` — strongly-typed domain names
+- `Serial` — DNS serial numbers with automatic incrementing
+- `TTL` — time-to-live values for DNS records
+- `Label` — DNS label validation
+
+### [Aiel.Emailing](./src/Aiel.Emailing/README.md)
+
+Email validation, composition, and sending abstractions.
+
+**Features**:
+
+- `MailMessageBuilder` — fluent API for building emails with Markdown support
+- `IEmailSender` — abstraction for sending emails
+- Multiple email validators (W3C, Strict, Pattern-based, Parsing)
+- `Email` and `EmailAddress` value objects
+- FluentValidation integration
+
+## Logging
+
+### [Aiel.Logging](./src/Aiel.Logging/README.md) / [Aiel.Logging.Analyzers](./src/Aiel.Logging.Analyzers/README.md)
+
+Roslyn analyzers and code fixes that enforce the Aiel structured-logging convention at compile time.
+
+**Rules**:
+
+| ID | Rule | Severity |
+|---|---|---|
+| AIEL00008 | `UseAielEventIds` — `EventId` must use a typed enum cast, not a raw integer | Error |
+| AIEL00009 | `MissingEventIdParameter` — every `[LoggerMessage]` method must declare an `eventId` parameter | Error |
+| AIEL00010 | `MissingEventIdInMessage` — `Message` string must contain the `[{EventId}]` placeholder | Error |
+| AIEL00011 | `NoDirectILoggerCalls` — use `[LoggerMessage]` partial methods, not `ILogger.LogXxx(...)` | Warning |
+| AIEL00012 | `EventIdMismatch` — attribute `EventId` and parameter default must refer to the same enum member | Error |
 
 ## Testing
 
@@ -166,20 +358,25 @@ Integration testing framework with dependency injection support.
 
 **Features**:
 
-- `IntegrationTestFixture` - Base class for xUnit fixtures
-- `IntegrationTestBase<TSut, TFixture>` - Base class for integration tests
-- Service scope isolation per test
-- Configuration management (appsettings.Testing.json)
+- `IntegrationTestFixture` — base class for xUnit fixtures; one `IHost` per test class
+- `IntegrationTestBase<TSut, TFixture>` — one service scope per test
+- Configuration management (`appsettings.Testing.json`)
 - Lazy SUT initialization
 - Proper lifetime management for fixtures and scopes
+
+### [Aiel.Testing.CodeAnalysis](./src/Aiel.Testing.CodeAnalysis/README.md)
+
+Utilities for testing Roslyn analyzers and source generators using `Microsoft.CodeAnalysis.Testing`.
 
 ## Installation
 
 All packages are available on NuGet. Install via Package Manager Console:
 
 ```pwsh
-Install-Package Aiel
+Install-Package Aiel.Framework
 Install-Package Aiel.Results
+Install-Package Aiel.Mediator
+Install-Package Aiel.StrongIds
 Install-Package Aiel.IdGeneration
 # ... etc
 ```
@@ -187,22 +384,51 @@ Install-Package Aiel.IdGeneration
 Or via .NET CLI:
 
 ```pwsh
-dotnet add package Aiel
+dotnet add package Aiel.Framework
 dotnet add package Aiel.Results
+dotnet add package Aiel.Mediator
+dotnet add package Aiel.StrongIds
 dotnet add package Aiel.IdGeneration
 # ... etc
 ```
 
 ## Quick Start
 
-### Using Result Pattern
+### Using the Module System
+
+```csharp
+[DependsOn(typeof(AielResults))]
+[DependsOn(typeof(AielMediator))]
+public sealed class MyAppModule : AielDependency
+{
+    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.Services.AddScoped<IMyService, MyService>();
+        return ValueTask.CompletedTask;
+    }
+}
+```
+
+### Using Strong IDs
+
+```csharp
+using Aiel.StrongIds;
+
+[StrongId<Guid>]
+public partial record struct UserId;
+
+// Usage
+var id = UserId.New();
+```
+
+### Using the Result Pattern
 
 ```csharp
 using Aiel.Results;
 
 public class UserService
 {
-    public Result<User> GetById(Int32 id)
+    public Result<User> GetById(UserId id)
     {
         var user = _repository.Find(id);
 
@@ -214,22 +440,26 @@ public class UserService
 }
 ```
 
-### Using Specifications
+### Using the Mediator (CQRS)
 
 ```csharp
-using Aiel.Application.Specifications;
+// Define a query
+public sealed record GetUserQuery(UserId Id) : IQuery<UserDto>;
 
-public sealed class ActiveCustomersSpecification : QuerySpecification<Customer>
+// Implement the handler
+public sealed class GetUserHandler : IQueryHandler<GetUserQuery, UserDto>
 {
-    public ActiveCustomersSpecification()
-        : base(customer => customer.IsActive)
+    public async ValueTask<Result> HandleAsync(GetUserQuery query, IQueryDispatcher dispatcher,
+        CancellationToken cancellationToken = default)
     {
+        // ...
     }
 }
 
-// Usage
-var spec = new ActiveCustomersSpecification();
-var customers = await _repository.FindAsync(spec);
+// Register and dispatch
+services.AddDispatcher(assembly).WithBehavior(typeof(ValidationBehavior<>)).Build();
+
+var result = await sender.QueryAsync(new GetUserQuery(id), cancellationToken);
 ```
 
 ### Using Database-Specific GUIDs

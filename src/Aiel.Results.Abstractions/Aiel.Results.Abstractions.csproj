@@ -22,7 +22,7 @@
     <!-- Reference the analyzer and generator to ensure they are built before this project and available during compilation. -->
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

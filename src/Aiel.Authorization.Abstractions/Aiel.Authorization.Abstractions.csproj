@@ -16,18 +16,16 @@
         <Using Include="System.Threading" />
         <Using Include="System.Threading.Tasks" />
     </ItemGroup>
-    
+
+    <!-- Include the analyzer and generator DLLs in the NuGet package to ensure they are available and used during compilation of consuming projects. -->
     <ItemGroup>
         <None Include="..\Aiel.Authorization.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Authorization.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\Aiel.Authorization.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Authorization.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="Aiel.Authorization.Abstractions.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
     </ItemGroup>
 
-    <!-- Reference the analyzer and generator project as an analyzer to ensure it is built before this project. -->
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Actions\Aiel.Actions.csproj" />
-        <ProjectReference Include="..\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
         <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
     </ItemGroup>

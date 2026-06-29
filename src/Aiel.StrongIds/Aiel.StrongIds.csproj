@@ -18,7 +18,13 @@
 		<None Include="Aiel.StrongIds.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
 	</ItemGroup>
 
-	<ItemGroup>
+    <!-- Reference the analyzer and generator to ensure they are built before this project and available during compilation. -->
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
 		<ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
 	</ItemGroup>
 

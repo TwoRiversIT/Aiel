@@ -1,6 +1,0 @@
-<Project>
-    <ItemGroup>
-        <Analyzer Include="$(MSBuildThisPackageRoot)analyzers/dotnet/cs/Aiel.StrongIds.Analyzers.dll" />
-        <Analyzer Include="$(MSBuildThisPackageRoot)analyzers/dotnet/cs/Aiel.StrongIds.Generators.dll" />
-    </ItemGroup>
-</Project>

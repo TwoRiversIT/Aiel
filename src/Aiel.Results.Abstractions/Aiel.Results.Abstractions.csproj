@@ -13,16 +13,38 @@
 
     <Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
 
+    <!--
+    Include the analyzer and generator DLLs in the NuGet package so consuming projects
+    automatically load and run them. Any assembly packed under analyzers/dotnet/cs is
+    picked up as an analyzer by the .NET SDK/NuGet by convention, so no additional
+    .props/.targets file is required (adding <Analyzer> items manually would double-load
+    them and, with a wrong path, causes CS0006 in consuming projects).
+    -->
     <ItemGroup>
-        <None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="Aiel.Results.Abstractions.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
+        <None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs"
+              Visible="false" />
+        <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs"
+              Visible="false" />
     </ItemGroup>
 
-    <!-- Reference the analyzer and generator to ensure they are built before this project and available during compilation. -->
+    <!--
+    The ProjectReferences (with ReferenceOutputAssembly=false) only enforce build ordering so
+    the DLLs exist when this project is packed; they are not compile-time references and are
+    not themselves packed as dependencies.
+    -->
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj"
+                          ReferenceOutputAssembly="false"
+                          Pack="false"
+                          PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj"
+                          ReferenceOutputAssembly="false"
+                          Pack="false"
+                          PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

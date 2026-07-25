@@ -1,0 +1,16 @@
+<Project>
+    
+    <PropertyGroup>
+        <!-- Test project detection -->
+        <IsTestProject Condition="$(MSBuildProjectName.EndsWith('Tests')) or $(MSBuildProjectName.EndsWith('.TestBase'))">true</IsTestProject>
+        <IsToolingProject Condition="$(MSBuildProjectName.EndsWith('.Analyzers')) or $(MSBuildProjectName.EndsWith('.CodeFixes')) or $(MSBuildProjectName.EndsWith('.Generators')) or $(MSBuildProjectName.EndsWith('.Logging'))">true</IsToolingProject>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <!-- Test project overrides -->
+    <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+        <OutputType>Exe</OutputType>
+        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    </PropertyGroup>
+
+</Project>

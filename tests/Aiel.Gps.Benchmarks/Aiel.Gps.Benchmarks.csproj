@@ -5,7 +5,6 @@
 		<AssemblyName>Aiel.Gps.Benchmarks</AssemblyName>
 		<TargetFrameworks>net10.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
-		<IsPackable>false</IsPackable>
 		<SignAssembly>false</SignAssembly>
 		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
 	</PropertyGroup>

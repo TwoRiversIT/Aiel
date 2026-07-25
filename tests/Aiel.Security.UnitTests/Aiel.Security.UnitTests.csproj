@@ -4,8 +4,7 @@
         <RootNamespace />
         <AssemblyName>Aiel.Security.UnitTests</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
-        <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
+        
     </PropertyGroup>
 
     <ItemGroup>

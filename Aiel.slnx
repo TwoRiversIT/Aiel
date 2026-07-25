@@ -129,6 +129,8 @@
     <File Path="docs/prompts/general.md" />
   </Folder>
   <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+    <File Path="src/Directory.Build.targets" />
     <Project Path="src/Aiel.Actions.Commands/Aiel.Actions.Commands.csproj" />
     <Project Path="src/Aiel.Actions.Queries.EntityFrameworkCore/Aiel.Actions.Queries.EntityFrameworkCore.csproj" />
     <Project Path="src/Aiel.Actions.Queries/Aiel.Actions.Queries.csproj" />

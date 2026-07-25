@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework.Analyzers.Internal;
 using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -44,19 +43,39 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
     private const String DependencyName = "Aiel.Framework.AielDependencyConfigurator";
     private const String ApplicationName = "Aiel.Framework.AielApplicationConfigurator";
 
+    private static readonly DiagnosticDescriptor AielDependencyRequired = new(
+        id: DiagnosticRuleIDs.AIEL00001_AielDependencyRequiredId,
+        title: "Missing implementation of either `AielDependencyConfigurator` or `AielApplicationConfigurator`",
+        messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplicationConfigurator` if the assembly is a root application, or `AielDependencyConfigurator` if the assembly is a class library",
+        category: DiagnosticMetadata.UsageCategory,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Framework.AielDependencyConfigurator` or `Aiel.Framework.AielApplicationConfigurator`. These types serve as the root for the dependency graph.",
+        customTags: []);
+
     private static readonly DiagnosticDescriptor DependencyIsNotSealed = new(
         id: DiagnosticRuleIDs.AIEL00020_DependencyIsNotSealedId,
         title: "Root dependency type must be sealed",
-        messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplicationConfigurator` or `AielDependencyConfigurator`",
+        messageFormat: "Classes that inherit `AielApplicationConfigurator` or `AielDependencyConfigurator` must be sealed",
         category: DiagnosticMetadata.UsageCategory,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
         description: "A root dependency type was found, but it is not sealed.",
         customTags: []);
 
+    private static readonly DiagnosticDescriptor MultipleAielDependencyImplementations = new(
+        id: DiagnosticRuleIDs.AIEL00021_MultipleAielDependencyImplementationsId,
+        title: "Multiple root dependency types found",
+        messageFormat: "The '{0}' assembly contains multiple classes that inherit from either `AielApplicationConfigurator` or `AielDependencyConfigurator`. Each assembly must define exactly one such class.",
+        category: DiagnosticMetadata.UsageCategory,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "Multiple root dependency types were found in the assembly.",
+        customTags: []);
+
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-        => [DiagnosticDescriptors.RootDependencyRequired, DependencyIsNotSealed];
+        => [AielDependencyRequired, DependencyIsNotSealed, MultipleAielDependencyImplementations];
 
     private record struct TrNamedTypes(INamedTypeSymbol Dependency, INamedTypeSymbol Application);
 
@@ -118,7 +137,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
             var location = GetCompilationLocation(context);
 
             var diagnostic = Diagnostic.Create(
-                DiagnosticDescriptors.RootDependencyRequired,
+                AielDependencyRequired,
                 location,
                 assemblyName,
                 count);
@@ -134,7 +153,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
             var location = symbol.Locations.FirstOrDefault() ?? Location.None;
 
             var diagnostic = Diagnostic.Create(
-                DiagnosticDescriptors.RootDependencyRequired,
+                MultipleAielDependencyImplementations,
                 location,
                 assemblyName,
                 count);

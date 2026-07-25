@@ -94,7 +94,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(testCode);
 
         diagnostics.Should().ContainSingle();
-        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
+        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_AielDependencyRequiredId);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class AssemblyAnalyzerTests
 
         diagnostics.Should().ContainSingle();
 
-        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
+        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_AielDependencyRequiredId);
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(testCode);
 
         diagnostics.Should().ContainSingle();
-        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
+        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_AielDependencyRequiredId);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(testCode);
 
         diagnostics.Should().ContainSingle();
-        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId);
+        diagnostics[0].Id.Should().Be(DiagnosticRuleIDs.AIEL00001_AielDependencyRequiredId);
     }
 
     [Fact]
@@ -188,7 +188,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(testCode);
 
         diagnostics.Should().HaveCount(2);
-        diagnostics.Should().AllSatisfy(d => d.Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId));
+        diagnostics.Should().AllSatisfy(d => d.Id.Should().Be(DiagnosticRuleIDs.AIEL00021_MultipleAielDependencyImplementationsId));
     }
 
     [Fact]
@@ -206,7 +206,7 @@ public class AssemblyAnalyzerTests
         var diagnostics = await AnalyzeAsync(testCode);
 
         diagnostics.Should().HaveCount(2);
-        diagnostics.Should().AllSatisfy(d => d.Id.Should().Be(DiagnosticRuleIDs.AIEL00001_RootDependencyRequiredId));
+        diagnostics.Should().AllSatisfy(d => d.Id.Should().Be(DiagnosticRuleIDs.AIEL00021_MultipleAielDependencyImplementationsId));
     }
 
     private static async Task<ImmutableArray<Diagnostic>> AnalyzeAsync(String testCode, Boolean referenceAielCore = true)

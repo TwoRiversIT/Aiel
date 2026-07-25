@@ -18,8 +18,6 @@
     <File Path="build.ps1" />
     <File Path="copilot.md" />
     <File Path="copilot.txt" />
-    <File Path="Directory.Build.props" />
-    <File Path="Directory.Build.targets" />
     <File Path="global.json" />
     <File Path="LICENSE.md" />
     <File Path="NuGet.config" />
@@ -208,6 +206,7 @@
   </Folder>
   <Folder Name="/tests/">
     <File Path="tests/Directory.Build.props" />
+    <File Path="tests/Directory.Build.targets" />
     <Project Path="tests/Aiel.Actions.Commands.UnitTests/Aiel.Actions.Commands.UnitTests.csproj" Id="aace705f-04b2-477c-8a3d-e66c8eefe704" />
     <Project Path="tests/Aiel.Actions.Queries.EntityFrameworkCore.IntegrationTests/Aiel.Actions.Queries.EntityFrameworkCore.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.Actions.Queries.UnitTests/Aiel.Actions.Queries.UnitTests.csproj" Id="0389e925-832e-438e-a214-679fc5ede0df" />

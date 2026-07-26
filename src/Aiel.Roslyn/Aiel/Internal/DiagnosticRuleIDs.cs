@@ -20,15 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
-
 namespace Aiel.Internal;
 
 // IMPORTANT: All diagnostic descriptor IDs must start with the canonical "AIEL" prefix.
 // Never use any other prefix (e.g. TRAF, TRSG, TRMD). See GitHub issue #7.
 public static class DiagnosticRuleIDs
 {
-    public const String AIEL00001_RootDependencyRequiredId = "AIEL00001";
+    public const String AIEL00001_AielDependencyRequiredId = "AIEL00001";
     public const String AIEL00002_ErrorTypesMustHaveSingleStringConstructorId = "AIEL00002";
     public const String AIEL00003_PreferResultHttpClientExtensionsId = "AIEL00003";
     public const String AIEL00004_AmbiguousProjectTypeDiagnosticId = "AIEL00004";
@@ -48,4 +46,5 @@ public static class DiagnosticRuleIDs
     public const String AIEL00018_BackingTypeUnsupportedId = "AIEL00018";
     public const String AIEL00019_NoNmeaMessageTypesDiscoveredId = "AIEL00019";
     public const String AIEL00020_DependencyIsNotSealedId = "AIEL00020";
+    public const String AIEL00021_MultipleAielDependencyImplementationsId = "AIEL00021";
 }

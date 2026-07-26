@@ -4,7 +4,6 @@
         <RootNamespace />
         <AssemblyName>Aiel.AspNetCore.IntegrationTests.WebApplication</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
-        <IsPackable>false</IsPackable>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
         <StartupObject>Aiel.AspNetCore.Program</StartupObject>

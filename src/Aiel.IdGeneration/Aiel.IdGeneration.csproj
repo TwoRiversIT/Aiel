@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<RootNamespace />
-		<AssemblyName>Aiel.IdGeneratrion</AssemblyName>
+		<AssemblyName>Aiel.IdGeneration</AssemblyName>
 		<TargetFramework>net10.0</TargetFramework>
 		<IsPackable>true</IsPackable>
 	</PropertyGroup>

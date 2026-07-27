@@ -1,4 +1,4 @@
-// MIT License
+﻿// MIT License
 //
 // Copyright 2026 Two Rivers Information Technology Inc.
 //
@@ -20,23 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Internal;
-using Microsoft.CodeAnalysis;
+namespace Aiel.Framework;
 
-namespace Aiel.Framework.Generators.Internal;
-
-public static class DiagnosticDescriptors
+public interface IApplicationInfo
 {
-    /// <summary>
-    /// AIEL00004 is raised when the generator detects multiple hosting types in the same assembly.
-    /// </summary>
-    public static readonly DiagnosticDescriptor AmbiguousProjectType = new(
-        id: DiagnosticRuleIDs.AIEL00004_AmbiguousProjectTypeDiagnosticId,
-        title: "Unable to determine a single Aiel project type",
-        messageFormat: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
-        category: DiagnosticMetadata.UsageCategory,
-        defaultSeverity: DiagnosticSeverity.Error,
-        isEnabledByDefault: true,
-        description: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
-        customTags: []);
+    Guid ApplicationInstance { get; }
+    String ApplicationName { get; }
+    String ApplicationVersion { get; }
 }

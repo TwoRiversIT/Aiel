@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework.Generators.Internal;
+using Aiel.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -68,6 +68,19 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
     private const String FqWebAssemblyBuilder = "global::" + NsWebAssemblyBuilder;
 
     private const String NsIHostBuilder = "Microsoft.Extensions.Hosting.IHostBuilder";
+
+    /// <summary>
+    /// AIEL00004 is raised when the generator detects multiple hosting types in the same assembly.
+    /// </summary>
+    public static readonly DiagnosticDescriptor AmbiguousProjectType = new(
+        id: DiagnosticRuleIDs.AIEL00004_AmbiguousProjectTypeDiagnosticId,
+        title: "Unable to determine a single Aiel project type",
+        messageFormat: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
+        category: DiagnosticMetadata.UsageCategory,
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true,
+        description: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
+        customTags: []);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -311,7 +324,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
         if (projectType == ProjectType.Ambiguous)
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.AmbiguousProjectType, Location.None));
+            context.ReportDiagnostic(Diagnostic.Create(AmbiguousProjectType, Location.None));
             return;
         }
 

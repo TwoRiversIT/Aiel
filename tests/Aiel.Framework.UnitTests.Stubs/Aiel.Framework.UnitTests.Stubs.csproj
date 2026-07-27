@@ -26,6 +26,7 @@
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyDescriptor.cs" Link="Aiel\Framework\Stubs\DependencyDescriptor.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyInitializationContext.cs" Link="Aiel\Framework\Stubs\DependencyInitializationContext.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependsOnAttribute.cs" Link="Aiel\Framework\Stubs\DependsOnAttribute.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IApplicationInfo.cs" Link="Aiel\Framework\Stubs\IApplicationInfo.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IConfigurator.cs" Link="Aiel\Framework\Stubs\IConfigurator.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IDependencyManager.cs" Link="Aiel\Framework\Stubs\IDependencyManager.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IInitializer.cs" Link="Aiel\Framework\Stubs\IInitializer.txt" />

@@ -47,7 +47,7 @@ The feature should make this shape the normal path:
 ```csharp
 using Aiel.StrongIds;
 
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct AppointmentId;
 ```
 
@@ -193,7 +193,7 @@ already has a zero-technical-debt posture, the plan should prefer the clean name
 The existing generator contract remains the foundation:
 
 ```csharp
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct OrderId;
 ```
 

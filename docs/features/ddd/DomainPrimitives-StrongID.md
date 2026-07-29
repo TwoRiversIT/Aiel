@@ -50,7 +50,7 @@ The developer should declare intent only, and the source generator should emit t
 Recommended authoring shape for a struct-backed strong ID:
 
 ```csharp
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct OrderId;
 ```
 
@@ -105,7 +105,7 @@ That means the invariant must be stated precisely:
 If Aiel ever needs an ID type where invalid construction must be impossible rather than merely discouraged and analyzable, use a generated sealed record class instead:
 
 ```csharp
-[StrongId<Guid>(DisallowDefault = true, BackingKind = StrongIdBackingKind.Reference)]
+[StrongId<Guid>(AllowDefault = false, BackingKind = StrongIdBackingKind.Reference)]
 public sealed partial record OrderId;
 ```
 
@@ -177,7 +177,7 @@ public enum StrongIdBackingKind
 Supported authoring shape:
 
 ```csharp
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct OrderId;
 ```
 
@@ -279,7 +279,7 @@ The contract above is easier to implement correctly if the generated API surface
 Authoring input:
 
 ```csharp
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct OrderId;
 ```
 
@@ -323,7 +323,7 @@ public readonly partial record struct OrderId : IStrongId<Guid>
 Authoring input:
 
 ```csharp
-[StrongId<string>(DisallowDefault = true)]
+[StrongId<string>(AllowDefault = false)]
 public readonly partial record struct ExternalSystemId;
 ```
 

@@ -803,10 +803,10 @@ public sealed record RoleName
     public string Value { get; }
 }
 
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct RoleDefinitionId;
 
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct RoleAssignmentId;
 ```
 
@@ -966,10 +966,10 @@ Aiel is greenfield and has a zero-technical-debt posture. Permission public mode
 strong IDs and value objects from the first implementation.
 
 ```csharp
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct PermissionGrantId;
 
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct TenantId;
 
 public sealed record PermissionName

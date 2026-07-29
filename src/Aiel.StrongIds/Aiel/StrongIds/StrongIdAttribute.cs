@@ -31,20 +31,28 @@ namespace Aiel.StrongIds;
 public sealed class StrongIdAttribute<TValue> : Attribute
 {
     /// <summary>
-    /// When true, the generated strong ID type will not allow the default value of the underlying type.
+    /// When false, the generated strong ID type will not allow the default value of the underlying type.
     /// For example, if the underlying type is Guid, then Guid.Empty will not be allowed. If the
     /// underlying type is string, then null and empty string will not be allowed. Default is true.
     /// </summary>
-    public Boolean DisallowDefault { get; init; } = true;
-
-    // ToDo: This does not seem to be used anywhere. Do we need it? If not, we should remove it.
-    public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
+    public Boolean AllowDefault { get; init; } = true;
 
     /// <summary>
     /// When true, the source generator will generate a TryFrom method for the strong ID type.
     /// Default is true.
     /// </summary>
     public Boolean GenerateTryFrom { get; init; } = true;
+
+    /// <summary>
+    /// When true, the source generator will generate a TryParse method for the strong ID type.
+    /// Default is true.
+    /// </summary>
+    public Boolean GenerateTryParse { get; init; } = true;
+
+    /// <summary>
+    /// Specifies the backing kind for the generated strong ID type. Default is StrongIdBackingKind.Value.
+    /// </summary>
+    public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
 }
 
 public enum StrongIdBackingKind

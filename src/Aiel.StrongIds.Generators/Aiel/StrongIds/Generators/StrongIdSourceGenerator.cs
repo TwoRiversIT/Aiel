@@ -31,8 +31,9 @@ namespace Aiel.StrongIds.Generators;
 public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 {
     private const String BackingKindPropertyName = "BackingKind";
-    private const String DisallowDefaultPropertyName = "DisallowDefault";
+    private const String AllowDefaultPropertyName = "AllowDefault";
     private const String GenerateTryFromPropertyName = "GenerateTryFrom";
+    private const String GenerateTryParsePropertyName = "GenerateTryParse";
     private const String StrongIdAttributeMetadataName = "Aiel.StrongIds.StrongIdAttribute`1";
     private const Int32 ReferenceBackingKindValue = 1;
 
@@ -85,10 +86,11 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         return new StrongIdModel(
             candidate.TypeSymbol,
             valueType,
-            GetBooleanNamedArgument(candidate.AttributeData, DisallowDefaultPropertyName, defaultValue: true),
-            GetBackingKind(candidate.AttributeData),
+            GetBooleanNamedArgument(candidate.AttributeData, AllowDefaultPropertyName, defaultValue: true),
             GetBooleanNamedArgument(candidate.AttributeData, GenerateTryFromPropertyName, defaultValue: true),
-            IsReadOnlyRecordStruct(candidate.TypeSymbol));
+            GetBooleanNamedArgument(candidate.AttributeData, GenerateTryParsePropertyName, defaultValue: true),
+            IsReadOnlyRecordStruct(candidate.TypeSymbol),
+            GetBackingKind(candidate.AttributeData));
     }
 
     private static String Render(StrongIdModel model)
@@ -131,16 +133,19 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             builder.AppendLine("    }");
         }
 
-        builder.AppendLine();
-        builder.AppendLine($"    public static bool TryParse(string? value, global::System.IFormatProvider? provider, out {model.TypeSymbol.Name} id)");
-        builder.AppendLine("    {");
-        EmitTryParse(builder, model);
-        builder.AppendLine($"        id = {GetDefaultAssignment(model)};");
-        builder.AppendLine("        return false;");
-        builder.AppendLine("    }");
+        if (model.GenerateTryParse)
+        {
+            builder.AppendLine();
+            builder.AppendLine($"    public static bool TryParse(string? value, global::System.IFormatProvider? provider, out {model.TypeSymbol.Name} id)");
+            builder.AppendLine("    {");
+            EmitTryParse(builder, model);
+            builder.AppendLine($"        id = {GetDefaultAssignment(model)};");
+            builder.AppendLine("        return false;");
+            builder.AppendLine("    }");
 
-        builder.AppendLine();
-        builder.AppendLine($"    public static bool TryParse(string value, out {model.TypeSymbol.Name} id) => TryParse(value, null, out id);");
+            builder.AppendLine();
+            builder.AppendLine($"    public static bool TryParse(string value, out {model.TypeSymbol.Name} id) => TryParse(value, null, out id);");
+        }
 
         builder.AppendLine();
         builder.AppendLine($"    public bool IsDefault => {model.IsDefaultExpression};");
@@ -155,7 +160,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
     {
         var indent = new String(' ', indentLevel * 4);
 
-        if (!model.DisallowDefault)
+        if (model.AllowDefault)
         {
             // For string types, we must disallow null
             if (String.Equals(model.BackingTypeName, "global::System.String", StringComparison.Ordinal))
@@ -182,7 +187,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
     {
         var indent = new String(' ', indentLevel * 4);
 
-        if (model.DisallowDefault)
+        if (model.AllowDefault)
         {
             builder.AppendLine($"{indent}if ({model.GetInvalidValueExpression(valueExpression)})");
             builder.AppendLine($"{indent}{{");
@@ -388,20 +393,22 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
     private sealed class StrongIdModel(
         INamedTypeSymbol typeSymbol,
         ITypeSymbol valueType,
-        Boolean disallowDefault,
-        StrongIdBackingKindOption backingKind,
+        Boolean allowDefault,
         Boolean generateTryFrom,
-        Boolean isReadOnlyRecordStruct)
+        Boolean generateTryParse,
+        Boolean isReadOnlyRecordStruct,
+        StrongIdBackingKindOption backingKind)
     {
         public INamedTypeSymbol TypeSymbol { get; } = typeSymbol;
 
         public ITypeSymbol ValueType { get; } = valueType;
 
-        public Boolean DisallowDefault { get; } = disallowDefault;
+        public Boolean AllowDefault { get; } = allowDefault;
 
         public StrongIdBackingKindOption BackingKind { get; } = backingKind;
 
         public Boolean GenerateTryFrom { get; } = generateTryFrom;
+        public Boolean GenerateTryParse { get; } = generateTryParse;
 
         public Boolean IsReadOnlyRecordStruct { get; } = isReadOnlyRecordStruct;
 

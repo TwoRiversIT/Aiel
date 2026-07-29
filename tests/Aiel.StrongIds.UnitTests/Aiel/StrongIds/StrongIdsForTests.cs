@@ -22,14 +22,14 @@
 
 namespace Aiel.StrongIds;
 
-[StrongId<Guid>(DisallowDefault = true)]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct GuidDisallowDefaultId;
 
-[StrongId<Int32>(DisallowDefault = false)]
+[StrongId<Int32>(AllowDefault = true)]
 public readonly partial record struct Int32AllowDefaultId;
 
-[StrongId<String>(DisallowDefault = true)]
+[StrongId<String>(AllowDefault = false)]
 public readonly partial record struct StringDisallowDefaultId;
 
-[StrongId<String>(DisallowDefault = false)]
+[StrongId<String>(AllowDefault = true)]
 public readonly partial record struct StringAllowDefaultId;

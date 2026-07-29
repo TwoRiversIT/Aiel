@@ -31,7 +31,7 @@ namespace Aiel.StrongIds;
 public class StrongIdSourceGeneratorTests
 {
     [Fact]
-    public void Generate_EmitsGuidBackedRecordStructMembers()
+    public void WithTypeGuid_EmitsGuidBackedRecordStructMembers()
     {
         const String source = """
             using System;
@@ -39,7 +39,7 @@ public class StrongIdSourceGeneratorTests
 
             namespace Test;
 
-            [StrongId<Guid>(GenerateTryFrom = true)]
+            [StrongId<Guid>]
             public readonly partial record struct OrderId;
             """;
 
@@ -61,7 +61,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_OmitsTryFrom_WhenGenerateTryFromDisabled()
+    public void WhenGenerateTryFromIsFalse_OmitsTryFrom()
     {
         const String source = """
             using System;
@@ -82,14 +82,35 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_EmitsStringValidation_ForStringBackedIds()
+    public void WhenGenerateTryParseIsFalse_OmitsTryParse()
+    {
+        const String source = """
+            using System;
+            using Aiel.StrongIds;
+
+            namespace Test;
+
+            [StrongId<Guid>(GenerateTryParse = false)]
+            public readonly partial record struct OrderId;
+            """;
+
+        var result = RunGenerator(source);
+
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.CompilationDiagnostics.Should().NotContain(d => d.Severity == DiagnosticSeverity.Error);
+        result.GeneratedSources.Should().ContainSingle();
+        result.GeneratedSources[0].SourceText.ToString().Should().NotContain("TryParse(");
+    }
+
+    [Fact]
+    public void WhenAllowDefaultIsFalse_EmitsStringValidation_ForStringBackedIds()
     {
         const String source = """
             using Aiel.StrongIds;
 
             namespace Test;
 
-            [StrongId<string>]
+            [StrongId<string>(AllowDefault = false)]
             public readonly partial record struct ExternalSystemId;
             """;
 
@@ -108,7 +129,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_TrimsStringBackedStrongIdValues_WithoutChangingCase()
+    public void WhenTypeIsString_TrimsStringBackedStrongIdValues_WithoutChangingCase()
     {
         const String source = """
             using Aiel.StrongIds;
@@ -136,14 +157,14 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_RejectsNullEmptyOrWhitespaceStringValues()
+    public void WhenAllowDefaultIsFalse_RejectsNullEmptyOrWhitespaceStringValues()
     {
         const String source = """
             using Aiel.StrongIds;
 
             namespace Test;
 
-            [StrongId<string>]
+            [StrongId<string>(AllowDefault = false)]
             public readonly partial record struct ExternalSystemId;
             """;
 
@@ -196,7 +217,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_SkipsSilently_WhenTypeIsNotPartialRecordType()
+    public void WhenTypeIsNotPartialRecordType_SkipsSilently()
     {
         const String source = """
             using System;
@@ -216,7 +237,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_EmitsCode_WhenPositionalRecordSyntaxUsed()
+    public void WhenPositionalRecordSyntaxUsed_EmitsCode()
     {
         // Even though positional syntax is invalid per the analyzer, the generator still emits code
         // for any partial record struct/sealed record shape. Diagnostics are handled by analyzers.
@@ -237,7 +258,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_EmitsCode_WhenValueMemberAlreadyExists()
+    public void WhenValueMemberAlreadyExists_EmitsCode()
     {
         // Even though declaring a Value member is invalid per the analyzer, the generator still emits code
         // for any partial record struct/sealed record shape. Diagnostics are handled by analyzers.
@@ -261,7 +282,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_EmitsCode_WhenInstanceConstructorAlreadyExists()
+    public void WithDefaultConditions_EmitsCode_WhenInstanceConstructorAlreadyExists()
     {
         // Even though declaring instance constructors is invalid per the analyzer, the generator still emits code
         // for any partial record struct/sealed record shape. Diagnostics are handled by analyzers.
@@ -288,7 +309,7 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_SkipsSilently_WhenBackingTypeIsUnsupported()
+    public void WhenBackingTypeIsUnsupported_SkipsSilently()
     {
         const String source = """
             using Aiel.StrongIds;
@@ -314,7 +335,7 @@ public class StrongIdSourceGeneratorTests
             [global::System.AttributeUsage(global::System.AttributeTargets.Struct | global::System.AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
             public sealed class StrongIdAttribute<TValue> : global::System.Attribute
             {
-                public bool DisallowDefault { get; init; } = true;
+                public bool AllowDefault { get; init; } = true;
 
                 public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
 

@@ -14,7 +14,7 @@ The Aiel codebase (contracts, implementations, and tests) is the authoritative s
 
 **Landed in #16–#19:**
 
-- ✅ `Aiel.MultiTenancy`: Tenant-identity contracts (`TenantId`, `TenantIdentity`, `TenantResolution`)
+- ✅ `Aiel.MultiTenancy`: Tenant-identity contracts (`TenantId`, `TenantDescriptor`, `TenantResolution`)
 - ✅ `Aiel.AspNetCore`: HTTP middleware (`UseAielTenantResolution`, `RequireTenant()`, `ITenantAccessor`)
 - ✅ `Aiel.DataAccess.EntityFrameworkCore`: Base context rename (`AielDbContext`), query filters for `IMultiTenant` entities
 - ✅ `Aiel.DataAccess.EntityFrameworkCore`: Migration primitives (`IDatabaseMigrator`, `DbContextMigrator<T>`, retry and telemetry)
@@ -86,7 +86,7 @@ No fixed schema imposed by Aiel; Aviendha decides the storage (PostgreSQL table,
 
 ### 3. Resolve Connections
 
-After `TenantIdentity` is known (via `ITenantResolver`), resolve the connection string:
+After `TenantDescriptor` is known (via `ITenantResolver`), resolve the connection string:
 
 - **Discriminator tenants**: Use the shared database connection.
 - **Database-per-tenant tenants**: Look up tenant binding in catalog, retrieve from secrets manager.
@@ -223,14 +223,14 @@ public async ValueTask<TenantResolution> ResolveAsync(CancellationToken cancella
 
     // 5. Return resolved
     return new TenantResolution.Resolved(
-        new TenantIdentity(actor.ActiveTenantId, tenant.DomainHint)
+        new TenantDescriptor(actor.ActiveTenantId, tenant.DomainHint)
     );
 }
 ```
 
 ### Aviendha's Connection Resolution
 
-After `TenantIdentity` is known, Aviendha resolves the connection before creating `AielDbContext`:
+After `TenantDescriptor` is known, Aviendha resolves the connection before creating `AielDbContext`:
 
 ```csharp
 public sealed class AviendhaDbContext : AielDbContext

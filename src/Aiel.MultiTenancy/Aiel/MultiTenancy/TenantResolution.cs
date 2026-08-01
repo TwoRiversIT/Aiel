@@ -31,15 +31,15 @@ public abstract record TenantResolution
     private TenantResolution() { }
 
     /// <summary>Tenant resolved successfully.</summary>
-    /// <param name="TenantIdentity">The resolved tenant identity.</param>
-    public sealed record Resolved(TenantIdentity TenantIdentity) : TenantResolution;
+    /// <param name="TenantDescriptor">The resolved tenant identity.</param>
+    public sealed record Resolved(TenantDescriptor TenantDescriptor) : TenantResolution;
 
     /// <summary>No tenant could be inferred from the current request context.</summary>
     public sealed record Missing : TenantResolution;
 
     /// <summary>
     /// Multiple tenants match the resolution context; disambiguation is required before
-    /// a <see cref="TenantIdentity"/> can be materialized.
+    /// a <see cref="TenantDescriptor"/> can be materialized.
     /// </summary>
     public sealed record Ambiguous : TenantResolution;
 

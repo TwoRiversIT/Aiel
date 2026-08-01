@@ -66,7 +66,7 @@ public sealed class RecordingMessagePublisher(IMessageEnvelopeFactory? factory =
     public ValueTask PublishAsync<TMessage>(
         TMessage message,
         IExecutionContext executionContext,
-        TenantIdentity? tenant = null,
+        TenantDescriptor? tenant = null,
         CancellationToken cancellationToken = default)
         where TMessage : IIntegrationMessage
     {

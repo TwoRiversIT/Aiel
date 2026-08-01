@@ -21,7 +21,7 @@ All changes applied. Here's a summary of what was updated in message-bus-abstrac
 
 **Package ownership**
 
-- Added a stabilization note to the `TenantIdentity` dependency bullet
+- Added a stabilization note to the `TenantDescriptor` dependency bullet
 
 **Core contracts code block**
 

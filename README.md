@@ -201,7 +201,7 @@ Multi-tenancy contracts for tenant-scoped entities and current-tenant resolution
 **Features**:
 
 - `TenantId` — `readonly record struct` strong identifier
-- `TenantIdentity` — resolved tenant identity with optional host routing hint
+- `TenantDescriptor` — resolved tenant identity with optional host routing hint
 - `TenantResolution` — discriminated union of resolution outcomes (`Resolved`, `Missing`, `Ambiguous`, `Rejected`, `Error`)
 - `ITenantResolver` / `ITenantAccessor` — resolution and access contracts
 - `IMultiTenant` — marker for tenant-scoped entities

@@ -39,7 +39,7 @@ public sealed class MultiTenancyContractSurfaceTests
             .ToHashSet(StringComparer.Ordinal);
 
         exportedTypeNames.Should().Contain("TenantId");
-        exportedTypeNames.Should().Contain("TenantIdentity");
+        exportedTypeNames.Should().Contain("TenantDescriptor");
         exportedTypeNames.Should().Contain("TenantResolution");
         exportedTypeNames.Should().Contain("ITenantAccessor");
         exportedTypeNames.Should().Contain("ITenantResolver");
@@ -67,16 +67,16 @@ public sealed class MultiTenancyContractSurfaceTests
     }
 
     [Fact]
-    public void TenantIdentity_ReplacesTenantContext_AndKeepsPublicHintsNonNullable()
+    public void TenantDescriptor_ReplacesTenantContext_AndKeepsPublicHintsNonNullable()
     {
         var tenantIdType = GetRequiredPublicType("Aiel.MultiTenancy.TenantId");
-        var tenantIdentityType = GetRequiredPublicType("Aiel.MultiTenancy.TenantIdentity");
-        var tenantIdProperty = tenantIdentityType.GetProperty("TenantId", BindingFlags.Public | BindingFlags.Instance);
+        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.TenantDescriptor");
+        var tenantIdProperty = tenantDescriptorType.GetProperty("TenantId", BindingFlags.Public | BindingFlags.Instance);
 
         tenantIdProperty.Should().NotBeNull();
         tenantIdProperty!.PropertyType.Should().Be(tenantIdType);
 
-        foreach (var property in tenantIdentityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        foreach (var property in tenantDescriptorType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                      .Where(static property => property.PropertyType == typeof(String)))
         {
             NullabilityInfoContext.Create(property).ReadState.Should().NotBe(
@@ -84,7 +84,7 @@ public sealed class MultiTenancyContractSurfaceTests
                 because: "public routing or display hints must not be nullable");
         }
 
-        var publicPropertyNames = tenantIdentityType
+        var publicPropertyNames = tenantDescriptorType
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Select(static property => property.Name)
             .ToArray();
@@ -98,7 +98,7 @@ public sealed class MultiTenancyContractSurfaceTests
     [Fact]
     public void TenantResolution_ExposesExplicitClosedOutcomes_WithTypedReasonCodes()
     {
-        var tenantIdentityType = GetRequiredPublicType("Aiel.MultiTenancy.TenantIdentity");
+        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.TenantDescriptor");
         var tenantResolutionType = GetRequiredPublicType("Aiel.MultiTenancy.TenantResolution");
         var publicOutcomeTypes = tenantResolutionType.GetNestedTypes(BindingFlags.Public);
         var publicOutcomeNames = publicOutcomeTypes.Select(static type => type.Name).ToArray();
@@ -115,7 +115,7 @@ public sealed class MultiTenancyContractSurfaceTests
         resolvedType!
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Should()
-            .Contain(property => property.PropertyType == tenantIdentityType);
+            .Contain(property => property.PropertyType == tenantDescriptorType);
 
         AssertHasTypedReasonMember(tenantResolutionType, "Rejected");
         AssertHasTypedReasonMember(tenantResolutionType, "Error");
@@ -134,15 +134,15 @@ public sealed class MultiTenancyContractSurfaceTests
     [Fact]
     public void AccessorAndResolverContracts_DoNotExposeNullableTenantResults()
     {
-        var tenantIdentityType = GetRequiredPublicType("Aiel.MultiTenancy.TenantIdentity");
+        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.TenantDescriptor");
         var tenantResolutionType = GetRequiredPublicType("Aiel.MultiTenancy.TenantResolution");
-        var tenantAccessorType = GetRequiredPublicType("Aiel.MultiTenancy.ITenantAccessor");
+        var tenantAccessorType = GetRequiredPublicType("Aiel.MultiTenancy.ICurrentTenantAccessor");
         var tenantResolverType = GetRequiredPublicType("Aiel.MultiTenancy.ITenantResolver");
 
-        HasNonNullableReturnOf(tenantAccessorType, tenantIdentityType).Should().BeTrue();
+        HasNonNullableReturnOf(tenantAccessorType, tenantDescriptorType).Should().BeTrue();
         HasNonNullableReturnOf(tenantResolverType, tenantResolutionType).Should().BeTrue();
-        HasNullableReturnOf(tenantAccessorType, tenantIdentityType).Should().BeFalse();
-        HasNullableReturnOf(tenantResolverType, tenantIdentityType).Should().BeFalse();
+        HasNullableReturnOf(tenantAccessorType, tenantDescriptorType).Should().BeFalse();
+        HasNullableReturnOf(tenantResolverType, tenantDescriptorType).Should().BeFalse();
         HasNullableReturnOf(tenantResolverType, tenantResolutionType).Should().BeFalse();
     }
 

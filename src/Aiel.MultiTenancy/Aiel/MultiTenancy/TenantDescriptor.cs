@@ -32,7 +32,7 @@ namespace Aiel.MultiTenancy;
 /// Optional host or subdomain routing hint. Treat as a hint only — not as an authorization
 /// primitive. Empty string when absent.
 /// </param>
-public sealed record TenantIdentity(TenantId TenantId, String HostHint = "")
+public sealed record TenantDescriptor(TenantId TenantId, String HostHint = "")
 {
-    public static readonly TenantIdentity Empty = new(new TenantId(Guid.Empty));
+    public static readonly TenantDescriptor Empty = new(new TenantId(Guid.Empty));
 }

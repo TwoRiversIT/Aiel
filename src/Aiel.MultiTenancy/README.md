@@ -9,14 +9,14 @@ Multi-tenancy contracts for tenant-scoped entities, current-tenant resolution, a
 | Type | Kind | Purpose |
 | --- | --- | --- |
 | `TenantId` | `readonly record struct` | Guid-backed strong identifier. Implements `IStrongId<Guid>`. |
-| `TenantIdentity` | `sealed record` | Resolved tenant identity: `TenantId` + optional `HostHint` routing hint. |
+| `TenantDescriptor` | `sealed record` | Resolved tenant identity: `TenantId` + optional `HostHint` routing hint. |
 
 ### Resolution Contract
 
 | Type | Kind | Purpose |
 | --- | --- | --- |
 | `TenantResolution` | abstract record (DU) | Discriminated union of resolution outcomes. |
-| `TenantResolution.Resolved` | sealed record | Tenant resolved; carries `TenantIdentity`. |
+| `TenantResolution.Resolved` | sealed record | Tenant resolved; carries `TenantDescriptor`. |
 | `TenantResolution.Missing` | sealed record | No tenant signal in the current context. |
 | `TenantResolution.Ambiguous` | sealed record | Multiple tenants matched; disambiguation required. |
 | `TenantResolution.Rejected` | sealed record | Access denied; carries `TenantRejectionReason`. |
@@ -33,7 +33,7 @@ Multi-tenancy contracts for tenant-scoped entities, current-tenant resolution, a
 
 | Interface | Method | Returns |
 | --- | --- | --- |
-| `ITenantAccessor` | `GetCurrentTenantAsync(CancellationToken)` | `ValueTask<TenantIdentity>` (non-nullable) |
+| `ITenantAccessor` | `GetCurrentTenantAsync(CancellationToken)` | `ValueTask<TenantDescriptor>` (non-nullable) |
 | `ITenantResolver` | `ResolveAsync(CancellationToken)` | `ValueTask<TenantResolution>` (non-nullable) |
 
 ### Entity Contract

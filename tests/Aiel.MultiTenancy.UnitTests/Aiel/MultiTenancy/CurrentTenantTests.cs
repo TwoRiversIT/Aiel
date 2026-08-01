@@ -37,7 +37,7 @@ public class CurrentTenantTests
         var tenantId = new TenantId(Guid.NewGuid());
 
         // Act
-        using (current.Change(new TenantIdentity(tenantId)))
+        using (current.Change(new TenantDescriptor(tenantId)))
         {
             // Assert
             current.Current.Should().NotBeNull();
@@ -56,10 +56,10 @@ public class CurrentTenantTests
 
         var tenantId1 = new TenantId(Guid.NewGuid());
         var tenantId2 = new TenantId(Guid.NewGuid());
-        ambient.Current = new TenantIdentity(tenantId1);
+        ambient.Current = new TenantDescriptor(tenantId1);
 
         // Act
-        using (current.Change(new TenantIdentity(tenantId2)))
+        using (current.Change(new TenantDescriptor(tenantId2)))
         {
             // Assert
             current.Current.Should().NotBeNull();
@@ -81,13 +81,13 @@ public class CurrentTenantTests
         var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
         var tenantId = new TenantId(Guid.NewGuid());
-        ambient.Current = new TenantIdentity(tenantId);
+        ambient.Current = new TenantDescriptor(tenantId);
 
         // Act
         using (current.Change(null))
         {
             // Assert
-            current.Current.Should().Be(TenantIdentity.Empty);
+            current.Current.Should().Be(TenantDescriptor.Empty);
         }
 
         // Assert that the original tenant is restored after the using block
@@ -106,12 +106,12 @@ public class CurrentTenantTests
 
         var tenantId1 = new TenantId(Guid.NewGuid());
         var tenantId2 = new TenantId(Guid.NewGuid());
-        ambient.Current = new TenantIdentity(tenantId1);
+        ambient.Current = new TenantDescriptor(tenantId1);
 
         // Act
         var task1 = Task.Run(() =>
         {
-            using (current.Change(new TenantIdentity(tenantId2)))
+            using (current.Change(new TenantDescriptor(tenantId2)))
             {
                 current.Current.Should().NotBeNull();
                 current.Current.TenantId.Should().Be(tenantId2);
@@ -144,15 +144,15 @@ public class CurrentTenantTests
         var tenantId1 = new TenantId(Guid.NewGuid());
         var tenantId2 = new TenantId(Guid.NewGuid());
         var tenantId3 = new TenantId(Guid.NewGuid());
-        ambient.Current = new TenantIdentity(tenantId1);
+        ambient.Current = new TenantDescriptor(tenantId1);
 
         // Act
-        using (current.Change(new TenantIdentity(tenantId2)))
+        using (current.Change(new TenantDescriptor(tenantId2)))
         {
             current.Current.Should().NotBeNull();
             current.Current.TenantId.Should().Be(tenantId2);
 
-            using (current.Change(new TenantIdentity(tenantId3)))
+            using (current.Change(new TenantDescriptor(tenantId3)))
             {
                 current.Current.Should().NotBeNull();
                 current.Current.TenantId.Should().Be(tenantId3);
@@ -179,20 +179,20 @@ public class CurrentTenantTests
 
         var tenantId1 = new TenantId(Guid.NewGuid());
         var tenantId2 = new TenantId(Guid.NewGuid());
-        ambient.Current = new TenantIdentity(tenantId1);
+        ambient.Current = new TenantDescriptor(tenantId1);
 
         // Act
         using (current.Change(null))
         {
-            current.Current.Should().Be(TenantIdentity.Empty);
-            using (current.Change(new TenantIdentity(tenantId2)))
+            current.Current.Should().Be(TenantDescriptor.Empty);
+            using (current.Change(new TenantDescriptor(tenantId2)))
             {
                 current.Current.Should().NotBeNull();
                 current.Current.TenantId.Should().Be(tenantId2);
             }
 
             // Assert that the tenant is restored to null after the inner using block
-            current.Current.Should().Be(TenantIdentity.Empty);
+            current.Current.Should().Be(TenantDescriptor.Empty);
         }
 
         // Assert that the original tenant is restored after the outer using block
@@ -210,7 +210,7 @@ public class CurrentTenantTests
         var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
         var tenantId = new TenantId(Guid.NewGuid());
-        var tenant = new TenantIdentity(tenantId);
+        var tenant = new TenantDescriptor(tenantId);
 
         // Act
         using (current.Change(tenant))
@@ -231,12 +231,12 @@ public class CurrentTenantTests
         var tenantId1 = new TenantId(Guid.NewGuid());
         var tenantId2 = new TenantId(Guid.NewGuid());
 
-        TenantIdentity? t1Value = null;
-        TenantIdentity? t2Value = null;
+        ITenant? t1Value = null;
+        ITenant? t2Value = null;
 
         var t1 = Task.Run(() =>
         {
-            using (current.Change(new TenantIdentity(tenantId1)))
+            using (current.Change(new TenantDescriptor(tenantId1)))
             {
                 t1Value = current.Current;
             }
@@ -244,7 +244,7 @@ public class CurrentTenantTests
 
         var t2 = Task.Run(() =>
         {
-            using (current.Change(new TenantIdentity(tenantId2)))
+            using (current.Change(new TenantDescriptor(tenantId2)))
             {
                 t2Value = current.Current;
             }
@@ -264,8 +264,8 @@ public class CurrentTenantTests
         var ambient = scope.ServiceProvider.GetRequiredService<AmbientTenantContext>();
         var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
-        var root = new TenantIdentity(new TenantId(Guid.NewGuid()));
-        var inner = new TenantIdentity(new TenantId(Guid.NewGuid()));
+        var root = new TenantDescriptor(new TenantId(Guid.NewGuid()));
+        var inner = new TenantDescriptor(new TenantId(Guid.NewGuid()));
 
         using (current.Change(root))
         {
@@ -279,6 +279,6 @@ public class CurrentTenantTests
             current.Current.Should().Be(root);
         }
 
-        current.Current.Should().Be(TenantIdentity.Empty);
+        current.Current.Should().Be(TenantDescriptor.Empty);
     }
 }

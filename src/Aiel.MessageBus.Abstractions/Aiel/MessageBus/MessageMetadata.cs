@@ -36,7 +36,7 @@ public sealed record MessageMetadata(
     Guid? ProducerOperationId,
     Guid? ClientInstanceId,
     MessageActorSnapshot Actor,
-    TenantIdentity? Tenant,
+    TenantDescriptor? Tenant,
     SagaId? SagaCorrelationId,
     DateTimeOffset OccurredAtUtc,
     IReadOnlyDictionary<MessagePropertyName, String> Properties)
@@ -48,4 +48,6 @@ public sealed record MessageMetadata(
         => value == Guid.Empty
             ? throw new ArgumentException("Message identifiers cannot be empty.", paramName)
             : value;
+
+    public TenantDescriptor? Tenant { get; } = Tenant;
 }

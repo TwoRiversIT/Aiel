@@ -110,7 +110,7 @@ Transport adapter packages (for Rebus, MassTransit, or other transports) live in
 `Aiel.MessageBus.Abstractions` should be small and dependency-light. It may depend on:
 
 - `Aiel.Application.Contracts` for `IExecutionContext`
-- `Aiel.MultiTenancy` for `TenantIdentity` — note that `TenantIdentity` is still stabilizing; this dependency should be reviewed as that contract matures
+- `Aiel.MultiTenancy` for `TenantDescriptor` — note that `TenantDescriptor` is still stabilizing; this dependency should be reviewed as that contract matures
 
 It should **not** depend on:
 
@@ -163,7 +163,7 @@ public sealed record MessageMetadata(
     Guid? ProducerOperationId,
     Guid? ClientInstanceId,
     MessageActorSnapshot Actor,
-    TenantIdentity? Tenant,
+    TenantDescriptor? Tenant,
     SagaId? SagaCorrelationId,
     DateTimeOffset OccurredAtUtc,
     IReadOnlyDictionary<MessagePropertyName, string> Properties);
@@ -190,7 +190,7 @@ public interface IMessageEnvelopeFactory
     MessageEnvelope<TMessage> Create<TMessage>(
         TMessage message,
         IExecutionContext executionContext,
-        TenantIdentity? tenant = null)
+        TenantDescriptor? tenant = null)
         where TMessage : IIntegrationMessage;
 }
 
@@ -212,7 +212,7 @@ public interface IMessagePublisher
     ValueTask PublishAsync<TMessage>(
         TMessage message,
         IExecutionContext executionContext,
-        TenantIdentity? tenant = null,
+        TenantDescriptor? tenant = null,
         CancellationToken cancellationToken = default)
         where TMessage : IIntegrationMessage;
 }
@@ -545,7 +545,7 @@ Every published transport message should carry:
 
 It does **not** currently expose a first-class tenant property.
 
-Aiel already has explicit tenant contracts in `Aiel.MultiTenancy`, including `TenantIdentity` and `ITenantAccessor`. The message bus abstraction should therefore carry tenant identity as a first-class field on `MessageMetadata`, rather than burying it in raw headers.
+Aiel already has explicit tenant contracts in `Aiel.MultiTenancy`, including `TenantDescriptor` and `ITenantAccessor`. The message bus abstraction should therefore carry tenant identity as a first-class field on `MessageMetadata`, rather than burying it in raw headers.
 
 ### Actor propagation
 
@@ -778,7 +778,7 @@ The dependency direction should remain explicit:
 
 ### D4 - Actor and tenant propagation are explicit and transport-safe
 
-**Decision:** the abstraction uses a transport-safe actor snapshot and `TenantIdentity` metadata rather than trying to serialize `IActor` or infer tenant information from raw transport headers.
+**Decision:** the abstraction uses a transport-safe actor snapshot and `TenantDescriptor` metadata rather than trying to serialize `IActor` or infer tenant information from raw transport headers.
 
 **Rationale:** `IActor` is deliberately process-local, and `IExecutionContext` does not currently expose tenant identity directly. The bus contract must therefore carry those concerns explicitly.
 

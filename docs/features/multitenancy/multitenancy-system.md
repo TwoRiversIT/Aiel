@@ -10,7 +10,7 @@ Aiel provides a flexible, extensible multitenancy framework designed to support 
 
 **What Aiel provides:**
 
-- Tenant-identity resolution contracts (`TenantId`, `TenantIdentity`, `TenantResolution`)
+- Tenant-identity resolution contracts (`TenantId`, `TenantDescriptor`, `TenantResolution`)
 - HTTP middleware for fail-closed tenant-required endpoints
 - Entity Framework Core integration and discriminator query filters
 - Migration orchestration primitives (per-target retry, telemetry)
@@ -190,9 +190,9 @@ The Aiel framework supplies a reusable tenant-identity contract surface that app
 ### Core Types
 
 - **`TenantId`**: A strong Guid-backed identifier for a tenant.
-- **`TenantIdentity`**: A resolved tenant (TenantId + optional HostHint for routing).
+- **`TenantDescriptor`**: A resolved tenant (TenantId + optional HostHint for routing).
 - **`TenantResolution`**: A discriminated union capturing resolution outcomes:
-  - `Resolved` — tenant matched; carries TenantIdentity
+  - `Resolved` — tenant matched; carries TenantDescriptor
   - `Missing` — no signal in context
   - `Ambiguous` — multiple tenants matched; needs disambiguation
   - `Rejected` — access denied (carries reason: TenantInactive, MembershipRevoked, TenantMismatch)
@@ -200,13 +200,13 @@ The Aiel framework supplies a reusable tenant-identity contract surface that app
 
 ### Service Interfaces
 
-- **`ITenantAccessor`**: `GetCurrentTenantAsync(CancellationToken) → ValueTask<TenantIdentity>`
+- **`ITenantAccessor`**: `GetCurrentTenantAsync(CancellationToken) → ValueTask<TenantDescriptor>`
   Registered by Aiel.AspNetCore; returns the current request's resolved tenant. Only callable on resolved-tenant paths.
 
 - **`ITenantResolver`**: `ResolveAsync(CancellationToken) → ValueTask<TenantResolution>`
   Application-implemented; runs once per HTTP request to compute resolution outcome.
 
-- **`ICurrentTenant`**: `Current -> TenantIdentity?`
+- **`ICurrentTenant`**: `Current -> TenantDescriptor?`
   Synchronous accessor for tenant identity; returns null if not resolved. Useful in non-Async contexts. Also allows temporarily changing the current tenant (e.g., for background jobs or impersonation).
 
 ### HTTP Pipeline Integration
@@ -237,7 +237,7 @@ All tenants share one database and schema. Each table includes a `tenant_id` col
 
 **In Aiel:**
 
-- `AielDbContext` (formerly TrDbContext) accepts a `TenantIdentity` or `ITenantResolver` in its constructor.
+- `AielDbContext` (formerly TrDbContext) accepts a `TenantDescriptor` or `ITenantResolver` in its constructor.
 - Entities implementing `IMultiTenant` get automatic query filters (only return rows matching current tenant) and save-time stamping.
 - Fail-closed: non-resolved tenants cannot read or write `IMultiTenant` data.
 
@@ -286,7 +286,7 @@ Applications provide:
 
 1. **`ITenantResolver` implementation**: Compute TenantResolution from HttpContext (actor context, host, domain, X-Tenant-ID override).
 2. **Catalog/metadata store**: Map TenantId to domain, model, connection details, status.
-3. **Connection resolution**: After TenantIdentity is known, resolve connection string or use the discriminator database.
+3. **Connection resolution**: After TenantDescriptor is known, resolve connection string or use the discriminator database.
 4. **Migration orchestration**: Define how many tenants to migrate concurrently, with what retry policy and batch checkpoint.
 5. **Secrets management**: Store and retrieve connection strings, encryption keys, and per-tenant credentials.
 

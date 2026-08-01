@@ -29,7 +29,7 @@ Aiel has in-process coordination (`Aiel.Mediator` notifications, `IDomainEventDi
 | `MessageEnvelope.cs` | `sealed record MessageEnvelope<TMessage> where TMessage : IIntegrationMessage` |
 | `TransportContext.cs` | `sealed record(String TransportName, String? NativeMessageId, Int32 DeliveryAttempt)` |
 | `InboundMessageContext.cs` | `sealed record InboundMessageContext<TMessage> where TMessage : IIntegrationMessage` |
-| `IMessageEnvelopeFactory.cs` | `Create<TMessage>(TMessage, IExecutionContext, TenantIdentity? = null)` |
+| `IMessageEnvelopeFactory.cs` | `Create<TMessage>(TMessage, IExecutionContext, TenantDescriptor? = null)` |
 | `IMessagePublisher.cs` | Two overloads: envelope overload + convenience overload delegating to `IMessageEnvelopeFactory` |
 | `IMessageHandler.cs` | `IMessageHandler<TMessage> where TMessage : IIntegrationMessage` |
 | `SerializedMessage.cs` | `sealed record(MessageTypeName, ReadOnlyMemory<Byte> Body, MessageMetadata)` |

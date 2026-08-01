@@ -47,7 +47,7 @@ The feature should make this shape the normal path:
 ```csharp
 using Aiel.StrongIds;
 
-[StrongId<Guid>(AllowDefault = false)]
+[StrongId<Guid>]
 public readonly partial record struct AppointmentId;
 ```
 
@@ -168,7 +168,7 @@ public interface IStrongId<TValue> : IStrongId
 [AttributeUsage(AttributeTargets.Struct | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class StrongIdAttribute<TValue> : Attribute
 {
-    public bool DisallowDefault { get; init; } = true;
+    public bool AllowDefault { get; init; }
 
     public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
 
@@ -193,7 +193,7 @@ already has a zero-technical-debt posture, the plan should prefer the clean name
 The existing generator contract remains the foundation:
 
 ```csharp
-[StrongId<Guid>(AllowDefault = false)]
+[StrongId<Guid>]
 public readonly partial record struct OrderId;
 ```
 

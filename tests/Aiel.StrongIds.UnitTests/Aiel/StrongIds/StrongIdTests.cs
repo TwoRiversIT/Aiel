@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Aiel.StrongIds;
 
 [SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "Its freaking unit tests!")]
@@ -33,83 +31,103 @@ public class StrongIdTests
         // The only real value of this test is as a shape/smoke test confirming
         // the generated type is a record struct and not accidentally a class.
 
-        var id1 = new GuidDisallowDefaultId(Guid.NewGuid());
-        var id2 = new GuidDisallowDefaultId(id1.Value);
+        var id1 = new GuidAllowDefaultFalseId(Guid.NewGuid());
+        var id2 = new GuidAllowDefaultFalseId(id1.Value);
         id1.Should().Be(id2);
         id1.GetHashCode().Should().Be(id2.GetHashCode());
     }
 
     [Fact]
-    public void StrongId_DoesNotAllowDefault_WhenDisallowDefaultIsTrue()
+    public void GivenAllowDefaultIsFalse_WhenValueIsDefault_NewThrowsArgumentException()
     {
-        Action act = () => new GuidDisallowDefaultId(Guid.Empty);
+        var act = () => new GuidAllowDefaultFalseId(Guid.Empty);
 
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void StrongId_AllowsDefault_WhenDisallowDefaultIsFalse()
+    public void GivenAllowDefaultIsFalse_WhenValueIsDefault_FromThrowsArgumentException()
     {
-        Action act = () => new Int32AllowDefaultId(0);
+        var act = () => GuidAllowDefaultFalseId.From(Guid.Empty);
 
-        act.Should().NotThrow();
-    }
-
-    [Fact]
-    public void StrongId_GivenDisallowDefaultIsTrue_WhenStringIsNull_ThrowsArgumentException()
-    {
-        Action act = () => new StringDisallowDefaultId(null!);
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void StrongId_GivenDisallowDefaultIsTrue_WhenStringIsWhitespace_ThrowsArgumentException()
+    public void GivenAllowDefaultIsFalse_WhenValueIsDefault_TryFromReturnsFalse()
     {
-        Action act = () => new StringDisallowDefaultId("   ");
+        GuidAllowDefaultFalseId.TryFrom(Guid.Empty, out _).Should().BeFalse();
+    }
+
+    [Fact]
+    public void GivenAllowDefaultIsTrue_WhenValueIsDefault_TryFromReturnsTrue()
+    {
+        Int32AllowDefaultTrueId.TryFrom(0, out _).Should().BeTrue();
+    }
+
+    [Fact]
+    public void GivenAllowDefaultIsTrue_WhenValueIsDefault_NewShouldNotThrow()
+    {
+        Action act = () => new Int32AllowDefaultTrueId(0);
+
+        act.Should().NotThrow();
+    }
+
+    [Fact]
+    public void GivenAllowDefaultIsFalse_WhenStringIsNull_NewThrowsArgumentException()
+    {
+        Action act = () => new StringAllowDefaultFalseId(null!);
         act.Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsNull_DoesNotThrow()
+    public void GivenAllowDefaultIsFalse_WhenStringIsWhitespace_NewThrowsArgumentException()
     {
-        Action act = () => new StringAllowDefaultId(null!);
+        Action act = () => new StringAllowDefaultFalseId("   ");
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [Fact]
+    public void GivenAllowDefaultIsTrue_WhenStringIsNull_NewDoesNotThrow()
+    {
+        Action act = () => new StringAllowDefaultTrueId(null!);
         act.Should().NotThrow();
     }
 
     [Fact]
-    public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsEmpty_DoesNotThrow()
+    public void GivenAllowDefaultIsTrue_WhenStringIsEmpty_NewDoesNotThrow()
     {
-        Action act = () => new StringAllowDefaultId(String.Empty);
+        Action act = () => new StringAllowDefaultTrueId(String.Empty);
         act.Should().NotThrow();
     }
 
     [Fact]
-    public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsWhitespace_DoesNotThrow()
+    public void GivenAllowDefaultIsTrue_WhenStringIsWhitespace_NewDoesNotThrow()
     {
-        Action act = () => new StringAllowDefaultId("   ");
+        Action act = () => new StringAllowDefaultTrueId("   ");
         act.Should().NotThrow();
     }
 
     [Fact]
-    public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsNull_ValueIsEmpty()
+    public void GivenAllowDefaultIsTrue_WhenStringIsNull_ValueIsEmpty()
     {
-        var id = new StringAllowDefaultId(null!);
+        var id = new StringAllowDefaultTrueId(null!);
         id.Value.Should().NotBeNull();
         id.Value.Should().BeEmpty();
     }
 
     [Fact]
-    public void StrongId_GivenDisallowDefaultIsFalse_WhenStringIsWhitespace_ValueIsEmpty()
+    public void GivenAllowDefaultIsTrue_WhenStringIsWhitespace_ValueIsEmpty()
     {
-        var id = new StringAllowDefaultId("   ");
+        var id = new StringAllowDefaultTrueId("   ");
         id.Value.Should().NotBeNull();
         id.Value.Should().BeEmpty();
     }
 
     [Fact]
-    public void StrongId_IsEmpty_ReturnsTrue_WhenValueIsDefault()
+    public void GivenAllowDefaultIsTrue_WhenValueIsDefault_IsEmptyReturnsTrue()
     {
-        var id = new Int32AllowDefaultId(0);
+        var id = new Int32AllowDefaultTrueId(0);
         id.IsDefault.Should().BeTrue();
     }
 }

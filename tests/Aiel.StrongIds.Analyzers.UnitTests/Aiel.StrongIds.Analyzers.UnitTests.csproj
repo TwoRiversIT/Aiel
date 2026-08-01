@@ -8,7 +8,12 @@
         <IsToolingTests>true</IsToolingTests>
 	</PropertyGroup>
 
-	<ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\src\Aiel.StrongIds\Aiel\StrongIds\IStrongId.cs" Link="Aiel\StrongIds\Stubs\IStrongId.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.StrongIds\Aiel\StrongIds\StrongIdAttribute.cs" Link="Aiel\StrongIds\Stubs\StrongIdAttribute.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.3.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="5.3.0" />
@@ -20,6 +25,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" />
+		<ProjectReference Include="..\..\src\Aiel.Utilities\Aiel.Utilities.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -33,9 +33,9 @@ public sealed class StrongIdAttribute<TValue> : Attribute
     /// <summary>
     /// When false, the generated strong ID type will not allow the default value of the underlying type.
     /// For example, if the underlying type is Guid, then Guid.Empty will not be allowed. If the
-    /// underlying type is string, then null and empty string will not be allowed. Default is true.
+    /// underlying type is string, then null and empty string will not be allowed. Default is false.
     /// </summary>
-    public Boolean AllowDefault { get; init; } = true;
+    public Boolean AllowDefault { get; init; }
 
     /// <summary>
     /// When true, the source generator will generate a TryFrom method for the strong ID type.

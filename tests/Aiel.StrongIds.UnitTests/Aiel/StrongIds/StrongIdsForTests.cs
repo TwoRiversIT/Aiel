@@ -22,14 +22,24 @@
 
 namespace Aiel.StrongIds;
 
-[StrongId<Guid>(AllowDefault = false)]
-public readonly partial record struct GuidDisallowDefaultId;
+[StrongId<Guid>]
+public readonly partial record struct GuidAllowDefaultFalseId;
 
 [StrongId<Int32>(AllowDefault = true)]
-public readonly partial record struct Int32AllowDefaultId;
+public readonly partial record struct Int32AllowDefaultTrueId;
 
-[StrongId<String>(AllowDefault = false)]
-public readonly partial record struct StringDisallowDefaultId;
+[StrongId<String>]
+public readonly partial record struct StringAllowDefaultFalseId;
 
 [StrongId<String>(AllowDefault = true)]
-public readonly partial record struct StringAllowDefaultId;
+public readonly partial record struct StringAllowDefaultTrueId;
+
+// Just want to see if these compile and work with the source generator.
+[StrongId<Guid>(GenerateTryFrom = false)]
+public readonly partial record struct GuidNoTryFromId;
+
+[StrongId<Guid>(GenerateTryParse = false)]
+public readonly partial record struct GuidNoTryParseId;
+
+[StrongId<Guid>(GenerateTryFrom = false, GenerateTryParse = false)]
+public readonly partial record struct GuidNoTryFromNoTryParseId;

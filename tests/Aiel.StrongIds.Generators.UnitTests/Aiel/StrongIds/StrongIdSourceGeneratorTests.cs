@@ -110,7 +110,7 @@ public class StrongIdSourceGeneratorTests
 
             namespace Test;
 
-            [StrongId<string>(AllowDefault = false)]
+            [StrongId<string>]
             public readonly partial record struct ExternalSystemId;
             """;
 
@@ -154,45 +154,6 @@ public class StrongIdSourceGeneratorTests
         valueProperty.Should().NotBeNull();
         valueProperty!.GetValue(id).Should().Be("AbC-123_xYz");
         id!.ToString().Should().Be("AbC-123_xYz");
-    }
-
-    [Fact]
-    public void WhenAllowDefaultIsFalse_RejectsNullEmptyOrWhitespaceStringValues()
-    {
-        const String source = """
-            using Aiel.StrongIds;
-
-            namespace Test;
-
-            [StrongId<string>(AllowDefault = false)]
-            public readonly partial record struct ExternalSystemId;
-            """;
-
-        var result = RunGenerator(source);
-        var assembly = EmitAssembly(result);
-        var type = assembly.GetType("Test.ExternalSystemId");
-        var fromMethod = type?.GetMethod("From", BindingFlags.Public | BindingFlags.Static);
-        var tryFromMethod = type?.GetMethod("TryFrom", BindingFlags.Public | BindingFlags.Static);
-
-        fromMethod.Should().NotBeNull();
-        tryFromMethod.Should().NotBeNull();
-
-        Action fromNull = () => fromMethod!.Invoke(null, [null]);
-        Action fromEmpty = () => fromMethod!.Invoke(null, [String.Empty]);
-        Action fromWhitespace = () => fromMethod!.Invoke(null, ["   "]);
-
-        fromNull.Should().Throw<TargetInvocationException>()
-            .WithInnerException<ArgumentException>()
-            .WithMessage("*cannot be null, empty, or whitespace*");
-        fromEmpty.Should().Throw<TargetInvocationException>()
-            .WithInnerException<ArgumentException>()
-            .WithMessage("*cannot be null, empty, or whitespace*");
-        fromWhitespace.Should().Throw<TargetInvocationException>()
-            .WithInnerException<ArgumentException>()
-            .WithMessage("*cannot be null, empty, or whitespace*");
-
-        var parameters = new Object?[] { "   ", null };
-        tryFromMethod!.Invoke(null, parameters).Should().Be(false);
     }
 
     [Fact]
@@ -329,38 +290,7 @@ public class StrongIdSourceGeneratorTests
 
     private static GeneratorRunResult RunGenerator(String source, String strongIdNamespace = "Aiel.StrongIds")
     {
-        var stubSource = $$"""
-            namespace {{strongIdNamespace}};
-
-            [global::System.AttributeUsage(global::System.AttributeTargets.Struct | global::System.AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-            public sealed class StrongIdAttribute<TValue> : global::System.Attribute
-            {
-                public bool AllowDefault { get; init; } = true;
-
-                public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
-
-                public bool GenerateTryFrom { get; init; } = true;
-            }
-
-            public enum StrongIdBackingKind
-            {
-                Value,
-                Reference,
-            }
-
-            public interface IStrongId;
-
-            public interface IStrongId<TValue> : IStrongId
-            {
-                TValue Value { get; }
-            }
-            """;
-
-        var syntaxTrees = new[]
-        {
-            CSharpSyntaxTree.ParseText(stubSource, new CSharpParseOptions(LanguageVersion.Latest)),
-            CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest)),
-        };
+        List<SyntaxTree> syntaxTrees = [CSharpSyntaxTree.ParseText(source)];
 
         var references = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is String trustedPlatformAssemblies
             ? trustedPlatformAssemblies

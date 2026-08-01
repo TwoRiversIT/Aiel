@@ -231,8 +231,8 @@ public class CurrentTenantTests
         var tenantId1 = new TenantId(Guid.NewGuid());
         var tenantId2 = new TenantId(Guid.NewGuid());
 
-        ITenant? t1Value = null;
-        ITenant? t2Value = null;
+        TenantDescriptor? t1Value = null;
+        TenantDescriptor? t2Value = null;
 
         var t1 = Task.Run(() =>
         {

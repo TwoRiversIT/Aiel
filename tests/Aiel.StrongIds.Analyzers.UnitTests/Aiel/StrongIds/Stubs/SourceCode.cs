@@ -20,33 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.StrongIds;
+using Aiel.Resources;
 
-public class StrongIdExtensionsTests
+namespace Aiel.StrongIds.Stubs;
+
+public readonly record struct SourceCode
 {
-    [Fact]
-    public void ThrowIfDefault_WhenValueIsDefault_ThrowsArgumentException()
-    {
-        var id = new Int32AllowDefaultTrueId(0);
-        Action act = () => id.ThrowIfDefault(nameof(id));
-        act.Should().Throw<ArgumentException>()
-            .WithParameterName(nameof(id))
-            .WithMessage("The StrongId is empty or default. (Parameter 'id')");
-    }
-
-    [Fact]
-    public void ThrowIfDefault_WhenValueIsNotDefault_DoesNotThrow()
-    {
-        var id = new Int32AllowDefaultTrueId(1);
-        Action act = () => id.ThrowIfDefault(nameof(id));
-        act.Should().NotThrow();
-    }
-
-    [Fact]
-    public void ThrowIfDefault_WhenValueIsNotDefault_ReturnsTheId()
-    {
-        var id = new Int32AllowDefaultTrueId(1);
-        var result = id.ThrowIfDefault(nameof(id));
-        result.Value.Should().Be(1);
-    }
+    public static String[] AielDependencies => RH.GetStrings<SourceCode>(
+        "IStrongId.txt",
+        "StrongIdAttribute.txt"
+        ).ToArray();
 }

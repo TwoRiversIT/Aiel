@@ -136,7 +136,7 @@ public sealed class MultiTenancyContractSurfaceTests
     {
         var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.TenantDescriptor");
         var tenantResolutionType = GetRequiredPublicType("Aiel.MultiTenancy.TenantResolution");
-        var tenantAccessorType = GetRequiredPublicType("Aiel.MultiTenancy.ICurrentTenantAccessor");
+        var tenantAccessorType = GetRequiredPublicType("Aiel.MultiTenancy.ITenantAccessor");
         var tenantResolverType = GetRequiredPublicType("Aiel.MultiTenancy.ITenantResolver");
 
         HasNonNullableReturnOf(tenantAccessorType, tenantDescriptorType).Should().BeTrue();

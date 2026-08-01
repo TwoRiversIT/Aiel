@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.StrongIds.Stubs;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
@@ -55,8 +56,10 @@ internal static class StrongIdAnalyzerVerifier<TAnalyzer>
         };
 
         // Add StrongIds attribute and interface stubs
-        test.TestState.Sources.Add(TestCode.StrongIdAttributeSource);
-        test.TestState.Sources.Add(TestCode.IStrongIdSource);
+        foreach (var stub in SourceCode.AielDependencies)
+        {
+            test.TestState.Sources.Add(stub);
+        }
 
         test.TestBehaviors |= TestBehaviors.SkipGeneratedCodeCheck;
 
@@ -68,84 +71,4 @@ internal static class StrongIdAnalyzerVerifier<TAnalyzer>
 
         return test;
     }
-}
-
-/// <summary>
-/// Common test code stubs for StrongIds analyzer tests.
-/// </summary>
-internal static class TestCode
-{
-    /// <summary>
-    /// Stub for the StrongIdAttribute&lt;TValue&gt; attribute.
-    /// </summary>
-    public const String StrongIdAttributeSource = """
-        namespace Aiel.StrongIds
-        {
-            using System;
-
-            /// <summary>Marks a type as a StrongId.</summary>
-            [AttributeUsage(AttributeTargets.Struct | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-            public sealed class StrongIdAttribute<TValue> : Attribute
-                where TValue : notnull
-            {
-                /// <summary>Gets or sets a value indicating whether to generate TryFrom overloads.</summary>
-                public Boolean DisallowDefault { get; init; } = true;
-
-                /// <summary>Gets or sets the backing kind.</summary>
-                public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
-
-                /// <summary>Gets or sets a value indicating whether to generate TryFrom overloads.</summary>
-                public Boolean GenerateTryFrom { get; init; } = true;
-            }
-
-            /// <summary>
-            /// Backing type options for StrongIds.
-            /// </summary>
-            public enum StrongIdBackingKind
-            {
-                /// <summary>Value backing type.</summary>
-                Value,
-
-                /// <summary>GUID backing type.</summary>
-                Guid,
-
-                /// <summary>32-bit integer backing type.</summary>
-                Int32,
-
-                /// <summary>64-bit integer backing type.</summary>
-                Int64,
-
-                /// <summary>String backing type.</summary>
-                String
-            }
-        }
-        """;
-
-    /// <summary>
-    /// Stub for the IStrongId and IStrongId&lt;TValue&gt; interfaces.
-    /// </summary>
-    public const String IStrongIdSource = """
-        namespace Aiel.StrongIds
-        {
-            using System;
-
-            /// <summary>
-            /// Non-generic marker interface for all StrongId types.
-            /// </summary>
-            public interface IStrongId
-            {
-            }
-
-            /// <summary>
-            /// Generic interface that all StrongId types implement.
-            /// </summary>
-            /// <typeparam name="TValue">The backing type of the StrongId.</typeparam>
-            public interface IStrongId<TValue> : IStrongId
-                where TValue : notnull
-            {
-                /// <summary>Gets the underlying value.</summary>
-                TValue Value { get; }
-            }
-        }
-        """;
 }

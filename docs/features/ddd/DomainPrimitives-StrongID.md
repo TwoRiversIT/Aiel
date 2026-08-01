@@ -50,7 +50,7 @@ The developer should declare intent only, and the source generator should emit t
 Recommended authoring shape for a struct-backed strong ID:
 
 ```csharp
-[StrongId<Guid>(AllowDefault = false)]
+[StrongId<Guid>]
 public readonly partial record struct OrderId;
 ```
 
@@ -105,7 +105,7 @@ That means the invariant must be stated precisely:
 If Aiel ever needs an ID type where invalid construction must be impossible rather than merely discouraged and analyzable, use a generated sealed record class instead:
 
 ```csharp
-[StrongId<Guid>(AllowDefault = false, BackingKind = StrongIdBackingKind.Reference)]
+[StrongId<Guid>(BackingKind = StrongIdBackingKind.Reference)]
 public sealed partial record OrderId;
 ```
 
@@ -162,7 +162,7 @@ namespace Aiel.StrongIds;
 [AttributeUsage(AttributeTargets.Struct | AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public sealed class StrongIdAttribute<TValue> : Attribute
 {
-    public bool DisallowDefault { get; init; } = true;
+    public bool AllowDefault { get; init; }
     public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
     public bool GenerateTryFrom { get; init; } = true;
 }
@@ -177,7 +177,7 @@ public enum StrongIdBackingKind
 Supported authoring shape:
 
 ```csharp
-[StrongId<Guid>(AllowDefault = false)]
+[StrongId<Guid>]
 public readonly partial record struct OrderId;
 ```
 
@@ -204,9 +204,9 @@ Initial supported underlying value types:
 
 Validation rules for v1:
 
-- `Guid` rejects `Guid.Empty` when `DisallowDefault` is `true`.
-- `int` and `long` reject `0` when `DisallowDefault` is `true`.
-- `string` rejects `null`, `String.Empty`, and whitespace-only values when `DisallowDefault` is `true`.
+- `Guid` rejects `Guid.Empty` when `AllowDefault` is `false`.
+- `int` and `long` reject `0` when `AllowDefault` is `false`.
+- `string` rejects `null`, `String.Empty`, and whitespace-only values when `AllowDefault` is `false`.
 - For v1, string-backed strong IDs validate with `String.IsNullOrWhiteSpace(value)`, trim before storage, and preserve the original non-whitespace content without normalizing or canonicalizing it.
 
 ### Generator contract
@@ -279,7 +279,7 @@ The contract above is easier to implement correctly if the generated API surface
 Authoring input:
 
 ```csharp
-[StrongId<Guid>(AllowDefault = false)]
+[StrongId<Guid>]
 public readonly partial record struct OrderId;
 ```
 
@@ -323,7 +323,7 @@ public readonly partial record struct OrderId : IStrongId<Guid>
 Authoring input:
 
 ```csharp
-[StrongId<string>(AllowDefault = false)]
+[StrongId<string>]
 public readonly partial record struct ExternalSystemId;
 ```
 

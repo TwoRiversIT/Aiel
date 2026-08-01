@@ -86,7 +86,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         return new StrongIdModel(
             candidate.TypeSymbol,
             valueType,
-            GetBooleanNamedArgument(candidate.AttributeData, AllowDefaultPropertyName, defaultValue: true),
+            GetBooleanNamedArgument(candidate.AttributeData, AllowDefaultPropertyName, defaultValue: false),
             GetBooleanNamedArgument(candidate.AttributeData, GenerateTryFromPropertyName, defaultValue: true),
             GetBooleanNamedArgument(candidate.AttributeData, GenerateTryParsePropertyName, defaultValue: true),
             IsReadOnlyRecordStruct(candidate.TypeSymbol),
@@ -129,7 +129,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             builder.AppendLine();
             builder.AppendLine($"    public static bool TryFrom({model.BackingTypeName} value, out {model.TypeSymbol.Name} id)");
             builder.AppendLine("    {");
-            EmitTryCreate(builder, model, "value", 2);
+            EmitTryFrom(builder, model, "value", 2);
             builder.AppendLine("    }");
         }
 
@@ -183,11 +183,11 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine();
     }
 
-    private static void EmitTryCreate(StringBuilder builder, StrongIdModel model, String valueExpression, Int32 indentLevel)
+    private static void EmitTryFrom(StringBuilder builder, StrongIdModel model, String valueExpression, Int32 indentLevel)
     {
         var indent = new String(' ', indentLevel * 4);
 
-        if (model.AllowDefault)
+        if (!model.AllowDefault)
         {
             builder.AppendLine($"{indent}if ({model.GetInvalidValueExpression(valueExpression)})");
             builder.AppendLine($"{indent}{{");
@@ -208,7 +208,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             case SpecialType.System_Int32:
                 builder.AppendLine("        if (global::System.Int32.TryParse(value, provider, out var parsedValue))");
                 builder.AppendLine("        {");
-                EmitTryCreate(builder, model, "parsedValue", 3);
+                EmitTryFrom(builder, model, "parsedValue", 3);
                 builder.AppendLine("        }");
                 builder.AppendLine();
                 return;
@@ -216,7 +216,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             case SpecialType.System_Int64:
                 builder.AppendLine("        if (global::System.Int64.TryParse(value, provider, out var parsedValue))");
                 builder.AppendLine("        {");
-                EmitTryCreate(builder, model, "parsedValue", 3);
+                EmitTryFrom(builder, model, "parsedValue", 3);
                 builder.AppendLine("        }");
                 builder.AppendLine();
                 return;
@@ -224,7 +224,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             case SpecialType.System_String:
                 builder.AppendLine("        if (value is not null)");
                 builder.AppendLine("        {");
-                EmitTryCreate(builder, model, "value", 3);
+                EmitTryFrom(builder, model, "value", 3);
                 builder.AppendLine("        }");
                 builder.AppendLine();
                 return;
@@ -232,7 +232,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             default:
                 builder.AppendLine("        if (global::System.Guid.TryParse(value, provider, out var parsedValue))");
                 builder.AppendLine("        {");
-                EmitTryCreate(builder, model, "parsedValue", 3);
+                EmitTryFrom(builder, model, "parsedValue", 3);
                 builder.AppendLine("        }");
                 builder.AppendLine();
                 return;

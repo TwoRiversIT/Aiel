@@ -275,12 +275,12 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => InvokeCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             InvokeCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
@@ -290,12 +290,12 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => InvokeCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             InvokeCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
@@ -305,12 +305,12 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => InvokeCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             InvokeCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
@@ -320,12 +320,12 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => InvokeCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             InvokeCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
@@ -335,10 +335,10 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => InvokeCount = 0;
 
-        public ValueTask InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+        public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
         {
             InvokeCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
@@ -348,10 +348,10 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => InvokeCount = 0;
 
-        public ValueTask InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+        public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
         {
             InvokeCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
@@ -369,13 +369,13 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => PreConfigureCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigureCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
     private sealed class DependencyBPreConfigurator : IConfigurator
@@ -384,13 +384,13 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => PreConfigureCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigureCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
     private sealed class DependencyCPreConfigurator : IConfigurator
@@ -399,13 +399,13 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => PreConfigureCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigureCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
     private sealed class DependencyDPreConfigurator : IConfigurator
@@ -414,42 +414,42 @@ public sealed class AielDependencyManagerTests
 
         public static void Reset() => PreConfigureCount = 0;
 
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigureCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
-
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
     }
 
     private sealed class DependencyAPhaseConfigurator : IConfigurator
     {
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PhaseLog.Add("A:Pre");
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PhaseLog.Add("A:Configure");
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
     private sealed class DependencyBPhaseConfigurator : IConfigurator
     {
-        public ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PhaseLog.Add("B:Pre");
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PhaseLog.Add("B:Configure");
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 }

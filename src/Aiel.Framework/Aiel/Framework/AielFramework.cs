@@ -27,10 +27,10 @@ namespace Aiel.Framework;
 [DependsOn(typeof(AielFrameworkAbstractions))]
 public sealed class AielFramework : AielDependencyConfigurator
 {
-    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddSingleton<IDependencyManager, DependencyManager>();
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 }

@@ -28,11 +28,11 @@ namespace Aiel.Actions.Commands;
 [DependsOn(typeof(AielActions))]
 public sealed class AielActionsCommands : AielDependencyConfigurator
 {
-    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
 
         context.Services.TryAddScoped<ICommandDispatcher, DefaultCommandDispatcher>();
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 }

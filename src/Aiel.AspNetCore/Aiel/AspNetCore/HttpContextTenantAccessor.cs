@@ -30,7 +30,7 @@ internal sealed class HttpContextTenantAccessor(IHttpContextAccessor httpContext
     private readonly IHttpContextAccessor _httpContextAccessor =
         httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
 
-    public ValueTask<TenantIdentity> GetCurrentTenantAsync(CancellationToken cancellationToken = default)
+    public ValueTask<TenantDescriptor> GetCurrentTenantAsync(CancellationToken cancellationToken = default)
     {
         var httpContext = _httpContextAccessor.HttpContext
             ?? throw new InvalidOperationException(
@@ -40,7 +40,7 @@ internal sealed class HttpContextTenantAccessor(IHttpContextAccessor httpContext
 
         if (tenantResolution is TenantResolution.Resolved resolved)
         {
-            return ValueTask.FromResult(resolved.TenantIdentity);
+            return ValueTask.FromResult(resolved.TenantDescriptor);
         }
 
         throw new InvalidOperationException(

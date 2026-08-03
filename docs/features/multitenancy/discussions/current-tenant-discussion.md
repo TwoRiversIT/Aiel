@@ -5,17 +5,17 @@
 > ```csharp
 > public interface ICurrentTenant
 > {
->     TenantIdentity? Current { get; }
->     IDisposable Change(TenantIdentity? tenant);
+>     TenantDescriptor? Current { get; }
+>     IDisposable Change(TenantDescriptor? tenant);
 > }
 >
-> public class CurrentTenant(TenantIdentity? tenant) : ICurrentTenant
+> public class CurrentTenant(TenantDescriptor? tenant) : ICurrentTenant
 > {
->     private TenantIdentity? _current = tenant;
->     public TenantIdentity? Current => _current;
+>     private TenantDescriptor? _current = tenant;
+>     public TenantDescriptor? Current => _current;
 >
 >     // ToDo: Create an analyzer to ensure that the returned IDisposable is disposed of.
->     public IDisposable Change(TenantIdentity? tenant)
+>     public IDisposable Change(TenantDescriptor? tenant)
 >     {
 >         var previous = _current;
 >         _current = tenant;
@@ -43,13 +43,13 @@
 >
 > ## Service Interfaces
 >
-> - **`ITenantAccessor`**: `GetCurrentTenantAsync(CancellationToken) → ValueTask<TenantIdentity>`
+> - **`ITenantAccessor`**: `GetCurrentTenantAsync(CancellationToken) → ValueTask<TenantDescriptor>`
 >   Registered by Aiel.AspNetCore; returns the current request's resolved tenant. Only callable on resolved-tenant paths.
 >
 > - **`ITenantResolver`**: `ResolveAsync(CancellationToken) → ValueTask<TenantResolution>`
 >   Application-implemented; runs once per HTTP request to compute resolution outcome.
 >
-> - **`ICurrentTenant`**: `Current -> TenantIdentity?`
+> - **`ICurrentTenant`**: `Current -> TenantDescriptor?`
 >   Synchronous accessor for tenant identity; returns null if not resolved. Useful in non-Async contexts. Also allows temporarily changing the current > tenant (e.g., for background jobs or impersonation).
 >
 > Basically, I am trying to figure out how to get the current tenant into the current thread regardless of whether it came from an HTTP request, Message > Queue, background services, etc.
@@ -129,9 +129,9 @@ You want something like:
 ```csharp
 public sealed class AmbientTenantContext
 {
-    private static readonly AsyncLocal<TenantIdentity?> _current = new();
+    private static readonly AsyncLocal<TenantDescriptor?> _current = new();
 
-    public static TenantIdentity? Current
+    public static TenantDescriptor? Current
     {
         get => _current.Value;
         set => _current.Value = value;
@@ -144,9 +144,9 @@ Then your `ICurrentTenant` becomes a thin wrapper:
 ```csharp
 public class CurrentTenant : ICurrentTenant
 {
-    public TenantIdentity? Current => AmbientTenantContext.Current;
+    public TenantDescriptor? Current => AmbientTenantContext.Current;
 
-    public IDisposable Change(TenantIdentity? tenant)
+    public IDisposable Change(TenantDescriptor? tenant)
     {
         var previous = AmbientTenantContext.Current;
         AmbientTenantContext.Current = tenant;
@@ -237,7 +237,7 @@ You do **not** need a factory.
 
 You need:
 
-### **1. `AsyncLocal<TenantIdentity?>` to hold the ambient tenant**
+### **1. `AsyncLocal<TenantDescriptor?>` to hold the ambient tenant**
 
 ### **2. Register `ICurrentTenant` as scoped**
 
@@ -267,9 +267,9 @@ Below are **battle‑tested unit tests** that validate the exact semantics you c
 
 These tests assume:
 
-- `AmbientTenantContext` uses `AsyncLocal<TenantIdentity?>`
+- `AmbientTenantContext` uses `AsyncLocal<TenantDescriptor?>`
 - `CurrentTenant` wraps that context
-- `TenantIdentity` is a simple record or class with equality semantics
+- `TenantDescriptor` is a simple record or class with equality semantics
 
 ---
 
@@ -281,7 +281,7 @@ public async Task CurrentTenant_FlowsAcrossAsyncAwait()
 {
     // Arrange
     var currentTenant = new CurrentTenant(null);
-    var tenant = new TenantIdentity("tenant-a");
+    var tenant = new TenantDescriptor("tenant-a");
 
     // Act
     using (currentTenant.Change(tenant))
@@ -306,12 +306,12 @@ public async Task CurrentTenant_IsIsolatedAcrossParallelTasks()
 {
     var currentTenant = new CurrentTenant(null);
 
-    TenantIdentity? t1Value = null;
-    TenantIdentity? t2Value = null;
+    TenantDescriptor? t1Value = null;
+    TenantDescriptor? t2Value = null;
 
     var t1 = Task.Run(() =>
     {
-        using (currentTenant.Change(new TenantIdentity("tenant-1")))
+        using (currentTenant.Change(new TenantDescriptor("tenant-1")))
         {
             t1Value = currentTenant.Current;
         }
@@ -319,7 +319,7 @@ public async Task CurrentTenant_IsIsolatedAcrossParallelTasks()
 
     var t2 = Task.Run(() =>
     {
-        using (currentTenant.Change(new TenantIdentity("tenant-2")))
+        using (currentTenant.Change(new TenantDescriptor("tenant-2")))
         {
             t2Value = currentTenant.Current;
         }
@@ -344,8 +344,8 @@ public void CurrentTenant_NestedScopesRestoreCorrectly()
 {
     var currentTenant = new CurrentTenant(null);
 
-    var root = new TenantIdentity("root");
-    var inner = new TenantIdentity("inner");
+    var root = new TenantDescriptor("root");
+    var inner = new TenantDescriptor("inner");
 
     using (currentTenant.Change(root))
     {
@@ -375,7 +375,7 @@ public async Task CurrentTenant_DoesNotFlowIntoUnrelatedTasks()
 {
     var currentTenant = new CurrentTenant(null);
 
-    using (currentTenant.Change(new TenantIdentity("tenant-main")))
+    using (currentTenant.Change(new TenantDescriptor("tenant-main")))
     {
         var unrelatedTask = Task.Run(() =>
         {
@@ -404,7 +404,7 @@ This is exactly what you want for tenant isolation.
 public async Task CurrentTenant_FlowsIntoAwaitedChildTasks()
 {
     var currentTenant = new CurrentTenant(null);
-    var tenant = new TenantIdentity("tenant-x");
+    var tenant = new TenantDescriptor("tenant-x");
 
     using (currentTenant.Change(tenant))
     {
@@ -451,15 +451,15 @@ Your `ICurrentTenant` becomes a **safe, ambient, async‑flow‑aware tenant con
 If you want, I can also generate:
 
 - A full test fixture with shared setup
-- A fake `TenantIdentity` builder
+- A fake `TenantDescriptor` builder
 - Tests for `ITenantAccessor` integration
 - Tests for middleware that sets the tenant
 
 Just tell me which direction you want to go next.
 
-> The new CurrentTenant class you proposed does not have a constructor that accepts `TenantIdentity?`. Was that an oversight, because the unit tests you provided expect it.
+> The new CurrentTenant class you proposed does not have a constructor that accepts `TenantDescriptor?`. Was that an oversight, because the unit tests you provided expect it.
 
-Good catch—that’s on me. With an `AsyncLocal<TenantIdentity?>` backing store, the constructor parameter is no longer needed, and my tests were still assuming the old shape.
+Good catch—that’s on me. With an `AsyncLocal<TenantDescriptor?>` backing store, the constructor parameter is no longer needed, and my tests were still assuming the old shape.
 
 You’ve got two clean options; I’ll show both and align the tests.
 
@@ -470,9 +470,9 @@ You’ve got two clean options; I’ll show both and align the tests.
 ```csharp
 public static class AmbientTenantContext
 {
-    private static readonly AsyncLocal<TenantIdentity?> _current = new();
+    private static readonly AsyncLocal<TenantDescriptor?> _current = new();
 
-    public static TenantIdentity? Current
+    public static TenantDescriptor? Current
     {
         get => _current.Value;
         set => _current.Value = value;
@@ -481,9 +481,9 @@ public static class AmbientTenantContext
 
 public class CurrentTenant : ICurrentTenant
 {
-    public TenantIdentity? Current => AmbientTenantContext.Current;
+    public TenantDescriptor? Current => AmbientTenantContext.Current;
 
-    public IDisposable Change(TenantIdentity? tenant)
+    public IDisposable Change(TenantDescriptor? tenant)
     {
         var previous = AmbientTenantContext.Current;
         AmbientTenantContext.Current = tenant;
@@ -503,7 +503,7 @@ Then the tests should construct it parameterless:
 public async Task CurrentTenant_FlowsAcrossAsyncAwait()
 {
     var currentTenant = new CurrentTenant();
-    var tenant = new TenantIdentity("tenant-a");
+    var tenant = new TenantDescriptor("tenant-a");
 
     using (currentTenant.Change(tenant))
     {
@@ -524,14 +524,14 @@ If you like the ability to seed an initial tenant (e.g., for tests or special ho
 ```csharp
 public class CurrentTenant : ICurrentTenant
 {
-    public CurrentTenant(TenantIdentity? initial = null)
+    public CurrentTenant(TenantDescriptor? initial = null)
     {
         AmbientTenantContext.Current = initial;
     }
 
-    public TenantIdentity? Current => AmbientTenantContext.Current;
+    public TenantDescriptor? Current => AmbientTenantContext.Current;
 
-    public IDisposable Change(TenantIdentity? tenant)
+    public IDisposable Change(TenantDescriptor? tenant)
     {
         var previous = AmbientTenantContext.Current;
         AmbientTenantContext.Current = tenant;
@@ -587,7 +587,7 @@ With the interface:
 
 ```csharp
 var mock = new Mock<ICurrentTenant>();
-mock.Setup(x => x.Current).Returns(new TenantIdentity("test"));
+mock.Setup(x => x.Current).Returns(new TenantDescriptor("test"));
 ```
 
 This is essential for testing multi‑tenant services.
@@ -681,8 +681,8 @@ Keep:
 ```csharp
 public interface ICurrentTenant
 {
-    TenantIdentity? Current { get; }
-    IDisposable Change(TenantIdentity? tenant);
+    TenantDescriptor? Current { get; }
+    IDisposable Change(TenantDescriptor? tenant);
 }
 ```
 
@@ -795,7 +795,7 @@ public sealed class TenantJobRunner
     }
 
     public async Task RunForTenantAsync(
-        TenantIdentity tenant,
+        TenantDescriptor tenant,
         Func<IServiceProvider, Task> job)
     {
         using var scope = _services.CreateScope();
@@ -854,7 +854,7 @@ public sealed class TenantMessageHandler<TMessage>
 
     public async Task HandleAsync(
         TMessage message,
-        TenantIdentity tenant,
+        TenantDescriptor tenant,
         Func<IServiceProvider, TMessage, Task> handler)
     {
         using var scope = _services.CreateScope();

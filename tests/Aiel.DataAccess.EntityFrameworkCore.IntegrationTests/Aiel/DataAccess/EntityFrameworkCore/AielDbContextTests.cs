@@ -35,7 +35,7 @@ public class AielDbContextTests
     {
         var cancellationToken = TestContext.Current.CancellationToken;
         var tenantId = Guid.NewGuid();
-        await using var dbContext = CreateTenantDbContext(new TenantIdentity(new TenantId(tenantId)), Guid.NewGuid().ToString("N"));
+        await using var dbContext = CreateTenantDbContext(new TenantDescriptor(new TenantId(tenantId)), Guid.NewGuid().ToString("N"));
 
         var entity = new TenantScopedNote { Id = Guid.NewGuid(), Name = "alpha" };
 
@@ -54,7 +54,7 @@ public class AielDbContextTests
         var firstTenant = Guid.NewGuid();
         var secondTenant = Guid.NewGuid();
 
-        await using (var seedContext = CreateTenantDbContext(new TenantIdentity(new TenantId(firstTenant)), databaseName))
+        await using (var seedContext = CreateTenantDbContext(new TenantDescriptor(new TenantId(firstTenant)), databaseName))
         {
             await seedContext.Notes.AddRangeAsync(
                 [
@@ -66,8 +66,8 @@ public class AielDbContextTests
             await seedContext.SaveChangesAsync(cancellationToken);
         }
 
-        await using var firstTenantContext = CreateTenantDbContext(new TenantIdentity(new TenantId(firstTenant)), databaseName);
-        await using var secondTenantContext = CreateTenantDbContext(new TenantIdentity(new TenantId(secondTenant)), databaseName);
+        await using var firstTenantContext = CreateTenantDbContext(new TenantDescriptor(new TenantId(firstTenant)), databaseName);
+        await using var secondTenantContext = CreateTenantDbContext(new TenantDescriptor(new TenantId(secondTenant)), databaseName);
 
         var firstResults = await firstTenantContext.Notes.OrderBy(static note => note.Name).Select(static note => note.Name).ToListAsync(cancellationToken);
         var secondResults = await secondTenantContext.Notes.OrderBy(static note => note.Name).Select(static note => note.Name).ToListAsync(cancellationToken);
@@ -145,13 +145,13 @@ public class AielDbContextTests
         entity.ModifiedBy.Should().Be("counsellor:beta");
     }
 
-    private static TenantAwareDbContext CreateTenantDbContext(TenantIdentity tenantIdentity, String databaseName)
+    private static TenantAwareDbContext CreateTenantDbContext(TenantDescriptor tenantDescriptor, String databaseName)
     {
         var options = new DbContextOptionsBuilder<TenantAwareDbContext>()
             .UseInMemoryDatabase(databaseName)
             .Options;
 
-        return new TenantAwareDbContext(options, tenantIdentity);
+        return new TenantAwareDbContext(options, tenantDescriptor);
     }
 
     private static DomainEventDbContext CreateDomainEventDbContext(String databaseName)
@@ -172,8 +172,8 @@ public class AielDbContextTests
         return new AuditedDbContext(options, executionContext);
     }
 
-    private sealed class TenantAwareDbContext(DbContextOptions<TenantAwareDbContext> options, TenantIdentity tenantIdentity)
-        : AielDbContext(options, tenantIdentity)
+    private sealed class TenantAwareDbContext(DbContextOptions<TenantAwareDbContext> options, TenantDescriptor tenantDescriptor)
+        : AielDbContext(options, tenantDescriptor)
     {
         public DbSet<TenantScopedNote> Notes => Set<TenantScopedNote>();
 

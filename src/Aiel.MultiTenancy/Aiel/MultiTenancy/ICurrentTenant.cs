@@ -24,17 +24,17 @@ namespace Aiel.MultiTenancy;
 
 public interface ICurrentTenant
 {
-    TenantIdentity? Current { get; }
-    IDisposable Change(TenantIdentity? tenant);
+    TenantDescriptor? Current { get; }
+    IDisposable Change(TenantDescriptor? tenant);
 }
 
 public sealed class AmbientTenantContext
 {
-    private readonly AsyncLocal<TenantIdentity?> _current = new();
+    private readonly AsyncLocal<TenantDescriptor?> _current = new();
 
-    public TenantIdentity Current
+    public TenantDescriptor Current
     {
-        get => _current.Value ?? TenantIdentity.Empty;
+        get => _current.Value ?? TenantDescriptor.Empty;
         set => _current.Value = value;
     }
 }
@@ -43,12 +43,12 @@ public class CurrentTenant(AmbientTenantContext context) : ICurrentTenant
 {
     private readonly AmbientTenantContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public TenantIdentity Current => _context.Current;
+    public TenantDescriptor Current => _context.Current;
 
-    public IDisposable Change(TenantIdentity? tenant)
+    public IDisposable Change(TenantDescriptor? tenant)
     {
         var previous = _context.Current;
-        _context.Current = tenant ?? TenantIdentity.Empty;
+        _context.Current = tenant ?? TenantDescriptor.Empty;
         return new TenantChangeContext(() => _context.Current = previous);
     }
 }

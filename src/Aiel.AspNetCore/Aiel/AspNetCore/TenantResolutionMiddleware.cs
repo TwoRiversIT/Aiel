@@ -58,7 +58,7 @@ internal sealed class TenantResolutionMiddleware(RequestDelegate next)
             return false;
         }
 
-        return overriddenTenantId != resolvedResolution.TenantIdentity.TenantId;
+        return overriddenTenantId != resolvedResolution.TenantDescriptor.TenantId;
     }
 
     private static Boolean TryGetTenantOverride(IHeaderDictionary headers, out TenantId overriddenTenantId)

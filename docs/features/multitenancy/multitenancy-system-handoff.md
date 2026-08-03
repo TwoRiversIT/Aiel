@@ -12,7 +12,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
    - Confirm the authority order: Aiel framework design decisions are reusable and open-source-oriented; Aviendha requirements are design inputs and validation scenarios.
    - Reconcile `d:/source/TwoRivers/Aiel/docs/planning/multitenancy-system.md` with `d:/source/TwoRivers/Aiel/docs/DomainPrimitives.md` and `d:/source/TwoRivers/Aiel/docs/phases/phase-03-aiel-aspnet-operational-plan.md`.
    - Treat existing multitenancy code as provisional. Keep only names and shapes that still read well for a reusable open-source framework.
-   - Naming recommendation: reserve `TenantId` for the identifier value object/scalar. Replace `TenantContext` if the wrapper carries more than the raw id; preferred candidate is `TenantIdentity` for resolved tenant identity plus optional routing/display hints, with `CurrentTenant`/`TenantScope`/`TenantResolution` used for scoped access and outcome concepts as appropriate.
+   - Naming recommendation: reserve `TenantId` for the identifier value object/scalar. Replace `TenantContext` if the wrapper carries more than the raw id; preferred candidate is `TenantDescriptor` for resolved tenant identity plus optional routing/display hints, with `CurrentTenant`/`TenantScope`/`TenantResolution` used for scoped access and outcome concepts as appropriate.
    - Rename `TrDbContext` to `AielDbContext` as part of the same public vocabulary cleanup, with compatibility only if Moiraine decides it is worth keeping during greenfield development.
    - Mark older assumptions for removal: tuple-like resolver results, nullable `ITenantProvider`, public `tenantId` claim trust, public tenant headers, storage details inside tenant identity, schema-per-tenant as first-class default.
    - Deliverable: short ADR or decision note in `.squad/decisions/inbox/moiraine-aiel-multitenancy-contract.md` before coding starts.
@@ -29,7 +29,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
 3. Redesign `Aiel.MultiTenancy` reusable contracts — Perrin primary, Moiraine review.
    - Replace nullable tenant resolution with explicit outcome types, likely `TenantResolution`/`TenantResolutionResult` plus a typed outcome, consistent with existing Aiel result/error patterns.
    - Introduce or confirm a `TenantId` identifier type. If the strong-id generator is ready, prefer a framework-level strong `TenantId`; otherwise use scalar `Guid` temporarily and document the intended upgrade path.
-   - Replace `TenantContext` with a clearer name unless Moiraine decides to keep it. Recommended split: `TenantId` for the identifier, `TenantIdentity` for resolved tenant identity plus optional domain/routing hint, `CurrentTenant` or `ITenantAccessor` for request/job-scoped access, and `TenantScope` for an explicit ambient binding if background jobs need one.
+   - Replace `TenantContext` with a clearer name unless Moiraine decides to keep it. Recommended split: `TenantId` for the identifier, `TenantDescriptor` for resolved tenant identity plus optional domain/routing hint, `CurrentTenant` or `ITenantAccessor` for request/job-scoped access, and `TenantScope` for an explicit ambient binding if background jobs need one.
    - Keep tenant identity free of connection strings, storage model, actor metadata, secret references, and Aviendha-specific concepts.
    - Add XML docs to public packable types.
    - Preserve package independence and avoid references from `Aiel.MultiTenancy` to Aviendha or infrastructure packages.
@@ -82,7 +82,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
 
 1. `ADR: Aiel multitenancy vocabulary and boundaries` — Moiraine primary, Loial secondary, Verin review.
    - Decide final names for tenant identifier, resolved tenant identity, tenant resolution outcome, scoped tenant accessor, tenant binding/scope, and EF base context.
-   - Recommended defaults: `TenantId`, `TenantIdentity`, `TenantResolution`, `ITenantAccessor` or `ICurrentTenant`, `TenantScope`, and `AielDbContext`.
+   - Recommended defaults: `TenantId`, `TenantDescriptor`, `TenantResolution`, `ITenantAccessor` or `ICurrentTenant`, `TenantScope`, and `AielDbContext`.
    - Explicitly state that current `TenantContext`, `ITenantProvider`, and `TrDbContext` are provisional and may be replaced.
    - Acceptance gate: ADR is merged into `.squad/decisions.md` or placed in `.squad/decisions/inbox/` with Moiraine approval before implementation begins.
 
@@ -124,7 +124,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
 - `D:/source/Aviendha/Aiel/docs/planning/multitenancy-system.md` — current high-level multitenancy draft to reconcile into an implementation-ready Aiel plan.
 - `D:/source/Aviendha/Aiel/docs/DomainPrimitives.md` — current source-of-truth language for identity-only `TenantContext`, explicit tenant outcomes, and EF strategy.
 - `D:/source/Aviendha/Aiel/docs/phases/phase-03-aiel-aspnet-operational-plan.md` — ASP.NET and migration operating model to preserve.
-- `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/TenantContext.cs` — provisional identity wrapper; likely replace with `TenantId` plus `TenantIdentity`/scoped-accessor vocabulary.
+- `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/TenantContext.cs` — provisional identity wrapper; likely replace with `TenantId` plus `TenantDescriptor`/scoped-accessor vocabulary.
 - `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/ITenantProvider.cs` — provisional nullable contract to replace with explicit outcomes and clearer resolver/accessor naming.
 - `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/IMultiTenant.cs` — discriminator marker used by EF query filters and tenant stamping; keep or rename only after the core naming ADR.
 - `D:/source/Aviendha/Aiel/src/Aiel.MultiTenancy/Aiel/MultiTenancy/TenantResolutionConstants.cs` — constants that must align with trust-boundary decisions.
@@ -151,7 +151,7 @@ Aiel should receive the reusable framework-level multitenancy work first, with A
 **Decisions**
 
 - Aiel is reusable framework code and eventual open-source API; Aviendha is a first reference/commercial implementation and design influence, not an authority over Aiel.
-- Do not call the whole request-scoped concept `TenantId`. `TenantId` should name the identifier only; use a separate name such as `TenantIdentity`, `CurrentTenant`, `TenantScope`, or `TenantResolution` for richer concepts.
+- Do not call the whole request-scoped concept `TenantId`. `TenantId` should name the identifier only; use a separate name such as `TenantDescriptor`, `CurrentTenant`, `TenantScope`, or `TenantResolution` for richer concepts.
 - Storage topology, connection strings, secret references, actor context, membership policy, tenant switching UX, and catalog schema are application-owned or provider-owned concerns.
 - Support discriminator and database-per-tenant as first-class Aiel patterns through reusable abstractions and EF helpers; do not bake Aviendha's control-plane table names or onboarding saga into Aiel.
 - Use explicit resolution outcomes instead of nullable public return values.

@@ -33,20 +33,20 @@ public class AmbientTenantContextTests
         var b = new AmbientTenantContext();
 
         // initial state
-        a.Current.Should().Be(TenantIdentity.Empty);
-        b.Current.Should().Be(TenantIdentity.Empty);
+        a.Current.Should().Be(TenantDescriptor.Empty);
+        b.Current.Should().Be(TenantDescriptor.Empty);
 
-        var tenant = new TenantIdentity(new TenantId(Guid.NewGuid()));
+        var tenant = new TenantDescriptor(new TenantId(Guid.NewGuid()));
 
         using (var change = new CurrentTenant(a).Change(tenant))
         {
             // only 'ambient' should see the tenant
             a.Current.Should().Be(tenant);
-            b.Current.Should().Be(TenantIdentity.Empty);
+            b.Current.Should().Be(TenantDescriptor.Empty);
         }
 
         // restore happened
-        a.Current.Should().Be(TenantIdentity.Empty);
+        a.Current.Should().Be(TenantDescriptor.Empty);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class AmbientTenantContextTests
         using var scope = provider.CreateScope();
         var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
-        var tenant = new TenantIdentity(new TenantId(Guid.NewGuid()));
+        var tenant = new TenantDescriptor(new TenantId(Guid.NewGuid()));
 
         using (current.Change(tenant))
         {
@@ -76,8 +76,8 @@ public class AmbientTenantContextTests
         using var scope = provider.CreateScope();
         var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
-        var parent = new TenantIdentity(new TenantId(Guid.NewGuid()));
-        var child = new TenantIdentity(new TenantId(Guid.NewGuid()));
+        var parent = new TenantDescriptor(new TenantId(Guid.NewGuid()));
+        var child = new TenantDescriptor(new TenantId(Guid.NewGuid()));
 
         using (current.Change(parent))
         {
@@ -94,7 +94,7 @@ public class AmbientTenantContextTests
         var ambient = scope.ServiceProvider.GetRequiredService<AmbientTenantContext>();
         var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
-        var tenant = new TenantIdentity(new TenantId(Guid.NewGuid()));
+        var tenant = new TenantDescriptor(new TenantId(Guid.NewGuid()));
 
         using (current.Change(tenant))
         {
@@ -118,7 +118,7 @@ public class AmbientTenantContextTests
             var ambient1 = scope1.ServiceProvider.GetRequiredService<AmbientTenantContext>();
             var current1 = scope1.ServiceProvider.GetRequiredService<ICurrentTenant>();
 
-            var tenant1 = new TenantIdentity(new TenantId(Guid.NewGuid()));
+            var tenant1 = new TenantDescriptor(new TenantId(Guid.NewGuid()));
             ambient1.Current = tenant1;
 
             // resolved CurrentTenant in this scope sees tenant1
@@ -133,7 +133,7 @@ public class AmbientTenantContextTests
         using (var scope2 = provider.CreateScope())
         {
             var current2 = scope2.ServiceProvider.GetRequiredService<ICurrentTenant>();
-            current2.Current.Should().Be(TenantIdentity.Empty);
+            current2.Current.Should().Be(TenantDescriptor.Empty);
         }
     }
 }

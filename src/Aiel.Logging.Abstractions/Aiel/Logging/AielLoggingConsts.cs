@@ -20,19 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.MultiTenancy;
+namespace Aiel.Logging;
 
-/// <summary>
-/// Immutable, framework-owned tenant identity. Carries only what is needed for identification
-/// and routing hint propagation. Storage topology, connection data, and membership details
-/// belong in separate runtime binding contracts.
-/// </summary>
-/// <param name="TenantId">The unique tenant identifier.</param>
-/// <param name="HostHint">
-/// Optional host or subdomain routing hint. Treat as a hint only — not as an authorization
-/// primitive. Empty string when absent.
-/// </param>
-public sealed record TenantIdentity(TenantId TenantId, String HostHint = "")
+public static class AielLoggingConsts
 {
-    public static readonly TenantIdentity Empty = new(new TenantId(Guid.Empty));
+    public const String Action = "Action";
+    public const String Application = "Application";
+    public const String CorrelationId = "CorrelationId";
+    public const String CurrentLocation = "CurrentLocation";
+    public const String CurrentUser = "CurrentUser";
+    public const String Instance = "Instance";
+    public const String Version = "Version";
 }

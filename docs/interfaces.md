@@ -644,7 +644,7 @@ public interface IIntegrationMessage;
 
 public interface IMessageEnvelopeFactory
 {
-    MessageEnvelope<TMessage> Create<TMessage>(TMessage message, IExecutionContext executionContext, TenantIdentity? tenant = null)
+    MessageEnvelope<TMessage> Create<TMessage>(TMessage message, IExecutionContext executionContext, TenantDescriptor? tenant = null)
         where TMessage : IIntegrationMessage;
 }
 
@@ -652,7 +652,7 @@ public interface IMessagePublisher
 {
     ValueTask PublishAsync<TMessage>(MessageEnvelope<TMessage> envelope, CancellationToken cancellationToken = default)
         where TMessage : IIntegrationMessage;
-    ValueTask PublishAsync<TMessage>(TMessage message, IExecutionContext executionContext, TenantIdentity? tenant = null, CancellationToken cancellationToken = default)
+    ValueTask PublishAsync<TMessage>(TMessage message, IExecutionContext executionContext, TenantDescriptor? tenant = null, CancellationToken cancellationToken = default)
         where TMessage : IIntegrationMessage;
 }
 
@@ -757,8 +757,8 @@ public interface IMultiTenant
 
 public interface ICurrentTenant
 {
-    TenantIdentity? Current { get; }
-    IDisposable Change(TenantIdentity? tenant);
+    TenantDescriptor? Current { get; }
+    IDisposable Change(TenantDescriptor? tenant);
 }
 
 public interface ITenantResolver
@@ -768,6 +768,6 @@ public interface ITenantResolver
 
 public interface ITenantAccessor
 {
-    ValueTask<TenantIdentity> GetCurrentTenantAsync(CancellationToken cancellationToken = default);
+    ValueTask<TenantDescriptor> GetCurrentTenantAsync(CancellationToken cancellationToken = default);
 }
 ```

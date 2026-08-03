@@ -27,7 +27,7 @@ public class StrongIdExtensionsTests
     [Fact]
     public void ThrowIfDefault_WhenValueIsDefault_ThrowsArgumentException()
     {
-        var id = new Int32AllowDefaultId(0);
+        var id = new Int32AllowDefaultTrueId(0);
         Action act = () => id.ThrowIfDefault(nameof(id));
         act.Should().Throw<ArgumentException>()
             .WithParameterName(nameof(id))
@@ -37,7 +37,7 @@ public class StrongIdExtensionsTests
     [Fact]
     public void ThrowIfDefault_WhenValueIsNotDefault_DoesNotThrow()
     {
-        var id = new Int32AllowDefaultId(1);
+        var id = new Int32AllowDefaultTrueId(1);
         Action act = () => id.ThrowIfDefault(nameof(id));
         act.Should().NotThrow();
     }
@@ -45,7 +45,7 @@ public class StrongIdExtensionsTests
     [Fact]
     public void ThrowIfDefault_WhenValueIsNotDefault_ReturnsTheId()
     {
-        var id = new Int32AllowDefaultId(1);
+        var id = new Int32AllowDefaultTrueId(1);
         var result = id.ThrowIfDefault(nameof(id));
         result.Value.Should().Be(1);
     }

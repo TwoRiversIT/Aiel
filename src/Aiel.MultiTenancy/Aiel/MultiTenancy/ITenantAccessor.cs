@@ -23,7 +23,7 @@
 namespace Aiel.MultiTenancy;
 
 /// <summary>
-/// Provides access to the resolved <see cref="TenantIdentity"/> for the current execution context.
+/// Provides access to the resolved <see cref="TenantDescriptor"/> for the current execution context.
 /// </summary>
 /// <remarks>
 /// Implementations throw <see cref="InvalidOperationException"/> when called outside a resolved
@@ -36,6 +36,6 @@ public interface ITenantAccessor
     /// Returns the current tenant identity.
     /// </summary>
     /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
-    /// <returns>The resolved <see cref="TenantIdentity"/>.</returns>
-    ValueTask<TenantIdentity> GetCurrentTenantAsync(CancellationToken cancellationToken = default);
+    /// <returns>The resolved <see cref="TenantDescriptor"/>.</returns>
+    ValueTask<TenantDescriptor> GetCurrentTenantAsync(CancellationToken cancellationToken = default);
 }

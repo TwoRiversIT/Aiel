@@ -71,7 +71,7 @@ public sealed class AielDbContextIssue17ContractTests
 
         await using var dbContext = CreateResolverBackedDbContext(
             Guid.NewGuid().ToString("N"),
-            new TenantResolution.Resolved(new TenantIdentity(tenantId)));
+            new TenantResolution.Resolved(new TenantDescriptor(tenantId)));
 
         var entity = new Issue17TenantScopedNote { Id = Guid.NewGuid(), Name = "alpha" };
 
@@ -97,10 +97,10 @@ public sealed class AielDbContextIssue17ContractTests
 
         await using var firstTenantContext = CreateResolverBackedDbContext(
             databaseName,
-            new TenantResolution.Resolved(new TenantIdentity(firstTenantId)));
+            new TenantResolution.Resolved(new TenantDescriptor(firstTenantId)));
         await using var secondTenantContext = CreateResolverBackedDbContext(
             databaseName,
-            new TenantResolution.Resolved(new TenantIdentity(secondTenantId)));
+            new TenantResolution.Resolved(new TenantDescriptor(secondTenantId)));
 
         var firstTenantResults = await firstTenantContext
             .Set<Issue17TenantScopedNote>()

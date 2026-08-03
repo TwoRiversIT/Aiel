@@ -22,7 +22,7 @@
 
 using System.Net.Mail;
 
-namespace Aiel.Emailing.Abstractions.Aiel.Emailing;
+namespace Aiel.Emailing;
 
 public class EmailAddress
 {

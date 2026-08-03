@@ -38,7 +38,7 @@ public sealed class DefaultMessageEnvelopeFactory(IMessageTypeRegistry registry)
     public MessageEnvelope<TMessage> Create<TMessage>(
         TMessage message,
         IExecutionContext executionContext,
-        TenantIdentity? tenant = null)
+        TenantDescriptor? tenant = null)
         where TMessage : IIntegrationMessage
     {
         ArgumentNullException.ThrowIfNull(message);

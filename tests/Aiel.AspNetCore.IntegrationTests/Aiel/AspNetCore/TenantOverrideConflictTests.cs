@@ -38,7 +38,7 @@ public sealed class TenantOverrideConflictTests
     {
         var resolvedTenantId = new TenantId(Guid.NewGuid());
         var differentTenantId = new TenantId(Guid.NewGuid());
-        var outcome = new TenantResolution.Resolved(new TenantIdentity(resolvedTenantId));
+        var outcome = new TenantResolution.Resolved(new TenantDescriptor(resolvedTenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(
@@ -54,7 +54,7 @@ public sealed class TenantOverrideConflictTests
     public async Task XTenantId_MatchesResolvedTenant_Returns200()
     {
         var resolvedTenantId = new TenantId(Guid.NewGuid());
-        var outcome = new TenantResolution.Resolved(new TenantIdentity(resolvedTenantId));
+        var outcome = new TenantResolution.Resolved(new TenantDescriptor(resolvedTenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(

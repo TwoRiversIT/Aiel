@@ -27,5 +27,5 @@ namespace Aiel.MultiTenancy;
 /// <summary>
 /// Identifies a tenant. Guid-backed strong identifier; never exposed as a raw <see cref="Guid"/>.
 /// </summary>
-[StrongId<Guid>(DisallowDefault = false, GenerateTryFrom = true)]
+[StrongId<Guid>(AllowDefault = true)]
 public readonly partial record struct TenantId;

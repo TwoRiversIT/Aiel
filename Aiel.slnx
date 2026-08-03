@@ -174,8 +174,10 @@
     <Project Path="src/Aiel.Gps/Aiel.Gps.csproj" />
     <Project Path="src/Aiel.IdGeneration/Aiel.IdGeneration.csproj" />
     <Project Path="src/Aiel.InternetTypes/Aiel.InternetTypes.csproj" />
+    <Project Path="src/Aiel.Logging.Abstractions/Aiel.Logging.Abstractions.csproj" Id="ca555f2c-db83-4588-ab6e-ddac875d4f06" />
     <Project Path="src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj" />
     <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
+    <Project Path="src/Aiel.Logging.Serilog/Aiel.Logging.Serilog.csproj" Id="8f092a66-fdee-4f18-8465-e12dc682fd70" />
     <Project Path="src/Aiel.Logging/Aiel.Logging.csproj" Id="9a36c8c7-09d0-43af-995b-ff824d1e59b7" />
     <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
@@ -197,6 +199,8 @@
     <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj" />
     <Project Path="src/Aiel.Testing.CodeAnalysis/Aiel.Testing.CodeAnalysis.csproj" />
     <Project Path="src/Aiel.Testing/Aiel.Testing.csproj" />
+    <Project Path="src/Aiel.Users.EntityFrameworkCore/Aiel.Users.EntityFrameworkCore.csproj" />
+    <Project Path="src/Aiel.Users/Aiel.Users.csproj" Id="68aa30f0-6c1a-470c-8526-1612fc6f08d2" />
     <Project Path="src/Aiel.Utilities/Aiel.Utilities.csproj">
       <BuildDependency Project="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.Framework.Analyzers/Aiel.Framework.Analyzers.csproj" />
@@ -268,6 +272,7 @@
     <Project Path="tests/Aiel.StrongIds.UnitTests/Aiel.StrongIds.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.Integration.UnitTests/Aiel.Testing.Integration.UnitTests.csproj" />
     <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Users.UnitTests/Aiel.Users.UnitTests.csproj" Id="91c57f9e-bc58-42b8-99a5-59a93d041ccc" />
     <Project Path="tests/Aiel.Utilities.UnitTests/Aiel.Utilities.UnitTests.csproj" />
     <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
     <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />

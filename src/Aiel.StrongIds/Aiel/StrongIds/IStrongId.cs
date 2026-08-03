@@ -44,4 +44,16 @@ public static class StrongIdExtensions
 
         return value;
     }
+
+    public static T? ThrowIfDefault<T>(this T? value, String parameterName)
+        where T : struct, IStrongId
+    {
+        // Null is not default value so we don't throw an exception for null values.
+        if (value?.IsDefault == true)
+        {
+            throw new ArgumentException("The StrongId is empty or default.", parameterName);
+        }
+
+        return value;
+    }
 }

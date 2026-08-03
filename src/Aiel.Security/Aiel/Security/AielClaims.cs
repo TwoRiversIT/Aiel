@@ -28,4 +28,5 @@ public static class AielClaims
     public const String GivenName = "aiel_given_name";
     public const String FamilyName = "aiel_family_name";
     public const String EmailAddress = "aiel_email_address";
+    public const String Subject = "sub";
 }

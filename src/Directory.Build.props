@@ -17,9 +17,6 @@
         <NBGV_ThisAssemblyIncludesPackageVersion>true</NBGV_ThisAssemblyIncludesPackageVersion>
         <GitVersionBaseDirectory>$(MSBuildThisFileDirectory)</GitVersionBaseDirectory>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-
-        <!-- Version to use -->
-        <AielVersion>0.0.3</AielVersion>
     </PropertyGroup>
 
     <!-- NuGet metadata (applies to all packable projects) -->

@@ -32,7 +32,6 @@ public sealed class Program
         var builder = WebApplication.CreateBuilder(args);
 
         await builder.AddApplicationAsync();
-        builder.Services.AddSingleton<ITenantResolver, UnconfiguredTenantResolver>();
 
         var app = builder.Build();
 
@@ -49,8 +48,8 @@ public sealed class Program
             "/tenant-accessor",
             async (ITenantAccessor tenantAccessor, CancellationToken cancellationToken = default) =>
             {
-                var tenantIdentity = await tenantAccessor.GetCurrentTenantAsync(cancellationToken);
-                return TypedResults.Text(tenantIdentity.TenantId.Value.ToString("D"));
+                var tenantDescriptor = await tenantAccessor.GetCurrentTenantAsync(cancellationToken);
+                return TypedResults.Text(tenantDescriptor.TenantId.Value.ToString("D"));
             });
 
         await app.RunAsync();
@@ -73,7 +72,7 @@ public static class TestEndpointResponses
 
         return tenantResolution switch
         {
-            TenantResolution.Resolved resolved => resolved.TenantIdentity.TenantId.Value.ToString("D"),
+            TenantResolution.Resolved resolved => resolved.TenantDescriptor.TenantId.Value.ToString("D"),
             TenantResolution.Missing => TenantResolutionMissing,
             TenantResolution.Ambiguous => TenantResolutionAmbiguous,
             TenantResolution.Rejected rejected => $"tenant-resolution-rejected:{rejected.Reason}",

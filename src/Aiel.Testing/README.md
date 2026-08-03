@@ -474,7 +474,7 @@ public class CustomerTestBase<TSUT>(CustomersFixture fixture)
     : IntegrationTestBase<TSUT, CustomersFixture>(fixture)
     where TSUT : class
 {
-    public override async ValueTask InitializeAsync()
+    public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
         
@@ -601,7 +601,7 @@ public class CustomerTestBase<TSUT>(
     : IntegrationTestBase<TSUT, CustomersFixture>(fixture)
     where TSUT : class
 {
-    public override async ValueTask InitializeAsync()
+    public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
         

@@ -24,5 +24,5 @@ using Aiel.Framework;
 
 namespace Aiel.Internet;
 
-[DependsOn(typeof(AielFrameworkAbstractions))]
+[DependsOn(typeof(AielUtilities))]
 public sealed class AielInternetTypes : AielDependencyConfigurator;

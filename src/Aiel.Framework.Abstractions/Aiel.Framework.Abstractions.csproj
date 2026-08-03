@@ -3,7 +3,11 @@
     <PropertyGroup>
         <RootNamespace />
         <AssemblyName>Aiel.Framework.Abstractions</AssemblyName>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <!--
+        Intentionally disabling Implicit Usings to support Aiel.Framework.UnitTests.Stubs
+        which includes source code from Aiel.Framework.Abstractions
+        -->
         <ImplicitUsings>disable</ImplicitUsings>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
@@ -20,14 +24,8 @@
     them and, with a wrong path, causes CS0006 in consuming projects).
     -->
     <ItemGroup>
-        <None Include="..\Aiel.Framework.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Analyzers.dll"
-              Pack="true"
-              PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
-        <None Include="..\Aiel.Framework.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Generators.dll"
-              Pack="true"
-              PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
+        <None Include="..\Aiel.Framework.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\Aiel.Framework.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <!--
@@ -36,22 +34,12 @@
     not themselves packed as dependencies.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj"
-                          ReferenceOutputAssembly="false"
-                          Pack="false"
-                          PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj"
-                          ReferenceOutputAssembly="false"
-                          Pack="false"
-                          PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.9" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Aiel.Utilities\Aiel.Utilities.csproj" />
     </ItemGroup>
 
 </Project>

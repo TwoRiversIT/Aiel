@@ -30,7 +30,7 @@
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IConfigurator.cs" Link="Aiel\Framework\Stubs\IConfigurator.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IDependencyManager.cs" Link="Aiel\Framework\Stubs\IDependencyManager.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IInitializer.cs" Link="Aiel\Framework\Stubs\IInitializer.txt" />
-        <EmbeddedResource Include="..\..\src\Aiel.Utilities\Aiel\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
         <EmbeddedResource Include="Aiel\Framework\Stubs\Usings.txt" />
     </ItemGroup>
 

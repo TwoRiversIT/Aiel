@@ -24,5 +24,6 @@ using Aiel.Framework;
 
 namespace Aiel.Testing;
 
-[DependsOn(typeof(AielFrameworkAbstractions))]
+[DependsOn(typeof(AielFramework))]
+[DependsOn(typeof(AielUtilities))]
 public sealed class AielTesting : AielDependencyConfigurator;

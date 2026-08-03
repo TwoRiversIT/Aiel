@@ -15,5 +15,9 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.9" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.9" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
+    </ItemGroup>
     
 </Project>

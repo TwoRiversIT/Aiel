@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -29,7 +28,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace Aiel.Emailing.Abstractions.Aiel.Emailing;
+namespace Aiel.Emailing;
 
 [JsonConverter(typeof(EmailAddressJsonConverter))]
 [TypeConverter(typeof(EmailAddressTypeConverter))]
@@ -40,7 +39,7 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
 
     public Email(String email)
     {
-        if (!String.IsNullOrEmpty(email))
+        if (!String.IsNullOrWhiteSpace(email))
         {
             var parts = email.Split('@', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (parts.Length != 2)
@@ -56,7 +55,15 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
 
     public override String ToString() => _email;
 
-    public static Email Parse(String email) => new(email);
+    public static Email Parse(String? email)
+    {
+        if (TryParse(email, out var result))
+        {
+            return result;
+        }
+
+        throw new ArgumentException($"The string '{email}' is not a valid email.", nameof(email));
+    }
 
     public static Boolean TryParse(String? value, out Email email)
     {
@@ -74,7 +81,7 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
 
     public static implicit operator String(Email email) => email.ToString();
 
-    public static implicit operator Email(String email) => Parse(email);
+    public static implicit operator Email(String? email) => email is null ? Empty : Parse(email);
 
     public static Boolean operator <(Email left, Email right) => left.CompareTo(right) < 0;
 

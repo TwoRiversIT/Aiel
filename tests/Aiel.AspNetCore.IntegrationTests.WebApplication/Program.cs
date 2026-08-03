@@ -32,7 +32,6 @@ public sealed class Program
         var builder = WebApplication.CreateBuilder(args);
 
         await builder.AddApplicationAsync();
-        builder.Services.AddSingleton<ITenantResolver, UnconfiguredTenantResolver>();
 
         var app = builder.Build();
 

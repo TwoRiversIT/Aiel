@@ -77,7 +77,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
         title: "Unable to determine a single Aiel project type",
         messageFormat: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
         category: DiagnosticMetadata.UsageCategory,
-        defaultSeverity: DiagnosticSeverity.Error,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
         customTags: []);

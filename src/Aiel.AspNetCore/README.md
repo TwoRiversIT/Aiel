@@ -38,8 +38,8 @@ app.MapGet("/tenant-info", async Task<IResult> (
 
     if (tenantResolution is TenantResolution.Resolved)
     {
-        var tenantDescriptor = await tenantAccessor.GetCurrentTenantAsync(cancellationToken);
-        return TypedResults.Ok(tenantDescriptor.TenantId);
+        var currentTenant = await tenantAccessor.GetCurrentTenantAsync(cancellationToken);
+        return TypedResults.Ok(currentTenant.TenantId);
     }
 
     return tenantResolution switch

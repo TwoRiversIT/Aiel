@@ -35,6 +35,6 @@ public interface IMessageEnvelopeFactory
     MessageEnvelope<TMessage> Create<TMessage>(
         TMessage message,
         IExecutionContext executionContext,
-        TenantDescriptor? tenant = null)
+        CurrentTenant? tenant = null)
         where TMessage : IIntegrationMessage;
 }

@@ -20,17 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.DependencyInjection;
+using Aiel.MultiTenancy;
 
-namespace Aiel.MultiTenancy;
+namespace Aiel.MessageBus;
 
-public static class MultitenancyTestServiceProvider
+internal class TestHelper
 {
-    public static ServiceProvider Build()
-    {
-        var services = new ServiceCollection();
-        services.AddScoped<AmbientTenantContext>();
-        services.AddScoped<ICurrentTenant, CurrentTenant>();
-        return services.BuildServiceProvider();
-    }
+    public static CurrentTenant BuildTenant(TenantId? id = null, String? name = null, String? hostHint = null)
+        => new DefaultCurrentTenant(id ?? TenantId.From(Guid.NewGuid()), name ?? "Tenant", hostHint ?? "tenant.example.com");
 }

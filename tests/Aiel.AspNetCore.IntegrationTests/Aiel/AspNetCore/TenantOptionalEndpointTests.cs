@@ -49,7 +49,7 @@ public sealed class TenantOptionalEndpointTests
     [Fact]
     public async Task Resolved_TenantResolution_Returns200()
     {
-        var outcome = new TenantResolution.Resolved(new TenantDescriptor(new TenantId(Guid.NewGuid())));
+        var outcome = new TenantResolution.Resolved(TestHelper.BuildTenant());
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
 

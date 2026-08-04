@@ -22,6 +22,7 @@
 
 using Aiel.Framework;
 using Aiel.StrongIds;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.MultiTenancy;
 
@@ -30,4 +31,12 @@ namespace Aiel.MultiTenancy;
 /// </summary>
 [DependsOn(typeof(AielFrameworkAbstractions))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielMultiTenancy : AielDependencyConfigurator;
+public sealed class AielMultiTenancy : AielDependencyConfigurator
+{
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.Services.TryAddSingleton<ICurrentTenantAccessor, CurrentTenantAccessor>();
+
+        return Task.CompletedTask;
+    }
+}

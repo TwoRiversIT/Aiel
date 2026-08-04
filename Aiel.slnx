@@ -139,6 +139,7 @@
     <Project Path="src/Aiel.Application/Aiel.Application.csproj" />
     <Project Path="src/Aiel.AspNetCore.Blazor.WebAssembly/Aiel.AspNetCore.Blazor.WebAssembly.csproj" Id="b465f734-1d03-4d39-8fb9-11e78c1e83eb" />
     <Project Path="src/Aiel.AspNetCore.Blazor/Aiel.AspNetCore.Blazor.csproj" Id="5319b8a4-25c3-40ca-828b-0257628c768b" />
+    <Project Path="src/Aiel.AspNetCore.Logging.Serilog/Aiel.AspNetCore.Logging.Serilog.csproj" />
     <Project Path="src/Aiel.AspNetCore/Aiel.AspNetCore.csproj" Id="c624d3e8-2052-48bf-bd46-3232f071fa23" />
     <Project Path="src/Aiel.Authorization.Abstractions/Aiel.Authorization.Abstractions.csproj" Id="564025d9-bc28-4406-b7c5-6db12da3b3d1" />
     <Project Path="src/Aiel.Authorization.Analyzers/Aiel.Authorization.Analyzers.csproj" />

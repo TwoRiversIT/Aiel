@@ -22,44 +22,18 @@
 
 namespace Aiel.MultiTenancy;
 
-public interface ICurrentTenant
+public abstract class CurrentTenant
 {
-    TenantDescriptor? Current { get; }
-    IDisposable Change(TenantDescriptor? tenant);
-}
+    public static readonly CurrentTenant Empty = new EmptyCurrentTenant();
 
-public sealed class AmbientTenantContext
-{
-    private readonly AsyncLocal<TenantDescriptor?> _current = new();
+    public abstract TenantId TenantId { get; }
+    public abstract String Name { get; }
+    public abstract String HostHint { get; }
 
-    public TenantDescriptor Current
+    private class EmptyCurrentTenant : CurrentTenant
     {
-        get => _current.Value ?? TenantDescriptor.Empty;
-        set => _current.Value = value;
-    }
-}
-
-public class CurrentTenant(AmbientTenantContext context) : ICurrentTenant
-{
-    private readonly AmbientTenantContext _context = context ?? throw new ArgumentNullException(nameof(context));
-
-    public TenantDescriptor Current => _context.Current;
-
-    public IDisposable Change(TenantDescriptor? tenant)
-    {
-        var previous = _context.Current;
-        _context.Current = tenant ?? TenantDescriptor.Empty;
-        return new TenantChangeContext(() => _context.Current = previous);
-    }
-}
-
-internal sealed class TenantChangeContext(Action restore) : IDisposable
-{
-    private Action? _restore = restore ?? throw new ArgumentNullException(nameof(restore));
-
-    public void Dispose()
-    {
-        var restore = Interlocked.Exchange(ref _restore, null);
-        restore?.Invoke();
+        public override TenantId TenantId => new(Guid.Empty);
+        public override String Name => String.Empty;
+        public override String HostHint => String.Empty;
     }
 }

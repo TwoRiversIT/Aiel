@@ -20,20 +20,35 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.MultiTenancy;
+using Microsoft.AspNetCore.Http;
 
 namespace Aiel.AspNetCore;
 
-[DependsOn(typeof(AielAspNetCore))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+internal sealed class HttpContextCurrentTenantAccessor(IHttpContextAccessor httpContextAccessor) : ICurrentTenantAccessor
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor
+        ?? throw new ArgumentNullException(nameof(httpContextAccessor));
 
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public CurrentTenant CurrentTenant { get; } = CurrentTenant.Empty;
+
+    public IDisposable Change(CurrentTenant? currentTenant)
+        => throw new NotImplementedException();
+
+    public ValueTask<CurrentTenant> GetCurrentTenantAsync()
     {
-        return Task.CompletedTask;
+        var httpContext = _httpContextAccessor.HttpContext
+            ?? throw new InvalidOperationException(
+                "Tenant access requires an active HTTP request. Use ITenantResolver when the current execution context is not HTTP-bound.");
+
+        var tenantResolution = httpContext.GetTenantResolution();
+
+        if (tenantResolution is TenantResolution.Resolved resolved)
+        {
+            return ValueTask.FromResult(resolved.CurrentTenant);
+        }
+
+        throw new InvalidOperationException(
+            $"Tenant access requires a resolved tenant. The current request resolved as {tenantResolution.GetType().Name}.");
     }
 }

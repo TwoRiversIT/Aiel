@@ -20,30 +20,28 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.MultiTenancy;
+using Aiel.Framework;
+using Aiel.Logging;
 using Microsoft.AspNetCore.Http;
+using Serilog.Context;
 
 namespace Aiel.AspNetCore;
 
-internal sealed class HttpContextTenantAccessor(IHttpContextAccessor httpContextAccessor) : ITenantAccessor
+public class AielRequestHeadersMiddleware(RequestDelegate next)
 {
-    private readonly IHttpContextAccessor _httpContextAccessor =
-        httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+    private readonly RequestDelegate _next = next;
 
-    public ValueTask<TenantDescriptor> GetCurrentTenantAsync(CancellationToken cancellationToken = default)
+    public async Task Invoke(HttpContext context)
     {
-        var httpContext = _httpContextAccessor.HttpContext
-            ?? throw new InvalidOperationException(
-                "Tenant access requires an active HTTP request. Use ITenantResolver when the current execution context is not HTTP-bound.");
+        var userAgent = context.Request.Headers.UserAgent.ToString();
+        var clientVersion = context.Request.Headers[AielHeaders.ClientVersionHeader].ToString();
+        var clientInstance = context.Request.Headers[AielHeaders.ClientInstanceHeader].ToString();
 
-        var tenantResolution = httpContext.GetTenantResolution();
-
-        if (tenantResolution is TenantResolution.Resolved resolved)
+        using (LogContext.PushProperty(AielLoggingConsts.UserAgent, String.IsNullOrWhiteSpace(userAgent) ? null : userAgent, destructureObjects: false))
+        using (LogContext.PushProperty(AielLoggingConsts.Version, String.IsNullOrWhiteSpace(clientVersion) ? null : clientVersion, destructureObjects: false))
+        using (LogContext.PushProperty(AielLoggingConsts.Instance, String.IsNullOrWhiteSpace(clientInstance) ? null : clientInstance, destructureObjects: false))
         {
-            return ValueTask.FromResult(resolved.TenantDescriptor);
+            await _next(context);
         }
-
-        throw new InvalidOperationException(
-            $"Tenant access requires a resolved tenant. The current request resolved as {tenantResolution.GetType().Name}.");
     }
 }

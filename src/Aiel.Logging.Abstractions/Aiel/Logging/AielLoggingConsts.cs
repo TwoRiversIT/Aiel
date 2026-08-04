@@ -31,4 +31,5 @@ public static class AielLoggingConsts
     public const String CurrentUser = "CurrentUser";
     public const String Instance = "Instance";
     public const String Version = "Version";
+    public const String UserAgent = "UserAgent";
 }

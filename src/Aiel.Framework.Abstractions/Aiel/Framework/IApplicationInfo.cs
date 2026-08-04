@@ -1,4 +1,4 @@
-﻿// MIT License
+// MIT License
 //
 // Copyright 2026 Two Rivers Information Technology Inc.
 //
@@ -24,7 +24,6 @@ namespace Aiel.Framework;
 
 public interface IApplicationInfo
 {
-    Guid ApplicationInstance { get; }
     String ApplicationName { get; }
     String ApplicationVersion { get; }
 }

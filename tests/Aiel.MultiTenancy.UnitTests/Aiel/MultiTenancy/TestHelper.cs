@@ -20,26 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Users;
+using Microsoft.Extensions.DependencyInjection;
 
-public class CurrentUserTests
+namespace Aiel.MultiTenancy;
+
+public static class TestHelper
 {
-    [Fact]
-    public void CurrentUser_FromClaimsPrincipal_ReturnsValidUser()
+    public static ServiceProvider BuildServiceProvider()
     {
-        // Arrange
-        var expectedUserId = new UserId(Guid.NewGuid());
-        var claimsPrincipal = TestData.GetClaimsPrincipal(expectedUserId);
-
-        // Act
-        var currentUser = PrincipalCurrentUser.FromClaimsPrincipal(claimsPrincipal);
-
-        // Assert
-        currentUser.Id.Should().Be(expectedUserId);
-        currentUser.IsAuthenticated.Should().BeTrue();
-        currentUser.UserName.Should().Be(TestData.UserName);
-        currentUser.FirstName.Should().Be(TestData.UserFirstName);
-        currentUser.LastName.Should().Be(TestData.UserLastName);
-        currentUser.Email.Should().Be(TestData.UserEmail);
+        var services = new ServiceCollection();
+        services.AddSingleton<ICurrentTenantAccessor, CurrentTenantAccessor>();
+        return services.BuildServiceProvider();
     }
+
+    public static CurrentTenant BuildTenant(TenantId? id = null, String? name = null, String? hostHint = null)
+        => new DefaultCurrentTenant(id ?? TenantId.From(Guid.NewGuid()), name ?? "Tenant", hostHint ?? "tenant.example.com");
 }

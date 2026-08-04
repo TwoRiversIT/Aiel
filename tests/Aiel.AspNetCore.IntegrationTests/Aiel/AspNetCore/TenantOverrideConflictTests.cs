@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.MultiTenancy;
 using System.Net;
 
@@ -38,11 +39,11 @@ public sealed class TenantOverrideConflictTests
     {
         var resolvedTenantId = new TenantId(Guid.NewGuid());
         var differentTenantId = new TenantId(Guid.NewGuid());
-        var outcome = new TenantResolution.Resolved(new TenantDescriptor(resolvedTenantId));
+        var outcome = new TenantResolution.Resolved(TestHelper.BuildTenant(resolvedTenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(
-            TenantResolutionConstants.TenantIdOverrideHeaderName,
+            AielHeaders.TenantIdHeader,
             differentTenantId.Value.ToString("D"));
 
         var response = await client.GetAsync("/tenant-required", TestContext.Current.CancellationToken);
@@ -54,11 +55,11 @@ public sealed class TenantOverrideConflictTests
     public async Task XTenantId_MatchesResolvedTenant_Returns200()
     {
         var resolvedTenantId = new TenantId(Guid.NewGuid());
-        var outcome = new TenantResolution.Resolved(new TenantDescriptor(resolvedTenantId));
+        var outcome = new TenantResolution.Resolved(TestHelper.BuildTenant(resolvedTenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(
-            TenantResolutionConstants.TenantIdOverrideHeaderName,
+            AielHeaders.TenantIdHeader,
             resolvedTenantId.Value.ToString("D"));
 
         var response = await client.GetAsync("/tenant-required", TestContext.Current.CancellationToken);

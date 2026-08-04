@@ -41,15 +41,17 @@ public sealed class Program
 
         app.MapGet("/tenant-required", () => TypedResults.Text(TestEndpointResponses.TenantRequired)).RequireTenant();
         app.MapGet("/tenant-optional", () => TypedResults.Text(TestEndpointResponses.TenantOptional));
-        app.MapGet(
-            "/tenant-resolution",
+        app.MapGet("/tenant-resolution",
             (HttpContext context) => TypedResults.Text(TestEndpointResponses.DescribeTenantResolution(context.GetTenantResolution())));
-        app.MapGet(
-            "/tenant-accessor",
-            async (ITenantAccessor tenantAccessor, CancellationToken cancellationToken = default) =>
+        app.MapGet("/tenant-accessor", async (ITenantResolver resolver, CancellationToken cancellationToken = default) =>
             {
-                var tenantDescriptor = await tenantAccessor.GetCurrentTenantAsync(cancellationToken);
-                return TypedResults.Text(tenantDescriptor.TenantId.Value.ToString("D"));
+                var resolution = await resolver.ResolveAsync(cancellationToken);
+                if (resolution is TenantResolution.Resolved resolved)
+                {
+                    return TypedResults.Text(resolved.CurrentTenant.TenantId.Value.ToString("D"));
+                }
+
+                return TypedResults.Text(CurrentTenant.Empty.TenantId.Value.ToString("D"));
             });
 
         await app.RunAsync();
@@ -72,7 +74,7 @@ public static class TestEndpointResponses
 
         return tenantResolution switch
         {
-            TenantResolution.Resolved resolved => resolved.TenantDescriptor.TenantId.Value.ToString("D"),
+            TenantResolution.Resolved resolved => resolved.CurrentTenant.TenantId.Value.ToString("D"),
             TenantResolution.Missing => TenantResolutionMissing,
             TenantResolution.Ambiguous => TenantResolutionAmbiguous,
             TenantResolution.Rejected rejected => $"tenant-resolution-rejected:{rejected.Reason}",

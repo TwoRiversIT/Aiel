@@ -76,7 +76,7 @@ public sealed class MessageEnvelopeFactoryTests
     public void Create_PropagatesTenant()
     {
         var tenantId = new TenantId(Guid.NewGuid());
-        var tenant = new TenantDescriptor(tenantId);
+        var tenant = TestHelper.BuildTenant(tenantId);
         var context = DefaultExecutionContext.CreateRoot(SystemActor.Instance);
 
         var envelope = _factory.Create(new TestEvent("hello"), context, tenant: tenant);

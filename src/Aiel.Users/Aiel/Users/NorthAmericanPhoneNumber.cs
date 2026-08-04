@@ -20,10 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Users;
-
-using System;
 using System.Text.RegularExpressions;
+
+namespace Aiel.Users;
 
 public sealed partial class NorthAmericanPhoneNumber : IEquatable<NorthAmericanPhoneNumber>, IComparable<NorthAmericanPhoneNumber>
 {
@@ -105,16 +104,16 @@ public sealed partial class NorthAmericanPhoneNumber : IEquatable<NorthAmericanP
         return Digits == other.Digits;
     }
 
-    public override Boolean Equals(Object? obj) =>
-        obj is NorthAmericanPhoneNumber other && Equals(other);
+    public override Boolean Equals(Object? obj)
+        => obj is NorthAmericanPhoneNumber other && Equals(other);
 
     public override Int32 GetHashCode() => Digits.GetHashCode();
 
-    public static Boolean operator ==(NorthAmericanPhoneNumber? left, NorthAmericanPhoneNumber? right) =>
-        Equals(left, right);
+    public static Boolean operator ==(NorthAmericanPhoneNumber? left, NorthAmericanPhoneNumber? right)
+        => Equals(left, right);
 
-    public static Boolean operator !=(NorthAmericanPhoneNumber? left, NorthAmericanPhoneNumber? right) =>
-        !Equals(left, right);
+    public static Boolean operator !=(NorthAmericanPhoneNumber? left, NorthAmericanPhoneNumber? right)
+        => !Equals(left, right);
 
     // -------------------------------
     // Comparison
@@ -127,20 +126,20 @@ public sealed partial class NorthAmericanPhoneNumber : IEquatable<NorthAmericanP
             return 1;
         }
 
-        return String.Compare(Digits, other.Digits, StringComparison.Ordinal);
+        return String.CompareOrdinal(Digits, other.Digits);
     }
 
-    public static Boolean operator <(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right) =>
-        left.CompareTo(right) < 0;
+    public static Boolean operator <(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right)
+        => left.CompareTo(right) < 0;
 
-    public static Boolean operator >(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right) =>
-        left.CompareTo(right) > 0;
+    public static Boolean operator >(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right)
+        => left.CompareTo(right) > 0;
 
-    public static Boolean operator <=(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right) =>
-        left.CompareTo(right) <= 0;
+    public static Boolean operator <=(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right)
+        => left.CompareTo(right) <= 0;
 
-    public static Boolean operator >=(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right) =>
-        left.CompareTo(right) >= 0;
+    public static Boolean operator >=(NorthAmericanPhoneNumber left, NorthAmericanPhoneNumber right)
+        => left.CompareTo(right) >= 0;
 
     // -------------------------------
     // String Conversion

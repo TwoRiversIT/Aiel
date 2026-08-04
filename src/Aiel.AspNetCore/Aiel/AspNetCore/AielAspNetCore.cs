@@ -37,7 +37,7 @@ public sealed class AielAspNetCore : AielDependencyConfigurator
     public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddHttpContextAccessor();
-        context.Services.TryAddScoped<ITenantAccessor, HttpContextTenantAccessor>();
+        context.Services.TryAddScoped<ICurrentTenantAccessor, HttpContextCurrentTenantAccessor>();
         context.Services.TryAddScoped<AmbientUserContext>();
         context.Services.TryAddScoped<IUserAccessor, UserAccessor>();
 

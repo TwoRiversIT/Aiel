@@ -33,7 +33,7 @@ namespace Aiel.Logging;
 /// Enriches log events with a MachineName property containing <see cref="Environment.MachineName"/>.
 /// </summary>
 [DebuggerNonUserCode]
-public class CurrentUserEnricher(IUserAccessor accessor) : ILogEventEnricher
+public class AielCurrentUserEnricher(IUserAccessor accessor) : ILogEventEnricher
 {
     private readonly IUserAccessor _accessor = accessor;
 
@@ -56,5 +56,5 @@ public class CurrentUserEnricher(IUserAccessor accessor) : ILogEventEnricher
 public static partial class LoggerEnrichmentConfigurationExtensions
 {
     public static LoggerConfiguration WithCurrentUser(this LoggerEnrichmentConfiguration enrichmentConfiguration, IUserAccessor userAccessor)
-        => enrichmentConfiguration.With(new CurrentUserEnricher(userAccessor));
+        => enrichmentConfiguration.With(new AielCurrentUserEnricher(userAccessor));
 }

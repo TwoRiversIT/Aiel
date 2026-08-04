@@ -41,10 +41,5 @@ namespace Aiel.Framework
         /// or compatibility checks. The format and meaning of the version string may vary depending on the
         /// implementation.</remarks>
         public abstract String ApplicationVersion { get; }
-
-        /// <summary>
-        /// Gets the unique identifier for the current application instance.
-        /// </summary>
-        public Guid ApplicationInstance { get; } = Guid.NewGuid();
     }
 }

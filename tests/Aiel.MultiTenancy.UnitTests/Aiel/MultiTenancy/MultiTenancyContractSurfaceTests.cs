@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.StrongIds;
 using System.Reflection;
 
@@ -39,11 +40,10 @@ public sealed class MultiTenancyContractSurfaceTests
             .ToHashSet(StringComparer.Ordinal);
 
         exportedTypeNames.Should().Contain("TenantId");
-        exportedTypeNames.Should().Contain("TenantDescriptor");
+        exportedTypeNames.Should().Contain("CurrentTenant");
         exportedTypeNames.Should().Contain("TenantResolution");
-        exportedTypeNames.Should().Contain("ITenantAccessor");
+        exportedTypeNames.Should().Contain("ICurrentTenantAccessor");
         exportedTypeNames.Should().Contain("ITenantResolver");
-        exportedTypeNames.Should().Contain("ICurrentTenant");
         exportedTypeNames.Should().NotContain("TenantContext");
         exportedTypeNames.Should().NotContain("ITenantProvider");
     }
@@ -70,7 +70,7 @@ public sealed class MultiTenancyContractSurfaceTests
     public void TenantDescriptor_ReplacesTenantContext_AndKeepsPublicHintsNonNullable()
     {
         var tenantIdType = GetRequiredPublicType("Aiel.MultiTenancy.TenantId");
-        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.TenantDescriptor");
+        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.CurrentTenant");
         var tenantIdProperty = tenantDescriptorType.GetProperty("TenantId", BindingFlags.Public | BindingFlags.Instance);
 
         tenantIdProperty.Should().NotBeNull();
@@ -98,7 +98,7 @@ public sealed class MultiTenancyContractSurfaceTests
     [Fact]
     public void TenantResolution_ExposesExplicitClosedOutcomes_WithTypedReasonCodes()
     {
-        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.TenantDescriptor");
+        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.CurrentTenant");
         var tenantResolutionType = GetRequiredPublicType("Aiel.MultiTenancy.TenantResolution");
         var publicOutcomeTypes = tenantResolutionType.GetNestedTypes(BindingFlags.Public);
         var publicOutcomeNames = publicOutcomeTypes.Select(static type => type.Name).ToArray();
@@ -134,9 +134,9 @@ public sealed class MultiTenancyContractSurfaceTests
     [Fact]
     public void AccessorAndResolverContracts_DoNotExposeNullableTenantResults()
     {
-        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.TenantDescriptor");
+        var tenantDescriptorType = GetRequiredPublicType("Aiel.MultiTenancy.CurrentTenant");
         var tenantResolutionType = GetRequiredPublicType("Aiel.MultiTenancy.TenantResolution");
-        var tenantAccessorType = GetRequiredPublicType("Aiel.MultiTenancy.ITenantAccessor");
+        var tenantAccessorType = GetRequiredPublicType("Aiel.MultiTenancy.ICurrentTenantAccessor");
         var tenantResolverType = GetRequiredPublicType("Aiel.MultiTenancy.ITenantResolver");
 
         HasNonNullableReturnOf(tenantAccessorType, tenantDescriptorType).Should().BeTrue();
@@ -159,13 +159,12 @@ public sealed class MultiTenancyContractSurfaceTests
     [Fact]
     public void TenantResolutionConstants_UseApprovedTrustBoundaryValues()
     {
-        var stringConstants = typeof(TenantResolutionConstants)
+        var stringConstants = typeof(AielHeaders)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
             .Where(static field => field.IsLiteral && field.FieldType == typeof(String))
             .ToDictionary(static field => field.Name, static field => (String)field.GetRawConstantValue()!, StringComparer.Ordinal);
 
-        stringConstants.Values.Should().Contain("sub");
-        stringConstants.Values.Should().Contain("X-Tenant-ID");
+        stringConstants.Values.Should().Contain("X-Aiel-Tenant-Id");
         stringConstants.Values.Should().NotContain("tenantId");
         stringConstants.Values.Should().NotContain("X-Tenant-Domain");
         stringConstants.Keys.Should().NotContain("TenantIdClaimType");

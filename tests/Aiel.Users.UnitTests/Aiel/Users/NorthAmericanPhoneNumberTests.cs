@@ -204,8 +204,8 @@ public class NorthAmericanPhoneNumberTests
         (smaller <= larger).Should().BeTrue();
         (larger > smaller).Should().BeTrue();
         (larger >= smaller).Should().BeTrue();
-        smaller.CompareTo(larger).Should().BeLessThan(0);
-        larger.CompareTo(smaller).Should().BeGreaterThan(0);
+        smaller.CompareTo(larger).Should().BeNegative();
+        larger.CompareTo(smaller).Should().BePositive();
     }
 
     [Fact]

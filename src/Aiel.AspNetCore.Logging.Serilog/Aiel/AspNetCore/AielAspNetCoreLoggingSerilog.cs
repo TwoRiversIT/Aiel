@@ -20,22 +20,31 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.MultiTenancy;
+using Aiel.Framework;
+using Aiel.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
-/// <summary>
-/// Provides access to the resolved <see cref="TenantDescriptor"/> for the current execution context.
-/// </summary>
-/// <remarks>
-/// Implementations throw <see cref="InvalidOperationException"/> when called outside a resolved
-/// tenant context. Use <see cref="ITenantResolver"/> when explicit handling of all resolution
-/// outcomes — including <see cref="TenantResolution.Missing"/> — is required.
-/// </remarks>
-public interface ITenantAccessor
+namespace Aiel.AspNetCore;
+
+[DependsOn(typeof(AielLoggingAbstractions))]
+public sealed class AielAspNetCoreLoggingSerilog : AielDependencyConfigurator
 {
-    /// <summary>
-    /// Returns the current tenant identity.
-    /// </summary>
-    /// <param name="cancellationToken">Propagates notification that the operation should be cancelled.</param>
-    /// <returns>The resolved <see cref="TenantDescriptor"/>.</returns>
-    ValueTask<TenantDescriptor> GetCurrentTenantAsync(CancellationToken cancellationToken = default);
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        // register IHttpContextAccessor and the enricher in the app's DI container
+        context.Services.AddHttpContextAccessor();
+        context.Services.AddSingleton<Serilog.Core.ILogEventEnricher, AielRequestHeadersEnricher>();
+
+        // configure Serilog and let it resolve enrichers from the real service provider
+        context.Services.AddSerilog((services, loggerConfig) =>
+        {
+            loggerConfig
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext();
+        });
+
+        return Task.CompletedTask;
+    }
 }

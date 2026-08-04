@@ -25,6 +25,4 @@ using Aiel.Framework;
 namespace Aiel.Emailing;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielEmailingAbstractions : AielDependencyConfigurator
-{
-}
+public sealed class AielEmailingAbstractions : AielDependencyConfigurator;

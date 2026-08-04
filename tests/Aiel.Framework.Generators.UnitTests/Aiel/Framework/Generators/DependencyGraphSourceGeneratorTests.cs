@@ -357,7 +357,7 @@ public class DependencyGraphSourceGeneratorTests
             }
             """;
 
-        await VerifyCS.TestAsync(testCode, String.Empty, expectedDiagnostics: [DependencyGraphSourceGenerator.AmbiguousProjectType], includeHostApplication: true, includeWebApplication: true);
+        await VerifyCS.TestAsync(testCode, String.Empty, expectedWarnings: [DependencyGraphSourceGenerator.AmbiguousProjectType], includeHostApplication: true, includeWebApplication: true);
     }
 
     [Fact]

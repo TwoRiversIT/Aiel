@@ -58,7 +58,7 @@ builder.AddAielMigrations();
 `AielDbContext` replaces the old `TrDbContext` name. No compatibility shim is provided.
 Use one of the supported constructors:
 
-- `base(options, tenantDescriptor)` when the tenant is already trusted and resolved.
+- `base(options, currentTenant)` when the tenant is already trusted and resolved.
 - `base(options, tenantResolver)` when EF must consume explicit `TenantResolution` outcomes.
 
 ```csharp

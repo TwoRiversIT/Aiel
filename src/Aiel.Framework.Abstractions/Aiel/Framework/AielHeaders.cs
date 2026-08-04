@@ -20,22 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.MultiTenancy;
+namespace Aiel.Framework;
 
-/// <summary>
-/// Trust-boundary constants for tenant resolution at ingress.
-/// </summary>
-public static class TenantResolutionConstants
+public static class AielHeaders
 {
-    /// <summary>
-    /// The JWT claim type that identifies the subject (actor). Used for actor resolution,
-    /// not direct tenant materialization.
-    /// </summary>
-    public const String SubjectClaimType = "sub";
-
-    /// <summary>
-    /// Internal-only header name for privileged tenant override. Must be stripped at the
-    /// public edge; must not be honored from browser or public traffic.
-    /// </summary>
-    public const String TenantIdOverrideHeaderName = "X-Tenant-ID";
+    public const String Prefix = "X-Aiel-";
+    public const String AccountsInstanceHeader = Prefix + "Accounts-Instance";
+    public const String AccountsVersionHeader = Prefix + "Accounts-Version";
+    public const String ApiInstanceHeader = Prefix + "API-Instance";
+    public const String ApiVersionHeader = Prefix + "API-Version";
+    public const String ApplicationName = Prefix + "Application-Name";
+    public const String ApplicationVersion = Prefix + "Application-Version";
+    public const String ClientInstanceHeader = Prefix + "Client-Instance";
+    public const String ClientVersionHeader = Prefix + "Client-Version";
+    public const String CurrentUserHeader = Prefix + "Current-User";
+    public const String TenantIdHeader = Prefix + "Tenant-Id";
 }

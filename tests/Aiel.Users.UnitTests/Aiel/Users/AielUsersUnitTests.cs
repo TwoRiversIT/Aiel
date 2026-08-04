@@ -22,7 +22,7 @@
 
 using Aiel.Framework;
 
-namespace Aiel.Users.UnitTests.Aiel.Users;
+namespace Aiel.Users;
 
 [DependsOn(typeof(AielUsers))]
 public sealed class AielUsersUnitTests : AielDependencyConfigurator;

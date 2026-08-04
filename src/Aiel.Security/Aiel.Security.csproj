@@ -13,7 +13,7 @@
 
 	<ItemGroup>
         <ProjectReference Include="..\Aiel.Emailing.Abstractions\Aiel.Emailing.Abstractions.csproj" />
-        <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.Utilities\Aiel.Utilities.csproj" />
     </ItemGroup>
 
 </Project>

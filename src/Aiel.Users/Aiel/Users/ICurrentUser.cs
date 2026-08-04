@@ -24,46 +24,69 @@ using Aiel.Authorization;
 using Aiel.Emailing;
 using OpenIddict.Abstractions;
 using System.Security.Claims;
-using System.Security.Principal;
 
 namespace Aiel.Users;
 
-public interface ICurrentUser : IPrincipal
+public abstract class CurrentUser
 {
-    [MaybeNull]
-    UserId Id { get; }
+    public static readonly CurrentUser Empty = new EmptyCurrentUser();
 
-    Boolean IsAuthenticated { get; }
+    public abstract UserId Id { get; }
 
-    String UserName { get; }
+    public abstract Boolean IsAuthenticated { get; }
 
-    String FirstName { get; }
+    public abstract String UserName { get; }
 
-    String LastName { get; }
+    public abstract String FirstName { get; }
 
-    Email? Email { get; }
+    public abstract String LastName { get; }
 
-    Boolean EmailVerified { get; }
+    public abstract Email? Email { get; }
 
-    [NotNull]
-    String[] Roles { get; }
+    public abstract Boolean EmailVerified { get; }
 
-    Claim? FindClaim(String claimType);
+    public abstract NorthAmericanPhoneNumber? PhoneNumber { get; }
+    public abstract Boolean PhoneNumberVerified { get; }
+    public abstract String[] Roles { get; }
+
+    public abstract Claim? FindClaim(String claimType);
 
     [return: NotNull]
-    Claim[] FindClaims(String claimType) => [];
+    public abstract Claim[] FindClaims(String claimType);
 
     [return: NotNull]
-    Claim[] GetAllClaims() => [];
+    public abstract Claim[] GetAllClaims();
 
-    Boolean IsInRole(Role role);
-    Boolean IsInRole(RoleId roleId);
+    public abstract Boolean IsInRole(String role);
+    public abstract Boolean IsInRole(Role role);
+    public abstract Boolean IsInRole(RoleId roleId);
+
+    private class EmptyCurrentUser : CurrentUser
+    {
+        public override UserId Id => default;
+        public override Boolean IsAuthenticated => false;
+        public override String UserName => String.Empty;
+        public override String FirstName => String.Empty;
+        public override String LastName => String.Empty;
+        public override Email? Email => Email.Empty;
+        public override Boolean EmailVerified => false;
+        public override NorthAmericanPhoneNumber? PhoneNumber => NorthAmericanPhoneNumber.Empty;
+        public override Boolean PhoneNumberVerified => false;
+        public override String[] Roles { get; } = [];
+        public override Claim? FindClaim(String claimType) => null;
+        [return: NotNull]
+        public override Claim[] FindClaims(String claimType) => [];
+        [return: NotNull]
+        public override Claim[] GetAllClaims() => [];
+        public override Boolean IsInRole(String role) => false;
+        public override Boolean IsInRole(Role role) => false;
+        public override Boolean IsInRole(RoleId roleId) => false;
+    }
 }
 
-public class CurrentUser(IPrincipal principal) : ClaimsPrincipal(principal), ICurrentUser
+public class PrincipalCurrentUser(ClaimsPrincipal principal) : CurrentUser
 {
-    public static readonly CurrentUser Empty = new(new ClaimsPrincipal(new ClaimsIdentity()));
-
+    private readonly ClaimsPrincipal _principal = principal;
     private UserId? _id;
     private String? _firstName;
     private String? _lastName;
@@ -73,59 +96,44 @@ public class CurrentUser(IPrincipal principal) : ClaimsPrincipal(principal), ICu
     private NorthAmericanPhoneNumber? _phoneNumber;
     private String? _username;
 
-    public UserId Id => _id ??= UserId.From(FindValue(OpenIddictConstants.Claims.Subject, Guid.Empty));
-    public Boolean IsAuthenticated => Identity?.IsAuthenticated ?? false;
-    public String UserName => _username ??= FindValue(OpenIddictConstants.Claims.Name, String.Empty);
-    public String FirstName => _firstName ??= FindValue(OpenIddictConstants.Claims.GivenName, String.Empty);
-    public String LastName => _lastName ??= FindValue(OpenIddictConstants.Claims.FamilyName, String.Empty);
-    public Email? Email => _email ??= FindValue(OpenIddictConstants.Claims.Email, Email.Empty);
-    public Boolean EmailVerified => _emailVerified ??= FindValue(OpenIddictConstants.Claims.EmailVerified, false);
-    public NorthAmericanPhoneNumber? PhoneNumber => _phoneNumber ??= FindValue(OpenIddictConstants.Claims.PhoneNumber, NorthAmericanPhoneNumber.Empty);
-    public Boolean PhoneNumberVerified => _phoneNumberVerified ??= FindValue(OpenIddictConstants.Claims.PhoneNumberVerified, false);
-    public String[] Roles { get; private set; } = [];
-
-    public Claim? FindClaim(String claimType)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Boolean IsInRole(Role role)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Boolean IsInRole(RoleId roleId)
-    {
-        throw new NotImplementedException();
-    }
+    public override UserId Id => _id ??= UserId.From(FindValue(OpenIddictConstants.Claims.Subject, Guid.Empty));
+    public override Boolean IsAuthenticated => _principal?.Identity?.IsAuthenticated ?? false;
+    public override String UserName => _username ??= FindValue(OpenIddictConstants.Claims.Name, String.Empty);
+    public override String FirstName => _firstName ??= FindValue(OpenIddictConstants.Claims.GivenName, String.Empty);
+    public override String LastName => _lastName ??= FindValue(OpenIddictConstants.Claims.FamilyName, String.Empty);
+    public override Email? Email => _email ??= FindValue(OpenIddictConstants.Claims.Email, Email.Empty);
+    public override Boolean EmailVerified => _emailVerified ??= FindValue(OpenIddictConstants.Claims.EmailVerified, false);
+    public override NorthAmericanPhoneNumber? PhoneNumber => _phoneNumber ??= FindValue(OpenIddictConstants.Claims.PhoneNumber, NorthAmericanPhoneNumber.Empty);
+    public override Boolean PhoneNumberVerified => _phoneNumberVerified ??= FindValue(OpenIddictConstants.Claims.PhoneNumberVerified, false);
+    public override String[] Roles { get; } = [];
 
     private String FindValue(String claimType, String defaultValue)
     {
-        var claim = FindFirst(claimType);
+        var claim = _principal.FindFirst(claimType);
         return claim?.Value ?? defaultValue ?? String.Empty;
     }
 
     private Boolean FindValue(String claimType, Boolean defaultValue)
     {
-        var claim = FindFirst(claimType);
+        var claim = _principal.FindFirst(claimType);
         return Boolean.TryParse(claim?.Value, out var result) ? result : defaultValue;
     }
 
     private Guid FindValue(String claimType, Guid defaultValue)
     {
-        var claim = FindFirst(claimType);
+        var claim = _principal.FindFirst(claimType);
         return Guid.TryParse(claim?.Value, out var result) ? result : defaultValue;
     }
 
     private Email FindValue(String claimType, Email defaultValue)
     {
-        var claim = FindFirst(claimType);
+        var claim = _principal.FindFirst(claimType);
         return Email.TryParse(claim?.Value, out var result) ? result : defaultValue;
     }
 
     private NorthAmericanPhoneNumber FindValue(String claimType, NorthAmericanPhoneNumber defaultValue)
     {
-        var claim = FindFirst(claimType);
+        var claim = _principal.FindFirst(claimType);
         return NorthAmericanPhoneNumber.TryParse(claim?.Value, out var result) ? result : defaultValue;
     }
 
@@ -136,7 +144,7 @@ public class CurrentUser(IPrincipal principal) : ClaimsPrincipal(principal), ICu
         var identity = principal.Identity;
         if (identity is null)
         {
-            return Empty;
+            return CurrentUser.Empty;
         }
 
         if (identity?.IsAuthenticated != true)
@@ -144,23 +152,55 @@ public class CurrentUser(IPrincipal principal) : ClaimsPrincipal(principal), ICu
             return WellKnownUsers.Anonymous;
         }
 
-        return new CurrentUser(principal);
+        return new PrincipalCurrentUser(principal);
+    }
+
+    public override Claim? FindClaim(String claimType)
+    {
+        throw new NotImplementedException();
+    }
+
+    [return: NotNull]
+    public override Claim[] FindClaims(String claimType)
+    {
+        throw new NotImplementedException();
+    }
+
+    [return: NotNull]
+    public override Claim[] GetAllClaims()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Boolean IsInRole(String role)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Boolean IsInRole(Role role)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Boolean IsInRole(RoleId roleId)
+    {
+        throw new NotImplementedException();
     }
 }
 
 public interface IUserAccessor
 {
-    ICurrentUser Current { get; }
-    IDisposable Change(ICurrentUser? user);
+    CurrentUser Current { get; }
+    IDisposable Change(CurrentUser? user);
 }
 
 public class UserAccessor(AmbientUserContext context) : IUserAccessor
 {
     private readonly AmbientUserContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
-    public ICurrentUser Current => _context.Current;
+    public CurrentUser Current => _context.Current;
 
-    public IDisposable Change(ICurrentUser? user)
+    public IDisposable Change(CurrentUser? user)
     {
         var previous = _context.Current;
         _context.Current = user ?? CurrentUser.Empty;
@@ -170,9 +210,9 @@ public class UserAccessor(AmbientUserContext context) : IUserAccessor
 
 public sealed class AmbientUserContext
 {
-    private readonly AsyncLocal<ICurrentUser?> _current = new();
+    private readonly AsyncLocal<CurrentUser?> _current = new();
 
-    public ICurrentUser Current
+    public CurrentUser Current
     {
         get => _current.Value ?? CurrentUser.Empty;
         internal set => _current.Value = value;

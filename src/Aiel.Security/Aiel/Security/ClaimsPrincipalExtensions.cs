@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Emailing;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace Aiel.Security;
@@ -49,4 +48,3 @@ public static class ClaimsPrincipalExtensions
         => claims.FirstOrDefaultString(AielClaims.ZoneInfo)
         ?? AielDefaults.TimeZone;
 }
-

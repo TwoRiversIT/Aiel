@@ -94,16 +94,16 @@ public sealed class DependencyDiscoveryExtensionsTests
             ConfigureCount = 0;
         }
 
-        public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigureCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             ConfigureCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 
@@ -123,10 +123,10 @@ public sealed class DependencyDiscoveryExtensionsTests
 
         public static void Reset() => InitializeCount = 0;
 
-        public ValueTask InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+        public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
         {
             InitializeCount++;
-            return ValueTask.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 

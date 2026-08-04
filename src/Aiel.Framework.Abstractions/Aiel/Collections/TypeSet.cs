@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Aiel.Collections;
 
@@ -30,7 +31,7 @@ namespace Aiel.Collections;
 /// the specific item types at compile time.
 /// </summary>
 /// <typeparam name="TBase"></typeparam>
-public interface ITypeSet<in TBase> : ISet<Type>, IReadOnlyCollection<Type>, IReadOnlySet<Type>
+public interface ITypeSet<in TBase> : ISet<Type>, IReadOnlyCollection<Type>//, IReadOnlySet<Type>
     where TBase : class
 {
     void Add<T>(T item)
@@ -51,7 +52,11 @@ public class TypeSet<TBase> : ITypeSet<TBase>
 
     public void Add<T>(T item) where T : TBase
     {
-        ArgumentNullException.ThrowIfNull(item);
+        if (item is null)
+        {
+            throw new ArgumentNullException(nameof(item));
+        }
+
         _inner.Add(item.GetType());
     }
 
@@ -70,7 +75,11 @@ public class TypeSet<TBase> : ITypeSet<TBase>
 
     public Boolean Contains<T>(T item) where T : TBase
     {
-        ArgumentNullException.ThrowIfNull(item);
+        if (item is null)
+        {
+            throw new ArgumentNullException(nameof(item));
+        }
+
         return _inner.Contains(item.GetType());
     }
 
@@ -124,7 +133,11 @@ public class TypeSet<TBase> : ITypeSet<TBase>
 
     public Boolean Remove<T>(T item) where T : TBase
     {
-        ArgumentNullException.ThrowIfNull(item);
+        if (item is null)
+        {
+            throw new ArgumentNullException(nameof(item));
+        }
+
         return _inner.Remove(item.GetType());
     }
 
@@ -158,7 +171,11 @@ public class TypeSet<TBase> : ITypeSet<TBase>
 
     private static List<Type> EnsureCompatibleTypes(IEnumerable<Type> types)
     {
-        ArgumentNullException.ThrowIfNull(types);
+        if (types is null)
+        {
+            throw new ArgumentNullException(nameof(types));
+        }
+
         var result = new List<Type>();
         foreach (var type in types)
         {
@@ -171,7 +188,10 @@ public class TypeSet<TBase> : ITypeSet<TBase>
 
     private static void EnsureCompatibleType(Type type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        if (type is null)
+        {
+            throw new ArgumentNullException(nameof(type));
+        }
 
         if (!typeof(TBase).IsAssignableFrom(type))
         {

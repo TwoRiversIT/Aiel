@@ -35,7 +35,7 @@ public sealed class TenantResolutionAccessTests
     public async Task Resolved_TenantResolution_IsReadableFromHttpContext()
     {
         var tenantId = new TenantId(Guid.NewGuid());
-        var outcome = new TenantResolution.Resolved(new TenantDescriptor(tenantId));
+        var outcome = new TenantResolution.Resolved(TestHelper.BuildTenant(tenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
 
@@ -64,7 +64,7 @@ public sealed class TenantResolutionAccessTests
     public async Task Resolved_TenantDescriptor_IsReadableFromTenantAccessor()
     {
         var tenantId = new TenantId(Guid.NewGuid());
-        var outcome = new TenantResolution.Resolved(new TenantDescriptor(tenantId));
+        var outcome = new TenantResolution.Resolved(TestHelper.BuildTenant(tenantId));
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
 

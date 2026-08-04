@@ -57,20 +57,20 @@ public class AielDbContext : DbContext, IUnitOfWork
         _executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
     }
 
-    protected AielDbContext(DbContextOptions options, TenantDescriptor tenantDescriptor)
+    protected AielDbContext(DbContextOptions options, CurrentTenant currentTenant)
         : base(options)
     {
-        ArgumentNullException.ThrowIfNull(tenantDescriptor);
-        SetTenantResolution(new TenantResolution.Resolved(tenantDescriptor));
+        ArgumentNullException.ThrowIfNull(currentTenant);
+        SetTenantResolution(new TenantResolution.Resolved(currentTenant));
     }
 
-    protected AielDbContext(DbContextOptions options, TenantDescriptor tenantDescriptor, IExecutionContext executionContext)
+    protected AielDbContext(DbContextOptions options, CurrentTenant currentTenant, IExecutionContext executionContext)
         : base(options)
     {
-        ArgumentNullException.ThrowIfNull(tenantDescriptor);
+        ArgumentNullException.ThrowIfNull(currentTenant);
 
         _executionContext = executionContext ?? throw new ArgumentNullException(nameof(executionContext));
-        SetTenantResolution(new TenantResolution.Resolved(tenantDescriptor));
+        SetTenantResolution(new TenantResolution.Resolved(currentTenant));
     }
 
     protected AielDbContext(DbContextOptions options, ITenantResolver tenantResolver)
@@ -97,7 +97,7 @@ public class AielDbContext : DbContext, IUnitOfWork
     [UnconditionalSuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Referenced by ModelBuilderExtensions static construction")]
     private Guid ResolvedTenantIdValue
         => CurrentTenantResolution is TenantResolution.Resolved resolved
-            ? resolved.TenantDescriptor.TenantId.Value
+            ? resolved.CurrentTenant.TenantId.Value
             : Guid.Empty;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -199,7 +199,7 @@ public class AielDbContext : DbContext, IUnitOfWork
 
             if (entry.Entity.TenantId == default)
             {
-                entry.Entity.TenantId = resolved.TenantDescriptor.TenantId;
+                entry.Entity.TenantId = resolved.CurrentTenant.TenantId;
             }
         }
     }

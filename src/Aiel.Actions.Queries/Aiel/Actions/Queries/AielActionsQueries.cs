@@ -30,10 +30,10 @@ namespace Aiel.Actions.Queries;
 [DependsOn(typeof(AielResultsAbstractions))]
 public sealed class AielActionsQueries : AielDependencyConfigurator
 {
-    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.TryAddScoped<IQueryDispatcher, DefaultQueryDispatcher>();
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 }

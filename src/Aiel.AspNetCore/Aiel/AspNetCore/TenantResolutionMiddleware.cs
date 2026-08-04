@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.MultiTenancy;
 using Microsoft.AspNetCore.Http;
 
@@ -29,10 +30,11 @@ internal sealed class TenantResolutionMiddleware(RequestDelegate next)
 {
     private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
 
-    public async Task InvokeAsync(HttpContext context, ITenantResolver tenantResolver)
+    public async Task InvokeAsync(HttpContext context, ITenantResolver tenantResolver, ICurrentTenantAccessor currentTenantAccessor)
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(tenantResolver);
+        ArgumentNullException.ThrowIfNull(currentTenantAccessor);
 
         var tenantResolution = await tenantResolver.ResolveAsync(context.RequestAborted);
         context.Features.Set<ITenantResolutionFeature>(new TenantResolutionFeature(tenantResolution));
@@ -58,7 +60,7 @@ internal sealed class TenantResolutionMiddleware(RequestDelegate next)
             return false;
         }
 
-        return overriddenTenantId != resolvedResolution.TenantDescriptor.TenantId;
+        return overriddenTenantId != resolvedResolution.CurrentTenant.TenantId;
     }
 
     private static Boolean TryGetTenantOverride(IHeaderDictionary headers, out TenantId overriddenTenantId)
@@ -67,7 +69,7 @@ internal sealed class TenantResolutionMiddleware(RequestDelegate next)
 
         overriddenTenantId = default;
 
-        if (!headers.TryGetValue(TenantResolutionConstants.TenantIdOverrideHeaderName, out var headerValues))
+        if (!headers.TryGetValue(AielHeaders.TenantIdHeader, out var headerValues))
         {
             return false;
         }

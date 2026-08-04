@@ -27,12 +27,9 @@ namespace Aiel.MultiTenancy;
 /// and routing hint propagation. Storage topology, connection data, and membership details
 /// belong in separate runtime binding contracts.
 /// </summary>
-/// <param name="TenantId">The unique tenant identifier.</param>
-/// <param name="HostHint">
-/// Optional host or subdomain routing hint. Treat as a hint only — not as an authorization
-/// primitive. Empty string when absent.
-/// </param>
-public sealed record TenantDescriptor(TenantId TenantId, String HostHint = "")
+public sealed class DefaultCurrentTenant(TenantId tenantId, String name, String hostHint) : CurrentTenant
 {
-    public static readonly TenantDescriptor Empty = new(new TenantId(Guid.Empty));
+    public override TenantId TenantId { get; } = tenantId;
+    public override String Name { get; } = name;
+    public override String HostHint { get; } = hostHint;
 }

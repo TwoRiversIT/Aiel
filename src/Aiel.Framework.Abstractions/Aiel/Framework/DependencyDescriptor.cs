@@ -54,10 +54,25 @@ namespace Aiel.Framework
                 throw new ArgumentException("Dependency name must not be null or whitespace.", nameof(name));
             }
 
-            ArgumentNullException.ThrowIfNull(dependencyType);
-            ArgumentNullException.ThrowIfNull(dependencies);
-            ArgumentNullException.ThrowIfNull(configurators);
-            ArgumentNullException.ThrowIfNull(initializers);
+            if (dependencyType is null)
+            {
+                throw new ArgumentNullException(nameof(dependencyType));
+            }
+
+            if (dependencies is null)
+            {
+                throw new ArgumentNullException(nameof(dependencies));
+            }
+
+            if (configurators is null)
+            {
+                throw new ArgumentNullException(nameof(configurators));
+            }
+
+            if (initializers is null)
+            {
+                throw new ArgumentNullException(nameof(initializers));
+            }
 
             Name = name;
             DependencyType = dependencyType;

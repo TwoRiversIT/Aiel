@@ -22,6 +22,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Aiel.Collections;
 
@@ -43,6 +44,10 @@ public sealed class ObservableServiceCollection(IServiceCollection inner) : ISer
 {
     private readonly IServiceCollection _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     private readonly List<Action<ServiceDescriptor>> _callbacks = [];
+
+    public ObservableServiceCollection() : this(new ServiceCollection())
+    {
+    }
 
     /// <inheritdoc />
     public ServiceDescriptor this[Int32 index]
@@ -97,7 +102,10 @@ public sealed class ObservableServiceCollection(IServiceCollection inner) : ISer
 
     public void Subscribe(Action<ServiceDescriptor> callback)
     {
-        ArgumentNullException.ThrowIfNull(callback);
+        if (callback is null)
+        {
+            throw new ArgumentNullException(nameof(callback));
+        }
 
         _callbacks.Add(callback);
     }

@@ -48,7 +48,7 @@ public interface IMessagePublisher
     ValueTask PublishAsync<TMessage>(
         TMessage message,
         IExecutionContext executionContext,
-        TenantDescriptor? tenant = null,
+        CurrentTenant? tenant = null,
         CancellationToken cancellationToken = default)
         where TMessage : IIntegrationMessage;
 }

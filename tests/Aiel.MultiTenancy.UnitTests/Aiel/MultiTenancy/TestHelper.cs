@@ -20,19 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Actions.Commands;
+namespace Aiel.MultiTenancy;
 
-[DependsOn(typeof(AielActions))]
-public sealed class AielActionsCommands : AielDependencyConfigurator
+public static class TestHelper
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public static ServiceProvider BuildServiceProvider()
     {
-
-        context.Services.TryAddScoped<ICommandDispatcher, DefaultCommandDispatcher>();
-
-        return Task.CompletedTask;
+        var services = new ServiceCollection();
+        services.AddSingleton<ICurrentTenantAccessor, CurrentTenantAccessor>();
+        return services.BuildServiceProvider();
     }
+
+    public static CurrentTenant BuildTenant(TenantId? id = null, String? name = null, String? hostHint = null)
+        => new DefaultCurrentTenant(id ?? TenantId.From(Guid.NewGuid()), name ?? "Tenant", hostHint ?? "tenant.example.com");
 }

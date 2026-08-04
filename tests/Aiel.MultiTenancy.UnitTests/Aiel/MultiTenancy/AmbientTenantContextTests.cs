@@ -24,116 +24,68 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.MultiTenancy;
 
-public class AmbientTenantContextTests
+[Collection("Sequential")]
+public class CurrentTenantAccessorTests
 {
     [Fact]
-    public void AmbientTenantContext_IsolatedAcrossInstances_And_ChangeRestores()
-    {
-        var a = new AmbientTenantContext();
-        var b = new AmbientTenantContext();
-
-        // initial state
-        a.Current.Should().Be(TenantDescriptor.Empty);
-        b.Current.Should().Be(TenantDescriptor.Empty);
-
-        var tenant = new TenantDescriptor(new TenantId(Guid.NewGuid()));
-
-        using (var change = new CurrentTenant(a).Change(tenant))
-        {
-            // only 'ambient' should see the tenant
-            a.Current.Should().Be(tenant);
-            b.Current.Should().Be(TenantDescriptor.Empty);
-        }
-
-        // restore happened
-        a.Current.Should().Be(TenantDescriptor.Empty);
-    }
-
-    [Fact]
-    public async Task AmbientTenantContext_FlowsInto_TaskRun()
+    public async Task CurrentTenantAccessor_FlowsInto_TaskRun()
     {
         // AsyncLocal<T> flows with the ExecutionContext into Task.Run — the value set in the
         // parent is visible inside the child work item.
-        using var provider = MultitenancyTestServiceProvider.Build();
+        using var provider = TestHelper.BuildServiceProvider();
         using var scope = provider.CreateScope();
-        var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
+        var accessor = scope.ServiceProvider.GetRequiredService<ICurrentTenantAccessor>();
+        var tenant = TestHelper.BuildTenant();
 
-        var tenant = new TenantDescriptor(new TenantId(Guid.NewGuid()));
-
-        using (current.Change(tenant))
+        using (accessor.Change(tenant))
         {
-            var result = await Task.Run(() => current.Current);
+            var result = await Task.Run(() => accessor.CurrentTenant);
             result.Should().Be(tenant);
         }
     }
 
     [Fact]
-    public async Task AmbientTenantContext_MutationInside_TaskRun_DoesNotFlowBack()
+    public async Task CurrentTenantAccessor_MutationInside_TaskRun_DoesNotFlowBack()
     {
         // AsyncLocal<T> isolates child mutations: writes made inside Task.Run do not
         // propagate back to the parent execution context.
-        using var provider = MultitenancyTestServiceProvider.Build();
+        using var provider = TestHelper.BuildServiceProvider();
         using var scope = provider.CreateScope();
-        var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
+        var current = scope.ServiceProvider.GetRequiredService<ICurrentTenantAccessor>();
 
-        var parent = new TenantDescriptor(new TenantId(Guid.NewGuid()));
-        var child = new TenantDescriptor(new TenantId(Guid.NewGuid()));
+        var parent = TestHelper.BuildTenant();
+        var child = TestHelper.BuildTenant();
 
         using (current.Change(parent))
         {
-            await Task.Run(() => current.Change(child));
-            current.Current.Should().Be(parent);
+            await Task.Run(() =>
+            {
+                using (current.Change(child))
+                {
+                    current.CurrentTenant.Should().NotBe(parent);
+                }
+            }, TestContext.Current.CancellationToken);
+            current.CurrentTenant.Should().Be(parent);
         }
     }
 
     [Fact]
-    public async Task AmbientTenantContext_FlowsAcrossAwaitContinuations()
+    public async Task CurrentTenantAccessor_FlowsAcrossAwaitContinuations()
     {
-        using var provider = MultitenancyTestServiceProvider.Build();
+        using var provider = TestHelper.BuildServiceProvider();
         using var scope = provider.CreateScope();
-        var ambient = scope.ServiceProvider.GetRequiredService<AmbientTenantContext>();
-        var current = scope.ServiceProvider.GetRequiredService<ICurrentTenant>();
+        var current = scope.ServiceProvider.GetRequiredService<ICurrentTenantAccessor>();
 
-        var tenant = new TenantDescriptor(new TenantId(Guid.NewGuid()));
+        var tenant = TestHelper.BuildTenant();
 
         using (current.Change(tenant))
         {
             // Awaiting ambient Task that completes synchronously or yields will preserve ExecutionContext
             await Task.Yield();
-            current.Current.Should().Be(tenant);
+            current.CurrentTenant.Should().Be(tenant);
 
             await Task.Delay(1, TestContext.Current.CancellationToken);
-            current.Current.Should().Be(tenant);
-        }
-    }
-
-    [Fact]
-    public async Task AmbientTenantContext_IsolatedPerDIScope_MessageHandlerPattern()
-    {
-        using var provider = MultitenancyTestServiceProvider.Build();
-
-        // Simulate message 1
-        using (var scope1 = provider.CreateScope())
-        {
-            var ambient1 = scope1.ServiceProvider.GetRequiredService<AmbientTenantContext>();
-            var current1 = scope1.ServiceProvider.GetRequiredService<ICurrentTenant>();
-
-            var tenant1 = new TenantDescriptor(new TenantId(Guid.NewGuid()));
-            ambient1.Current = tenant1;
-
-            // resolved CurrentTenant in this scope sees tenant1
-            current1.Current.Should().Be(tenant1);
-
-            // Task.Run inside this scope should see the ambient
-            var fromTask = await Task.Run(() => current1.Current);
-            fromTask.Should().Be(tenant1);
-        }
-
-        // Simulate message 2 (different scope) — must not see tenant1
-        using (var scope2 = provider.CreateScope())
-        {
-            var current2 = scope2.ServiceProvider.GetRequiredService<ICurrentTenant>();
-            current2.Current.Should().Be(TenantDescriptor.Empty);
+            current.CurrentTenant.Should().Be(tenant);
         }
     }
 }

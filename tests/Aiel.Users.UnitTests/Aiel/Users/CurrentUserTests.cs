@@ -32,7 +32,7 @@ public class CurrentUserTests
         var claimsPrincipal = TestData.GetClaimsPrincipal(expectedUserId);
 
         // Act
-        var currentUser = CurrentUser.FromClaimsPrincipal(claimsPrincipal);
+        var currentUser = PrincipalCurrentUser.FromClaimsPrincipal(claimsPrincipal);
 
         // Assert
         currentUser.Id.Should().Be(expectedUserId);

@@ -46,8 +46,8 @@ Package: `Aiel`
 ```csharp
 public interface IDependencyConfigurator
 {
-    ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
-    ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
+    Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
+    Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
 }
 
 public interface IInitializer

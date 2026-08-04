@@ -21,18 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Aiel.Actions.Commands;
+namespace Aiel;
 
-[DependsOn(typeof(AielActions))]
-public sealed class AielActionsCommands : AielDependencyConfigurator
+[DependsOn(typeof(AielFrameworkAbstractions))]
+public sealed class AielUtilities : AielDependencyConfigurator
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-
-        context.Services.TryAddScoped<ICommandDispatcher, DefaultCommandDispatcher>();
-
-        return Task.CompletedTask;
-    }
 }

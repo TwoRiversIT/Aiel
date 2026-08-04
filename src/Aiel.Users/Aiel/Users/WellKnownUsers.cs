@@ -28,7 +28,7 @@ public static class WellKnownUsers
 {
     public static readonly ClaimsPrincipal AnonymousPrincipal = GetAnonymousClaimsPrincipal();
     public static readonly ClaimsPrincipal SystemPrincipal = GetSystemClaimsPrincipal();
-    public static readonly CurrentUser Anonymous = CurrentUser.FromClaimsPrincipal(AnonymousPrincipal);
+    public static readonly CurrentUser Anonymous = PrincipalCurrentUser.FromClaimsPrincipal(AnonymousPrincipal);
 
     public const String AnonymousUserFirstName = "Anonymous";
     public const String AnonymousUserLastName = "CurrentUser";

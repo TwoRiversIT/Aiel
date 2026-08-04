@@ -21,16 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Aiel.Users.EntityFrameworkCore;
 
-public sealed class AielUsersEntityFrameworkCore : AielDependencyConfigurator
-{
-    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-
-        return ValueTask.CompletedTask;
-    }
-}
+public sealed class AielUsersEntityFrameworkCore : AielDependencyConfigurator;

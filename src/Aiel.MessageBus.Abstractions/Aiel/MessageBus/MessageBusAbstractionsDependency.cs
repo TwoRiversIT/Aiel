@@ -38,13 +38,13 @@ namespace Aiel.MessageBus;
 [DependsOn(typeof(AielMultiTenancy))]
 public sealed class MessageBusAbstractionsDependency : AielDependencyConfigurator
 {
-    public override ValueTask ConfigureAsync(
+    public override Task ConfigureAsync(
         DependencyConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
         context.Services.TryAddSingleton<IMessageTypeRegistry, DefaultMessageTypeRegistry>();
         context.Services.TryAddScoped<IMessageEnvelopeFactory, DefaultMessageEnvelopeFactory>();
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 }

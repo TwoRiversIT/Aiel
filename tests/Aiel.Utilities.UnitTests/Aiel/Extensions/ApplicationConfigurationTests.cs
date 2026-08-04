@@ -485,7 +485,7 @@ public class ApplicationConfigurationTests
     {
         public Int32 ConfigurationCount { get; protected set; }
 
-        public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             ConfigurationCount++;
             return base.ConfigureAsync(context, cancellationToken);
@@ -497,7 +497,7 @@ public class ApplicationConfigurationTests
         public override String ApplicationName => "TestApplication";
         public override String ApplicationVersion => "1.0.0";
         public Int32 ConfigurationCount { get; protected set; }
-        public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             ConfigurationCount++;
             return base.ConfigureAsync(context, cancellationToken);
@@ -512,13 +512,13 @@ public class ApplicationConfigurationTests
         public override String ApplicationVersion => "1.0.0";
         protected String AssemblyName { get; init; } = String.Empty;
 
-        public override ValueTask PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigurationOrder.Add(AssemblyName);
             return base.PreConfigureAsync(context, cancellationToken);
         }
 
-        public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             ConfigurationOrder.Add(AssemblyName);
             return base.ConfigureAsync(context, cancellationToken);
@@ -597,7 +597,7 @@ public class ApplicationConfigurationTests
         public String? ReceivedEnvironmentName { get; private set; }
         public IServiceCollection? ReceivedServices { get; private set; }
 
-        public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
         {
             ReceivedEnvironmentName = context.Environment.EnvironmentName;
             ReceivedServices = context.Services;

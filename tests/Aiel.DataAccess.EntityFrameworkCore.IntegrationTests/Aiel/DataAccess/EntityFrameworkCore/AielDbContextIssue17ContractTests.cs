@@ -56,7 +56,7 @@ public sealed class AielDbContextIssue17ContractTests
             static constructor => HasConstructorSignature(constructor, typeof(DbContextOptions), typeof(ITenantResolver)),
             "issue #17 needs an explicit TenantResolution-producing dependency.");
         constructors.Should().NotContain(
-            static constructor => HasConstructorSignature(constructor, typeof(DbContextOptions), typeof(ITenantAccessor)),
+            static constructor => HasConstructorSignature(constructor, typeof(DbContextOptions), typeof(ICurrentTenantAccessor)),
             "issue #17 moves the EF contract away from the legacy accessor-only shape.");
         baseContextType.GetProperty("HasTenantContext", InstanceMembers).Should().BeNull();
         baseContextType.GetProperty("CurrentTenantIdOrDefault", InstanceMembers).Should().BeNull();
@@ -71,7 +71,7 @@ public sealed class AielDbContextIssue17ContractTests
 
         await using var dbContext = CreateResolverBackedDbContext(
             Guid.NewGuid().ToString("N"),
-            new TenantResolution.Resolved(new TenantDescriptor(tenantId)));
+            new TenantResolution.Resolved(TestHelper.BuildTenant(tenantId)));
 
         var entity = new Issue17TenantScopedNote { Id = Guid.NewGuid(), Name = "alpha" };
 
@@ -97,10 +97,10 @@ public sealed class AielDbContextIssue17ContractTests
 
         await using var firstTenantContext = CreateResolverBackedDbContext(
             databaseName,
-            new TenantResolution.Resolved(new TenantDescriptor(firstTenantId)));
+            new TenantResolution.Resolved(TestHelper.BuildTenant(firstTenantId)));
         await using var secondTenantContext = CreateResolverBackedDbContext(
             databaseName,
-            new TenantResolution.Resolved(new TenantDescriptor(secondTenantId)));
+            new TenantResolution.Resolved(TestHelper.BuildTenant(secondTenantId)));
 
         var firstTenantResults = await firstTenantContext
             .Set<Issue17TenantScopedNote>()

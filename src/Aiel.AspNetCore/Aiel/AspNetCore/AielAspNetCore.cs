@@ -34,15 +34,15 @@ namespace Aiel.AspNetCore;
 [DependsOn(typeof(AielUsers))]
 public sealed class AielAspNetCore : AielDependencyConfigurator
 {
-    public override ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddHttpContextAccessor();
-        context.Services.TryAddScoped<ITenantAccessor, HttpContextTenantAccessor>();
+        context.Services.TryAddScoped<ICurrentTenantAccessor, HttpContextCurrentTenantAccessor>();
         context.Services.TryAddScoped<AmbientUserContext>();
         context.Services.TryAddScoped<IUserAccessor, UserAccessor>();
 
         context.Services.Configure<JsonOptions>(opts => opts.SerializerOptions.Converters.Add(new PhoneNumberJsonConverter()));
 
-        return ValueTask.CompletedTask;
+        return Task.CompletedTask;
     }
 }

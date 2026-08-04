@@ -45,7 +45,8 @@ public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
         String sourceCode,
         String? expectedCode = null,
         String generatedFileName = "AielDependencyGraph.g.cs",
-        IEnumerable<DiagnosticDescriptor>? expectedDiagnostics = null,
+        IEnumerable<DiagnosticDescriptor>? expectedErrors = null,
+        IEnumerable<DiagnosticDescriptor>? expectedWarnings = null,
         Boolean includeHostApplication = false,
         Boolean includeWebApplication = false,
         Boolean includeWebAssembly = false,
@@ -67,10 +68,18 @@ public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
                 (typeof(TSourceGenerator), generatedFileName, SourceText.From(expectedCode.Replace("\r\n", "\n"), Encoding.UTF8, SourceHashAlgorithm.Sha256)));
         }
 
-        if (expectedDiagnostics != null)
+        if (expectedErrors != null)
         {
-            var diagnosticResults = expectedDiagnostics
+            var diagnosticResults = expectedErrors
                 .Select(d => DiagnosticResult.CompilerError(d.Id))
+                .ToArray();
+            test.TestState.ExpectedDiagnostics.AddRange(diagnosticResults);
+        }
+
+        if (expectedWarnings != null)
+        {
+            var diagnosticResults = expectedWarnings
+                .Select(d => DiagnosticResult.CompilerWarning(d.Id))
                 .ToArray();
             test.TestState.ExpectedDiagnostics.AddRange(diagnosticResults);
         }

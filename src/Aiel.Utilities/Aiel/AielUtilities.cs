@@ -25,6 +25,4 @@ using Aiel.Framework;
 namespace Aiel;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielUtilities : AielDependencyConfigurator
-{
-}
+public sealed class AielUtilities : AielDependencyConfigurator;

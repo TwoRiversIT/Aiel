@@ -34,7 +34,7 @@ namespace Aiel.DataAccess.EntityFrameworkCore;
 [DependsOn(typeof(AielApplication))]
 [DependsOn(typeof(AielMultiTenancy))]
 [DependsOn(typeof(AielDataAccess))]
-public sealed class AielDataAcccessEntityFrameworkCore : AielDependencyConfigurator
+public sealed class AielDataAccessEntityFrameworkCore : AielDependencyConfigurator
 {
     public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {

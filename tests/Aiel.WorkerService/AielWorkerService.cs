@@ -38,7 +38,7 @@ namespace Aiel.WorkerService;
 [DependsOn(typeof(AielAspNetCore))]
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielWorkerServiceShared))]
-[DependsOn(typeof(AielDataAcccessEntityFrameworkCore))]
+[DependsOn(typeof(AielDataAccessEntityFrameworkCore))]
 public sealed class AielWorkerService : AielApplicationConfigurator
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;

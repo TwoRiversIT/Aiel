@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace Aiel;
+namespace Aiel.Framework;
 
 public static class AielServiceCollectionExtensions
 {

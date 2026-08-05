@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.Collections.Generic;

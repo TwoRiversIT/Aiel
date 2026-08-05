@@ -21,8 +21,18 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.IdGeneration;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielIdGeneration : AielDependencyConfigurator;
+public sealed class AielIdGeneration : AielDependencyConfigurator
+{
+    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+
+        context.Services.TryAddSingleton<IIdGenerator, TimeBasedIdGenerator>();
+
+        return Task.CompletedTask;
+    }
+}

@@ -48,7 +48,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
         title: "Missing implementation of either `AielDependencyConfigurator` or `AielApplicationConfigurator`",
         messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplicationConfigurator` if the assembly is a root application, or `AielDependencyConfigurator` if the assembly is a class library",
         category: DiagnosticMetadata.UsageCategory,
-        defaultSeverity: DiagnosticSeverity.Error,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Framework.AielDependencyConfigurator` or `Aiel.Framework.AielApplicationConfigurator`. These types serve as the root for the dependency graph.",
         customTags: []);

@@ -45,6 +45,10 @@ public sealed class AielDataAcccessEntityFrameworkCore : AielDependencyConfigura
     public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.Configure<SeedingOptions>(context.Configuration.GetSection(nameof(SeedingOptions)));
+        context.Services.Configure<AielMigrationOptions>(context.Configuration.GetSection(nameof(AielMigrationOptions)));
+
+        context.Services.AddScoped<MigrationManager>();
+
         return Task.CompletedTask;
     }
 

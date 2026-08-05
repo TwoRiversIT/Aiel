@@ -267,7 +267,7 @@ public sealed class DependencyManager : IDependencyManager
 
         var manager = new DependencyManager(dependencyDescriptors);
 
-        services.AddSingleton<IDependencyManager>(manager);
+        services.TryAddSingleton<IDependencyManager>(manager);
 
         await manager.ConfigureAsync(context, cancellationToken);
     }

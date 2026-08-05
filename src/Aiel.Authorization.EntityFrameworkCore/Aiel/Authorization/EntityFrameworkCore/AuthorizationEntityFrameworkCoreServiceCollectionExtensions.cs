@@ -47,9 +47,9 @@ public static class AuthorizationEntityFrameworkCoreServiceCollectionExtensions
 
         services.TryAddSingleton(TimeProvider.System);
         services.AddDbContext<AuthorizationDbContext>(configureOptions);
-        services.AddScoped<IAuthorizationGrantStore, EfCorePermissionStore>();
-        services.AddScoped<PermissionMigrationRunner>();
-        services.AddScoped<AuthorizationDbInitializer>();
+        services.TryAddScoped<IAuthorizationGrantStore, EfCorePermissionStore>();
+        services.TryAddScoped<PermissionMigrationRunner>();
+        services.TryAddScoped<AuthorizationDbInitializer>();
 
         return services;
     }

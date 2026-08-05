@@ -52,7 +52,7 @@ public sealed class MyLibraryDependency : AielDependencyConfigurator
         DependencyConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
-        context.Services.AddScoped<IMyService, MyService>();
+        context.Services.TryAddScoped<IMyService, MyService>();
         return Task.CompletedTask;
     }
 }
@@ -217,7 +217,7 @@ public sealed class MyLibraryDependency : AielDependencyConfigurator
     {
         // By the time this runs, every module's PreConfigureAsync has
         // already completed — options registered above are fully populated.
-        context.Services.AddScoped<IMyService, MyService>();
+        context.Services.TryAddScoped<IMyService, MyService>();
         return Task.CompletedTask;
     }
 }

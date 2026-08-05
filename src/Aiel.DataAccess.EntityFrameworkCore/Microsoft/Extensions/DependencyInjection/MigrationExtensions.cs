@@ -77,9 +77,9 @@ public static class MigrationExtensions
     /// <returns>The same <paramref name="services"/> for chaining.</returns>
     public static IServiceCollection AddAielMigrations(this IServiceCollection services, Action<AielMigrationOptions>? configure = null)
     {
-        return services
-            .Configure<AielMigrationOptions>(options => configure?.Invoke(options))
-            .AddScoped<MigrationManager>();
+        services.Configure<AielMigrationOptions>(options => configure?.Invoke(options));
+        services.AddScoped<MigrationManager>();
+        return services;
     }
 
     /// <summary>

@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Actions;
 
@@ -30,7 +29,7 @@ public sealed class AielActions : AielDependencyConfigurator
 {
     public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        context.Services.AddScoped<IExecutionContext, DefaultExecutionContext>();
+        //context.Services.TryAddScoped<IExecutionContext, DefaultExecutionContext>();
 
         return Task.CompletedTask;
     }

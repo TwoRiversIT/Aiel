@@ -98,7 +98,7 @@ Your implementation is *stateful*, but the state lives **inside the instance**, 
 If you register `CurrentTenant` as:
 
 ```csharp
-services.AddScoped<ICurrentTenant, CurrentTenant>();
+services.TryAddScoped<ICurrentTenant, CurrentTenant>();
 ```
 
 then:
@@ -644,7 +644,7 @@ You are in good company.
 You want:
 
 ```csharp
-services.AddScoped<ICurrentTenant, CurrentTenant>();
+services.TryAddScoped<ICurrentTenant, CurrentTenant>();
 ```
 
 If you register the concrete type:
@@ -689,7 +689,7 @@ public interface ICurrentTenant
 Register:
 
 ```csharp
-services.AddScoped<ICurrentTenant, CurrentTenant>();
+services.TryAddScoped<ICurrentTenant, CurrentTenant>();
 ```
 
 And keep `CurrentTenant` as the ambient implementation using `AsyncLocal<T>`.

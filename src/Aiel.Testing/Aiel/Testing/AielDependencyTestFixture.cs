@@ -23,6 +23,7 @@
 using Aiel.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Testing;
 
@@ -38,7 +39,7 @@ public class AielDependencyTestFixture<TConfigurator> : IntegrationTestFixture
 
         var root = context.BuildDependencyTree<TConfigurator>();
 
-        services.AddSingleton(root);
+        services.TryAddSingleton(root);
 
         await root.ConfigureDependenciesAsync(context, cancellationToken);
     }

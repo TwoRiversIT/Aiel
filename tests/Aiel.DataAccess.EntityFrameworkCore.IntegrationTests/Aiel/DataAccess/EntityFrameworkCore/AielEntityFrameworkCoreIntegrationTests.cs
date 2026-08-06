@@ -27,7 +27,7 @@ using Aiel.Testing;
 
 namespace Aiel.DataAccess.EntityFrameworkCore;
 
-[DependsOn(typeof(AielDataAcccessEntityFrameworkCore))]
+[DependsOn(typeof(AielDataAccessEntityFrameworkCore))]
 [DependsOn(typeof(AielStrongIds))]
 [DependsOn(typeof(AielStrongIdsEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]

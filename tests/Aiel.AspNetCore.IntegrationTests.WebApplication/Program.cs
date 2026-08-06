@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Multitenancy;
 using Aiel.MultiTenancy;
 using System.Diagnostics;
 
@@ -34,6 +35,8 @@ public sealed class Program
         await builder.AddApplicationAsync();
 
         var app = builder.Build();
+
+        await app.InitializeApplicationAsync();
 
         // Intentionally runs before routing to prove tenant-required endpoints remain fail-closed.
         app.UseAielTenantResolution();

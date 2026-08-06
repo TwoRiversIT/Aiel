@@ -12,10 +12,10 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" OutputItemType="Analyzer" />
         <ProjectReference Include="..\..\src\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\src\Aiel.Framework.WebApplication\Aiel.Framework.WebApplication.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Aiel.AspNetCore\Aiel.AspNetCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
     </ItemGroup>
 

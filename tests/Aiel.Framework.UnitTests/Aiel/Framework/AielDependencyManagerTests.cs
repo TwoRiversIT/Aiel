@@ -22,14 +22,12 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Framework;
 
-public sealed class AielDependencyManagerTests
+public sealed class AielDependencyManagerTests : PhaseLogCollector
 {
     [Fact]
     public void Constructor_Throws_When_Duplicate_Dependency_Types()
@@ -160,9 +158,8 @@ public sealed class AielDependencyManagerTests
         services.AddSingleton<IConfiguration>(configuration);
 
         var serviceProvider = services.BuildServiceProvider();
-        var env = new TestHostEnvironment();
         var logger = serviceProvider.GetRequiredService<ILogger<DependencyInitializationContext>>();
-        var context = new DependencyInitializationContext(new AielEnvironment(env.ApplicationName, "1.0.0", env.EnvironmentName, Guid.NewGuid()), configuration, logger, serviceProvider);
+        var context = new DependencyInitializationContext(new AielEnvironment("ApplicationName", "1.0.0", "Testing", Guid.NewGuid()), configuration, logger, serviceProvider);
 
         await manager.InitializeAsync(context, CancellationToken.None);
 
@@ -260,196 +257,5 @@ public sealed class AielDependencyManagerTests
 
         (lastPreIndex < firstConfigureIndex).Should().BeTrue(
             $"All PreConfigureAsync calls must complete before any ConfigureAsync begins. Actual order: [{String.Join(", ", PhaseLog)}]");
-    }
-
-    private static readonly List<String> PhaseLog = [];
-
-    private sealed class DependencyA;
-    private sealed class DependencyB;
-    private sealed class DependencyC;
-    private sealed class DependencyD;
-
-    private sealed class DependencyAConfigurator : IConfigurator
-    {
-        public static Int32 InvokeCount { get; private set; }
-
-        public static void Reset() => InvokeCount = 0;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            InvokeCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DependencyBConfigurator : IConfigurator
-    {
-        public static Int32 InvokeCount { get; private set; }
-
-        public static void Reset() => InvokeCount = 0;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            InvokeCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DependencyCConfigurator : IConfigurator
-    {
-        public static Int32 InvokeCount { get; private set; }
-
-        public static void Reset() => InvokeCount = 0;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            InvokeCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DependencyDConfigurator : IConfigurator
-    {
-        public static Int32 InvokeCount { get; private set; }
-
-        public static void Reset() => InvokeCount = 0;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            InvokeCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DependencyAInitializer : IInitializer
-    {
-        public static Int32 InvokeCount { get; private set; }
-
-        public static void Reset() => InvokeCount = 0;
-
-        public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
-        {
-            InvokeCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DependencyBInitializer : IInitializer
-    {
-        public static Int32 InvokeCount { get; private set; }
-
-        public static void Reset() => InvokeCount = 0;
-
-        public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
-        {
-            InvokeCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class TestHostEnvironment : IHostEnvironment
-    {
-        public String ApplicationName { get; set; } = "TestApp";
-        public String EnvironmentName { get; set; } = "Development";
-        public String ContentRootPath { get; set; } = AppContext.BaseDirectory;
-        public IFileProvider ContentRootFileProvider { get; set; } = default!; // Use a Mock or a NullFileProvider if needed
-    }
-
-    private sealed class DependencyAPreConfigurator : IConfigurator
-    {
-        public static Int32 PreConfigureCount { get; private set; }
-
-        public static void Reset() => PreConfigureCount = 0;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PreConfigureCount++;
-            return Task.CompletedTask;
-        }
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-    }
-
-    private sealed class DependencyBPreConfigurator : IConfigurator
-    {
-        public static Int32 PreConfigureCount { get; private set; }
-
-        public static void Reset() => PreConfigureCount = 0;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PreConfigureCount++;
-            return Task.CompletedTask;
-        }
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-    }
-
-    private sealed class DependencyCPreConfigurator : IConfigurator
-    {
-        public static Int32 PreConfigureCount { get; private set; }
-
-        public static void Reset() => PreConfigureCount = 0;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PreConfigureCount++;
-            return Task.CompletedTask;
-        }
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-    }
-
-    private sealed class DependencyDPreConfigurator : IConfigurator
-    {
-        public static Int32 PreConfigureCount { get; private set; }
-
-        public static void Reset() => PreConfigureCount = 0;
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PreConfigureCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DependencyAPhaseConfigurator : IConfigurator
-    {
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PhaseLog.Add("A:Pre");
-            return Task.CompletedTask;
-        }
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PhaseLog.Add("A:Configure");
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DependencyBPhaseConfigurator : IConfigurator
-    {
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PhaseLog.Add("B:Pre");
-            return Task.CompletedTask;
-        }
-
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-        {
-            PhaseLog.Add("B:Configure");
-            return Task.CompletedTask;
-        }
     }
 }

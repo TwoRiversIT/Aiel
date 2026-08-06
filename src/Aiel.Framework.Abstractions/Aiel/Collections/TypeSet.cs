@@ -171,10 +171,7 @@ public class TypeSet<TBase> : ITypeSet<TBase>
 
     private static List<Type> EnsureCompatibleTypes(IEnumerable<Type> types)
     {
-        if (types is null)
-        {
-            throw new ArgumentNullException(nameof(types));
-        }
+        ArgumentNullException.ThrowIfNull(types);
 
         var result = new List<Type>();
         foreach (var type in types)
@@ -188,10 +185,7 @@ public class TypeSet<TBase> : ITypeSet<TBase>
 
     private static void EnsureCompatibleType(Type type)
     {
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         if (!typeof(TBase).IsAssignableFrom(type))
         {

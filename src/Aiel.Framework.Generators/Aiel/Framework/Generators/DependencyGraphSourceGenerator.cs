@@ -53,7 +53,6 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
     private const String WebAssemblyBuilder = "WebAssemblyHostBuilder";
 
     private const String FqDependencyDescriptor = "global::" + RootNamespace + "." + DependencyDescriptor;
-    //private const String FqDependsOn = "global::" + RootNamespace + "." + DependsOnAttribute;
     private const String FqIDependencyInitializer = "global::" + RootNamespace + ".IInitializer";
 
     private const String NsHostApplicationBuilder = "Microsoft.Extensions.Hosting." + HostApplicationBuilder;
@@ -75,11 +74,11 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
     public static readonly DiagnosticDescriptor AmbiguousProjectType = new(
         id: DiagnosticRuleIDs.AIEL00004_AmbiguousProjectTypeDiagnosticId,
         title: "Unable to determine a single Aiel project type",
-        messageFormat: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
+        messageFormat: "The generator detected multiple project types in the same assembly. Exactly one of WebAssemblyApplication, WebApplication, or HostApplication is supported per assembly.",
         category: DiagnosticMetadata.UsageCategory,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "The generator detected multiple project types in the same assembly. Exactly one of WebAssembly, WebApplication, or HostApplication is supported per assembly.",
+        description: "The generator detected multiple project types in the same assembly. Exactly one of WebAssemblyApplication, WebApplication, or HostApplication is supported per assembly.",
         customTags: []);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -126,7 +125,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             return null;
         }
 
-        if (InheritsFromApplication(symbol))
+        if (IsApplicationDependencyRoot(symbol))
         {
             // Treat every concrete AielApplicationConfigurator defined in the current application project
             // as a root. The dependency closure is computed in Emit using [DependsOn] attributes.
@@ -136,7 +135,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
         return null;
     }
 
-    private static Boolean InheritsFromApplication(INamedTypeSymbol symbol)
+    private static Boolean IsApplicationDependencyRoot(INamedTypeSymbol symbol)
     {
         for (var current = symbol.BaseType; current is not null; current = current.BaseType)
         {
@@ -231,8 +230,11 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
         {
             return detectedProjectTypes.First();
         }
-
-        if (detectedProjectTypes.Count > 1)
+        else if (detectedProjectTypes.Count == 2 && detectedProjectTypes.Contains(ProjectType.WebApplication))
+        {
+            return ProjectType.WebApplication;
+        }
+        else if (detectedProjectTypes.Count > 2)
         {
             return ProjectType.Ambiguous;
         }

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Framework.UnitTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Framework.HostApplication\Aiel.Framework.HostApplication.csproj" />
+        <ProjectReference Include="..\Aiel.Framework.TestBase\Aiel.Framework.TestBase.csproj" />
+    </ItemGroup>
+
+</Project>

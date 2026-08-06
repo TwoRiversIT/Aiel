@@ -25,7 +25,7 @@ using Aiel.MultiTenancy;
 
 namespace Aiel.AspNetCore;
 
-[DependsOn(typeof(AielAspNetCore))]
+[DependsOn(typeof(AielFrameworkWebApplication))]
 [DependsOn(typeof(AielMultiTenancy))]
 public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
 {

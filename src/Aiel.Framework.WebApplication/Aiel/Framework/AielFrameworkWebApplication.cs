@@ -22,8 +22,6 @@
 
 using Aiel.Multitenancy;
 using Aiel.MultiTenancy;
-using Aiel.Users;
-using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -31,17 +29,12 @@ namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielMultiTenancy))]
-[DependsOn(typeof(AielUsers))]
 public sealed class AielFrameworkWebApplication : AielDependencyConfigurator
 {
     public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddHttpContextAccessor();
         context.Services.TryAddScoped<ICurrentTenantAccessor, HttpContextCurrentTenantAccessor>();
-        context.Services.TryAddScoped<AmbientUserContext>();
-        context.Services.TryAddScoped<IUserAccessor, UserAccessor>();
-
-        context.Services.Configure<JsonOptions>(opts => opts.SerializerOptions.Converters.Add(new PhoneNumberJsonConverter()));
 
         return Task.CompletedTask;
     }

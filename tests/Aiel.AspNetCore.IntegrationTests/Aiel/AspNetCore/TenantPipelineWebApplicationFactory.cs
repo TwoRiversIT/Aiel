@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.MultiTenancy;
-using Aiel.Users;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,8 +38,6 @@ internal sealed class TenantPipelineWebApplicationFactory(ITenantResolver tenant
         {
             services.RemoveAll<ITenantResolver>();
             services.AddSingleton(tenantResolver);
-            services.AddSingleton<AmbientUserContext>();
-            services.AddSingleton<IUserAccessor, UserAccessor>();
         });
     }
 }

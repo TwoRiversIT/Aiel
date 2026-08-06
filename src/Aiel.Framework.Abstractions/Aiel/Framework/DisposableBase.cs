@@ -20,7 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel;
+using System.Threading.Tasks;
+
+namespace Aiel.Framework;
 
 /// <summary>
 /// Provides a base implementation for test fixtures with standard disposal patterns.

@@ -18,7 +18,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Aiel.Framework\Aiel.Framework.csproj" />
       <ProjectReference Include="..\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
-      <ProjectReference Include="..\Aiel.Users\Aiel.Users.csproj" />
     </ItemGroup>
 
 </Project>

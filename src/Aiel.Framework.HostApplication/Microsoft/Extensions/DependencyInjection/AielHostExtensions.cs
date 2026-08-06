@@ -39,10 +39,10 @@ public static partial class AielHostExtensions
     {
         ArgumentNullException.ThrowIfNull(host);
 
-        var context = new DependencyInitializationContext(
+        var context = new InitializationContext(
             host.Services.GetRequiredService<AielEnvironment>(),
             host.Services.GetRequiredService<IConfiguration>(),
-            host.Services.GetRequiredService<ILogger<DependencyInitializationContext>>(),
+            host.Services.GetRequiredService<ILogger<InitializationContext>>(),
             host.Services);
 
         // If a dependency manager is registered, prefer that for initialization; it will use

@@ -49,7 +49,7 @@ using Aiel.Framework;
 public sealed class MyLibraryDependency : AielDependencyConfigurator
 {
     public override Task ConfigureAsync(
-        DependencyConfigurationContext context,
+        ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
         context.Services.TryAddScoped<IMyService, MyService>();
@@ -76,7 +76,7 @@ public sealed class MyApplication : AielApplicationConfigurator
     public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
 
     public override Task ConfigureAsync(
-        DependencyConfigurationContext context,
+        ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
         // Application-level service registration
@@ -170,7 +170,7 @@ builder.AddApplicationAsync()            ← source-generated path
 
 The ordering within each phase is a topological sort (post-order DFS): every dependency runs **before** the types that depend on it. Within a depth tier, order is not guaranteed.
 
-#### `DependencyConfigurationContext`
+#### `ConfigurationContext`
 
 Passed to every `PreConfigureAsync` and `ConfigureAsync` call. Inherits from `DependencyContext`.
 
@@ -202,7 +202,7 @@ Use `PreConfigureAsync` to establish shared state that other modules will read d
 public sealed class MyLibraryDependency : AielDependencyConfigurator
 {
     public override Task PreConfigureAsync(
-        DependencyConfigurationContext context,
+        ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
         // Register an options builder that other modules can populate
@@ -212,7 +212,7 @@ public sealed class MyLibraryDependency : AielDependencyConfigurator
     }
 
     public override Task ConfigureAsync(
-        DependencyConfigurationContext context,
+        ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
         // By the time this runs, every module's PreConfigureAsync has
@@ -225,7 +225,7 @@ public sealed class MyLibraryDependency : AielDependencyConfigurator
 
 #### `ObservableServiceCollection`
 
-`DependencyConfigurationContext.Services` is backed by an `ObservableServiceCollection`. This allows a dependency to register a callback that is invoked each time a `ServiceDescriptor` is added — useful for cross-cutting concerns like automatic decorator registration:
+`ConfigurationContext.Services` is backed by an `ObservableServiceCollection`. This allows a dependency to register a callback that is invoked each time a `ServiceDescriptor` is added — useful for cross-cutting concerns like automatic decorator registration:
 
 ```csharp
 context.Services.OnAdding(descriptor =>

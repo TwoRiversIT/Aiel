@@ -36,13 +36,13 @@ namespace Aiel.DataAccess.EntityFrameworkCore;
 [DependsOn(typeof(AielDataAccess))]
 public sealed class AielDataAccessEntityFrameworkCore : AielDependencyConfigurator
 {
-    public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         AutoAddDatabaseMigrators(context.Services);
         return Task.CompletedTask;
     }
 
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.Configure<SeedingOptions>(context.Configuration.GetSection(nameof(SeedingOptions)));
         context.Services.Configure<AielMigrationOptions>(context.Configuration.GetSection(nameof(AielMigrationOptions)));

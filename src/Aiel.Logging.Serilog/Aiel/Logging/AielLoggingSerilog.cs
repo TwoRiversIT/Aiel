@@ -32,7 +32,7 @@ namespace Aiel.Logging;
 [DependsOn(typeof(AielUsers))]
 public sealed class AielLoggingSerilog : AielDependencyConfigurator
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(context.Configuration)

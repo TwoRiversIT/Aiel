@@ -28,7 +28,7 @@ namespace Aiel.IdGeneration;
 [DependsOn(typeof(AielFrameworkAbstractions))]
 public sealed class AielIdGeneration : AielDependencyConfigurator
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
 
         context.Services.TryAddSingleton<IIdGenerator, TimeBasedIdGenerator>();

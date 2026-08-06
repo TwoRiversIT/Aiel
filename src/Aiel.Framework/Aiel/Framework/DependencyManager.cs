@@ -100,7 +100,7 @@ public sealed class DependencyManager : IDependencyManager
     public IReadOnlyCollection<DependencyDescriptor> Dependencies { get; }
 
     /// <inheritdoc />
-    public async ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public async ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -144,7 +144,7 @@ public sealed class DependencyManager : IDependencyManager
     }
 
     /// <inheritdoc />
-    public async ValueTask InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+    public async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -263,7 +263,7 @@ public sealed class DependencyManager : IDependencyManager
             services.TryAddSingleton(environment);
         }
 
-        var context = new DependencyConfigurationContext(environment, services, configuration);
+        var context = new ConfigurationContext(environment, services, configuration);
 
         var manager = new DependencyManager(dependencyDescriptors);
 

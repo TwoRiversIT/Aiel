@@ -37,10 +37,10 @@ public static class Stubs
         "AielDependencyConfigurator.txt",
         "AielEnvironment.txt",
         //"AielFrameworkAbstractions.txt", // Not needed for the tests, and triggers diagnostic warnings.
-        "DependencyConfigurationContext.txt",
+        "ConfigurationContext.txt",
         "DependencyContext.txt",
         "DependencyDescriptor.txt",
-        "DependencyInitializationContext.txt",
+        "InitializationContext.txt",
         "DependsOnAttribute.txt",
         "IConfigurator.txt",
         "IDependencyManager.txt",

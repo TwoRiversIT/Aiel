@@ -27,7 +27,7 @@ namespace Aiel.Actions;
 [DependsOn(typeof(AielFrameworkAbstractions))]
 public sealed class AielActions : AielDependencyConfigurator
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         //context.Services.TryAddScoped<IExecutionContext, DefaultExecutionContext>();
 

@@ -52,7 +52,7 @@ public static class AielWebAssemblyHostBuilderExtensions
             builder.Services.TryAddSingleton(environment);
         }
 
-        var context = new DependencyConfigurationContext(
+        var context = new ConfigurationContext(
             environment,
             builder.Services,
             builder.Configuration);

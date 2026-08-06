@@ -28,7 +28,7 @@ public sealed class DependencyAInitializer : IInitializer
 
     public static void Reset() => InvokeCount = 0;
 
-    public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+    public Task InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         InvokeCount++;
         return Task.CompletedTask;
@@ -41,7 +41,7 @@ public sealed class DependencyBInitializer : IInitializer
 
     public static void Reset() => InvokeCount = 0;
 
-    public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+    public Task InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         InvokeCount++;
         return Task.CompletedTask;
@@ -59,9 +59,9 @@ public sealed class DependencyAConfigurator : IConfigurator
 
     public static void Reset() => InvokeCount = 0;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         InvokeCount++;
         return Task.CompletedTask;
@@ -74,9 +74,9 @@ public sealed class DependencyBConfigurator : IConfigurator
 
     public static void Reset() => InvokeCount = 0;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         InvokeCount++;
         return Task.CompletedTask;
@@ -89,9 +89,9 @@ public sealed class DependencyCConfigurator : IConfigurator
 
     public static void Reset() => InvokeCount = 0;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         InvokeCount++;
         return Task.CompletedTask;
@@ -104,9 +104,9 @@ public sealed class DependencyDConfigurator : IConfigurator
 
     public static void Reset() => InvokeCount = 0;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         InvokeCount++;
         return Task.CompletedTask;
@@ -119,13 +119,13 @@ public sealed class DependencyAPreConfigurator : IConfigurator
 
     public static void Reset() => PreConfigureCount = 0;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PreConfigureCount++;
         return Task.CompletedTask;
     }
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 }
 
 public sealed class DependencyBPreConfigurator : IConfigurator
@@ -134,13 +134,13 @@ public sealed class DependencyBPreConfigurator : IConfigurator
 
     public static void Reset() => PreConfigureCount = 0;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PreConfigureCount++;
         return Task.CompletedTask;
     }
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 }
 
 public sealed class DependencyCPreConfigurator : IConfigurator
@@ -149,13 +149,13 @@ public sealed class DependencyCPreConfigurator : IConfigurator
 
     public static void Reset() => PreConfigureCount = 0;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PreConfigureCount++;
         return Task.CompletedTask;
     }
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 }
 
 public sealed class DependencyDPreConfigurator : IConfigurator
@@ -164,9 +164,9 @@ public sealed class DependencyDPreConfigurator : IConfigurator
 
     public static void Reset() => PreConfigureCount = 0;
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PreConfigureCount++;
         return Task.CompletedTask;
@@ -175,13 +175,13 @@ public sealed class DependencyDPreConfigurator : IConfigurator
 
 public sealed class DependencyAPhaseConfigurator : PhaseLogCollector, IConfigurator
 {
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("A:Pre");
         return Task.CompletedTask;
     }
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("A:Configure");
         return Task.CompletedTask;
@@ -190,13 +190,13 @@ public sealed class DependencyAPhaseConfigurator : PhaseLogCollector, IConfigura
 
 public sealed class DependencyBPhaseConfigurator : PhaseLogCollector, IConfigurator
 {
-    public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("B:Pre");
         return Task.CompletedTask;
     }
 
-    public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("B:Configure");
         return Task.CompletedTask;

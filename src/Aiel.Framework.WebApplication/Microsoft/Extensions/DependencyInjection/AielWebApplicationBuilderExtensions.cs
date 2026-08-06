@@ -51,7 +51,7 @@ public static class AielWebApplicationBuilderExtensions
             builder.Services.TryAddSingleton(environment);
         }
 
-        var context = new DependencyConfigurationContext(
+        var context = new ConfigurationContext(
             environment,
             builder.Services,
             builder.Configuration);

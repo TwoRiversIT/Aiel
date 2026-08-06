@@ -43,10 +43,10 @@ public static class AielWebAssemblyHostExtensions
 
         var environment = host.Services.GetRequiredService<AielEnvironment>();
 
-        var context = new DependencyInitializationContext(
+        var context = new InitializationContext(
             environment,
             host.Services.GetRequiredService<IConfiguration>(),
-            host.Services.GetRequiredService<ILogger<DependencyInitializationContext>>(),
+            host.Services.GetRequiredService<ILogger<InitializationContext>>(),
             host.Services);
 
         var dependencyManager = host.Services.GetService<IDependencyManager>();

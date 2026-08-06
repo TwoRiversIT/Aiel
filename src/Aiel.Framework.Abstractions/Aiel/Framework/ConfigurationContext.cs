@@ -20,15 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Collections;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Framework
 {
-    public class DependencyInitializationContext(AielEnvironment environment, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider)
+    public class ConfigurationContext(AielEnvironment environment, IServiceCollection services, IConfiguration configuration)
         : DependencyContext(environment, configuration)
     {
-        public ILogger Logger { get; } = logger;
-        public IServiceProvider ServiceProvider { get; } = serviceProvider;
+        public IServiceCollection Services { get; } = new ObservableServiceCollection(services);
     }
 }

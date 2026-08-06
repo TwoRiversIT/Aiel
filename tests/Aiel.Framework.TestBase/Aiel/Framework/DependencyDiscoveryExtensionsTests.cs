@@ -37,7 +37,7 @@ public abstract class DependencyDiscoveryExtensionsTests
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
         var environment = new AielEnvironment("TestApp", "1.0.0", "Development", Guid.NewGuid());
-        var context = new DependencyConfigurationContext(environment, services, configuration);
+        var context = new ConfigurationContext(environment, services, configuration);
 
         var root = context.BuildDependencyTree<DiamondRootDependency>();
 
@@ -61,7 +61,7 @@ public abstract class DependencyDiscoveryExtensionsTests
         services.AddSingleton(environment);
         services.AddSingleton<IConfiguration>(configuration);
 
-        var context = new DependencyConfigurationContext(environment, services, configuration);
+        var context = new ConfigurationContext(environment, services, configuration);
         var root = context.BuildDependencyTree<InitializerRootDependency>();
         services.AddSingleton(root);
 
@@ -94,13 +94,13 @@ public abstract class DependencyDiscoveryExtensionsTests
             ConfigureCount = 0;
         }
 
-        public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
         {
             PreConfigureCount++;
             return Task.CompletedTask;
         }
 
-        public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+        public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
         {
             ConfigureCount++;
             return Task.CompletedTask;
@@ -123,7 +123,7 @@ public abstract class DependencyDiscoveryExtensionsTests
 
         public static void Reset() => InitializeCount = 0;
 
-        public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+        public Task InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
         {
             InitializeCount++;
             return Task.CompletedTask;

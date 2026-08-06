@@ -47,7 +47,7 @@ namespace Aiel.Framework
         /// </summary>
     	/// <param name="context">The application configuration context.</param>
     	/// <returns>A task that represents the asynchronous configuration operation.</returns>
-    	ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default);
+    	ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
 
         /// <summary>
     	/// Initializes all dependencies using the supplied initialization context.
@@ -55,6 +55,6 @@ namespace Aiel.Framework
     	/// <param name="context">The application initialization context.</param>
     	/// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
     	/// <returns>A task that represents the asynchronous initialization operation.</returns>
-    	ValueTask InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default);
+    	ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default);
     }
 }

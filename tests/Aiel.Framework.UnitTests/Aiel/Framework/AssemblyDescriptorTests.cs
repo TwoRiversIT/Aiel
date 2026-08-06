@@ -47,14 +47,14 @@ public sealed class AssemblyDescriptorTests
 
     private sealed class TestConfigurator : IConfigurator
     {
-        public Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
 
-        public Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 
     private sealed class TestInitializer : IInitializer
     {
-        public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+        public Task InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
         {
             return Task.CompletedTask;
         }

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Framework.UnitTestsBase</AssemblyName>
+        <AssemblyName>Aiel.Framework.UnitTestBase</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 

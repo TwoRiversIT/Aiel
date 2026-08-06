@@ -17,20 +17,33 @@
         <Using Include="System.Threading.Tasks" />
     </ItemGroup>
 
-    <!-- Include the analyzer and generator DLLs in the NuGet package to ensure they are available and used during compilation of consuming projects. -->
+    <!--
+    Include the analyzer and generator DLLs in the NuGet package so consuming projects
+    automatically load and run them. Any assembly packed under analyzers/dotnet/cs is
+    picked up as an analyzer by the .NET SDK/NuGet by convention, so no additional
+    .props/.targets file is required (adding <Analyzer> items manually would double-load
+    them and, with a wrong path, causes CS0006 in consuming projects).
+    -->
     <ItemGroup>
         <None Include="..\Aiel.Authorization.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Authorization.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\Aiel.Authorization.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Authorization.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="Aiel.Authorization.Abstractions.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
     </ItemGroup>
 
+    <!--
+    The ProjectReferences (with ReferenceOutputAssembly=false) only enforce build ordering so
+    the DLLs exist when this project is packed; they are not compile-time references and are
+    not themselves packed as dependencies.
+    -->
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+    </ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Actions\Aiel.Actions.csproj" />
         <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
         <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
         <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>

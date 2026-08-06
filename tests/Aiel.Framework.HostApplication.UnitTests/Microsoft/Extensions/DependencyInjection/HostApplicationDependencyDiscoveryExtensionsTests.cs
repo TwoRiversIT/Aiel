@@ -21,19 +21,29 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Aiel.MultiTenancy;
+using Microsoft.Extensions.Hosting;
 
-namespace Aiel.AspNetCore;
+namespace Microsoft.Extensions.DependencyInjection;
 
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+public class HostApplicationDependencyDiscoveryExtensionsTests : DependencyDiscoveryExtensionsTests
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
-
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override async Task InitializeApplicationAsync(IServiceProvider serviceProvider)
     {
-        return Task.CompletedTask;
+        var host = new TestHost(serviceProvider);
+
+        await host.InitializeApplicationAsync();
+    }
+
+    private sealed class TestHost(IServiceProvider services) : IHost
+    {
+        public IServiceProvider Services { get; } = services;
+
+        public void Dispose()
+        {
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public Task StopAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 }

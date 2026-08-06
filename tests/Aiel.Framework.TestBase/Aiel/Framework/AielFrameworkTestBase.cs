@@ -20,20 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Aiel.MultiTenancy;
+namespace Aiel.Framework;
 
-namespace Aiel.AspNetCore;
-
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+[DependsOn(typeof(AielFramework))]
+public sealed class AielFrameworkTestBase : AielDependencyConfigurator
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
 
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask;
-    }
 }

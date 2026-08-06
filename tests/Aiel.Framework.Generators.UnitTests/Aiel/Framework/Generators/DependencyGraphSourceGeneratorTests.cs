@@ -331,7 +331,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public async Task Generate_RaisesDiagnostic_WhenMultipleProjectTypesDetectedInOneAssembly()
+    public async Task WhenHostAppAndWebAppAreDetectedInOneAssembly_Generator_PrefersWebApplication()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -357,11 +357,18 @@ public class DependencyGraphSourceGeneratorTests
             }
             """;
 
-        await VerifyCS.TestAsync(testCode, String.Empty, expectedWarnings: [DependencyGraphSourceGenerator.AmbiguousProjectType], includeHostApplication: true, includeWebApplication: true);
+        var result = GenerateCS.Generate(testCode, includeHostApplication: true, includeWebApplication: true);
+
+        result.GeneratedSources.Should().ContainSingle();
+        var sourceText = result.GeneratedSources[0].SourceText.ToString();
+
+        sourceText.Should().Contain("// Project Type: WebApplication");
+        sourceText.Should().Contain("Task<global::Microsoft.AspNetCore.Builder.WebApplicationBuilder> AddApplicationAsync");
+        sourceText.Should().NotContain("Project Type: HostApplication");
     }
 
     [Fact]
-    public void Generate_PrefersHostApplication_WhenCreateEmptyApplicationBuilderUsageDetected()
+    public void WhenCreateEmptyApplicationBuilderUsageDetecte_Generator_PrefersHostApplicationd()
     {
         const String testCode = """
                 using Aiel.Framework;
@@ -399,7 +406,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_PrefersHostApplication_WhenCreateDefaultBuilderUsageDetected()
+    public void WhenCreateDefaultBuilderUsageDetected_Generator_PrefersHostApplication()
     {
         const String testCode = """
                 using Microsoft.Extensions.Hosting;
@@ -432,7 +439,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_PrefersWebApplication_WhenCreateSlimBuilderUsageDetected()
+    public void WhenCreateSlimBuilderUsageDetected_Generator_PrefersWebApplication()
     {
         const String testCode = """
                 using Microsoft.AspNetCore.Builder;
@@ -465,7 +472,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_PrefersWebApplication_WhenCreateEmptyBuilderUsageDetected()
+    public void WhenCreateEmptyBuilderUsageDetected_Generator_PrefersWebApplication()
     {
         const String testCode = """
                 using Microsoft.AspNetCore.Builder;
@@ -498,7 +505,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_EmitsWebAssemblyExtension_WhenWebAssemblyHostBuilderAvailable()
+    public void WhenWebAssemblyHostBuilderAvailable_Generator_EmitsWebAssemblyExtension()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -523,7 +530,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_EmitsNoExtensionMethod_WhenProjectTypeUnknown()
+    public void WhenProjectTypeUnknown_Generator_EmitsNoExtensionMethod()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -548,7 +555,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_SupportsApplicationTypes_InheritingFromAielApplication()
+    public void WhenInheritingFromAielApplicationConfigurator_Generator_EmitsAddApplicationAsync()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -562,16 +569,17 @@ public class DependencyGraphSourceGeneratorTests
             }
             """;
 
-        var result = GenerateCS.Generate(testCode);
+        var result = GenerateCS.Generate(testCode, includeHostApplication: true);
 
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("typeof(global::Test.MyApplication)");
+        sourceText.Should().Contain("AddApplicationAsync");
     }
 
     [Fact]
-    public void Generate_HandlesNamespacedDependencies()
+    public void WhenHandlingNamespacedDependencies_Generator_EmitsCorrectTypeReferences()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -594,7 +602,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_EscapesSpecialCharactersInDependencyNames()
+    public void WhenEscapingSpecialCharactersInDependencyNames_Generator_EmitsCorrectTypeReferences()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -618,7 +626,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_ProducesValidCSharpCode()
+    public void Generator_ProducesValidCSharpCode()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -652,7 +660,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_ProducesDeterministicHeaderAcrossRuns()
+    public void Generator_ProducesDeterministicHeaderAcrossRuns()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -704,7 +712,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_DoesNotIncludeDependencyTypeAsInitializer_WhenNotImplementingIDependencyInitializer()
+    public void WhenNotImplementingIDependencyInitializer_Generator_DoesNotIncludeDependencyTypeAsInitializer()
     {
         const String testCode = """
             using Aiel.Framework;
@@ -728,7 +736,7 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
-    public void Generate_IncludesDependencyTypeAsInitializer_WhenImplementingIDependencyInitializer()
+    public void WhenImplementingIDependencyInitializer_Generator_IncludesDependencyTypeAsInitializer()
     {
         const String testCode = """
             using Aiel.Framework;

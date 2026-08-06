@@ -20,20 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.MultiTenancy;
+using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
-namespace Aiel.AspNetCore;
+namespace Aiel.Multitenancy;
 
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+internal static class TenantResolutionRequirementPolicy
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
+    public static Boolean AllowsEndpointExecution(TenantResolution tenantResolution)
+        => tenantResolution is TenantResolution.Resolved;
 
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask;
-    }
+    public static Int32 MapStatusCode(TenantResolution tenantResolution)
+        => tenantResolution switch
+        {
+            TenantResolution.Resolved => StatusCodes.Status200OK,
+            TenantResolution.Missing => StatusCodes.Status401Unauthorized,
+            TenantResolution.Ambiguous => StatusCodes.Status400BadRequest,
+            TenantResolution.Rejected => StatusCodes.Status403Forbidden,
+            TenantResolution.Error => StatusCodes.Status503ServiceUnavailable,
+            _ => throw new UnreachableException("Unknown tenant resolution outcome.")
+        };
 }

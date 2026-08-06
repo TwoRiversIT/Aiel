@@ -21,19 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Aiel.MultiTenancy;
 
-namespace Aiel.AspNetCore;
+namespace Aiel;
 
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
-{
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
-
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask;
-    }
-}
+[DependsOn(typeof(AielFrameworkAbstractions))]
+public sealed class AielUtilitiesUnitTests : AielDependencyConfigurator;

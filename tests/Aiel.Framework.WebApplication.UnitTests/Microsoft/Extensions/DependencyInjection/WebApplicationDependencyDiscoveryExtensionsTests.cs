@@ -20,20 +20,40 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel;
 using Aiel.Framework;
-using Aiel.MultiTenancy;
+using Microsoft.AspNetCore.Http.Features;
 
-namespace Aiel.AspNetCore;
+namespace Microsoft.Extensions.DependencyInjection;
 
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+public class WebApplicationDependencyDiscoveryExtensionsTests : DependencyDiscoveryExtensionsTests
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
-
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override async Task InitializeApplicationAsync(IServiceProvider serviceProvider)
     {
-        return Task.CompletedTask;
+        var app = new TestWebApplication(serviceProvider);
+
+        await app.InitializeApplicationAsync();
+    }
+
+    private sealed class TestWebApplication(IServiceProvider services) : DisposableBase, IApplicationBuilder
+    {
+        public IServiceProvider ApplicationServices { get; set; } = services;
+        public IFeatureCollection ServerFeatures { get; } = new FeatureCollection();
+        public IDictionary<String, Object?> Properties { get; } = new Dictionary<String, Object?>();
+
+        public RequestDelegate Build()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IApplicationBuilder New()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -103,10 +103,7 @@ public sealed class ObservableServiceCollection(IServiceCollection inner) : ISer
 
     public void Subscribe(Action<ServiceDescriptor> callback)
     {
-        if (callback is null)
-        {
-            throw new ArgumentNullException(nameof(callback));
-        }
+        ArgumentNullException.ThrowIfNull(callback);
 
         _callbacks.Add(callback);
     }

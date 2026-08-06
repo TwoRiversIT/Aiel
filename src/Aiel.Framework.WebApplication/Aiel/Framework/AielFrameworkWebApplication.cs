@@ -20,20 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using Aiel.Multitenancy;
 using Aiel.MultiTenancy;
+using Aiel.Users;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Aiel.AspNetCore;
+namespace Aiel.Framework;
 
-[DependsOn(typeof(AielFrameworkWebApplication))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+[DependsOn(typeof(AielUsers))]
+public sealed class AielFrameworkWebApplication : AielDependencyConfigurator
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
-
     public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
+        context.Services.AddHttpContextAccessor();
+        context.Services.TryAddScoped<ICurrentTenantAccessor, HttpContextCurrentTenantAccessor>();
+        context.Services.TryAddScoped<AmbientUserContext>();
+        context.Services.TryAddScoped<IUserAccessor, UserAccessor>();
+
+        context.Services.Configure<JsonOptions>(opts => opts.SerializerOptions.Converters.Add(new PhoneNumberJsonConverter()));
+
         return Task.CompletedTask;
     }
 }

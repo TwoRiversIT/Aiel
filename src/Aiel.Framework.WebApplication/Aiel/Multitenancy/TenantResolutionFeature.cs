@@ -20,20 +20,22 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.MultiTenancy;
 
-namespace Aiel.AspNetCore;
+namespace Aiel.Multitenancy;
 
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+/// <summary>
+/// Exposes the tenant resolution outcome for the current HTTP request.
+/// </summary>
+public interface ITenantResolutionFeature
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
+    /// <summary>
+    /// Gets the non-null tenant resolution outcome for the current request.
+    /// </summary>
+    TenantResolution Resolution { get; }
+}
 
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask;
-    }
+internal sealed class TenantResolutionFeature(TenantResolution resolution) : ITenantResolutionFeature
+{
+    public TenantResolution Resolution { get; } = resolution ?? throw new ArgumentNullException(nameof(resolution));
 }

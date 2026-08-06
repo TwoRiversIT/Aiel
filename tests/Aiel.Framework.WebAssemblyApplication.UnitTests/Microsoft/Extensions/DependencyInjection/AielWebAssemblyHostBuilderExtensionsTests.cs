@@ -20,20 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Aiel.MultiTenancy;
+namespace Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.AspNetCore;
-
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+public sealed class AielWebAssemblyHostBuilderExtensionsTests
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
-
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    [Fact]
+    public async Task RegisterDependenciesAsync_ThrowsArgumentNullException_WhenBuilderIsNull()
     {
-        return Task.CompletedTask;
+        var act = async () =>
+            await AielWebAssemblyHostBuilderExtensions.RegisterDependenciesAsync(
+                builder: null!,
+                dependencyDescriptors: [],
+                cancellationToken: TestContext.Current.CancellationToken);
+
+        await act.Should().ThrowAsync<ArgumentNullException>();
     }
 }

@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.AspNetCore;
 using Aiel.DataAccess.EntityFrameworkCore;
 using Aiel.DataAccess.EntityFrameworkCore.Migrations;
 using Aiel.Framework;
@@ -35,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Aiel.WorkerService;
 
-[DependsOn(typeof(AielAspNetCore))]
+[DependsOn(typeof(AielFrameworkHostApplication))]
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielWorkerServiceShared))]
 [DependsOn(typeof(AielDataAccessEntityFrameworkCore))]
@@ -55,16 +54,14 @@ public sealed class AielWorkerService : AielApplicationConfigurator
     public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
     {
         var connStr = context.GetConnectionStringOrDefault("MyAppDb");
-        context.Services.AddDbContext<MyAppDbContext>(options =>
+        context.Services.AddDbContext<AielWorkerServiceDbContext>(options =>
         {
             options.UseNpgsql(connStr, options => options.MigrationsAssembly("Inara.IdentityProvider.EntityFrameworkCore.PostgreSql"));
             options.EnableSensitiveDataLogging(context.IsDevelopment);
         });
 
-        context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<MyAppDbContext>>();
+        context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<AielWorkerServiceDbContext>>();
 
         return Task.CompletedTask;
     }
 }
-
-public class MyAppDbContext : DbContext;

@@ -20,20 +20,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Aiel.MultiTenancy;
+using System.Threading.Tasks;
 
-namespace Aiel.AspNetCore;
+namespace Aiel.Framework;
 
-[DependsOn(typeof(AielFrameworkWebApplication))]
-[DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+public static class DisposableExtensions
 {
-    public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
-    public override String ApplicationVersion => "1.0.0";
-
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Safely disposes an object that may implement either <see cref="IDisposable"/> or
+    /// <see cref="IAsyncDisposable"/>. If the object implements both interfaces, it
+    /// will prefer asynchronous disposal. If the object is null, this method does nothing.
+    /// </summary>
+    /// <param name="obj">The object to dispose.</param>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    public static async Task SafelyDisposeAsync(this Object? obj)
     {
-        return Task.CompletedTask;
+        if (obj is null)
+        {
+            return;
+        }
+
+        if (obj is IAsyncDisposable asyncDisposable)
+        {
+            await asyncDisposable.DisposeAsync();
+        }
+        else if (obj is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
     }
 }

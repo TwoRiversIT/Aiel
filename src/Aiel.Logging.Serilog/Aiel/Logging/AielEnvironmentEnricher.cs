@@ -28,9 +28,9 @@ using Serilog.Events;
 
 namespace Aiel.Logging;
 
-internal sealed class AielEnvironmentEnricher(AielEnvironment environment) : ILogEventEnricher
+internal sealed class AielEnvironmentEnricher(IAielEnvironment environment) : ILogEventEnricher
 {
-    private readonly AielEnvironment _environment = environment;
+    private readonly IAielEnvironment _environment = environment;
     private LogEventProperty? _application;
     private LogEventProperty? _instance;
     private LogEventProperty? _version;
@@ -44,15 +44,20 @@ internal sealed class AielEnvironmentEnricher(AielEnvironment environment) : ILo
     {
         if (_environment is not null)
         {
-            logEvent.AddPropertyIfAbsent(_application ??= _application = factory.CreateProperty(AielLoggingConsts.Application, _environment.ApplicationName));
-            logEvent.AddPropertyIfAbsent(_instance ??= factory.CreateProperty(AielLoggingConsts.Instance, _environment.ApplicationInstance));
-            logEvent.AddPropertyIfAbsent(_version ??= factory.CreateProperty(AielLoggingConsts.Version, _environment.ApplicationVersion));
+            // We can cache the properties to avoid creating new ones for each log event.
+            _application ??= factory.CreateProperty(AielLoggingConsts.Application, _environment.ApplicationName);
+            _instance ??= factory.CreateProperty(AielLoggingConsts.Instance, _environment.ApplicationInstance);
+            _version ??= factory.CreateProperty(AielLoggingConsts.Version, _environment.ApplicationVersion);
+
+            logEvent.AddPropertyIfAbsent(_application);
+            logEvent.AddPropertyIfAbsent(_instance);
+            logEvent.AddPropertyIfAbsent(_version);
         }
     }
 }
 
 public static partial class LoggerEnrichmentConfigurationExtensions
 {
-    public static LoggerConfiguration WithAielEnvironment(this LoggerEnrichmentConfiguration enrichmentConfiguration, AielEnvironment aielEnvironment)
+    public static LoggerConfiguration WithAielEnvironment(this LoggerEnrichmentConfiguration enrichmentConfiguration, IAielEnvironment aielEnvironment)
         => enrichmentConfiguration.With(new AielEnvironmentEnricher(aielEnvironment));
 }

@@ -24,15 +24,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aiel.Framework
 {
-    public abstract class DependencyContext(AielEnvironment environment, IConfiguration configuration)
+    public abstract class DependencyContext(IAielEnvironment environment, IConfiguration configuration)
     {
-        public AielEnvironment Environment { get; } = environment;
+        public IAielEnvironment Environment { get; } = environment;
         public IConfiguration Configuration { get; } = configuration;
-
-        public Boolean IsDevelopment => IsEnvironment("Development");
-        public Boolean IsProduction => IsEnvironment("Production");
-        public Boolean IsStaging => IsEnvironment("Staging");
-        public Boolean IsTesting => IsEnvironment("Testing");
-        public Boolean IsEnvironment(String environment) => String.Equals(Environment.EnvironmentName, environment, StringComparison.OrdinalIgnoreCase);
     }
 }

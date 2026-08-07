@@ -8,7 +8,8 @@
 
     <ItemGroup>
         <Using Include="AwesomeAssertions" />
-        <Using Include="Xunit"/>
+        <Using Include="Moq" />
+        <Using Include="Xunit" />
     </ItemGroup>
     
     <ItemGroup>
@@ -16,11 +17,13 @@
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.9" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.9" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.9" />
+        <PackageReference Include="Moq" Version="4.18.4" />
         <PackageReference Include="xunit.v3.extensibility.core" Version="3.2.2" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Framework\Aiel.Framework.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
     </ItemGroup>
 
 </Project>

@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Fakes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,7 +37,7 @@ public abstract class DependencyDiscoveryExtensionsTests
 
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
-        var environment = new AielEnvironment("TestApp", "1.0.0", "Development", Guid.NewGuid());
+        var environment = new Mock<IAielEnvironment>().Object;
         var context = new ConfigurationContext(environment, services, configuration);
 
         var root = context.BuildDependencyTree<DiamondRootDependency>();
@@ -55,10 +56,10 @@ public abstract class DependencyDiscoveryExtensionsTests
         var services = new ServiceCollection();
         services.AddLogging();
 
-        var environment = new AielEnvironment("TestApp", "1.0.0", "Development", Guid.NewGuid());
+        var environment = FakeAielEnvironment.Create();
         var configuration = new ConfigurationBuilder().Build();
 
-        services.AddSingleton(environment);
+        services.AddSingleton<IAielEnvironment>(environment);
         services.AddSingleton<IConfiguration>(configuration);
 
         var context = new ConfigurationContext(environment, services, configuration);

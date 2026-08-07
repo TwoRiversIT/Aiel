@@ -21,14 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Aiel.Framework
 {
-    public class InitializationContext(AielEnvironment environment, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider)
-        : DependencyContext(environment, configuration)
+    public class InitializationContext(IServiceProvider serviceProvider)
+        : DependencyContext(serviceProvider.GetRequiredService<IAielEnvironment>(), serviceProvider.GetRequiredService<IConfiguration>())
     {
-        public ILogger Logger { get; } = logger;
-        public IServiceProvider ServiceProvider { get; } = serviceProvider;
+        public ILogger Logger { get; } = serviceProvider.GetRequiredService<ILogger<InitializationContext>>();
     }
 }

@@ -20,33 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Text;
+using Microsoft.Extensions.FileProviders;
 
-namespace Aiel.Results;
+namespace Aiel.Framework;
 
-public sealed partial class NoError : Error
+public sealed class AielHostEnvironment : AielEnvironment
 {
-    internal const String DefaultMessage = "No error.";
+    public required String ContentRootPath { get; init; }
+    public required IFileProvider ContentRootFileProvider { get; init; }
 }
-
-public sealed partial class UnrecognizedError : Error
-{
-    internal const String DefaultMessage = "An unrecognized error occurred and may not have been deserialized correctly.";
-}
-
-public sealed partial class ApiError : Error
-{
-    public static ApiError FromException(Exception ex)
-    {
-        var sb = new StringBuilder();
-        ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
-        return new ApiError(sb.ToString());
-    }
-}
-
-/// <summary>
-/// Represents an error that occurred during an API call. This should be used to wrap HTTP-related errors,
-/// including deserialization issues, transport errors, etc., but not Application or Domain-Specific errors.
-/// </summary>
-public sealed partial class ResultError : Error;

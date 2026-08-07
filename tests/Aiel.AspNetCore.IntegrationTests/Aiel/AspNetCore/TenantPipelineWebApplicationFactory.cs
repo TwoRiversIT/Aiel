@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Fakes;
+using Aiel.Framework;
 using Aiel.MultiTenancy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -36,6 +38,7 @@ internal sealed class TenantPipelineWebApplicationFactory(ITenantResolver tenant
         builder.UseEnvironment("Development");
         builder.ConfigureServices(services =>
         {
+            services.AddSingleton<IAielEnvironment>(sp => FakeAielEnvironment.Create());
             services.RemoveAll<ITenantResolver>();
             services.AddSingleton(tenantResolver);
         });

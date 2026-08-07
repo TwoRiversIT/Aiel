@@ -57,7 +57,7 @@ public sealed class AielWorkerService : AielApplicationConfigurator
         context.Services.AddDbContext<AielWorkerServiceDbContext>(options =>
         {
             options.UseNpgsql(connStr, options => options.MigrationsAssembly("Inara.IdentityProvider.EntityFrameworkCore.PostgreSql"));
-            options.EnableSensitiveDataLogging(context.IsDevelopment);
+            options.EnableSensitiveDataLogging(context.Environment.IsDevelopment());
         });
 
         context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<AielWorkerServiceDbContext>>();

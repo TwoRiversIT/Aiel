@@ -22,8 +22,6 @@
 
 using Aiel.Framework;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -44,13 +42,7 @@ public static class AielWebAssemblyHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        var environment = builder.Services.GetInstance<AielEnvironment>();
-        if (environment is null)
-        {
-            var app = new TApplication();
-            environment = new AielEnvironment(app.ApplicationName, app.ApplicationVersion, builder.HostEnvironment.Environment, Guid.NewGuid());
-            builder.Services.TryAddSingleton(environment);
-        }
+        var environment = await builder.RegisterAielEnvironmentAsync<TApplication>();
 
         var context = new ConfigurationContext(
             environment,
@@ -82,8 +74,30 @@ public static class AielWebAssemblyHostBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        await DependencyManager.ConfigureDependenciesAsync(dependencyDescriptors, builder.Services, builder.Configuration, builder.HostEnvironment.Environment, cancellationToken);
+        var environment = builder.Services.GetInstance<IAielEnvironment>()
+            ?? throw new AielException("Failed to retrieve the Aiel environment. Did you remember to call `builder.AddApplicationAsync()`?");
+
+        await DependencyManager.ConfigureDependenciesAsync(environment, dependencyDescriptors, builder.Services, builder.Configuration, cancellationToken);
 
         return builder;
+    }
+
+    public static async Task<IAielEnvironment> RegisterAielEnvironmentAsync<TApplication>(this WebAssemblyHostBuilder builder)
+        where TApplication : AielApplicationConfigurator, new()
+    {
+        var app = new TApplication();
+        var environment = new AielWebAssemblyEnvironment()
+        {
+            ApplicationInstance = Guid.NewGuid(),
+            ApplicationName = app.ApplicationName,
+            ApplicationVersion = app.ApplicationVersion,
+            BaseAddress = builder.HostEnvironment.BaseAddress,
+            Environment = builder.HostEnvironment.Environment,
+            EnvironmentName = builder.HostEnvironment.Environment
+        };
+
+        builder.Services.AddSingleton<IAielEnvironment>(environment);
+        await app.SafelyDisposeAsync();
+        return environment;
     }
 }

@@ -33,7 +33,7 @@ public static class DependencyDiscoveryExtensions
 	/// multiple assemblies, it will only appear once in the hierarchy. First one to depend on it wins.
     /// </remarks>
 	/// <exception cref="CircularDependencyException">Thrown when a circular dependency is detected in the assembly dependency hierarchy.</exception>
-	public static DependencyRoot BuildDependencyTree<TDependency>(this DependencyConfigurationContext _)
+	public static DependencyRoot BuildDependencyTree<TDependency>(this ConfigurationContext _)
         where TDependency : AielDependencyConfigurator, new()
     {
         // Tracks the assemblies we've already processed by Type.
@@ -106,7 +106,7 @@ public static class DependencyDiscoveryExtensions
     /// before the assemblies that depend on them. Within a given depth, configuration order is not guaranteed because
     /// <see cref="System.Reflection.MemberInfo.GetCustomAttributes(Boolean)"/> does not guarantee attribute ordering.
     /// </remarks>
-    public static async Task ConfigureDependenciesAsync(this DependencyRoot compositionRoot, DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public static async Task ConfigureDependenciesAsync(this DependencyRoot compositionRoot, ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(compositionRoot);
         ArgumentNullException.ThrowIfNull(context);

@@ -39,7 +39,7 @@ namespace Aiel.MessageBus;
 public sealed class MessageBusAbstractionsDependency : AielDependencyConfigurator
 {
     public override Task ConfigureAsync(
-        DependencyConfigurationContext context,
+        ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
         context.Services.TryAddSingleton<IMessageTypeRegistry, DefaultMessageTypeRegistry>();

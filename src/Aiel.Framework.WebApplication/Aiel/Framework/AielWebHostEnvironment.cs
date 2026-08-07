@@ -20,15 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.FileProviders;
 
-namespace Aiel.Framework
+namespace Aiel.Framework;
+
+public class AielWebHostEnvironment : AielEnvironment
 {
-    public class DependencyInitializationContext(AielEnvironment environment, IConfiguration configuration, ILogger logger, IServiceProvider serviceProvider)
-        : DependencyContext(environment, configuration)
-    {
-        public ILogger Logger { get; } = logger;
-        public IServiceProvider ServiceProvider { get; } = serviceProvider;
-    }
+    public required String ContentRootPath { get; set; }
+    public required IFileProvider ContentRootFileProvider { get; set; }
+
+    public required String WebRootPath { get; set; }
+    public required IFileProvider WebRootFileProvider { get; set; }
 }

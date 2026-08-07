@@ -688,6 +688,39 @@ public class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
+    public void Generator_EmitsCodeToCall_RegisterAielEnvironment()
+    {
+        const String testCode = """
+            using Aiel.Framework;
+            using Microsoft.AspNetCore.Builder;
+
+            namespace Test
+            {
+                public sealed class MyApplication : AielApplicationConfigurator
+                {
+                    public override String ApplicationName => "ApplicationName";
+                    public override String ApplicationVersion => "0.0.0";
+                }
+
+                public static class Program
+                {
+                    public static void Main()
+                    {
+                        var builder = WebApplication.CreateBuilder();
+                    }
+                }
+            }
+            """;
+
+        var result = GenerateCS.Generate(testCode, includeHostApplication: true, includeWebApplication: true);
+
+        result.GeneratedSources.Should().ContainSingle();
+        var sourceText = result.GeneratedSources[0].SourceText.ToString();
+
+        sourceText.Should().Contain($"await builder.{DependencyGraphSourceGenerator.RegisterEnvironmentMethod}<global::Test.MyApplication>()");
+    }
+
+    [Fact]
     public void Generate_IncludesDependencyTypeAsConfigurator_InDescriptor()
     {
         const String testCode = """

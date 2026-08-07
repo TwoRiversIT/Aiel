@@ -100,7 +100,7 @@ public sealed class DependencyManager : IDependencyManager
     public IReadOnlyCollection<DependencyDescriptor> Dependencies { get; }
 
     /// <inheritdoc />
-    public async ValueTask ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public async ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -144,7 +144,7 @@ public sealed class DependencyManager : IDependencyManager
     }
 
     /// <inheritdoc />
-    public async ValueTask InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
+    public async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
 
@@ -233,37 +233,17 @@ public sealed class DependencyManager : IDependencyManager
     }
 
     public static async Task ConfigureDependenciesAsync(
+        IAielEnvironment environment,
         IEnumerable<DependencyDescriptor> dependencyDescriptors,
-        IServiceCollection services, IConfiguration configuration, String environmentName,
+        IServiceCollection services,
+        IConfiguration configuration,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(dependencyDescriptors);
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
-        if (String.IsNullOrWhiteSpace(environmentName))
-        {
-            environmentName = "Production";
-        }
 
-        var environment = services.GetInstance<AielEnvironment>();
-        if (environment is null)
-        {
-            var d = dependencyDescriptors.FirstOrDefault(d => typeof(AielApplicationConfigurator).IsAssignableFrom(d.DependencyType))
-                ?? throw new InvalidOperationException($"No derivative of {nameof(AielApplicationConfigurator)} found. Did you forget to call 'services.AddApplication()'?");
-
-            // We have to create an instance of the application to get the application name and version. This is a bit unfortunate,
-            // but it only happens once at startup, so it shouldn't be a big deal.
-            var app = Activator.CreateInstance(d.DependencyType) as AielApplicationConfigurator
-                ?? throw new InvalidOperationException($"Failed to create an instance of {d.DependencyType.FullName}. It MUST have a parameterless constructor.");
-
-            environment = new AielEnvironment(app.ApplicationName, app.ApplicationVersion, environmentName, Guid.NewGuid());
-
-            await app.SafelyDisposeAsync();
-
-            services.TryAddSingleton(environment);
-        }
-
-        var context = new DependencyConfigurationContext(environment, services, configuration);
+        var context = new ConfigurationContext(environment, services, configuration);
 
         var manager = new DependencyManager(dependencyDescriptors);
 

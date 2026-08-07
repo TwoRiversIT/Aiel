@@ -74,7 +74,7 @@ public static class AielServiceCollectionExtensions
     /// </summary>
     /// <param name="services">
     /// Must be an <see cref="ObservableServiceCollection"/>; the Aiel
-    /// dependency framework ensures this when it creates <c>DependencyConfigurationContext.Services</c>.
+    /// dependency framework ensures this when it creates <c>ConfigurationContext.Services</c>.
     /// </param>
     /// <param name="callback">The action to invoke with each newly added <see cref="ServiceDescriptor"/>.</param>
     /// <returns>The same <paramref name="services"/> instance for chaining.</returns>

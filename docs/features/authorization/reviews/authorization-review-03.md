@@ -25,7 +25,7 @@
 public sealed class AviendhaApplicationContracts : AielDependencyConfigurator
 {
     public override Task PreConfigureAsync(
-        DependencyConfigurationContext context,
+        ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
         context.Services.ConfigurePermissionDefinitions(permissions

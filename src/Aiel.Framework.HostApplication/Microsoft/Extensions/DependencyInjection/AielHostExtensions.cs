@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -39,11 +38,7 @@ public static partial class AielHostExtensions
     {
         ArgumentNullException.ThrowIfNull(host);
 
-        var context = new DependencyInitializationContext(
-            host.Services.GetRequiredService<AielEnvironment>(),
-            host.Services.GetRequiredService<IConfiguration>(),
-            host.Services.GetRequiredService<ILogger<DependencyInitializationContext>>(),
-            host.Services);
+        var context = new InitializationContext(host.Services);
 
         // If a dependency manager is registered, prefer that for initialization; it will use
         // the generated dependency graph when available.

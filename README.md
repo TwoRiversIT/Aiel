@@ -401,7 +401,7 @@ dotnet add package Aiel.IdGeneration
 [DependsOn(typeof(AielMediator))]
 public sealed class MyAppModule : AielDependency
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddScoped<IMyService, MyService>();
         return ValueTask.CompletedTask;

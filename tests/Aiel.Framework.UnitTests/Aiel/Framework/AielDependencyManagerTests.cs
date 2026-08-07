@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Fakes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Framework;
@@ -120,7 +120,7 @@ public sealed class AielDependencyManagerTests : PhaseLogCollector
 
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
-        var context = new DependencyConfigurationContext(new AielEnvironment("TestApp", "1.0.0", "Development", Guid.NewGuid()), services, configuration);
+        var context = new ConfigurationContext(FakeAielEnvironment.Create(), services, configuration);
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
@@ -153,13 +153,12 @@ public sealed class AielDependencyManagerTests : PhaseLogCollector
         var manager = new DependencyManager([a, b]);
 
         var services = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().Build();
         services.AddLogging();
-        services.AddSingleton<IConfiguration>(configuration);
+        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        services.AddSingleton<IAielEnvironment>(FakeAielEnvironment.Create());
 
         var serviceProvider = services.BuildServiceProvider();
-        var logger = serviceProvider.GetRequiredService<ILogger<DependencyInitializationContext>>();
-        var context = new DependencyInitializationContext(new AielEnvironment("ApplicationName", "1.0.0", "Testing", Guid.NewGuid()), configuration, logger, serviceProvider);
+        var context = new InitializationContext(serviceProvider);
 
         await manager.InitializeAsync(context, CancellationToken.None);
 
@@ -206,7 +205,7 @@ public sealed class AielDependencyManagerTests : PhaseLogCollector
         var manager = new DependencyManager([a, b, c, d]);
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
-        var context = new DependencyConfigurationContext(new AielEnvironment("TestApp", "1.0.0", "Development", Guid.NewGuid()), services, configuration);
+        var context = new ConfigurationContext(FakeAielEnvironment.Create(), services, configuration);
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
@@ -239,7 +238,7 @@ public sealed class AielDependencyManagerTests : PhaseLogCollector
         var manager = new DependencyManager([a, b]);
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
-        var context = new DependencyConfigurationContext(new AielEnvironment("TestApp", "1.0.0", "Development", Guid.NewGuid()), services, configuration);
+        var context = new ConfigurationContext(FakeAielEnvironment.Create(), services, configuration);
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 

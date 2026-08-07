@@ -31,7 +31,7 @@ namespace Aiel.Framework;
 [DependsOn(typeof(AielMultiTenancy))]
 public sealed class AielFrameworkWebApplication : AielDependencyConfigurator
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddHttpContextAccessor();
         context.Services.TryAddScoped<ICurrentTenantAccessor, HttpContextCurrentTenantAccessor>();

@@ -43,7 +43,7 @@ public sealed class AielWorkerService : AielApplicationConfigurator
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
 
-    public override Task PreConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         // https://www.npgsql.org/efcore/release-notes/6.0.html#opting-out-of-the-new-timestamp-mapping-logic
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -51,13 +51,13 @@ public sealed class AielWorkerService : AielApplicationConfigurator
         return Task.CompletedTask;
     }
 
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         var connStr = context.GetConnectionStringOrDefault("MyAppDb");
         context.Services.AddDbContext<AielWorkerServiceDbContext>(options =>
         {
             options.UseNpgsql(connStr, options => options.MigrationsAssembly("Inara.IdentityProvider.EntityFrameworkCore.PostgreSql"));
-            options.EnableSensitiveDataLogging(context.IsDevelopment);
+            options.EnableSensitiveDataLogging(context.Environment.IsDevelopment());
         });
 
         context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<AielWorkerServiceDbContext>>();

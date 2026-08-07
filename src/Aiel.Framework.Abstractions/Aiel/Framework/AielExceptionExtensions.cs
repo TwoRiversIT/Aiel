@@ -20,15 +20,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Collections;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+namespace Aiel.Framework;
 
-namespace Aiel.Framework
+public static class AielExceptionExtensions
 {
-    public class DependencyConfigurationContext(AielEnvironment environment, IServiceCollection services, IConfiguration configuration)
-        : DependencyContext(environment, configuration)
+    /// <summary>
+    /// Visits the exception and all its inner exceptions, executing an action on each.
+    /// </summary>
+    /// <param name="ex">The exception to visit.</param>
+    /// <param name="action">An action to execute on each exception in the hierarchy.</param>
+    /// <remarks>
+    /// This method traverses the <see cref="Exception.InnerException"/> chain and executes
+    /// the specified action on the original exception and all inner exceptions.
+    /// </remarks>
+    public static void Visit(this Exception ex, Action<Exception> action)
     {
-        public IServiceCollection Services { get; } = new ObservableServiceCollection(services);
+        action(ex);
+        var iex = ex.InnerException;
+        while (iex != null)
+        {
+            action(iex);
+            iex = iex.InnerException;
+        }
     }
 }

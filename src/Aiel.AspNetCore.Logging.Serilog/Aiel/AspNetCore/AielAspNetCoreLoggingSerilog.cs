@@ -30,7 +30,7 @@ namespace Aiel.AspNetCore;
 [DependsOn(typeof(AielLoggingAbstractions))]
 public sealed class AielAspNetCoreLoggingSerilog : AielDependencyConfigurator
 {
-    public override Task ConfigureAsync(DependencyConfigurationContext context, CancellationToken cancellationToken = default)
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         // register IHttpContextAccessor and the enricher in the app's DI container
         context.Services.AddHttpContextAccessor();

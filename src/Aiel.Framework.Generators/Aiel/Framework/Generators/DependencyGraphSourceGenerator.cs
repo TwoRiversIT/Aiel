@@ -25,7 +25,10 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using System.Text;
+
+[assembly: InternalsVisibleTo("Aiel.Framework.Generators.UnitTests")]
 
 namespace Aiel.Framework.Generators;
 
@@ -37,36 +40,37 @@ namespace Aiel.Framework.Generators;
 [Generator(LanguageNames.CSharp)]
 public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 {
-    private const String AddApplicationMethod = "AddApplicationAsync";
-    private const String ApplicationType = "AielApplicationConfigurator";
-    private const String DependenciesProperty = "Dependencies";
-    private const String DependencyDescriptor = "DependencyDescriptor";
-    private const String DependencyManager = "DependencyManager";
-    private const String DependsOn = "DependsOn";
-    private const String DependsOnAttribute = DependsOn + "Attribute";
-    private const String GeneratedClassName = "AielDependencyGraph";
-    private const String GeneratedNamespace = "Microsoft.Extensions.DependencyInjection";
-    private const String HostApplicationBuilder = "HostApplicationBuilder";
-    private const String RegisterDependenciesMethod = "RegisterDependenciesAsync";
-    private const String RootNamespace = "Aiel.Framework";
-    private const String WebApplicationBuilder = "WebApplicationBuilder";
-    private const String WebAssemblyBuilder = "WebAssemblyHostBuilder";
+    internal const String AddApplicationMethod = "AddApplicationAsync";
+    internal const String RegisterEnvironmentMethod = "RegisterAielEnvironmentAsync";
+    internal const String ApplicationType = "AielApplicationConfigurator";
+    internal const String DependenciesProperty = "Dependencies";
+    internal const String DependencyDescriptor = "DependencyDescriptor";
+    internal const String DependencyManager = "DependencyManager";
+    internal const String DependsOn = "DependsOn";
+    internal const String DependsOnAttribute = DependsOn + "Attribute";
+    internal const String GeneratedClassName = "AielDependencyGraph";
+    internal const String GeneratedNamespace = "Microsoft.Extensions.DependencyInjection";
+    internal const String HostApplicationBuilder = "HostApplicationBuilder";
+    internal const String RegisterDependenciesMethod = "RegisterDependenciesAsync";
+    internal const String RootNamespace = "Aiel.Framework";
+    internal const String WebApplicationBuilder = "WebApplicationBuilder";
+    internal const String WebAssemblyBuilder = "WebAssemblyHostBuilder";
 
-    private const String FqDependencyDescriptor = "global::" + RootNamespace + "." + DependencyDescriptor;
-    private const String FqIDependencyInitializer = "global::" + RootNamespace + ".IInitializer";
+    internal const String FqDependencyDescriptor = "global::" + RootNamespace + "." + DependencyDescriptor;
+    internal const String FqIDependencyInitializer = "global::" + RootNamespace + ".IInitializer";
 
-    private const String NsHostApplicationBuilder = "Microsoft.Extensions.Hosting." + HostApplicationBuilder;
-    private const String FqHostApplicationBuilder = "global::" + NsHostApplicationBuilder;
+    internal const String NsHostApplicationBuilder = "Microsoft.Extensions.Hosting." + HostApplicationBuilder;
+    internal const String FqHostApplicationBuilder = "global::" + NsHostApplicationBuilder;
 
-    private const String FqApplication = "global::" + RootNamespace + "." + ApplicationType;
+    internal const String FqApplication = "global::" + RootNamespace + "." + ApplicationType;
 
-    private const String NsWebApplicationBuilder = "Microsoft.AspNetCore.Builder." + WebApplicationBuilder;
-    private const String FqWebApplicationBuilder = "global::" + NsWebApplicationBuilder;
+    internal const String NsWebApplicationBuilder = "Microsoft.AspNetCore.Builder." + WebApplicationBuilder;
+    internal const String FqWebApplicationBuilder = "global::" + NsWebApplicationBuilder;
 
-    private const String NsWebAssemblyBuilder = "Microsoft.AspNetCore.Components.WebAssembly.Hosting." + WebAssemblyBuilder;
-    private const String FqWebAssemblyBuilder = "global::" + NsWebAssemblyBuilder;
+    internal const String NsWebAssemblyBuilder = "Microsoft.AspNetCore.Components.WebAssembly.Hosting." + WebAssemblyBuilder;
+    internal const String FqWebAssemblyBuilder = "global::" + NsWebAssemblyBuilder;
 
-    private const String NsIHostBuilder = "Microsoft.Extensions.Hosting.IHostBuilder";
+    internal const String NsIHostBuilder = "Microsoft.Extensions.Hosting.IHostBuilder";
 
     /// <summary>
     /// AIEL00004 is raised when the generator detects multiple hosting types in the same assembly.
@@ -392,6 +396,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
         var builder = new StringBuilder();
 
         builder.AppendLine(Header(GeneratedClassName));
+        builder.AppendLine($"using {RootNamespace};");
         builder.AppendLine("using System;");
         builder.AppendLine("using System.Collections.Generic;");
         builder.AppendLine("using System.Threading;");
@@ -495,6 +500,8 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
     private static void EmitAddApplicationAsyncExtensionMethod(StringBuilder builder, ProjectType projectType, INamedTypeSymbol rootNamedTypeSymbol, Int32 count)
     {
+        var fqRootDependencyType = rootNamedTypeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
         if (projectType != ProjectType.Unknown)
         {
             builder.AppendLine($"\t// Project Type: {projectType}");
@@ -533,6 +540,11 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             builder.AppendLine($"\t\tthis {builderType} builder,");
             builder.AppendLine("\t\tCancellationToken cancellationToken = default)");
             builder.AppendLine("\t{");
+            builder.AppendLine();
+
+            builder.AppendLine($"\t\tawait builder.{RegisterEnvironmentMethod}<{fqRootDependencyType}>();");
+
+            builder.AppendLine();
             builder.AppendLine($"\t\tawait builder.{RegisterDependenciesMethod}({DependenciesProperty}, cancellationToken);");
             builder.AppendLine("\t\treturn builder;");
             builder.AppendLine("\t}");

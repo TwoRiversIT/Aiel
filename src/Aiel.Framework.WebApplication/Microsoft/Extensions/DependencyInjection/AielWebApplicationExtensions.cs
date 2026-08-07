@@ -22,8 +22,6 @@
 
 using Aiel.Framework;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -41,13 +39,7 @@ public static class AielWebApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(host);
 
-        var environment = host.ApplicationServices.GetRequiredService<AielEnvironment>();
-
-        var context = new DependencyInitializationContext(
-            environment,
-            host.ApplicationServices.GetRequiredService<IConfiguration>(),
-            host.ApplicationServices.GetRequiredService<ILogger<DependencyInitializationContext>>(),
-            host.ApplicationServices);
+        var context = new InitializationContext(host.ApplicationServices);
 
         var dependencyManager = host.ApplicationServices.GetService<IDependencyManager>();
         if (dependencyManager is not null)

@@ -20,50 +20,50 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
+namespace Aiel.Framework;
+
+public interface IAielEnvironment
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AielEnvironment"/> class which encapsulates
-    /// environment and application metadata for the Aiel dependency injection framework.
-    /// It is used for logging, diagnostics, and correlation of application instances.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="AielEnvironment"/> is a fundamental part of the application context and MUST
-    /// be registered as a singleton in the dependency injection container. This will happen
-    /// automatically when using the <c>AddApplicationAsync</c> extension method.
-    /// </remarks>
-    /// <param name="applicationName">The name of the application.</param>
-    /// <param name="applicationVersion">The version of the application.</param>
-    /// <param name="environmentName">The environment name (e.g., Development, Staging, Production).</param>
-    /// <param name="applicationInstance">Unique identifier for this application instance. Use
-    /// <see cref="Guid.NewGuid"/> to generate a new instance ID.</param>
-    public class AielEnvironment(
-        String applicationName,
-        String applicationVersion,
-        String environmentName,
-        Guid applicationInstance)
-    {
+    String EnvironmentName { get; }
 
-        /// <summary>
-        /// Gets the name of the application.
-        /// </summary>
-        public String ApplicationName { get; } = applicationName ?? String.Empty;
+    String ApplicationName { get; }
 
-        /// <summary>
-        /// Gets the version of the application.
-        /// </summary>
-        public String ApplicationVersion { get; } = applicationVersion ?? String.Empty;
+    String ApplicationVersion { get; }
+    Guid ApplicationInstance { get; }
+}
 
-        /// <summary>
-        /// Gets the environment name (e.g., Development, Staging, Production).
-        /// </summary>
-        public String EnvironmentName { get; } = environmentName ?? String.Empty;
+/// <summary>
+/// Initializes a new instance of the <see cref="AielEnvironment"/> class which encapsulates
+/// hostEnvironment and application metadata for the Aiel dependency injection framework.
+/// It is used for logging, diagnostics, and correlation of application instances.
+/// </summary>
+/// <remarks>
+/// <see cref="AielEnvironment"/> is a fundamental part of the application context and MUST
+/// be registered as a singleton in the dependency injection container. This will happen
+/// automatically when using the <c>AddApplicationAsync</c> extension method.
+/// </remarks>
+public abstract class AielEnvironment : IAielEnvironment
+{
+    public required String ApplicationVersion { get; init; }
+    public required Guid ApplicationInstance { get; init; }
+    public required String EnvironmentName { get; init; }
+    public required String ApplicationName { get; init; }
+}
 
-        /// <summary>
-        /// Gets the unique identifier for this application instance.
-        /// This GUID allows correlation of log entries across distributed systems
-        /// and distinguishes between multiple instances of the same application.
-        /// </summary>
-        public Guid ApplicationInstance { get; } = applicationInstance;
-    }
+public static class AielEnvironmentExtensions
+{
+    public static Boolean IsEnvironment(this IAielEnvironment environment, String environmentName)
+        => String.Equals(environment.EnvironmentName, environmentName, StringComparison.OrdinalIgnoreCase);
+
+    public static Boolean IsDevelopment(this IAielEnvironment environment)
+        => IsEnvironment(environment, "Development");
+
+    public static Boolean IsProduction(this IAielEnvironment environment)
+        => IsEnvironment(environment, "Production");
+
+    public static Boolean IsStaging(this IAielEnvironment environment)
+        => IsEnvironment(environment, "Staging");
+
+    public static Boolean IsTesting(this IAielEnvironment environment)
+        => IsEnvironment(environment, "Testing");
 }

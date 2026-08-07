@@ -20,27 +20,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics;
 
-public static class AielExceptionExtensions
+namespace Aiel.WebApplicationExample.Pages;
+
+[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+[IgnoreAntiforgeryToken]
+public class ErrorModel : PageModel
 {
-    /// <summary>
-    /// Visits the exception and all its inner exceptions, executing an action on each.
-    /// </summary>
-    /// <param name="ex">The exception to visit.</param>
-    /// <param name="action">An action to execute on each exception in the hierarchy.</param>
-    /// <remarks>
-    /// This method traverses the <see cref="Exception.InnerException"/> chain and executes
-    /// the specified action on the original exception and all inner exceptions.
-    /// </remarks>
-    public static void Visit(this Exception ex, Action<Exception> action)
+    public String? RequestId { get; set; }
+
+    public Boolean ShowRequestId => !String.IsNullOrEmpty(RequestId);
+
+    public void OnGet()
     {
-        action(ex);
-        var iex = ex.InnerException;
-        while (iex != null)
-        {
-            action(iex);
-            iex = iex.InnerException;
-        }
+        RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
     }
 }
+

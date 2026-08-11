@@ -22,7 +22,7 @@
 
 namespace Aiel.Framework;
 
-public sealed class AssemblyDescriptorTests
+public sealed class DependencyDescriptorTests
 {
     [Fact]
     public void Constructor_Assigns_Properties()
@@ -30,18 +30,16 @@ public sealed class AssemblyDescriptorTests
         var descriptor = new DependencyDescriptor(
             name: "Test.Assembly",
             dependencyType: typeof(TestAssembly),
-            dependencies: [typeof(Dependency)],
-            configurators: [typeof(TestConfigurator)],
-            initializers: [typeof(TestInitializer)]);
+            new TestAssembly(),
+            dependencies: [typeof(Dependency)]);
 
         descriptor.Name.Should().Be("Test.Assembly");
         descriptor.DependencyType.Should().Be<TestAssembly>();
+        descriptor.Instance.Should().BeOfType<TestAssembly>();
         descriptor.Dependencies.Should().Contain(typeof(Dependency));
-        descriptor.Configurators.Should().Contain(typeof(TestConfigurator));
-        descriptor.Initializers.Should().Contain(typeof(TestInitializer));
     }
 
-    private sealed class TestAssembly;
+    private sealed class TestAssembly : AielDependencyConfigurator;
 
     private sealed class Dependency;
 

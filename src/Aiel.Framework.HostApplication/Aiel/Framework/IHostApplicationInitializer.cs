@@ -20,19 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Aiel.Framework;
 
-public sealed class AielWebAssemblyHostBuilderExtensionsTests
+public interface IHostApplicationInitializer
 {
-    [Fact]
-    public async Task RegisterDependenciesAsync_ThrowsArgumentNullException_WhenBuilderIsNull()
-    {
-        var act = async () =>
-            await AielWebAssemblyHostBuilderExtensions.RegisterDependenciesAsync(
-                builder: null!,
-                dependencyDescriptors: [],
-                cancellationToken: TestContext.Current.CancellationToken);
-
-        await act.Should().ThrowAsync<ArgumentNullException>();
-    }
+    Task InitializeAsync(HostApplicationInitializationContext context, CancellationToken cancellationToken = default);
 }

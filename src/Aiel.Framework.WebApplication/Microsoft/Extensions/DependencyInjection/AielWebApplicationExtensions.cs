@@ -34,21 +34,21 @@ public static class AielWebApplicationExtensions
     /// when registered (source-generated graphs).
     /// </summary>
     public static async Task InitializeApplicationAsync(
-        this IApplicationBuilder host,
+        this IApplicationBuilder applicationBuilder,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(applicationBuilder);
 
-        var context = new InitializationContext(host.ApplicationServices);
+        var context = new WebApplicationInitializationContext(applicationBuilder);
 
-        var dependencyManager = host.ApplicationServices.GetService<IDependencyManager>();
+        var dependencyManager = applicationBuilder.ApplicationServices.GetService<IDependencyManager>();
         if (dependencyManager is not null)
         {
             await dependencyManager.InitializeAsync(context, cancellationToken);
             return;
         }
 
-        var root = host.ApplicationServices.GetRequiredService<DependencyRoot>();
+        var root = applicationBuilder.ApplicationServices.GetRequiredService<DependencyRoot>();
 
         // Iterative post-order DFS: push each node's subtree so that when popped, every dependency
         // is initialized before the dependency that depends on it.
@@ -76,7 +76,7 @@ public static class AielWebApplicationExtensions
         while (initOrder.Count > 0)
         {
             var node = initOrder.Pop();
-            if (node.Instance is IInitializer initializer)
+            if (node.Instance is IWebApplicationInitializer initializer)
             {
                 await initializer.InitializeAsync(context, cancellationToken);
             }

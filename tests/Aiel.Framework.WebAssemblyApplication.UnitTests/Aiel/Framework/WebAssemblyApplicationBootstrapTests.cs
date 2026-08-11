@@ -20,26 +20,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
-{
-    /// <summary>
-    /// Serves as the root node for the Aiel dependency injection framework to
-    /// identify, configure, and initialize dependencies.
-    /// </summary>
-    public abstract class AielApplicationConfigurator : AielDependencyConfigurator, IApplicationConfigurator
-    {
-        /// <summary>
-        /// Gets the name of the application, which is used by the Aiel dependency injection framework
-        /// for logging, diagnostics, and other application-specific purposes.
-        /// </summary>
-        public abstract String ApplicationName { get; }
+using Aiel.Fakes;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-        /// <summary>
-        /// Gets the current version of the application as a string.
-        /// </summary>
-        /// <remarks>This property is typically used to identify the application's version for display, logging,
-        /// or compatibility checks. The format and meaning of the version string may vary depending on the
-        /// implementation.</remarks>
-        public abstract String ApplicationVersion { get; }
+namespace Aiel.Framework;
+
+public class WebAssemblyApplicationBootstrapTests : BootstrapTestsBase
+{
+    public override async Task BootstrapAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    {
+        if (!descriptors.Any())
+        {
+            throw new AielException("No dependency descriptors were provided. At least one dependency descriptor is required to bootstrap the application.");
+        }
+
+        var environment = FakeAielEnvironment.Create();
+        var configuration = new ConfigurationBuilder().Build();
+        var services = new ServiceCollection();
+        var context = new ConfigurationContext(environment, services, configuration);
+        var dependencyManager = new WebAssemblyDependencyManager(descriptors);
+
+        await dependencyManager.ConfigureAsync(context);
     }
 }

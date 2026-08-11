@@ -20,51 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Hosting;
-
 namespace Aiel.Framework;
 
 public interface IWebApplicationInitializer
 {
     Task InitializeAsync(WebApplicationInitializationContext context, CancellationToken cancellationToken = default);
-}
-
-public sealed class WebApplicationInitializationContext(
-        WebApplication webApplication)
-    : InitializationContext(webApplication.Services),
-        IHost,
-        IApplicationBuilder,
-        IEndpointRouteBuilder
-{
-    private readonly IApplicationBuilder _applicationBuilder = webApplication;
-    private readonly IHost _host = webApplication;
-    private readonly IEndpointRouteBuilder _endpointRouteBuilder = webApplication;
-
-    public IServiceProvider Services => _host.Services;
-
-    public Task StartAsync(CancellationToken cancellationToken = default)
-        => _host.StartAsync(cancellationToken);
-
-    public Task StopAsync(CancellationToken cancellationToken = default)
-        => _host.StopAsync(cancellationToken);
-
-    public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware) => _applicationBuilder.Use(middleware);
-
-    void IDisposable.Dispose() => _host.Dispose();
-
-    // IApplicationBuilder implementation
-    IServiceProvider IApplicationBuilder.ApplicationServices { get => _applicationBuilder.ApplicationServices; set => _applicationBuilder.ApplicationServices = value; }
-    IDictionary<String, Object?> IApplicationBuilder.Properties => _applicationBuilder.Properties;
-    IFeatureCollection IApplicationBuilder.ServerFeatures => _applicationBuilder.ServerFeatures;
-    RequestDelegate IApplicationBuilder.Build() => _applicationBuilder.Build();
-    IApplicationBuilder IApplicationBuilder.New() => _applicationBuilder.New();
-
-    // IEndpointRouteBuilder implementation
-    ICollection<EndpointDataSource> IEndpointRouteBuilder.DataSources => _endpointRouteBuilder.DataSources;
-    IServiceProvider IEndpointRouteBuilder.ServiceProvider => _endpointRouteBuilder.ServiceProvider;
-    IApplicationBuilder IEndpointRouteBuilder.CreateApplicationBuilder() => _endpointRouteBuilder.CreateApplicationBuilder();
 }

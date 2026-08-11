@@ -41,7 +41,7 @@ namespace Aiel.Framework.Generators;
 public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 {
     internal const String AddApplicationMethod = "AddApplicationAsync";
-    internal const String RegisterEnvironmentMethod = "RegisterAielEnvironmentAsync";
+    internal const String BootstrapMethodName = "BootstrapAsync";
     internal const String ApplicationType = "AielApplicationConfigurator";
     internal const String DependenciesProperty = "Dependencies";
     internal const String DependencyDescriptor = "DependencyDescriptor";
@@ -51,7 +51,6 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
     internal const String GeneratedClassName = "AielDependencyGraph";
     internal const String GeneratedNamespace = "Microsoft.Extensions.DependencyInjection";
     internal const String HostApplicationBuilder = "HostApplicationBuilder";
-    internal const String RegisterDependenciesMethod = "RegisterDependenciesAsync";
     internal const String RootNamespace = "Aiel.Framework";
     internal const String WebApplicationBuilder = "WebApplicationBuilder";
     internal const String WebAssemblyBuilder = "WebAssemblyHostBuilder";
@@ -151,15 +150,6 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
         }
 
         return false;
-    }
-
-    private static Boolean ImplementsIDependencyInitializer(INamedTypeSymbol symbol)
-    {
-        return symbol.AllInterfaces.Any(i =>
-            String.Equals(
-                i.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
-                FqIDependencyInitializer,
-                StringComparison.Ordinal));
     }
 
     private static ProjectType DetectProjectType(Compilation compilation)
@@ -364,8 +354,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
                 continue;
             }
 
-            var childDependencies = new List<DependencyReference>();
-            graph[current] = childDependencies;
+            graph[current] = [];
 
             foreach (var attributeData in current.GetAttributes())
             {
@@ -376,7 +365,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
                 foreach (var dependencyReference in GetDependsOnDependencies(attributeData, current))
                 {
-                    childDependencies.Add(dependencyReference);
+                    graph[current].Add(dependencyReference);
 
                     if (dependencyReference.Symbol is INamedTypeSymbol dependencySymbol)
                     {
@@ -424,16 +413,18 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             var dependencyTypeName = dependencySymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
             var dependencyReferences = graph[dependencySymbol];
 
-            builder.Append($"\t\tnew {FqDependencyDescriptor}(\"{safeDependencyName}\", typeof({dependencyTypeName})");
-            builder.Append(", ");
+            builder.AppendLine($"\t\tnew {FqDependencyDescriptor}(");
+            builder.AppendLine($"\t\t\t\tname: \"{safeDependencyName}\",");
+            builder.AppendLine($"\t\t\t\tdependencyType: typeof({dependencyTypeName}),");
+            builder.AppendLine($"\t\t\t\tinstance: new {dependencyTypeName}(),");
 
             if (dependencyReferences.Count == 0)
             {
-                builder.Append("Array.Empty<Type>()");
+                builder.AppendLine("\t\t\t\tdependencies: Array.Empty<Type>()");
             }
             else
             {
-                builder.AppendLine("new Type[] { ");
+                builder.AppendLine("\t\t\t\tdependencies: new Type[] { ");
                 for (var j = 0; j < dependencyReferences.Count; j++)
                 {
                     count++;
@@ -443,27 +434,14 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
                         builder.AppendLine(", ");
                     }
 
-                    builder.Append($"\t\t\t\ttypeof({dependencyReferences[j].TypeExpression})");
+                    builder.Append($"\t\t\t\t\ttypeof({dependencyReferences[j].TypeExpression})");
                 }
 
                 builder.AppendLine();
-                builder.Append("\t\t\t}");
+                builder.AppendLine("\t\t\t\t}");
             }
 
-            // Configurators: AielDependencyConfigurator implements IDependencyConfigurator, so include the type itself.
-            builder.Append($", new Type[] {{ typeof({dependencyTypeName}) }}");
-
-            // Initializers: include the type only when it also implements IInitializer.
-            if (ImplementsIDependencyInitializer(dependencySymbol))
-            {
-                builder.Append($", new Type[] {{ typeof({dependencyTypeName}) }}");
-            }
-            else
-            {
-                builder.Append(", Array.Empty<Type>()");
-            }
-
-            builder.Append(")");
+            builder.Append("\t\t\t)");
             if (i < dependencies.Length - 1)
             {
                 builder.Append(',');
@@ -529,10 +507,8 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
         if (builderType is null)
         {
-            // Don't emit an extension method if we can't determine the project type
             builder.AppendLine("\t// Project Type: Unknown");
-            builder.AppendLine("\t// No extension method generated: unable to determine project type.");
-            builder.AppendLine($"\t// Use the `{GeneratedClassName}.{DependenciesProperty}` property directly with `{DependencyManager}`, or fallback to the `{RegisterDependenciesMethod}<TDependency>()` method.");
+            builder.AppendLine($"\t// The {AddApplicationMethod} extension method could not be generated: unable to determine project type.");
         }
         else
         {
@@ -540,12 +516,8 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             builder.AppendLine($"\t\tthis {builderType} builder,");
             builder.AppendLine("\t\tCancellationToken cancellationToken = default)");
             builder.AppendLine("\t{");
+            builder.AppendLine($"\t\tawait builder.{BootstrapMethodName}<{fqRootDependencyType}>({DependenciesProperty}, cancellationToken);");
             builder.AppendLine();
-
-            builder.AppendLine($"\t\tawait builder.{RegisterEnvironmentMethod}<{fqRootDependencyType}>();");
-
-            builder.AppendLine();
-            builder.AppendLine($"\t\tawait builder.{RegisterDependenciesMethod}({DependenciesProperty}, cancellationToken);");
             builder.AppendLine("\t\treturn builder;");
             builder.AppendLine("\t}");
         }

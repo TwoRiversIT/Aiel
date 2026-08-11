@@ -20,26 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
-{
-    /// <summary>
-    /// Serves as the root node for the Aiel dependency injection framework to
-    /// identify, configure, and initialize dependencies.
-    /// </summary>
-    public abstract class AielApplicationConfigurator : AielDependencyConfigurator, IApplicationConfigurator
-    {
-        /// <summary>
-        /// Gets the name of the application, which is used by the Aiel dependency injection framework
-        /// for logging, diagnostics, and other application-specific purposes.
-        /// </summary>
-        public abstract String ApplicationName { get; }
+using Aiel.Framework;
+using Microsoft.Extensions.Hosting;
 
-        /// <summary>
-        /// Gets the current version of the application as a string.
-        /// </summary>
-        /// <remarks>This property is typically used to identify the application's version for display, logging,
-        /// or compatibility checks. The format and meaning of the version string may vary depending on the
-        /// implementation.</remarks>
-        public abstract String ApplicationVersion { get; }
+namespace Microsoft.Extensions.DependencyInjection;
+
+public class HostApplicationInitializationTests : InitializationTestBase
+{
+    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    {
+        var builder = Host.CreateApplicationBuilder();
+
+        await builder.BootstrapAsync<TApplication>(descriptors);
+
+        var app = builder.Build();
+
+        await app.InitializeApplicationAsync();
     }
 }

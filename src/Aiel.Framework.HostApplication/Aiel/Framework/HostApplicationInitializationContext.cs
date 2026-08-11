@@ -20,26 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
-{
-    /// <summary>
-    /// Serves as the root node for the Aiel dependency injection framework to
-    /// identify, configure, and initialize dependencies.
-    /// </summary>
-    public abstract class AielApplicationConfigurator : AielDependencyConfigurator, IApplicationConfigurator
-    {
-        /// <summary>
-        /// Gets the name of the application, which is used by the Aiel dependency injection framework
-        /// for logging, diagnostics, and other application-specific purposes.
-        /// </summary>
-        public abstract String ApplicationName { get; }
+using Microsoft.Extensions.Hosting;
 
-        /// <summary>
-        /// Gets the current version of the application as a string.
-        /// </summary>
-        /// <remarks>This property is typically used to identify the application's version for display, logging,
-        /// or compatibility checks. The format and meaning of the version string may vary depending on the
-        /// implementation.</remarks>
-        public abstract String ApplicationVersion { get; }
-    }
+namespace Aiel.Framework;
+
+public sealed class HostApplicationInitializationContext(IHost host) : InitializationContext(host.Services), IHost
+{
+    private readonly IHost _host = host ?? throw new ArgumentNullException(nameof(host));
+
+    public IServiceProvider Services => _host.Services;
+
+    public Task StartAsync(CancellationToken cancellationToken = default)
+        => _host.StartAsync(cancellationToken);
+
+    public Task StopAsync(CancellationToken cancellationToken = default)
+        => _host.StopAsync(cancellationToken);
+
+    void IDisposable.Dispose() => _host.Dispose();
 }

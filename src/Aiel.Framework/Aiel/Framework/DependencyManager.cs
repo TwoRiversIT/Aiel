@@ -20,10 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace Aiel.Framework;
 
 /// <summary>
@@ -31,73 +27,67 @@ namespace Aiel.Framework;
 /// from a set of <see cref="DependencyDescriptor"/> instances and orchestrates configuration
 /// and initialization in dependency order.
 /// </summary>
-public sealed class DependencyManager : IDependencyManager
+public abstract class DependencyManager : IDependencyManager
 {
-    private readonly IReadOnlyList<DependencyNode> _orderedNodes;
+    private readonly List<DependencyDescriptor> _descriptors;
+    private readonly Dictionary<Type, DependencyDescriptor> _nodesByType = [];
+    private readonly List<DependencyDescriptor> _reversed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DependencyManager"/> class.
+    /// Initializes a new initializer of the <see cref="DependencyManager"/> class.
     /// </summary>
-    /// <param name="dependencyDescriptors">The descriptors that define the dependencies managed by this instance.</param>
+    /// <param name="dependencyDescriptors">The descriptors that define the dependencies managed by this initializer.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="dependencyDescriptors"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when duplicate or unknown dependency types are detected.</exception>
     /// <exception cref="CircularDependencyException">Thrown when a circular dependency is detected.</exception>
-    public DependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
+    protected DependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
     {
         ArgumentNullException.ThrowIfNull(dependencyDescriptors);
-        var descriptors = dependencyDescriptors.ToArray();
-        if (descriptors.Length == 0)
+
+        if (!dependencyDescriptors.Any())
         {
-            Dependencies = [];
-            _orderedNodes = [];
-            return;
+            throw new ArgumentException("At least one dependency descriptor must be provided.", nameof(dependencyDescriptors));
         }
 
-        var nodesByType = new Dictionary<Type, DependencyNode>();
+        _descriptors = dependencyDescriptors.ToList();
 
-        foreach (var descriptor in descriptors)
+        foreach (var descriptor in _descriptors)
         {
             ArgumentNullException.ThrowIfNull(descriptor);
 
-            if (nodesByType.ContainsKey(descriptor.DependencyType))
+            if (_nodesByType.ContainsKey(descriptor.DependencyType))
             {
                 throw new InvalidOperationException($"Duplicate dependency type detected: {descriptor.DependencyType.FullName}.");
             }
 
-            nodesByType[descriptor.DependencyType] = new DependencyNode(descriptor);
+            _nodesByType[descriptor.DependencyType] = descriptor;
         }
 
-        foreach (var node in nodesByType.Values)
+        foreach (var descriptor in _nodesByType.Values)
         {
-            foreach (var dependencyType in node.Descriptor.Dependencies)
+            foreach (var dependencyType in descriptor.Dependencies)
             {
-                if (!nodesByType.TryGetValue(dependencyType, out var dependencyNode))
+                if (!_nodesByType.TryGetValue(dependencyType, out var dependencyNode))
                 {
-                    throw new InvalidOperationException($"Dependency '{node.Descriptor.DependencyType.FullName}' depends on unknown dependency type '{dependencyType.FullName}'.");
-                }
-
-                if (!node.Dependencies.Contains(dependencyNode))
-                {
-                    node.Dependencies.Add(dependencyNode);
+                    throw new InvalidOperationException($"Dependency '{descriptor.DependencyType.FullName}' depends on unknown dependency type '{dependencyType.FullName}'.");
                 }
             }
         }
 
-        var visited = new HashSet<DependencyNode>();
-        var visiting = new HashSet<DependencyNode>();
-        var ordered = new List<DependencyNode>();
+        var root = _descriptors[0];
 
-        foreach (var node in nodesByType.Values)
-        {
-            Visit(node, visited, visiting, ordered, []);
-        }
+        var visited = new HashSet<DependencyDescriptor>();
+        var visiting = new HashSet<DependencyDescriptor>();
+        var ordered = new List<DependencyDescriptor>();
+        var path = new List<Type>();
 
-        Dependencies = descriptors;
-        _orderedNodes = ordered;
+        Visit(root, visited, visiting, ordered, path);
+
+        _reversed = ordered.ToList();
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<DependencyDescriptor> Dependencies { get; }
+    public IReadOnlyCollection<DependencyDescriptor> Dependencies => _descriptors.ToArray();
 
     /// <inheritdoc />
     public async ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
@@ -105,150 +95,86 @@ public sealed class DependencyManager : IDependencyManager
         ArgumentNullException.ThrowIfNull(context);
 
         // Phase 1: pre-configure every module in topological order before any configure phase begins.
-        foreach (var node in _orderedNodes)
+        foreach (var node in _reversed)
         {
-            foreach (var configuratorType in node.Descriptor.Configurators)
-            {
-                var instance = CreateInstance(configuratorType) as IConfigurator
-                    ?? throw new InvalidOperationException($"Type '{configuratorType.FullName}' must implement '{nameof(IConfigurator)}'.");
+            cancellationToken.ThrowIfCancellationRequested();
 
-                try
-                {
-                    await instance.PreConfigureAsync(context, cancellationToken);
-                }
-                finally
-                {
-                    await DisposeIfNeededAsync(instance);
-                }
-            }
+            await node.Instance.PreConfigureAsync(context, cancellationToken);
+
+            // We do not dispose here because we need the initializer to be alive for the configure phase.
         }
 
         // Phase 2: configure every module in topological order.
-        foreach (var node in _orderedNodes)
+        foreach (var node in _reversed)
         {
-            foreach (var configuratorType in node.Descriptor.Configurators)
-            {
-                var instance = CreateInstance(configuratorType) as IConfigurator
-                    ?? throw new InvalidOperationException($"Type '{configuratorType.FullName}' must implement '{nameof(IConfigurator)}'.");
+            cancellationToken.ThrowIfCancellationRequested();
 
-                try
-                {
-                    await instance.ConfigureAsync(context, cancellationToken);
-                }
-                finally
-                {
-                    await DisposeIfNeededAsync(instance);
-                }
-            }
+            await node.Instance.ConfigureAsync(context, cancellationToken);
+
+            // We do not dispose here because we need the initializer to be alive for the initialization phase.
         }
     }
+
+    protected abstract Task InitializeAsync(InitializationContext context, DependencyDescriptor descriptor, CancellationToken cancellationToken);
 
     /// <inheritdoc />
     public async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        foreach (var node in _orderedNodes)
+        foreach (var node in _reversed)
         {
-            foreach (var initializerType in node.Descriptor.Initializers)
+            cancellationToken.ThrowIfCancellationRequested();
+
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var instance = CreateInstance(initializerType) as IInitializer
-                    ?? throw new InvalidOperationException($"Type '{initializerType.FullName}' must implement '{nameof(IInitializer)}'.");
-
-                try
-                {
-                    await instance.InitializeAsync(context, cancellationToken);
-                }
-                finally
-                {
-                    await DisposeIfNeededAsync(instance);
-                }
+                await InitializeAsync(context, node, cancellationToken);
+            }
+            finally
+            {
+                await node.Instance.SafelyDisposeAsync();
             }
         }
     }
 
-    private static Object CreateInstance(Type type)
+    private void Visit(
+        DependencyDescriptor descriptor,
+        HashSet<DependencyDescriptor> visited,
+        HashSet<DependencyDescriptor> visiting,
+        List<DependencyDescriptor> ordered,
+        List<Type> path)
     {
-        ArgumentNullException.ThrowIfNull(type);
-
-        var instance = Activator.CreateInstance(type)
-            ?? throw new InvalidOperationException($"Unable to create an instance of type '{type.FullName}'. Ensure the type has a public parameterless constructor.");
-
-        return instance;
-    }
-
-    private static async ValueTask DisposeIfNeededAsync(Object instance)
-    {
-        if (instance is IAsyncDisposable asyncDisposable)
-        {
-            await asyncDisposable.DisposeAsync();
-        }
-        else if (instance is IDisposable disposable)
-        {
-            disposable.Dispose();
-        }
-    }
-
-    private static void Visit(
-        DependencyNode node,
-        ISet<DependencyNode> visited,
-        ISet<DependencyNode> visiting,
-        ICollection<DependencyNode> ordered,
-        IList<Type> path)
-    {
-        if (visited.Contains(node))
+        if (visited.Contains(descriptor))
         {
             return;
         }
 
-        if (visiting.Contains(node))
+        if (visiting.Contains(descriptor))
         {
-            var cyclePath = new List<Type>(path) { node.Descriptor.DependencyType };
+            var cyclePath = new List<Type>(path) { descriptor.DependencyType };
             var cycle = String.Join(" -> ", cyclePath.Select(type => type.Name));
             throw new CircularDependencyException($"Circular dependency detected: {cycle}.");
         }
 
-        visiting.Add(node);
-        path.Add(node.Descriptor.DependencyType);
+        visiting.Add(descriptor);
+        path.Add(descriptor.DependencyType);
 
-        foreach (var dependency in node.Dependencies)
+        foreach (var dependency in descriptor.Dependencies)
         {
-            Visit(dependency, visited, visiting, ordered, path);
+            if (_nodesByType.TryGetValue(dependency, out var dependencyDescriptor))
+            {
+                Visit(dependencyDescriptor, visited, visiting, ordered, path);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Dependency '{descriptor.DependencyType.FullName}' depends on unknown dependency type '{dependency.FullName}'.");
+            }
         }
 
-        visiting.Remove(node);
+        visiting.Remove(descriptor);
         path.RemoveAt(path.Count - 1);
 
-        visited.Add(node);
-        ordered.Add(node);
-    }
-
-    private sealed class DependencyNode(DependencyDescriptor descriptor)
-    {
-        public DependencyDescriptor Descriptor { get; } = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
-
-        public List<DependencyNode> Dependencies { get; } = [];
-    }
-
-    public static async Task ConfigureDependenciesAsync(
-        IAielEnvironment environment,
-        IEnumerable<DependencyDescriptor> dependencyDescriptors,
-        IServiceCollection services,
-        IConfiguration configuration,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(dependencyDescriptors);
-        ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(configuration);
-
-        var context = new ConfigurationContext(environment, services, configuration);
-
-        var manager = new DependencyManager(dependencyDescriptors);
-
-        services.TryAddSingleton<IDependencyManager>(manager);
-
-        await manager.ConfigureAsync(context, cancellationToken);
+        visited.Add(descriptor);
+        ordered.Add(descriptor);
     }
 }

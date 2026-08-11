@@ -40,6 +40,8 @@ public static class Stubs
         "ConfigurationContext.txt",
         "DependencyContext.txt",
         "DependencyDescriptor.txt",
+        "DisposableBase.txt",
+        "DisposableExtensions.txt",
         "InitializationContext.txt",
         "DependsOnAttribute.txt",
         "IConfigurator.txt",

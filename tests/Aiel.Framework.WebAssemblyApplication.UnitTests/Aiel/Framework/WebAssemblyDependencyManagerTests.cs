@@ -20,15 +20,40 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Collections;
+using Aiel.Fakes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace Aiel.Framework
+namespace Aiel.Framework;
+
+public class WebAssemblyDependencyManagerTests : AielDependencyManagerTests
 {
-    public sealed class ConfigurationContext(IAielEnvironment environment, IServiceCollection services, IConfiguration configuration)
-        : DependencyContext(environment, configuration)
+    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
+        => new WebAssemblyDependencyManager(descriptors);
+
+    public override InitializationContext CreateInitializationContextAsync()
     {
-        public IServiceCollection Services { get; } = new ObservableServiceCollection(services);
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        services.AddSingleton<IAielEnvironment>(FakeAielEnvironment.Create());
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        return new WebAssemblyApplicationInitializationContext(serviceProvider);
+    }
+
+    private class TestHostApplication(IServiceProvider services) : IHost
+    {
+        public IServiceProvider Services { get; } = services;
+
+        public void Dispose()
+        {
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public Task StopAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 }

@@ -20,29 +20,39 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Fakes;
 using Aiel.Framework;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class AielWebAssemblyHostExtensions
+public class HostApplicationDependencyManagerTests : AielDependencyManagerTests
 {
-    /// <summary>
-    /// Resolves the registered dependency graph and calls
-    /// <see cref="IInitializer.InitializeAsync"/> on each dependency that implements it,
-    /// in post-order (dependencies before dependents). Prefers <see cref="IDependencyManager"/>
-    /// when registered (source-generated graphs).
-    /// </summary>
-    public static async Task InitializeApplicationAsync(
-        this WebAssemblyHost host,
-        CancellationToken cancellationToken = default)
+    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
+        => new HostApplicationDependencyManager(descriptors);
+
+    public override InitializationContext CreateInitializationContextAsync()
     {
-        ArgumentNullException.ThrowIfNull(host);
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        services.AddSingleton<IAielEnvironment>(FakeAielEnvironment.Create());
 
-        var context = new WebAssemblyApplicationInitializationContext(host);
+        var serviceProvider = services.BuildServiceProvider();
+        return new HostApplicationInitializationContext(new TestHostApplication(serviceProvider));
+    }
 
-        var dependencyManager = host.Services.GetRequiredService<IDependencyManager>();
+    private class TestHostApplication(IServiceProvider services) : IHost
+    {
+        public IServiceProvider Services { get; } = services;
 
-        await dependencyManager.InitializeAsync(context, cancellationToken);
+        public void Dispose()
+        {
+        }
+
+        public Task StartAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+
+        public Task StopAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 }

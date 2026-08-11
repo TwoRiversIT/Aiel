@@ -20,30 +20,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Microsoft.Extensions.Hosting;
+namespace Aiel.Framework;
 
-namespace Microsoft.Extensions.DependencyInjection;
-
-public class HostApplicationDependencyDiscoveryExtensionsTests : DependencyDiscoveryExtensionsTests
+public class HostApplicationDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
+    : DependencyManager(dependencyDescriptors)
 {
-    public override async Task InitializeApplicationAsync(IServiceProvider serviceProvider)
+    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyDescriptor descriptor, CancellationToken cancellationToken)
     {
-        var host = new TestHost(serviceProvider);
+        var context = initializationContext as HostApplicationInitializationContext
+            ?? throw new AielException("Invalid initializationContext. Expected and instance of HostApplicationInitializationContext;");
 
-        await host.InitializeApplicationAsync();
-    }
+        cancellationToken.ThrowIfCancellationRequested();
 
-    private sealed class TestHost(IServiceProvider services) : IHost
-    {
-        public IServiceProvider Services { get; } = services;
-
-        public void Dispose()
+        if (descriptor.Instance is IHostApplicationInitializer appInitializer)
         {
+            await appInitializer.InitializeAsync(context, cancellationToken);
         }
-
-        public Task StartAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-        public Task StopAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
+        else if (descriptor.Instance is IInitializer initializer)
+        {
+            await initializer.InitializeAsync(context, cancellationToken);
+        }
     }
 }
+

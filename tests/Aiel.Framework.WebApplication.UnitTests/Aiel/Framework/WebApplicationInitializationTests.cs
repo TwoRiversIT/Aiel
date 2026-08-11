@@ -20,20 +20,42 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Microsoft.AspNetCore.Http.Features;
+
 namespace Aiel.Framework;
 
-public class CircularDependencyException : AielException
+public class WebApplicationInitializationTests : InitializationTestBase
 {
-    public CircularDependencyException() : base()
+    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
     {
+        var builder = WebApplication.CreateBuilder();
+
+        await builder.BootstrapAsync<TApplication>(descriptors);
+
+        var app = builder.Build();
+
+        await app.InitializeApplicationAsync();
     }
 
-    public CircularDependencyException(String message) : base(message)
+    private sealed class TestWebApplication(IServiceProvider services) : DisposableBase, IApplicationBuilder
     {
-    }
+        public IServiceProvider ApplicationServices { get; set; } = services;
+        public IFeatureCollection ServerFeatures { get; } = new FeatureCollection();
+        public IDictionary<String, Object?> Properties { get; } = new Dictionary<String, Object?>();
 
-    public CircularDependencyException(String message, Exception? innerException)
-        : base(message, innerException)
-    {
+        public RequestDelegate Build()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IApplicationBuilder New()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

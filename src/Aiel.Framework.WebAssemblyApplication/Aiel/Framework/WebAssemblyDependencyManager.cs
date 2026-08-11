@@ -20,39 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Microsoft.AspNetCore.Http.Features;
+namespace Aiel.Framework;
 
-namespace Microsoft.Extensions.DependencyInjection;
-
-public class WebApplicationDependencyDiscoveryExtensionsTests : DependencyDiscoveryExtensionsTests
+public class WebAssemblyDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
+        : DependencyManager(dependencyDescriptors)
 {
-    public override async Task InitializeApplicationAsync(IServiceProvider serviceProvider)
+    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyDescriptor descriptor, CancellationToken cancellationToken)
     {
-        var app = new TestWebApplication(serviceProvider);
+        var context = initializationContext as WebAssemblyApplicationInitializationContext
+            ?? throw new AielException("Invalid initializationContext. Expected and instance of WebAssemblyApplicationInitializationContext;");
 
-        await app.InitializeApplicationAsync();
-    }
+        cancellationToken.ThrowIfCancellationRequested();
 
-    private sealed class TestWebApplication(IServiceProvider services) : DisposableBase, IApplicationBuilder
-    {
-        public IServiceProvider ApplicationServices { get; set; } = services;
-        public IFeatureCollection ServerFeatures { get; } = new FeatureCollection();
-        public IDictionary<String, Object?> Properties { get; } = new Dictionary<String, Object?>();
-
-        public RequestDelegate Build()
+        if (descriptor.Instance is IWebAssemblyInitializer appInitializer)
         {
-            throw new NotImplementedException();
+            await appInitializer.InitializeAsync(context, cancellationToken);
         }
-
-        public IApplicationBuilder New()
+        else if (descriptor.Instance is IInitializer initializer)
         {
-            throw new NotImplementedException();
-        }
-
-        public IApplicationBuilder Use(Func<RequestDelegate, RequestDelegate> middleware)
-        {
-            throw new NotImplementedException();
+            await initializer.InitializeAsync(context, cancellationToken);
         }
     }
 }

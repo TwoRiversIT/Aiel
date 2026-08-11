@@ -20,26 +20,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
-{
-    /// <summary>
-    /// Serves as the root node for the Aiel dependency injection framework to
-    /// identify, configure, and initialize dependencies.
-    /// </summary>
-    public abstract class AielApplicationConfigurator : AielDependencyConfigurator, IApplicationConfigurator
-    {
-        /// <summary>
-        /// Gets the name of the application, which is used by the Aiel dependency injection framework
-        /// for logging, diagnostics, and other application-specific purposes.
-        /// </summary>
-        public abstract String ApplicationName { get; }
+using Aiel.Framework;
 
-        /// <summary>
-        /// Gets the current version of the application as a string.
-        /// </summary>
-        /// <remarks>This property is typically used to identify the application's version for display, logging,
-        /// or compatibility checks. The format and meaning of the version string may vary depending on the
-        /// implementation.</remarks>
-        public abstract String ApplicationVersion { get; }
+namespace Microsoft.Extensions.DependencyInjection;
+
+public class WebApplicationDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
+    : DependencyManager(dependencyDescriptors)
+{
+    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyDescriptor descriptor, CancellationToken cancellationToken)
+    {
+        var context = initializationContext as WebApplicationInitializationContext
+            ?? throw new AielException("Invalid initializationContext. Expected and instance of WebApplicationInitializationContext;");
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (descriptor.Instance is IWebApplicationInitializer appInitializer)
+        {
+            await appInitializer.InitializeAsync(context, cancellationToken);
+        }
+        else if (descriptor.Instance is IInitializer initializer)
+        {
+            await initializer.InitializeAsync(context, cancellationToken);
+        }
     }
 }

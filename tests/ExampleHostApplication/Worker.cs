@@ -20,8 +20,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.EntityFrameworkCore;
+using Aiel.WorkerService;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace Aiel.WorkerService;
+namespace ExampleHostApplication;
 
-public class AielWorkerServiceDbContext : DbContext;
+public class Worker(ILogger<Worker> logger) : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogWorkerRunning(DateTimeOffset.Now.DateTime);
+            }
+
+            await Task.Delay(1000, stoppingToken);
+        }
+    }
+}

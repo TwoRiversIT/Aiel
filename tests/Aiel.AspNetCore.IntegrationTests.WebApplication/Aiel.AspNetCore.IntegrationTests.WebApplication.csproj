@@ -5,8 +5,8 @@
         <AssemblyName>Aiel.AspNetCore.IntegrationTests.WebApplication</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-
         <StartupObject>Aiel.AspNetCore.Program</StartupObject>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>

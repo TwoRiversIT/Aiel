@@ -1,4 +1,4 @@
-﻿// MIT License
+// MIT License
 //
 // Copyright 2026 Two Rivers Information Technology Inc.
 //
@@ -23,12 +23,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Aiel.WebApplicationExample.Pages;
+namespace ExampleWebApplication.Pages;
 
-public class PrivacyModel : PageModel
+public class IndexModel : PageModel
 {
     public void OnGet()
     {
+
     }
 }
-

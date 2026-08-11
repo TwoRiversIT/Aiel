@@ -24,7 +24,7 @@ using Aiel.Framework;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-namespace Aiel.WebAssemblyApplicationExample;
+namespace ExampleWebAssemblyApplication;
 
 public class Program
 {

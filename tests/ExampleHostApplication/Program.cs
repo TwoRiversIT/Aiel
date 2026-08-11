@@ -24,21 +24,39 @@ using Aiel.DataAccess.EntityFrameworkCore;
 using Aiel.DataAccess.EntityFrameworkCore.Migrations;
 using Aiel.Framework;
 using Aiel.Security;
-using Aiel.WorkerService.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Aiel.WorkerService;
+namespace ExampleHostApplication;
+
+public static class Program
+{
+    public static async Task Main(String[] args)
+    {
+        var builder = Host.CreateApplicationBuilder(args);
+
+        // Configure the application using the source-generated dependency graph.
+        await builder.AddApplicationAsync();
+
+        builder.Services.AddHostedService<Worker>();
+
+        var host = builder.Build();
+
+        await host.InitializeApplicationAsync();
+
+        await host.RunAsync();
+    }
+}
 
 [DependsOn(typeof(AielFrameworkHostApplication))]
 [DependsOn(typeof(AielSecurity))]
-[DependsOn(typeof(AielWorkerServiceShared))]
 [DependsOn(typeof(AielDataAccessEntityFrameworkCore))]
-public sealed class AielWorkerService : AielApplicationConfigurator
+public sealed class Configurator : AielApplicationConfigurator
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
@@ -54,13 +72,13 @@ public sealed class AielWorkerService : AielApplicationConfigurator
     public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         var connStr = context.GetConnectionStringOrDefault("MyAppDb");
-        context.Services.AddDbContext<AielWorkerServiceDbContext>(options =>
+        context.Services.AddDbContext<ExampleHostApplicationDbContext>(options =>
         {
             options.UseNpgsql(connStr, options => options.MigrationsAssembly("Inara.IdentityProvider.EntityFrameworkCore.PostgreSql"));
             options.EnableSensitiveDataLogging(context.Environment.IsDevelopment());
         });
 
-        context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<AielWorkerServiceDbContext>>();
+        context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<ExampleHostApplicationDbContext>>();
 
         return Task.CompletedTask;
     }

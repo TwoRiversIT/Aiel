@@ -20,26 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Aiel.WorkerService;
+namespace ExampleWebApplication.Pages;
 
-public class Worker(ILogger<Worker> logger) : BackgroundService
+public class PrivacyModel : PageModel
 {
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public void OnGet()
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            if (logger.IsEnabled(LogLevel.Information))
-            {
-                logger.LogWorkerRunning(DateTimeOffset.Now.DateTime);
-            }
-
-            await Task.Delay(1000, stoppingToken);
-        }
     }
 }
+

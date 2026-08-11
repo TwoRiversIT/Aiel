@@ -22,7 +22,7 @@
 
 using Aiel.Framework;
 
-namespace Aiel.WebApplicationExample;
+namespace ExampleWebApplication;
 
 public class Program
 {

@@ -27,63 +27,32 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class AielHostApplicationBuilderExtensions
 {
-    /// <summary>
-    /// This method is responsible for configuring the application. It builds the
-    /// dependency tree by reflecting over <typeparamref name="TApplication"/> and
-    /// following all the <see cref="DependsOnAttribute"/> attributes.
-    /// </summary>
-    /// <typeparam name="TApplication">A descendant of <see cref="AielApplicationConfigurator"/>.</typeparam>
-    /// <param name="builder">The host application builder.</param>
-    /// <returns>The same <see cref="IHostApplicationBuilder"/> instance for chaining.</returns>
-    public static async Task<IHostApplicationBuilder> AddApplicationAsync<TApplication>(
-        this IHostApplicationBuilder builder,
-        CancellationToken cancellationToken = default
-        )
-        where TApplication : AielApplicationConfigurator, new()
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-
-        var environment = await builder.RegisterAielEnvironmentAsync<TApplication>();
-
-        var context = new ConfigurationContext(
-            environment,
-            builder.Services,
-            builder.Configuration);
-
-        var root = context.BuildDependencyTree<TApplication>();
-
-        builder.Services.AddSingleton(root);
-
-        await root.ConfigureDependenciesAsync(context, cancellationToken);
-
-        return builder;
-    }
-
-    /// <summary>
-    /// Configures the application using a precomputed dependency manager. This overload is intended for
-    /// applications that use the source-generated dependency graph (recommended).
-    /// </summary>
-    /// <param name="builder">The host application builder.</param>
-    /// <param name="dependencyDescriptors">The collection of dependency descriptors.</param>
-    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    /// <returns>The same <see cref="IHostApplicationBuilder"/> instance for chaining.</returns>
-    public static async Task<IHostApplicationBuilder> RegisterDependenciesAsync(
+    public static async Task BootstrapAsync<TApplication>(
         this IHostApplicationBuilder builder,
         IEnumerable<DependencyDescriptor> dependencyDescriptors,
         CancellationToken cancellationToken = default)
+        where TApplication : class, IApplicationConfigurator, new()
     {
-        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(dependencyDescriptors);
 
-        var environment = builder.Services.GetInstance<IAielEnvironment>()
-            ?? throw new AielException("Failed to retrieve the Aiel environment. Did you remember to call `builder.AddApplicationAsync()`?");
+        if (!dependencyDescriptors.Any())
+        {
+            throw new AielException("No dependency descriptors were provided. At least one dependency descriptor is required to bootstrap the application.");
+        }
 
-        await DependencyManager.ConfigureDependenciesAsync(environment, dependencyDescriptors, builder.Services, builder.Configuration, cancellationToken);
+        var environment = await RegisterEnvironment<TApplication>(builder);
 
-        return builder;
+        var dependencyManager = new HostApplicationDependencyManager(dependencyDescriptors);
+
+        builder.Services.AddSingleton<IDependencyManager>(dependencyManager);
+
+        var context = new ConfigurationContext(environment, builder.Services, builder.Configuration);
+
+        await dependencyManager.ConfigureAsync(context, cancellationToken);
     }
 
-    public static async Task<IAielEnvironment> RegisterAielEnvironmentAsync<TApplication>(this IHostApplicationBuilder builder)
-        where TApplication : AielApplicationConfigurator, new()
+    private static async Task<AielHostEnvironment> RegisterEnvironment<TApplication>(IHostApplicationBuilder builder)
+        where TApplication : class, IApplicationConfigurator, new()
     {
         var app = new TApplication();
         var environment = new AielHostEnvironment()
@@ -95,9 +64,10 @@ public static class AielHostApplicationBuilderExtensions
             EnvironmentName = builder.Environment.EnvironmentName,
             ContentRootPath = builder.Environment.ContentRootPath
         };
+        await app.SafelyDisposeAsync();
 
         builder.Services.AddSingleton<IAielEnvironment>(environment);
-        await app.SafelyDisposeAsync();
+
         return environment;
     }
 }

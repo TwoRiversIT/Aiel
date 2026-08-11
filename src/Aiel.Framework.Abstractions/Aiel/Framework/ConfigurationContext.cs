@@ -26,7 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Framework
 {
-    public class ConfigurationContext(IAielEnvironment environment, IServiceCollection services, IConfiguration configuration)
+    public sealed class ConfigurationContext(IAielEnvironment environment, IServiceCollection services, IConfiguration configuration)
         : DependencyContext(environment, configuration)
     {
         public IServiceCollection Services { get; } = new ObservableServiceCollection(services);

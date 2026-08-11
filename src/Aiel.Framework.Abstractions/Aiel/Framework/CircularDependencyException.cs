@@ -22,17 +22,17 @@
 
 namespace Aiel.Framework;
 
-public class CircularDependencyException : Exception
+public class CircularDependencyException : AielException
 {
     public CircularDependencyException() : base()
     {
     }
 
-    public CircularDependencyException(String? message) : base(message)
+    public CircularDependencyException(String message) : base(message)
     {
     }
 
-    public CircularDependencyException(String? message, Exception? innerException)
+    public CircularDependencyException(String message, Exception? innerException)
         : base(message, innerException)
     {
     }

@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 namespace Aiel.Framework
 {
     // <inherit />
-    public abstract class AielDependencyConfigurator : AielDependency, IConfigurator
+    public abstract class AielDependencyConfigurator : IConfigurator
     {
         // <inherit />
         public virtual Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;

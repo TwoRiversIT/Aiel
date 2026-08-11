@@ -550,8 +550,8 @@ public class DependencyGraphSourceGeneratorTests
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         sourceText.Should().Contain("Project Type: Unknown");
-        sourceText.Should().Contain("No extension method generated");
-        sourceText.Should().NotContain("AddApplicationAsync");
+        sourceText.Should().Contain("unable to determine project type");
+        sourceText.Should().NotContain("AddApplicationAsync(");
     }
 
     [Fact]
@@ -717,85 +717,7 @@ public class DependencyGraphSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
-        sourceText.Should().Contain($"await builder.{DependencyGraphSourceGenerator.RegisterEnvironmentMethod}<global::Test.MyApplication>()");
-    }
-
-    [Fact]
-    public void Generate_IncludesDependencyTypeAsConfigurator_InDescriptor()
-    {
-        const String testCode = """
-            using Aiel.Framework;
-
-            namespace Test;
-
-            public sealed class MyApplication : AielApplicationConfigurator
-            {
-                public override String ApplicationName => "ApplicationName";
-                public override String ApplicationVersion => "0.0.0";
-            }
-            """;
-
-        var result = GenerateCS.Generate(testCode);
-
-        result.GeneratedSources.Should().ContainSingle();
-        var sourceText = result.GeneratedSources[0].SourceText.ToString();
-
-        // The dependency type itself must appear as a configurator entry, not Array.Empty.
-        sourceText.Should().Contain("new Type[] { typeof(global::Test.MyApplication) }");
-    }
-
-    [Fact]
-    public void WhenNotImplementingIDependencyInitializer_Generator_DoesNotIncludeDependencyTypeAsInitializer()
-    {
-        const String testCode = """
-            using Aiel.Framework;
-
-            namespace Test;
-
-            public sealed class MyApplication : AielApplicationConfigurator
-            {
-                public override String ApplicationName => "ApplicationName";
-                public override String ApplicationVersion => "0.0.0";
-            }
-            """;
-
-        var result = GenerateCS.Generate(testCode);
-
-        result.GeneratedSources.Should().ContainSingle();
-        var sourceText = result.GeneratedSources[0].SourceText.ToString();
-
-        // Configurators array must contain the type; initializers array must remain empty.
-        sourceText.Should().Contain("new Type[] { typeof(global::Test.MyApplication) }, Array.Empty<Type>())");
-    }
-
-    [Fact]
-    public void WhenImplementingIDependencyInitializer_Generator_IncludesDependencyTypeAsInitializer()
-    {
-        const String testCode = """
-            using Aiel.Framework;
-            using System.Threading;
-            using System.Threading.Tasks;
-
-            namespace Test;
-
-            public sealed class MyApplication : AielApplicationConfigurator, IInitializer
-            {
-                public override String ApplicationName => "ApplicationName";
-                public override String ApplicationVersion => "0.0.0";
-
-                public Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default)
-                    => Task.CompletedTask;
-            }
-            """;
-
-        var result = GenerateCS.Generate(testCode);
-
-        result.GeneratedSources.Should().ContainSingle();
-        var sourceText = result.GeneratedSources[0].SourceText.ToString();
-
-        // Both configurators and initializers must contain the type.
-        sourceText.Should().Contain(
-            "new Type[] { typeof(global::Test.MyApplication) }, new Type[] { typeof(global::Test.MyApplication) }");
+        sourceText.Should().Contain($"await builder.{DependencyGraphSourceGenerator.BootstrapMethodName}<global::Test.MyApplication>");
     }
 
     [Fact]

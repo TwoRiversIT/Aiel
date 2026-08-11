@@ -23,44 +23,43 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Aiel.Framework
+namespace Aiel.Framework;
+
+/// <summary>
+/// Configures services and options for a dependency during application startup.
+/// </summary>
+/// <remarks>
+/// Configuration runs in two sequential phases across the full dependency graph. Phase 1
+/// (<see cref="PreConfigureAsync"/>) completes for every module before phase 2
+/// (<see cref="ConfigureAsync"/>) begins for any module. Both phases execute in
+/// topological order — deepest dependencies first.
+/// </remarks>
+public interface IConfigurator
 {
     /// <summary>
-    /// Configures services and options for a dependency during application startup.
+    /// Performs early shared setup before any module's <see cref="ConfigureAsync"/> runs.
     /// </summary>
     /// <remarks>
-    /// Configuration runs in two sequential phases across the full dependency graph. Phase 1
-    /// (<see cref="PreConfigureAsync"/>) completes for every module before phase 2
-    /// (<see cref="ConfigureAsync"/>) begins for any module. Both phases execute in
-    /// topological order — deepest dependencies first.
+    /// Use this phase to register options builders, configure integration entry points,
+    /// or perform any work that other modules need to have completed before their own
+    /// configure phase begins. By the time <see cref="ConfigureAsync"/> is called on
+    /// any module, every module in the graph has already completed this method.
     /// </remarks>
-    public interface IConfigurator
-    {
-        /// <summary>
-        /// Performs early shared setup before any module's <see cref="ConfigureAsync"/> runs.
-        /// </summary>
-        /// <remarks>
-        /// Use this phase to register options builders, configure integration entry points,
-        /// or perform any work that other modules need to have completed before their own
-        /// configure phase begins. By the time <see cref="ConfigureAsync"/> is called on
-        /// any module, every module in the graph has already completed this method.
-        /// </remarks>
-        /// <param name="context">The application configuration context.</param>
-        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous pre-configuration operation.</returns>
-        Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
+    /// <param name="context">The application configuration context.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous pre-configuration operation.</returns>
+    Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Configures services and options for the current dependency.
-        /// </summary>
-        /// <remarks>
-        /// This phase runs after <see cref="PreConfigureAsync"/> has completed for every
-        /// module in the graph. Use it for main service registration and configuration,
-        /// including reading options established during pre-configuration.
-        /// </remarks>
-        /// <param name="context">The application configuration context.</param>
-        /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous configuration operation.</returns>
-        Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
-    }
+    /// <summary>
+    /// Configures services and options for the current dependency.
+    /// </summary>
+    /// <remarks>
+    /// This phase runs after <see cref="PreConfigureAsync"/> has completed for every
+    /// module in the graph. Use it for main service registration and configuration,
+    /// including reading options established during pre-configuration.
+    /// </remarks>
+    /// <param name="context">The application configuration context.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous configuration operation.</returns>
+    Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
 }

@@ -1,0 +1,78 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using Aiel.Framework;
+
+namespace ExampleWebApplication;
+
+public class Program
+{
+    public static async Task Main(String[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        await builder.AddApplicationAsync();
+
+        var app = builder.Build();
+
+        await app.InitializeApplicationAsync();
+
+        app.Run();
+    }
+}
+
+[DependsOn(typeof(AielFrameworkWebApplication))]
+public sealed class AielWebApplicationExample : AielApplicationConfigurator, IWebApplicationInitializer
+{
+    public override String ApplicationName => ThisAssembly.AssemblyName;
+    public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;
+
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.Services.AddRazorPages();
+
+        return Task.CompletedTask;
+    }
+
+    public Task InitializeAsync(WebApplicationInitializationContext app, CancellationToken cancellationToken = default)
+    {
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.MapStaticAssets();
+        app.MapRazorPages()
+           .WithStaticAssets();
+
+        return Task.CompletedTask;
+    }
+}

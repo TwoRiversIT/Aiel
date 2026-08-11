@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Aiel.Framework
 {
@@ -28,7 +29,7 @@ namespace Aiel.Framework
     /// Describes a logical application dependency and the startup contributors that participate in
     /// configuring and initializing that dependency.
     /// </summary>
-    public sealed class DependencyDescriptor
+    public sealed class DependencyDescriptor : DisposableBase
     {
         /// <summary>
     	/// Initializes a new instance of the <see cref="DependencyDescriptor"/> class.
@@ -36,18 +37,11 @@ namespace Aiel.Framework
     	/// <param name="name">The logical name of the dependency.</param>
     	/// <param name="dependencyType">The <see cref="Type"/> that represents the dependency.</param>
     	/// <param name="dependencies">The dependency types this dependency depends on.</param>
-    	/// <param name="configurators">Types that implement <see cref="IConfigurator"/> for this dependency.</param>
-    	/// <param name="initializers">Types that implement <see cref="IInitializer"/> for this dependency.</param>
-        /// <param name="displayName">An optional user friendly display name for the AielDependencyConfigurator.</param>
-        /// <param name="version">An optional version for the AielDependencyConfigurator.</param>
-    	public DependencyDescriptor(
+        public DependencyDescriptor(
             String name,
             Type dependencyType,
-            IEnumerable<Type> dependencies,
-            IEnumerable<Type> configurators,
-            IEnumerable<Type> initializers,
-            String? displayName = null,
-            Version? version = null)
+            IConfigurator instance,
+            IEnumerable<Type> dependencies)
         {
             if (String.IsNullOrWhiteSpace(name))
             {
@@ -55,17 +49,13 @@ namespace Aiel.Framework
             }
 
             ArgumentNullException.ThrowIfNull(dependencyType);
+            ArgumentNullException.ThrowIfNull(instance);
             ArgumentNullException.ThrowIfNull(dependencies);
-            ArgumentNullException.ThrowIfNull(configurators);
-            ArgumentNullException.ThrowIfNull(initializers);
 
             Name = name;
             DependencyType = dependencyType;
+            Instance = instance;
             Dependencies = dependencies.ToArray();
-            Configurators = configurators.ToArray();
-            Initializers = initializers.ToArray();
-            DisplayName = displayName;
-            Version = version;
         }
 
         /// <summary>
@@ -78,29 +68,16 @@ namespace Aiel.Framework
         /// </summary>
         public Type DependencyType { get; }
 
+        public IConfigurator Instance { get; internal set; }
+
         /// <summary>
         /// Gets the collection of dependency types that this dependency depends on.
         /// </summary>
         public IReadOnlyCollection<Type> Dependencies { get; }
 
-        /// <summary>
-        /// Gets the collection of types that implement <see cref="IConfigurator"/> for this dependency.
-        /// </summary>
-        public IReadOnlyCollection<Type> Configurators { get; }
-
-        /// <summary>
-    	/// Gets the collection of types that implement <see cref="IInitializer"/> for this dependency.
-    	/// </summary>
-        public IReadOnlyCollection<Type> Initializers { get; }
-
-        /// <summary>
-        /// Gets the optional user friendly display name for the AielDependencyConfigurator.
-        /// </summary>
-        public String? DisplayName { get; }
-
-        /// <summary>
-        /// Gets the optional version for the AielDependencyConfigurator.
-        /// </summary>
-        public Version? Version { get; }
+        protected override async ValueTask DisposeAsyncCore()
+        {
+            await Instance.SafelyDisposeAsync();
+        }
     }
 }

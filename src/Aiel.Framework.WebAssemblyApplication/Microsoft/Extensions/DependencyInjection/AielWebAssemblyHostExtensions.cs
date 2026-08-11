@@ -39,49 +39,10 @@ public static class AielWebAssemblyHostExtensions
     {
         ArgumentNullException.ThrowIfNull(host);
 
-        var environment = host.Services.GetRequiredService<AielEnvironment>();
+        var context = new WebAssemblyApplicationInitializationContext(host);
 
-        var context = new InitializationContext(host.Services);
+        var dependencyManager = host.Services.GetRequiredService<IDependencyManager>();
 
-        var dependencyManager = host.Services.GetService<IDependencyManager>();
-        if (dependencyManager is not null)
-        {
-            await dependencyManager.InitializeAsync(context, cancellationToken);
-            return;
-        }
-
-        var root = host.Services.GetRequiredService<DependencyRoot>();
-
-        // Iterative post-order DFS: push each node's subtree so that when popped, every dependency
-        // is initialized before the dependency that depends on it.
-        var initOrder = new Stack<DependencyNode>();
-        var traversal = new Stack<DependencyNode>();
-        var visited = new HashSet<DependencyNode>();
-        traversal.Push(root);
-
-        while (traversal.Count > 0)
-        {
-            var node = traversal.Pop();
-            if (!visited.Add(node))
-            {
-                continue;
-            }
-
-            initOrder.Push(node);
-
-            foreach (var dependency in node.Dependencies)
-            {
-                traversal.Push(dependency);
-            }
-        }
-
-        while (initOrder.Count > 0)
-        {
-            var node = initOrder.Pop();
-            if (node.Instance is IInitializer initializer)
-            {
-                await initializer.InitializeAsync(context, cancellationToken);
-            }
-        }
+        await dependencyManager.InitializeAsync(context, cancellationToken);
     }
 }

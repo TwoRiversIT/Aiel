@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielApplicationConfigurator.cs" Link="Aiel\Framework\Stubs\AielApplicationConfigurator.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDependency.cs" Link="Aiel\Framework\Stubs\AielDependency.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDependencyConfigurator.cs" Link="Aiel\Framework\Stubs\AielDependencyConfigurator.txt" />
@@ -24,13 +25,15 @@
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\ConfigurationContext.cs" Link="Aiel\Framework\Stubs\ConfigurationContext.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyContext.cs" Link="Aiel\Framework\Stubs\DependencyContext.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyDescriptor.cs" Link="Aiel\Framework\Stubs\DependencyDescriptor.txt" />
-        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\InitializationContext.cs" Link="Aiel\Framework\Stubs\InitializationContext.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependsOnAttribute.cs" Link="Aiel\Framework\Stubs\DependsOnAttribute.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DisposableBase.cs" Link="Aiel\Framework\Stubs\DisposableBase.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DisposableExtensions.cs" Link="Aiel\Framework\Stubs\DisposableExtensions.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IApplicationConfigurator.cs" Link="Aiel\Framework\Stubs\IApplicationConfigurator.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IApplicationInfo.cs" Link="Aiel\Framework\Stubs\IApplicationInfo.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IConfigurator.cs" Link="Aiel\Framework\Stubs\IConfigurator.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IDependencyManager.cs" Link="Aiel\Framework\Stubs\IDependencyManager.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\IInitializer.cs" Link="Aiel\Framework\Stubs\IInitializer.txt" />
-        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\InitializationContext.cs" Link="Aiel\Framework\Stubs\InitializationContext.txt" />
         <EmbeddedResource Include="Aiel\Framework\Stubs\Usings.txt" />
     </ItemGroup>
 

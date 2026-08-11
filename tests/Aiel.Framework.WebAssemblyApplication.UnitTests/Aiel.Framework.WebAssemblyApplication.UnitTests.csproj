@@ -2,8 +2,10 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Framework.UnitTests</AssemblyName>
+        <AssemblyName>Aiel.Framework.WebAssemblyApplication.UnitTests</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Framework.WebAssemblyApplication\Aiel.Framework.WebAssemblyApplication.csproj" />
+        <ProjectReference Include="..\Aiel.Framework.TestBase\Aiel.Framework.TestBase.csproj" />
     </ItemGroup>
 
 </Project>

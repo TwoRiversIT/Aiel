@@ -38,54 +38,13 @@ public static partial class AielHostExtensions
     {
         ArgumentNullException.ThrowIfNull(host);
 
-        var context = new InitializationContext(host.Services);
+        var context = new HostApplicationInitializationContext(host);
 
         // If a dependency manager is registered, prefer that for initialization; it will use
         // the generated dependency graph when available.
-        var dependencyManager = host.Services.GetService<IDependencyManager>();
-        if (dependencyManager is not null)
-        {
-            await dependencyManager.InitializeAsync(context, cancellationToken);
-            return;
-        }
+        var dependencyManager = host.Services.GetRequiredService<IDependencyManager>();
 
-        // Fallback path: walk the composition root hierarchy one branch at a time, deepest node first,
-        // initializing each dependency that implements IInitializable. This preserves the original
-        // behavior for applications that do not use the dependency manager.
-        var root = host.Services.GetRequiredService<DependencyRoot>();
-
-        // Iterative post-order DFS: push each node's subtree onto initOrder so that when popped,
-        // every dependency is initialized before the dependency that depends on it.
-        var initOrder = new Stack<DependencyNode>();
-        var traversal = new Stack<DependencyNode>();
-        var visited = new HashSet<DependencyNode>();
-        traversal.Push(root);
-
-        while (traversal.Count > 0)
-        {
-            var dependencyNode = traversal.Pop();
-            if (!visited.Add(dependencyNode))
-            {
-                continue;
-            }
-
-            initOrder.Push(dependencyNode);
-
-            foreach (var dependency in dependencyNode.Dependencies)
-            {
-                traversal.Push(dependency);
-            }
-        }
-
-        while (initOrder.Count > 0)
-        {
-            var dependencyNode = initOrder.Pop();
-            if (dependencyNode.Instance is IInitializer initializer)
-            {
-                LogInitializingDependency(context.Logger, dependencyNode.Type.Name);
-                await initializer.InitializeAsync(context, cancellationToken);
-            }
-        }
+        await dependencyManager.InitializeAsync(context, cancellationToken);
     }
 
     [LoggerMessage(EventId = 0, Level = LogLevel.Debug, Message = "Initializing Dependency {DependencyType}.")]

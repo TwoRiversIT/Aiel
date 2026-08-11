@@ -279,9 +279,8 @@
     <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.Users.UnitTests/Aiel.Users.UnitTests.csproj" Id="91c57f9e-bc58-42b8-99a5-59a93d041ccc" />
     <Project Path="tests/Aiel.Utilities.UnitTests/Aiel.Utilities.UnitTests.csproj" />
-    <Project Path="tests/Aiel.WebApplicationExample/Aiel.WebApplicationExample.csproj" Id="5150c5f6-e512-402e-b388-36b084151bfb" />
-    <Project Path="tests/Aiel.WebAssemblyApplicationExample/Aiel.WebAssemblyApplicationExample.csproj" Id="f70a7b8d-5c57-4a64-8662-4c11767a2d42" />
-    <Project Path="tests/Aiel.WorkerService.Shared/Aiel.WorkerService.Shared.csproj" Id="13f5b610-8772-4b4d-bd58-4fd67ab30d33" />
-    <Project Path="tests/Aiel.WorkerService/Aiel.WorkerService.csproj" Id="281dcac5-741f-4d6c-964d-c120c0da0cea" />
+    <Project Path="tests/ExampleHostApplication/ExampleHostApplication.csproj" />
+    <Project Path="tests/ExampleWebApplication/ExampleWebApplication.csproj" />
+    <Project Path="tests/ExampleWebAssemblyApplication/ExampleWebAssemblyApplication.csproj" />
   </Folder>
 </Solution>

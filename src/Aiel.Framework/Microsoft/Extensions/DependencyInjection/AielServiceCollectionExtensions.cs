@@ -22,11 +22,49 @@
 
 using Aiel.Collections;
 using Aiel.Framework;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class AielServiceCollectionExtensions
 {
+    public static async Task AddApplicationAsync<TApplication>(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TApplication : class, IApplicationConfigurator, new()
+    {
+        services.AddLogging();
+
+        var environment = await services.RegisterEnvironment<TApplication>();
+
+        var dependencyManager = new DependencyManager<TApplication>();
+
+        services.AddSingleton<IDependencyManager>(dependencyManager);
+
+        var context = new ConfigurationContext(environment, services, configuration);
+
+        await dependencyManager.ConfigureAsync(context, cancellationToken);
+    }
+
+    private static async Task<AielEnvironment> RegisterEnvironment<TApplication>(this IServiceCollection services)
+        where TApplication : class, IApplicationConfigurator, new()
+    {
+        var app = new TApplication();
+        var environment = new AielEnvironment()
+        {
+            ApplicationInstance = Guid.NewGuid(),
+            ApplicationName = app.ApplicationName,
+            ApplicationVersion = app.ApplicationVersion,
+            EnvironmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production",
+        };
+        await app.SafelyDisposeAsync();
+
+        services.AddSingleton<IAielEnvironment>(environment);
+
+        return environment;
+    }
+
     /// <summary>
     /// <b>Do not use this!</b> It is intended for use in Aiel' internal code to work
     /// around some of the limitations of the built-in DI container.

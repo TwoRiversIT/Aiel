@@ -42,7 +42,7 @@ public interface IAielEnvironment
 /// be registered as a singleton in the dependency injection container. This will happen
 /// automatically when using the <c>AddApplicationAsync</c> extension method.
 /// </remarks>
-public abstract class AielEnvironment : IAielEnvironment
+public class AielEnvironment : IAielEnvironment
 {
     public required String ApplicationVersion { get; init; }
     public required Guid ApplicationInstance { get; init; }

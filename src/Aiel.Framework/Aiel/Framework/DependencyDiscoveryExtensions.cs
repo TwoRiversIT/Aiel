@@ -32,7 +32,7 @@ public static class DependencyDiscoveryExtensions
 	/// and the children are the assemblies it depends on, and so on. If an assembly is depended on by
 	/// multiple assemblies, it will only appear once in the hierarchy. First one to depend on it wins.
     /// </remarks>
-	/// <exception cref="CircularDependencyException">Thrown when a circular dependency is detected in the assembly dependency hierarchy.</exception>
+	/// <exception cref="CircularDependencyException">Thrown when a circular attribute is detected in the assembly attribute hierarchy.</exception>
 	public static DependencyRoot BuildDependencyTree<TDependency>(this ConfigurationContext _)
         where TDependency : AielDependencyConfigurator, new()
     {
@@ -57,21 +57,21 @@ public static class DependencyDiscoveryExtensions
             }
 
             var dependencies = assemblyInfo.Type.GetCustomAttributes(typeof(DependsOnAttribute), inherit: false);
-            foreach (var dependency in dependencies.Cast<DependsOnAttribute>()) // This cast is safe because we specified the attribute type in GetCustomAttributes.
+            foreach (var dependency in dependencies.Cast<DependsOnAttribute>()) // This cast is safe because we specified the attribute rootType in GetCustomAttributes.
             {
                 var dependencyType = dependency.Type;
 
-                // Check for circular dependency: if the dependency is already in our current path, we have a cycle
+                // Check for circular attribute: if the attribute is already in our current path, we have a cycle
                 if (path.Contains(dependencyType))
                 {
                     var pathList = path.ToList();
                     pathList.Add(dependencyType);
                     var cycle = String.Join(" -> ", pathList.Select(t => t.Name));
-                    throw new CircularDependencyException($"Circular dependency detected: {cycle}");
+                    throw new CircularDependencyException($"Circular attribute detected: {cycle}");
                 }
 
-                // We are strict about the assembly types, so we throw an exception if the dependency type does not inherit from AielDependencyConfigurator.
-                // This ensures that the dependency hierarchy is well-formed and that we can safely configure the assemblies later.
+                // We are strict about the assembly types, so we throw an exception if the attribute rootType does not inherit from AielDependencyConfigurator.
+                // This ensures that the attribute hierarchy is well-formed and that we can safely configure the assemblies later.
                 if (!nodesByType.TryGetValue(dependencyType, out var dependencyAssemblyInfo))
                 {
                     var instance = Activator.CreateInstance(dependencyType) as AielDependencyConfigurator
@@ -86,7 +86,7 @@ public static class DependencyDiscoveryExtensions
                     assemblyInfo.Dependencies.Add(dependencyAssemblyInfo);
                 }
 
-                // Create new path for this dependency by copying current path and adding the dependency
+                // Create new path for this attribute by copying current path and adding the attribute
                 var newPath = new HashSet<Type>(path) { dependencyType };
                 stack.Push((dependencyAssemblyInfo, newPath));
             }
@@ -96,7 +96,7 @@ public static class DependencyDiscoveryExtensions
     }
 
     /// <summary>
-    /// Asynchronously configures the specified root assembly and all its dependencies within the dependency hierarchy.
+    /// Asynchronously configures the specified root assembly and all its dependencies within the attribute hierarchy.
     /// </summary>
     /// <param name="compositionRoot">The root assembly to configure.</param>
     /// <param name="context">The configuration context that provides settings and services required for assembly configuration.</param>
@@ -112,7 +112,7 @@ public static class DependencyDiscoveryExtensions
         ArgumentNullException.ThrowIfNull(context);
 
         // Collect all nodes; traversal order is irrelevant because we sort by depth below.
-        // BuildDependencyTree guarantees each type appears exactly once in the tree.
+        // BuildDependencyTree guarantees each rootType appears exactly once in the tree.
         var allAssemblys = new List<DependencyNode>();
         var visited = new HashSet<DependencyNode>();
         var stack = new Stack<DependencyNode>();

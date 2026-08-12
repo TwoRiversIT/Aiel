@@ -177,4 +177,80 @@ public abstract class DependencyManager : IDependencyManager
         visited.Add(descriptor);
         ordered.Add(descriptor);
     }
+
+    public static IEnumerable<DependencyDescriptor> GetAllDependencies<TApplication>()
+        where TApplication : class, IApplicationConfigurator, new()
+    {
+        var doa = typeof(DependsOnAttribute);
+        var graph = new Dictionary<Type, List<Type>>();
+        var unresolved = new HashSet<Type>();
+        var queue = new Queue<Type>();
+
+        queue.Enqueue(typeof(TApplication));
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            if (graph.ContainsKey(current))
+            {
+                continue;
+            }
+
+            graph[current] = [];
+
+            foreach (var attribute in current.GetCustomAttributes(doa, inherit: false))
+            {
+                if (attribute is not DependsOnAttribute dependsOn)
+                {
+                    continue;
+                }
+
+                graph[current].Add(dependsOn.Type);
+                if (typeof(IConfigurator).IsAssignableFrom(dependsOn.Type))
+                {
+                    if (!graph.ContainsKey(dependsOn.Type))
+                    {
+                        queue.Enqueue(dependsOn.Type);
+                    }
+
+                    continue;
+                }
+
+                unresolved.Add(dependsOn.Type);
+            }
+        }
+
+        if (unresolved.Count > 0)
+        {
+            throw new AielException($"The following dependencies are unresolved: {String.Join(", ", unresolved.Select(t => t.FullName))}");
+        }
+
+        var list = new List<DependencyDescriptor>();
+        foreach (var kvp in graph)
+        {
+            var instance = Activator.CreateInstance(kvp.Key) as IConfigurator
+                ?? throw new InvalidOperationException($"Type {kvp.Key.FullName} does not implement IConfigurator.");
+
+            list.Add(new DependencyDescriptor(kvp.Key.Name, kvp.Key, instance, kvp.Value));
+        }
+
+        return list.ToArray();
+    }
+}
+
+public class DependencyManager<TApplication>() : DependencyManager(GetAllDependencies<TApplication>())
+    where TApplication : class, IApplicationConfigurator, new()
+{
+    protected override async Task InitializeAsync(InitializationContext context, DependencyDescriptor descriptor, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(descriptor);
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (descriptor.Instance is IInitializer initializer)
+        {
+            await initializer.InitializeAsync(context, cancellationToken);
+        }
+    }
 }

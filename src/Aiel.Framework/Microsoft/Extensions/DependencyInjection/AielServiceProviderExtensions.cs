@@ -20,7 +20,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
+using Aiel.Framework;
+
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class AielServiceProviderExtensions
 {
-    public abstract class AielDependency;
+    /// <summary>
+    /// Resolves the registered dependency graph and calls
+    /// <see cref="IInitializer.InitializeAsync"/> on each dependency that implements it,
+    /// in post-order (dependencies before dependents). Prefers <see cref="IDependencyManager"/>
+    /// when registered (source-generated graphs).
+    /// </summary>
+    public static async Task InitializeApplicationAsync(this IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(serviceProvider);
+
+        var dependencyManager = serviceProvider.GetRequiredService<IDependencyManager>();
+
+        var context = new InitializationContext(serviceProvider);
+
+        await dependencyManager.InitializeAsync(context, cancellationToken);
+    }
 }

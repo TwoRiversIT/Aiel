@@ -279,6 +279,7 @@
     <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.Users.UnitTests/Aiel.Users.UnitTests.csproj" Id="91c57f9e-bc58-42b8-99a5-59a93d041ccc" />
     <Project Path="tests/Aiel.Utilities.UnitTests/Aiel.Utilities.UnitTests.csproj" />
+    <Project Path="tests/ExampleApplication/ExampleApplication.csproj" Id="e35ccf20-2028-4dd8-b84e-ae1aede3e6e0" />
     <Project Path="tests/ExampleHostApplication/ExampleHostApplication.csproj" />
     <Project Path="tests/ExampleWebApplication/ExampleWebApplication.csproj" />
     <Project Path="tests/ExampleWebAssemblyApplication/ExampleWebAssemblyApplication.csproj" />

@@ -20,31 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Aiel.Fakes;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Aiel.Framework;
 
-public static partial class AielHostExtensions
+public class DefaultDependencyManagerTests : AielDependencyManagerTests
 {
-    /// <summary>
-    /// Resolves the registered dependency graph and calls
-    /// <see cref="IInitializer.InitializeAsync"/> on each dependency that implements it,
-    /// in post-order (dependencies before dependents). Prefers <see cref="IDependencyManager"/>
-    /// when registered (source-generated graphs).
-    /// </summary>
-    public static async Task InitializeApplicationAsync(this IHost host, CancellationToken cancellationToken = default)
+    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
+        => new DefaultDependencyManager(descriptors);
+
+    public override InitializationContext CreateInitializationContextAsync()
     {
-        ArgumentNullException.ThrowIfNull(host);
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+        services.AddSingleton<IAielEnvironment>(FakeAielEnvironment.Create());
 
-        var dependencyManager = host.Services.GetRequiredService<IDependencyManager>();
-
-        var context = new HostApplicationInitializationContext(host);
-
-        await dependencyManager.InitializeAsync(context, cancellationToken);
+        var serviceProvider = services.BuildServiceProvider();
+        return new InitializationContext(serviceProvider);
     }
-
-    [LoggerMessage(EventId = 0, Level = LogLevel.Debug, Message = "Initializing Dependency {DependencyType}.")]
-    private static partial void LogInitializingDependency(ILogger logger, string dependencyType);
 }

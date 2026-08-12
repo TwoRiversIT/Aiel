@@ -20,31 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+namespace Aiel.Framework;
 
-namespace Microsoft.Extensions.DependencyInjection;
-
-public static partial class AielHostExtensions
+public class DefaultDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors) : DependencyManager(dependencyDescriptors)
 {
-    /// <summary>
-    /// Resolves the registered dependency graph and calls
-    /// <see cref="IInitializer.InitializeAsync"/> on each dependency that implements it,
-    /// in post-order (dependencies before dependents). Prefers <see cref="IDependencyManager"/>
-    /// when registered (source-generated graphs).
-    /// </summary>
-    public static async Task InitializeApplicationAsync(this IHost host, CancellationToken cancellationToken = default)
+    protected override async Task InitializeAsync(InitializationContext context, DependencyDescriptor descriptor, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(host);
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(descriptor);
 
-        var dependencyManager = host.Services.GetRequiredService<IDependencyManager>();
+        cancellationToken.ThrowIfCancellationRequested();
 
-        var context = new HostApplicationInitializationContext(host);
-
-        await dependencyManager.InitializeAsync(context, cancellationToken);
+        if (descriptor.Instance is IInitializer initializer)
+        {
+            await initializer.InitializeAsync(context, cancellationToken);
+        }
     }
-
-    [LoggerMessage(EventId = 0, Level = LogLevel.Debug, Message = "Initializing Dependency {DependencyType}.")]
-    private static partial void LogInitializingDependency(ILogger logger, string dependencyType);
 }

@@ -33,7 +33,6 @@ public static class Stubs
     // are always correct, so we can be confident that the tests are failing for the right reasons.
     public static String[] AielDependencies => RH.GetStrings<Placeholder>(
         "AielApplicationConfigurator.txt",
-        "AielDependency.txt",
         "AielDependencyConfigurator.txt",
         "AielEnvironment.txt",
         "ConfigurationContext.txt",

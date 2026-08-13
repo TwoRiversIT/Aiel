@@ -43,6 +43,7 @@ public static class AielWebAssemblyHostBuilderExtensions
         var dependencyManager = new WebAssemblyDependencyManager(dependencyDescriptors);
 
         builder.Services.AddSingleton<IDependencyManager>(dependencyManager);
+        builder.Services.AddSingleton(builder.HostEnvironment);
 
         var context = new ConfigurationContext(environment, builder.Services, builder.Configuration);
 

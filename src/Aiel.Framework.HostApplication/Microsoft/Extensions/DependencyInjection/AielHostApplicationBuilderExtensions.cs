@@ -45,6 +45,7 @@ public static class AielHostApplicationBuilderExtensions
         var dependencyManager = new HostApplicationDependencyManager(dependencyDescriptors);
 
         builder.Services.AddSingleton<IDependencyManager>(dependencyManager);
+        builder.Services.AddSingleton(builder.Environment);
 
         var context = new ConfigurationContext(environment, builder.Services, builder.Configuration);
 

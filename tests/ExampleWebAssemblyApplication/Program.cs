@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
@@ -45,11 +44,4 @@ public class Program
 
         await app.RunAsync();
     }
-}
-
-[DependsOn(typeof(AielFrameworkWebAssemblyApplication))]
-public sealed class AielWebAssemblyApplicationExample : AielApplicationConfigurator
-{
-    public override String ApplicationName => ThisAssembly.AssemblyName;
-    public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;
 }

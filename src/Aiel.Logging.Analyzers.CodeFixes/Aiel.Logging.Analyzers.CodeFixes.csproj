@@ -8,10 +8,10 @@
         <IsPackable>true</IsPackable>
 
         <!--
-		These are settings specific to analyzers/code fixes/source generators. IncludeBuildOutput is false
-		to prevent the DLL landing in lib/, but the assembly is explicitly packed into analyzers/dotnet/cs.
-		Analyzers can be deterministic because they only read code and do not embed timestamps.
-		-->
+        These are settings specific to analyzers/code fixes/source generators. IncludeBuildOutput is false
+        to prevent the DLL landing in lib/, but the assembly is explicitly packed into analyzers/dotnet/cs.
+        Analyzers can be deterministic because they only read code and do not embed timestamps.
+        -->
         <Deterministic>true</Deterministic>
         <DevelopmentDependency>true</DevelopmentDependency>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
@@ -29,13 +29,13 @@
 
     <!-- BEGIN: Analyzer specific settings -->
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.3.0" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.6.0" PrivateAssets="all" />
     </ItemGroup>
+    <!-- END: Analyzer specific settings -->
 
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" />
     </ItemGroup>
-    <!-- END: Analyzer specific settings -->
 
 </Project>

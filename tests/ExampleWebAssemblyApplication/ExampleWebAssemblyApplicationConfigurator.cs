@@ -20,20 +20,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace ExampleWebApplication;
+using Aiel.Framework;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-public class Program
+namespace ExampleWebAssemblyApplication;
+
+[DependsOn(typeof(AielFrameworkWebAssemblyApplication))]
+public sealed class ExampleWebAssemblyApplicationConfigurator : AielApplicationConfigurator
 {
-    public static async Task Main(String[] args)
+    public override String ApplicationName => ThisAssembly.AssemblyName;
+    public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;
+
+    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        context.Services.AddHttpClient<ApiClient>((sp, client) =>
+        {
+            var environment = sp.GetRequiredService<IWebAssemblyHostEnvironment>();
+            client.BaseAddress = new Uri(environment.BaseAddress);
+        }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
-        await builder.AddApplicationAsync();
-
-        var app = builder.Build();
-
-        await app.InitializeApplicationAsync();
-
-        app.Run();
+        return Task.CompletedTask;
     }
 }

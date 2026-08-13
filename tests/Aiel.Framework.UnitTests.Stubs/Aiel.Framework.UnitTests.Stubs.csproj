@@ -9,10 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Aiel\Framework\Stubs\Usings.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
+        <None Remove="Aiel\Framework\Stubs\Usings.txt" />
     </ItemGroup>
 
     <ItemGroup>

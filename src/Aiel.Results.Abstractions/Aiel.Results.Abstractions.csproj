@@ -21,14 +21,8 @@
     them and, with a wrong path, causes CS0006 in consuming projects).
     -->
     <ItemGroup>
-        <None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll"
-              Pack="true"
-              PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
-        <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll"
-              Pack="true"
-              PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
+        <None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <!--
@@ -37,15 +31,8 @@
     not themselves packed as dependencies.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj"
-                          ReferenceOutputAssembly="false"
-                          Pack="false"
-                          PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"
-                          Pack="false"
-                          PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

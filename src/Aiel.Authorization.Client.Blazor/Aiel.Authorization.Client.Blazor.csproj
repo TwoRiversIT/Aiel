@@ -1,23 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.Authorization.Client.Blazor</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Authorization.Client.Blazor</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="./README.md" Pack="true" PackagePath="/" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
 
-	<ItemGroup>
-<ProjectReference Include="..\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
-<ProjectReference Include="..\Aiel.Authorization.Client\Aiel.Authorization.Client.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Aiel.Authorization.Client\Aiel.Authorization.Client.csproj" />
+    </ItemGroup>
 
 </Project>

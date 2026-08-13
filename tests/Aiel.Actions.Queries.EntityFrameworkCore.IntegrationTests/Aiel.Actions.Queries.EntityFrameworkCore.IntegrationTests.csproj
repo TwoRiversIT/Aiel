@@ -13,13 +13,14 @@
         dependency on SQLitePCLRaw.lib.e_sqlite3 version 3.50.3, which is the patched version, overrides the
         transitive dependency from Microsoft.Data.Sqlite and ensures we are using the secure version.
         -->
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.9" />
-        <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.50.3" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.11" />
+        <!--<PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />-->
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.11" />
+        <PackageReference Include="SSH.NET" Version="2026.0.0" />
     </ItemGroup>
 
     <ItemGroup>

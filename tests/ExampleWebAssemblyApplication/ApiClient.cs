@@ -20,20 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace ExampleWebApplication;
+namespace ExampleWebAssemblyApplication;
 
-public class Program
+public class ApiClient(HttpClient httpClient)
 {
-    public static async Task Main(String[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
-
-        await builder.AddApplicationAsync();
-
-        var app = builder.Build();
-
-        await app.InitializeApplicationAsync();
-
-        app.Run();
-    }
+    private readonly HttpClient _httpClient = httpClient;
 }

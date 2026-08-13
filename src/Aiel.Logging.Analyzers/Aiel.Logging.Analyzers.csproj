@@ -1,54 +1,53 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
+    <PropertyGroup>
 
-		<AssemblyName>Aiel.Logging.Analyzers</AssemblyName>
-		<RootNamespace />
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<IsPackable>true</IsPackable>
+        <AssemblyName>Aiel.Logging.Analyzers</AssemblyName>
+        <RootNamespace />
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsPackable>true</IsPackable>
 
-		<!--
-		These are settings specific to analyzers/code fixes/source generators. IncludeBuildOutput is false
-		to prevent the DLL landing in lib/, but the assembly is explicitly packed into analyzers/dotnet/cs.
-		Analyzers can be deterministic because they only read code and do not embed timestamps.
-		-->
-		<Deterministic>true</Deterministic>
-		<DevelopmentDependency>true</DevelopmentDependency>
-		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-		<IncludeBuildOutput>false</IncludeBuildOutput>
-		<IsRoslynComponent>true</IsRoslynComponent>
-		<DevelopmentDependency>true</DevelopmentDependency>
-		<NoPackageAnalysis>true</NoPackageAnalysis>
-		<NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
+        <!--
+        These are settings specific to analyzers/code fixes/source generators. IncludeBuildOutput is false
+        to prevent the DLL landing in lib/, but the assembly is explicitly packed into analyzers/dotnet/cs.
+        Analyzers can be deterministic because they only read code and do not embed timestamps.
+        -->
+        <Deterministic>true</Deterministic>
+        <DevelopmentDependency>true</DevelopmentDependency>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <IsRoslynComponent>true</IsRoslynComponent>
+        <DevelopmentDependency>true</DevelopmentDependency>
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
 
-	</PropertyGroup>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="./README.md" Pack="true" PackagePath="/" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
     <ItemGroup>
         <Using Include="System" />
-        <Using Include="System.Linq
-               " />
+        <Using Include="System.Linq&#xD;&#xA;               " />
     </ItemGroup>
 
-	<!-- BEGIN: Analyzer specific settings -->
-	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0" PrivateAssets="all" />
-	</ItemGroup>
+    <!-- BEGIN: Analyzer specific settings -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.6.0" PrivateAssets="all" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
-		<AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
-	</ItemGroup>
+    <ItemGroup>
+        <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+        <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <None Include="build\Aiel.Logging.Analyzers.props" Pack="true" PackagePath="build" Visible="true" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="build\Aiel.Logging.Analyzers.props" Pack="true" PackagePath="build" Visible="true" />
+    </ItemGroup>
 
-	<Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
-	<!-- END: Analyzer specific settings -->
+    <Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
+    <!-- END: Analyzer specific settings -->
 
 </Project>

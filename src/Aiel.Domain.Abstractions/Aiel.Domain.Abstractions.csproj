@@ -12,9 +12,9 @@
     </ItemGroup>
 
     <ItemGroup>
-    <ProjectReference Include="..\Aiel.Actions\Aiel.Actions.csproj" />
-    <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
-    <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
-  </ItemGroup>
+        <ProjectReference Include="..\Aiel.Actions\Aiel.Actions.csproj" />
+        <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+    </ItemGroup>
 
 </Project>

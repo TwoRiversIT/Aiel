@@ -7,7 +7,6 @@
         <!-- Source generators embed timestamps so deterministic builds are not possible. -->
         <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
         <Deterministic>false</Deterministic>
-
         <!--
 		Suppress this warning because this assembly does not consume the generated types.
 		'PDRP0001: Results types are used but AddResultPattern() is not called on IServiceCollection'		

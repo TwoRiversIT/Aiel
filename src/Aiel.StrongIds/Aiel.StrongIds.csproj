@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.StrongIds</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.StrongIds</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="./README.md" Pack="true" PackagePath="/" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
     <!--
     Include the analyzer and generator DLLs in the NuGet package so consuming projects
@@ -19,14 +19,8 @@
     them and, with a wrong path, causes CS0006 in consuming projects).
     -->
     <ItemGroup>
-        <None Include="..\Aiel.StrongIds.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Analyzers.dll"
-              Pack="true"
-              PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
-        <None Include="..\Aiel.StrongIds.Generators\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Generators.dll"
-              Pack="true"
-              PackagePath="analyzers/dotnet/cs"
-              Visible="false" />
+        <None Include="..\Aiel.StrongIds.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="..\Aiel.StrongIds.Generators\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
     <!--
@@ -35,18 +29,12 @@
     not themselves packed as dependencies.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj"
-                          ReferenceOutputAssembly="false"
-                          Pack="false"
-                          PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj"
-                          ReferenceOutputAssembly="false"
-                          Pack="false"
-                          PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
-		<ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
-	</ItemGroup>
+        <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
+    </ItemGroup>
 
 </Project>

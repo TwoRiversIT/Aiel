@@ -28,5 +28,5 @@
         <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
-    
+
 </Project>

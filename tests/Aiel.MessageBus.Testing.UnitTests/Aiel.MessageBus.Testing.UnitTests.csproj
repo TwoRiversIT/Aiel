@@ -1,15 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.MessageBus.Testing.UnitTests</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		
-	</PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.MessageBus.Testing.UnitTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Aiel.MessageBus.Testing\Aiel.MessageBus.Testing.csproj" />
-		<ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.MessageBus.Testing\Aiel.MessageBus.Testing.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
+    </ItemGroup>
 
 </Project>

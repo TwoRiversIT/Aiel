@@ -5,7 +5,15 @@
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <StartupObject>ExampleWebApplication.Program</StartupObject>
         <IsPackable>false</IsPackable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.91">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" OutputItemType="Analyzer" />

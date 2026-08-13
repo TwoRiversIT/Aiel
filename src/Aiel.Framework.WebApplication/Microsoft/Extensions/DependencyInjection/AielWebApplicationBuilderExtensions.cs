@@ -43,6 +43,7 @@ public static class AielWebApplicationBuilderExtensions
         var dependencyManager = new WebApplicationDependencyManager(dependencyDescriptors);
 
         builder.Services.AddSingleton<IDependencyManager>(dependencyManager);
+        builder.Services.AddSingleton(builder.Environment);
 
         var context = new ConfigurationContext(environment, builder.Services, builder.Configuration);
 

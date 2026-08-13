@@ -1,10 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
         <AssemblyName>Aiel.Gps.HP.UnitTests</AssemblyName>
         <TargetFrameworks>net10.0</TargetFrameworks>
-        
     </PropertyGroup>
 
     <ItemGroup>

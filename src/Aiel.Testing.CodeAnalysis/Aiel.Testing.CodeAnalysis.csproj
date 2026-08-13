@@ -15,9 +15,9 @@
         <Using Include="AwesomeAssertions" />
         <Using Include="Xunit" />
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis" Version="5.3.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="5.6.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing" Version="1.1.4" />
         <!--
@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Aiel.Testing\Aiel.Testing.csproj" />
+        <ProjectReference Include="..\Aiel.Testing\Aiel.Testing.csproj" />
     </ItemGroup>
 
 </Project>

@@ -3,16 +3,16 @@
     <PropertyGroup>
         <RootNamespace />
         <AssemblyName>Aiel.InternetTypes</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		<IsPackable>true</IsPackable>
-	</PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<None Include="./README.md" Pack="true" PackagePath="/" />
-	</ItemGroup>
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\Aiel.Utilities\Aiel.Utilities.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Utilities\Aiel.Utilities.csproj" />
+    </ItemGroup>
 
 </Project>

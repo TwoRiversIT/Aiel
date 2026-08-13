@@ -1,17 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
         <AssemblyName>Aiel.Testing.Integration.UnitTests</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
-        
     </PropertyGroup>
 
     <ItemGroup>
         <None Remove="appsettings.Testing.json" />
-    </ItemGroup>
-
-    <ItemGroup>
         <Content Include="appsettings.Testing.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -22,8 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.9" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
     </ItemGroup>
 
     <ItemGroup>

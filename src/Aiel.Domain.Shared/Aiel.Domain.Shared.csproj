@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-    <ProjectReference Include="..\Aiel.Framework\Aiel.Framework.csproj" />
-    <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
-  </ItemGroup>
+        <ProjectReference Include="..\Aiel.Framework\Aiel.Framework.csproj" />
+        <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+    </ItemGroup>
 
 </Project>

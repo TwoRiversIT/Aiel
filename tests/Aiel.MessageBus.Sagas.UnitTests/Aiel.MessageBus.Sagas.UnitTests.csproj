@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<RootNamespace />
-		<AssemblyName>Aiel.MessageBus.Sagas.UnitTests</AssemblyName>
-		<TargetFramework>net10.0</TargetFramework>
-		
-	</PropertyGroup>
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.MessageBus.Sagas.UnitTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\src\Aiel.MessageBus.Sagas\Aiel.MessageBus.Sagas.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.MessageBus.Sagas\Aiel.MessageBus.Sagas.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -37,7 +37,7 @@ public enum AielEvent
     Migrations_MigrationFailed,
     Migrations_MigrationsCompleted,
     Migrations_MigrationsFound,
-    Migrations_MigrationsNotFound,
+    Migrations_NoMigrationsFound,
     Migrations_MigrationsStarting,
     Migrations_RetryingMigration,
     Migrations_SkippingTenant,

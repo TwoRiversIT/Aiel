@@ -35,7 +35,7 @@ public static partial class MigrationLoggingExtensions
     [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationFailed, Level = LogLevel.Critical, Message = "Migrating {DatabaseName} failed: {Exception} - {Message}")]
     public static partial void LogMigrationFailed(this ILogger logger, String databaseName, String exception, String message);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationsNotFound, Level = LogLevel.Error, Message = "No migrations to apply: {DatabaseName}")]
+    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_NoMigrationsFound, Level = LogLevel.Information, Message = "No migrations to apply: {DatabaseName}")]
     public static partial void LogNoMigrationsToApply(this ILogger logger, String databaseName);
 
     [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationCompleted, Level = LogLevel.Information, Message = "Migration completed in {ElapsedMilliseconds}ms")]

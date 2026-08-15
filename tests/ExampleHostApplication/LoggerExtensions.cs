@@ -28,6 +28,6 @@ namespace Aiel.WorkerService;
 public static partial class LoggerExtensions
 {
 
-    [LoggerMessage(Level = LogLevel.Information, EventId = (Int32)AielEvent.Backgound_WorkerRunning, Message = "[{EventId}] Worker running at: {Time}")]
-    public static partial void LogWorkerRunning(this ILogger logger, DateTime time, AielEvent eventId = AielEvent.Backgound_WorkerRunning);
+    [LoggerMessage(Level = LogLevel.Information, EventId = (Int32)AielEvent.Background_WorkerRunning, Message = "[{EventId}] Worker running at: {Time}")]
+    public static partial void LogWorkerRunning(this ILogger logger, DateTime time, AielEvent eventId = AielEvent.Background_WorkerRunning);
 }

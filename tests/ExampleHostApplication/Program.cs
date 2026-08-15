@@ -61,15 +61,15 @@ public sealed class Configurator : AielApplicationConfigurator
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
 
-    public override Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         // https://www.npgsql.org/efcore/release-notes/6.0.html#opting-out-of-the-new-timestamp-mapping-logic
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         var connStr = context.GetConnectionStringOrDefault("MyAppDb");
         context.Services.AddDbContext<ExampleHostApplicationDbContext>(options =>
@@ -80,6 +80,6 @@ public sealed class Configurator : AielApplicationConfigurator
 
         context.Services.AddScoped<IDatabaseMigrator, DbContextMigrator<ExampleHostApplicationDbContext>>();
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

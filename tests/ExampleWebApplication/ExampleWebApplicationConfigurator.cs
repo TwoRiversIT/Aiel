@@ -30,14 +30,14 @@ public sealed class ExampleWebApplicationConfigurator : AielApplicationConfigura
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;
 
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddRazorPages();
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public Task InitializeAsync(WebApplicationInitializationContext app, CancellationToken cancellationToken = default)
+    public ValueTask InitializeAsync(WebApplicationInitializationContext app, CancellationToken cancellationToken = default)
     {
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
@@ -57,6 +57,6 @@ public sealed class ExampleWebApplicationConfigurator : AielApplicationConfigura
         app.MapRazorPages()
            .WithStaticAssets();
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

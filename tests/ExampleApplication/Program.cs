@@ -51,15 +51,15 @@ public sealed class ExampleApplicationConfigurator : AielApplicationConfigurator
     public override String ApplicationName => "ExampleApplication";
     public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;
 
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public Task InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
+    public ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

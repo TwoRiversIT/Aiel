@@ -355,7 +355,7 @@ it explicitly. Runtime service registration must not be hidden behind a module i
 ```csharp
 public sealed class AviendhaApplicationContracts : AielDependencyConfigurator
 {
-    public override Task PreConfigureAsync(
+    public override ValueTask PreConfigureAsync(
         ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {

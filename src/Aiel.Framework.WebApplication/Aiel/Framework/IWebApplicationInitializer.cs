@@ -24,5 +24,5 @@ namespace Aiel.Framework;
 
 public interface IWebApplicationInitializer
 {
-    Task InitializeAsync(WebApplicationInitializationContext context, CancellationToken cancellationToken = default);
+    ValueTask InitializeAsync(WebApplicationInitializationContext context, CancellationToken cancellationToken = default);
 }

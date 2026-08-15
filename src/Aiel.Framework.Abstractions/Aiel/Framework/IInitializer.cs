@@ -43,6 +43,6 @@ namespace Aiel.Framework
         /// <param name="context">The application initialization context.</param>
         /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
         /// <returns>A task that represents the asynchronous initialization operation.</returns>
-        Task InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default);
+        ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default);
     }
 }

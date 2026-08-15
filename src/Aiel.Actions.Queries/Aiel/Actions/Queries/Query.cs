@@ -20,29 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions.Queries.Specifications;
+
 namespace Aiel.Actions.Queries;
 
-public sealed record PageRequest
+public abstract class Query<T>(IQuerySpecification<T> specification, SortRequest? sortRequest = null, PageRequest? pageRequest = null) : IQuery<T>
 {
-    public const Int32 DefaultPageNumber = 1;
-    public const Int32 DefaultPageSize = 20;
-
-    public static PageRequest Default { get; } = new(DefaultPageNumber, DefaultPageSize);
-
-    public PageRequest(Int32 pageNumber, Int32 pageSize)
-    {
-        Number = pageNumber < 1
-            ? throw new ArgumentOutOfRangeException(nameof(pageNumber), "Paging is 1 based. The pageNumber parameter must be greater than or equal to 1.")
-            : pageNumber;
-
-        Size = pageSize < 1
-            ? throw new ArgumentOutOfRangeException(nameof(pageSize), "The pageSize parameter must be greater than 0.")
-            : pageSize;
-    }
-
-    public Int32 Number { get; } = DefaultPageNumber;
-
-    public Int32 Size { get; } = DefaultPageSize;
-
-    public Int32 Offset => (Number - 1) * Size;
+    public IQuerySpecification<T> Specification { get; set; } = specification ?? throw new ArgumentNullException(nameof(specification));
+    public SortRequest SortRequest { get; } = sortRequest ?? SortRequest.Empty;
+    public PageRequest PageRequest { get; } = pageRequest ?? PageRequest.Default;
 }

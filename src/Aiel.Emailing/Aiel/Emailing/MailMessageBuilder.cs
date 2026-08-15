@@ -23,7 +23,6 @@
 using Aiel.Emailing;
 using Aiel.Security;
 using Aiel.UI;
-using System.Diagnostics.CodeAnalysis;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Security.Claims;

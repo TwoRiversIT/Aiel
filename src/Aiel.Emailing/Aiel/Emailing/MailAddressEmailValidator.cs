@@ -26,8 +26,13 @@ namespace Aiel.Emailing;
 
 public class MailAddressEmailValidator : IEmailValidator
 {
-    public Boolean IsValid(String email)
+    public Boolean IsValid(String? email)
     {
+        if (String.IsNullOrWhiteSpace(email))
+        {
+            return false;
+        }
+
         try
         {
             _ = new MailAddress(email);
@@ -39,8 +44,13 @@ public class MailAddressEmailValidator : IEmailValidator
         }
     }
 
-    public Boolean IsValid(EmailAddress emailAddress)
+    public Boolean IsValid(EmailAddress? emailAddress)
     {
+        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
+        {
+            return false;
+        }
+
         try
         {
             _ = new MailAddress(emailAddress.Email, emailAddress.Name);

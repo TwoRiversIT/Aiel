@@ -22,9 +22,24 @@
 
 using Aiel.Framework;
 using Aiel.Security;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace Aiel.Emailing;
 
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielEmailingAbstractions))]
-public sealed class AielEmailing : AielDependencyConfigurator;
+public sealed class AielEmailing : AielDependencyConfigurator
+{
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.Services.TryAddSingleton<IValidateOptions<EmailOptions>, EmailOptionsValidator>();
+
+        context.Services.AddOptions<EmailOptions>()
+            .Bind(context.Configuration.GetSection(EmailOptions.SectionName))
+            .ValidateOnStart();
+
+        return ValueTask.CompletedTask;
+    }
+}

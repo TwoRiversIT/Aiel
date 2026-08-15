@@ -32,7 +32,7 @@ namespace Aiel.Logging;
 [DependsOn(typeof(AielUsers))]
 public sealed class AielLoggingSerilog : AielDependencyConfigurator
 {
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         Log.Logger = new LoggerConfiguration()
             .ReadFrom.Configuration(context.Configuration)
@@ -43,6 +43,6 @@ public sealed class AielLoggingSerilog : AielDependencyConfigurator
 
         context.Services.AddLogging(builder => builder.AddSerilog(dispose: true));
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

@@ -20,20 +20,22 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Emailing;
+using Aiel.Emailing;
+using Aiel.Emailing.MailKit;
+using Aiel.Emailing.MailKit.Internal;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
-public static class EmailValidator
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class EmailSenderServiceBuilderExtensions
 {
-    public static IEmailValidator Instance { get; private set; } = new PatternEmailValidator();
-
-    public static Boolean IsValid(String email) => Instance.IsValid(email);
-
-    public static Boolean IsValid(EmailAddress emailAddress) => Instance.IsValid(emailAddress);
-
-    public static void SetValidator(IEmailValidator validator)
+    public static EmailServicesOptionsBuilder UseMailKit(this EmailServicesOptionsBuilder builder)
     {
-        ArgumentNullException.ThrowIfNull(validator);
+        ArgumentNullException.ThrowIfNull(builder);
 
-        Instance = validator;
+        builder.Services.Configure<MailKitOptions>(builder.Configuration.GetSection(nameof(MailKitOptions)));
+        builder.Services.TryAddSingleton<IEmailSender, MailKitEmailSender>();
+
+        return builder;
     }
 }

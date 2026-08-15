@@ -29,9 +29,9 @@ namespace Aiel.Framework
     public abstract class AielDependencyConfigurator : IConfigurator
     {
         // <inherit />
-        public virtual Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public virtual ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 
         // <inherit />
-        public virtual Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public virtual ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
     }
 }

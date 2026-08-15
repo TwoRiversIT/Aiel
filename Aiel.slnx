@@ -160,6 +160,7 @@
     <Project Path="src/Aiel.Domain.Shared/Aiel.Domain.Shared.csproj" Id="0b2dad1d-8c6e-4c8d-9260-6741b58c6c2d" />
     <Project Path="src/Aiel.Domain/Aiel.Domain.csproj" />
     <Project Path="src/Aiel.Emailing.Abstractions/Aiel.Emailing.Abstractions.csproj" Id="04543c0e-bec5-4e39-8d44-c2658d5a2d49" />
+    <Project Path="src/Aiel.Emailing.MailKit/Aiel.Emailing.MailKit.csproj" />
     <Project Path="src/Aiel.Emailing/Aiel.Emailing.csproj" />
     <Project Path="src/Aiel.Framework.Abstractions/Aiel.Framework.Abstractions.csproj" Id="d441d293-c3d3-493d-aeb6-f0fd07c54ef1" />
     <Project Path="src/Aiel.Framework.Analyzers/Aiel.Framework.Analyzers.csproj" Id="0b7bc240-ff3d-4322-9802-94b913e0e71d" />

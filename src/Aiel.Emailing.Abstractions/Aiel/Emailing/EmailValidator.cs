@@ -20,31 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Text.RegularExpressions;
-
 namespace Aiel.Emailing;
 
-public partial class W3CEmailValidator : IEmailValidator
+public static class EmailValidator
 {
-    public Boolean IsValid(String? email)
+    public static IEmailValidator Instance { get; private set; } = new PatternEmailValidator();
+
+    public static Boolean IsValid(String? email) => Instance.IsValid(email);
+
+    public static Boolean IsValid(EmailAddress? emailAddress) => Instance.IsValid(emailAddress);
+
+    public static void SetValidator(IEmailValidator validator)
     {
-        if (String.IsNullOrWhiteSpace(email) || email.Length is < 3 or >= 255)
-        {
-            return false;
-        }
+        ArgumentNullException.ThrowIfNull(validator);
 
-        return W3C().IsMatch(email);
+        Instance = validator;
     }
-    public Boolean IsValid(EmailAddress? emailAddress)
-    {
-        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
-        {
-            return false;
-        }
-
-        return IsValid(emailAddress.Email);
-    }
-
-    [GeneratedRegex(@"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")]
-    private static partial Regex W3C();
 }

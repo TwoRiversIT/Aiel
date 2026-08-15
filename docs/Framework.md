@@ -75,7 +75,7 @@ public sealed class MyApplication : AielApplicationConfigurator
     public override String ApplicationName    => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;
 
-    public override Task ConfigureAsync(
+    public override ValueTask ConfigureAsync(
         ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {
@@ -201,7 +201,7 @@ Use `PreConfigureAsync` to establish shared state that other modules will read d
 ```csharp
 public sealed class MyLibraryDependency : AielDependencyConfigurator
 {
-    public override Task PreConfigureAsync(
+    public override ValueTask PreConfigureAsync(
         ConfigurationContext context,
         CancellationToken cancellationToken = default)
     {

@@ -20,32 +20,43 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Text.RegularExpressions;
+using Microsoft.Extensions.Options;
 
-namespace Aiel.Emailing;
+namespace Aiel.Emailing.MailKit;
 
-public partial class PatternEmailValidator : IEmailValidator
+public class MailKitOptions : EmailOptions
 {
-    public Boolean IsValid(String? email)
+    public Boolean ArchiveSentEmail { get; set; }
+    public String? ArchiveBccName { get; set; }
+    public String? ArchiveBccAddress { get; set; }
+}
+
+public class MailKitOptionsValidator : EmailOptionsValidator
+{
+    public override ValidateOptionsResult Validate(String? name, EmailOptions options)
     {
-        if (String.IsNullOrWhiteSpace(email) || email.Length is < 3 or >= 255)
+        if (options is not MailKitOptions mailKitOptions)
         {
-            return false;
+            Errors.Add($"{name} is not a valid MailKitOptions instance.");
+
+            return base.Validate(name, options);
         }
 
-        return GeneralEmail().IsMatch(email);
-    }
+        var key = String.IsNullOrWhiteSpace(name) ? EmailOptions.SectionName : name;
 
-    public Boolean IsValid(EmailAddress emailAddress)
-    {
-        if (String.IsNullOrWhiteSpace(emailAddress.Name))
+        if (mailKitOptions.ArchiveSentEmail)
         {
-            return false;
+            if (String.IsNullOrWhiteSpace(mailKitOptions.ArchiveBccName))
+            {
+                Errors.Add($"{key}.ArchiveBccName is required when ArchiveSentEmail is true.");
+            }
+
+            if (EmailValidator.IsValid(mailKitOptions.ArchiveBccAddress))
+            {
+                Errors.Add($"{key}.ArchiveBccAddress is invalid.");
+            }
         }
 
-        return IsValid(emailAddress.Email);
+        return base.Validate(name, options);
     }
-
-    [GeneratedRegex("^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
-    private static partial Regex GeneralEmail();
 }

@@ -48,7 +48,7 @@ public interface IConfigurator
     /// <param name="context">The application configuration context.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous pre-configuration operation.</returns>
-    Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
+    ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Configures services and options for the current dependency.
@@ -61,5 +61,5 @@ public interface IConfigurator
     /// <param name="context">The application configuration context.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous configuration operation.</returns>
-    Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
+    ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
 }

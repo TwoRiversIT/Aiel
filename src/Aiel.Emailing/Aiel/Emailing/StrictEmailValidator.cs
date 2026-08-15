@@ -36,9 +36,9 @@ public partial class StrictEmailValidator : IEmailValidator
         return Strict().IsMatch(email);
     }
 
-    public Boolean IsValid(EmailAddress emailAddress)
+    public Boolean IsValid(EmailAddress? emailAddress)
     {
-        if (String.IsNullOrWhiteSpace(emailAddress.Name))
+        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
         {
             return false;
         }

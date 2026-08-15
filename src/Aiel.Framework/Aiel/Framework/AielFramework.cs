@@ -23,10 +23,4 @@
 namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielFramework : AielDependencyConfigurator
-{
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask;
-    }
-}
+public sealed class AielFramework : AielDependencyConfigurator;

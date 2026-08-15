@@ -24,7 +24,7 @@ using System.Text.RegularExpressions;
 
 namespace Aiel.Emailing;
 
-public partial class W3CEmailValidator : IEmailValidator
+public partial class PatternEmailValidator : IEmailValidator
 {
     public Boolean IsValid(String? email)
     {
@@ -33,8 +33,9 @@ public partial class W3CEmailValidator : IEmailValidator
             return false;
         }
 
-        return W3C().IsMatch(email);
+        return GeneralEmail().IsMatch(email);
     }
+
     public Boolean IsValid(EmailAddress? emailAddress)
     {
         if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
@@ -45,6 +46,6 @@ public partial class W3CEmailValidator : IEmailValidator
         return IsValid(emailAddress.Email);
     }
 
-    [GeneratedRegex(@"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")]
-    private static partial Regex W3C();
+    [GeneratedRegex("^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    private static partial Regex GeneralEmail();
 }

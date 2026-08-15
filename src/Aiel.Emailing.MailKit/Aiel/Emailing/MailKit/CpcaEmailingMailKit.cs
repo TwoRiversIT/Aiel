@@ -20,31 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Text.RegularExpressions;
+using Aiel.Emailing.MailKit.Internal;
+using Aiel.Framework;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Aiel.Emailing;
+namespace Aiel.Emailing.MailKit;
 
-public partial class W3CEmailValidator : IEmailValidator
+[DependsOn(typeof(AielEmailing))]
+public sealed class CpcaEmailingMailKit : AielDependencyConfigurator
 {
-    public Boolean IsValid(String? email)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        if (String.IsNullOrWhiteSpace(email) || email.Length is < 3 or >= 255)
-        {
-            return false;
-        }
+        context.Services.Configure<MailKitOptions>(context.Configuration.GetSection(EmailOptions.SectionName));
+        context.Services.TryAddSingleton<IEmailSender, MailKitEmailSender>();
 
-        return W3C().IsMatch(email);
+        return ValueTask.CompletedTask;
     }
-    public Boolean IsValid(EmailAddress? emailAddress)
-    {
-        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
-        {
-            return false;
-        }
-
-        return IsValid(emailAddress.Email);
-    }
-
-    [GeneratedRegex(@"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")]
-    private static partial Regex W3C();
 }

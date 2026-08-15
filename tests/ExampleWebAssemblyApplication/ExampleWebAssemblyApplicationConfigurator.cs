@@ -32,7 +32,7 @@ public sealed class ExampleWebAssemblyApplicationConfigurator : AielApplicationC
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;
 
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.AddHttpClient<ApiClient>((sp, client) =>
         {
@@ -40,6 +40,6 @@ public sealed class ExampleWebAssemblyApplicationConfigurator : AielApplicationC
             client.BaseAddress = new Uri(environment.BaseAddress);
         }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 }

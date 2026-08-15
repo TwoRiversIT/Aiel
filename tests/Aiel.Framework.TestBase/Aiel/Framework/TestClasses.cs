@@ -37,21 +37,21 @@ public abstract class TrackedConfigurator : AielDependencyConfigurator, IInitial
         InitializeCount = 0;
     }
 
-    public override Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PreConfigureCount++;
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         ConfigureCount++;
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
-    public Task InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
+    public ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         InitializeCount++;
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
     public void Dispose()
@@ -94,13 +94,13 @@ public sealed class LinearC : TrackedConfigurator;
 
 public sealed class PhaseA : PhaseLogCollector
 {
-    public override Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("A:Pre");
         return base.PreConfigureAsync(context, cancellationToken);
     }
 
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("A:Configure");
         return base.ConfigureAsync(context, cancellationToken);
@@ -109,13 +109,13 @@ public sealed class PhaseA : PhaseLogCollector
 
 public sealed class PhaseB : PhaseLogCollector
 {
-    public override Task PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("B:Pre");
         return base.PreConfigureAsync(context, cancellationToken);
     }
 
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         PhaseLog.Add("B:Configure");
         return base.ConfigureAsync(context, cancellationToken);

@@ -31,9 +31,4 @@ public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicati
 {
     public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
     public override String ApplicationVersion => "1.0.0";
-
-    public override Task ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
-    {
-        return Task.CompletedTask;
-    }
 }

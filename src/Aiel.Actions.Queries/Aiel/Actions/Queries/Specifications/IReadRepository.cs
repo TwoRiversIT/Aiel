@@ -31,6 +31,8 @@ namespace Aiel.Actions.Queries.Specifications;
 public interface IReadRepository<TEntity> : IDisposable
     where TEntity : class
 {
+    IAsyncEnumerable<TEntity> FindAsync(Query<TEntity> query);
+
     IAsyncEnumerable<TEntity> FindAsync(
         IQuerySpecification<TEntity> specification,
         SortRequest? sort = null,

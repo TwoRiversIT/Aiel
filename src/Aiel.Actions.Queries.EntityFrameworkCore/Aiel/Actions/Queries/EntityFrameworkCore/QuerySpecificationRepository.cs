@@ -33,6 +33,9 @@ public class QuerySpecificationRepository<TEntity, TDbContext>(TDbContext contex
     private readonly TDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private Boolean _disposed;
 
+    public IAsyncEnumerable<TEntity> FindAsync(Query<TEntity> query)
+        => FindAsync(query.Specification, query.SortRequest, query.PageRequest);
+
     public IAsyncEnumerable<TEntity> FindAsync(
         IQuerySpecification<TEntity> specification,
         SortRequest? sort = null,

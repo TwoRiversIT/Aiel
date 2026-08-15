@@ -22,7 +22,7 @@
 
 namespace Aiel.Actions.Queries.Specifications;
 
-public class RepositoryTests(SpecificationTestFixture fixture, ITestOutputHelper outputHelper)
+public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture, ITestOutputHelper outputHelper)
     : SpecificationTestBase(fixture, outputHelper)
 {
     [Fact]
@@ -107,6 +107,16 @@ public class RepositoryTests(SpecificationTestFixture fixture, ITestOutputHelper
     }
 
     [Fact]
+    public async Task Query()
+    {
+        var people = await SUT.FindAsync(new ListPeople())
+                              .ToListAsync(CancellationToken);
+
+        people.Should().HaveCount(4);
+        people.Should().BeInAscendingOrder(p => p.Name);
+    }
+
+    [Fact]
     public async Task UserIsAgeOfMajority()
     {
         var spec = new UserIsAgeOfMajority(TimeProvider);
@@ -133,5 +143,12 @@ public class RepositoryTests(SpecificationTestFixture fixture, ITestOutputHelper
         }
 
         return count;
+    }
+
+    private class ListPeople : Query<Person>
+    {
+        public ListPeople() : base(new QuerySpecification<Person>(_ => true), new SortRequest([new SortField(nameof(Person.Name))]))
+        {
+        }
     }
 }

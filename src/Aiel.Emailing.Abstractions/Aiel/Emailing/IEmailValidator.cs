@@ -30,7 +30,7 @@ public interface IEmailValidator
     /// <remarks>
     /// <returns><c>true</c> if the email is in a valid format; otherwise, <c>false</c>.</returns>
     /// <param name="email">An email address.</param>
-    Boolean IsValid(String email);
+    Boolean IsValid(String? email);
 
     /// <summary>
     /// Determines if the <paramref name="emailAddress"/> is a valid format.
@@ -44,5 +44,5 @@ public interface IEmailValidator
     /// </remarks>
     /// <returns><c>true</c> if the name and email are valid; otherwise, <c>false</c>.</returns>
     /// <param name="emailAddress">An email address.</param>
-    Boolean IsValid(EmailAddress emailAddress);
+    Boolean IsValid(EmailAddress? emailAddress);
 }

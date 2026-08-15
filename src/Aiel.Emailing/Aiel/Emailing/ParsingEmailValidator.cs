@@ -202,9 +202,9 @@ public class ParsingEmailValidator(IOptions<ParsingEmailValidatorOptions> option
             || result is UriHostNameType.IPv4;
     }
 
-    public Boolean IsValid(EmailAddress emailAddress)
+    public Boolean IsValid(EmailAddress? emailAddress)
     {
-        if (String.IsNullOrWhiteSpace(emailAddress.Name))
+        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
         {
             return false;
         }

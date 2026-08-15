@@ -20,20 +20,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Text.RegularExpressions;
+
 namespace Aiel.Emailing;
 
-public static class EmailValidator
+public partial class PatternEmailValidator : IEmailValidator
 {
-    public static IEmailValidator Instance { get; private set; } = new PatternEmailValidator();
-
-    public static Boolean IsValid(String email) => Instance.IsValid(email);
-
-    public static Boolean IsValid(EmailAddress emailAddress) => Instance.IsValid(emailAddress);
-
-    public static void SetValidator(IEmailValidator validator)
+    public Boolean IsValid(String? email)
     {
-        ArgumentNullException.ThrowIfNull(validator);
+        if (String.IsNullOrWhiteSpace(email) || email.Length is < 3 or >= 255)
+        {
+            return false;
+        }
 
-        Instance = validator;
+        return GeneralEmail().IsMatch(email);
     }
+
+    public Boolean IsValid(EmailAddress? emailAddress)
+    {
+        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
+        {
+            return false;
+        }
+
+        return IsValid(emailAddress.Email);
+    }
+
+    [GeneratedRegex("^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    private static partial Regex GeneralEmail();
 }

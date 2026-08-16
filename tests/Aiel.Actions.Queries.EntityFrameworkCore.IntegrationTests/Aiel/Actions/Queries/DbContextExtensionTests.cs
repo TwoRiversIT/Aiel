@@ -49,7 +49,7 @@ public sealed class ListPeople(SortRequest? sortRequest = null, PageRequest? pag
     : ListQuery<PersonDto>(sortRequest ?? DefaultSort, pageRequest ?? PageRequest.Default)
 {
     public static readonly SortRequest DefaultSort = new([
-        new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending),
+        new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending)
     ]);
 }
 

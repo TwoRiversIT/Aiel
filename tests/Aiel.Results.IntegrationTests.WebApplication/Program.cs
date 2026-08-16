@@ -39,6 +39,21 @@ public class Program
 
         app.MapGet("/failure", () => Task.FromResult(Result<IntrinsicTypes>.Failure(new SimpleError("Missing"))));
 
+        app.MapGet("/collection/success", () => Task.FromResult(Result<IEnumerable<IntrinsicTypes>>.Success([new IntrinsicTypes(), new IntrinsicTypes() {
+            BoolValue = true,
+            DateTimeValue = DateTime.UtcNow,
+            DecimalValue = 1.23m,
+            DoubleValue = 4.56,
+            FloatValue = 7.89f,
+            GuidValue = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            IntValue = 84,
+            StringValue = "Hello, World!"
+        }])));
+
+        app.MapGet("/collection/failure", () => Task.FromResult(Result<IEnumerable<IntrinsicTypes>>.Failure(new SimpleError("Missing"))));
+
+        app.MapGet("/error", () => Task.FromResult(Result.Failure(new TransactionError("Transaction Error") { Reason = TransactionFailureReason.InsufficientFunds, TransactionId = "11111111-1111-1111-1111-111111111111" })));
+
         app.Run();
     }
 }

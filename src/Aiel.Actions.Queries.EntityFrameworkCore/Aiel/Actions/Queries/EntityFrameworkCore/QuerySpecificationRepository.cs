@@ -40,22 +40,22 @@ public class QuerySpecificationRepository<TEntity, TDbContext>(TDbContext contex
         IQuerySpecification<TEntity> specification,
         SortRequest? sort = null,
         PageRequest? page = null)
-        => _context.GetQueryable(specification, sort, page).AsAsyncEnumerable();
+        => _context.GetQueryable(sort, page, specification).AsAsyncEnumerable();
 
     public async Task<TEntity?> GetAsync(
         IQuerySpecification<TEntity> specification,
         SortRequest? sort = null,
         CancellationToken cancellationToken = default)
-        => await _context.GetQueryable(specification, sort).SingleOrDefaultAsync(cancellationToken);
+        => await _context.GetQueryable(sort, specification: specification).SingleOrDefaultAsync(cancellationToken);
 
     public async Task<Boolean> AnyAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        => await _context.GetQueryable(specification).AnyAsync(cancellationToken);
+        => await _context.GetQueryable(specification: specification).AnyAsync(cancellationToken);
 
     public async Task<Boolean> AnyAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().AnyAsync(predicate, cancellationToken);
 
     public async Task<Int32> CountAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        => await _context.GetQueryable(specification).CountAsync(cancellationToken);
+        => await _context.GetQueryable(specification: specification).CountAsync(cancellationToken);
 
     public async Task<Int32> CountAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().CountAsync(predicate, cancellationToken);
@@ -64,7 +64,7 @@ public class QuerySpecificationRepository<TEntity, TDbContext>(TDbContext contex
         IQuerySpecification<TEntity> specification,
         SortRequest? sort = null,
         PageRequest? page = null)
-        => _context.GetQueryable(specification, sort, page);
+        => _context.GetQueryable(sort, page, specification);
 
     protected virtual void Dispose(Boolean disposing)
     {

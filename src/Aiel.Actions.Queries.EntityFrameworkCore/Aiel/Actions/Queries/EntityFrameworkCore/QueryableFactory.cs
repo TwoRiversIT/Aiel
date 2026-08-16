@@ -22,10 +22,11 @@
 
 using Aiel.Actions.Queries.Specifications;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Aiel.Actions.Queries.EntityFrameworkCore;
 
-public static class SpecificationQueryableFactory
+public static class QueryableFactory
 {
     public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, IListQuery queryList, IQuerySpecification<TEntity> specification)
         where TEntity : class
@@ -34,21 +35,38 @@ public static class SpecificationQueryableFactory
         ArgumentNullException.ThrowIfNull(queryList);
         ArgumentNullException.ThrowIfNull(specification);
 
-        return GetQueryable(dbContext, specification, queryList.SortRequest, queryList.PageRequest);
+        return GetQueryable(dbContext, queryList.SortRequest, queryList.PageRequest, specification);
     }
 
-    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext,
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
-        PageRequest? page = null)
-    where TEntity : class
+    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, IListQuery listQuery, Expression<Func<TEntity, Boolean>> predicate)
+        where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
-        ArgumentNullException.ThrowIfNull(specification);
+        ArgumentNullException.ThrowIfNull(listQuery);
+        ArgumentNullException.ThrowIfNull(predicate);
 
-        var query = dbContext.Set<TEntity>().AsQueryable();
+        return dbContext.GetQueryable(listQuery.SortRequest, listQuery.PageRequest, predicate);
+    }
 
-        query = query.Where(specification.ToExpression());
+    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, SortRequest? sort = null, PageRequest? page = null, IQuerySpecification<TEntity>? specification = null)
+        where TEntity : class
+    {
+        ArgumentNullException.ThrowIfNull(dbContext);
+
+        return dbContext.GetQueryable(sort, page, specification?.ToExpression());
+    }
+
+    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, SortRequest? sort = null, PageRequest? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
+        where TEntity : class
+    {
+        ArgumentNullException.ThrowIfNull(dbContext);
+
+        var query = dbContext.GetQueryable<TEntity>();
+
+        if (predicate is not null)
+        {
+            query = query.Where(predicate);
+        }
 
         if (sort?.HasValues == true)
         {
@@ -61,5 +79,12 @@ public static class SpecificationQueryableFactory
         }
 
         return query;
+    }
+
+    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext)
+        where TEntity : class
+    {
+        ArgumentNullException.ThrowIfNull(dbContext);
+        return dbContext.Set<TEntity>().AsQueryable();
     }
 }

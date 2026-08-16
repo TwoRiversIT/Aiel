@@ -22,8 +22,59 @@
 
 namespace Aiel.Actions.Queries;
 
-public abstract class ListQuery<TDto>(SortRequest sortRequest, PageRequest? pageRequest) : IListQuery<TDto>
+public abstract class ListQuery<TDto> : IListQuery<TDto>
 {
-    public SortRequest SortRequest { get; set; } = sortRequest ?? SortRequest.Empty;
-    public PageRequest PageRequest { get; set; } = pageRequest ?? PageRequest.Default;
+    protected ListQuery() {}
+
+    protected ListQuery(SortRequest? sortRequest = null, PageRequest? pageRequest = null)
+    {
+        SortRequest = sortRequest ?? SortRequest.Empty;
+        PageRequest = pageRequest ?? PageRequest.Default;
+    }
+
+    public SortRequest SortRequest { get; set; } = SortRequest.Empty;
+    public PageRequest PageRequest { get; set; } = PageRequest.Default;
+}
+
+public abstract class ListQueryResult
+{
+    protected ListQueryResult() { }
+    protected ListQueryResult(Int32 totalRecords, Int32 pageNo, Int32 pageSize)
+    {
+        TotalRecords = totalRecords;
+        PageNo = pageNo;
+        PageSize = pageSize;
+    }
+
+    private Int32 _pageSize = 10;
+    private Int32 _pageNo;
+
+    public Int32 TotalRecords { get; set; }
+
+    public Int32 TotalPages => TotalRecords % PageSize == 0
+        ? TotalRecords / PageSize
+        : (TotalRecords / PageSize) + 1;
+
+    public Int32 PageNo
+    {
+        get => _pageNo;
+        set => _pageNo = value < 0 ? 0 : value;
+    }
+
+    public Int32 PageSize
+    {
+        get => _pageSize;
+        set => _pageSize = value <= 0 ? Int32.MaxValue : value;
+    }
+}
+
+public class ListQueryResult<TDto> : ListQueryResult
+    where TDto : class
+{
+    public ListQueryResult() { }
+    public ListQueryResult(Int32 totalRecords, Int32 pageNo, Int32 pageSize) : base(totalRecords, pageNo, pageSize)
+    {
+    }
+
+    public ICollection<TDto> Records { get; init; } = [];
 }

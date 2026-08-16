@@ -141,9 +141,13 @@ jobs:
       - name: Show version used for packing
         run: cat ./version-info/version.json
 
-      # dotnet pack expects the compiled DLLs to be in the project folder structure
+      - name: Restore package assets
+        run: dotnet restore Aiel.slnx
+
+      # The uploaded artifact stores paths relative to src/, so restore each
+      # project directory back under src/ before packing.
       - name: Restore build output into project directories
-        run: cp -r ./build-output/src ./src
+        run: cp -r ./build-output/* ./src
 
       - name: Pack Aiel.Logging.Analyzers
         run: |
@@ -152,9 +156,9 @@ jobs:
             --no-build \
             --output ./artifacts
 
-      - name: Pack Aiel.Logging.CodeFixes
+      - name: Pack Aiel.Logging.Analyzers.CodeFixes
         run: |
-          dotnet pack src/Aiel.Logging.CodeFixes/Aiel.Logging.CodeFixes.csproj \
+          dotnet pack src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj \
             --configuration Release \
             --no-build \
             --output ./artifacts

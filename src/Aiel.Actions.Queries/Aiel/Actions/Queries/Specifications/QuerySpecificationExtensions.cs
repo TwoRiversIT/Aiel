@@ -24,9 +24,9 @@ namespace Aiel.Actions.Queries.Specifications;
 
 public static class QuerySpecificationExtensions
 {
-    public static QuerySpecification<T> And<T>(this QuerySpecification<T> left, QuerySpecification<T> right) => left & right;
+    public static EntitySpecification<T> And<T>(this EntitySpecification<T> left, EntitySpecification<T> right) => left & right;
 
-    public static QuerySpecification<T> Or<T>(this QuerySpecification<T> left, QuerySpecification<T> right) => left | right;
+    public static EntitySpecification<T> Or<T>(this EntitySpecification<T> left, EntitySpecification<T> right) => left | right;
 
-    public static QuerySpecification<T> Not<T>(this QuerySpecification<T> _, QuerySpecification<T> right) => !right;
+    public static EntitySpecification<T> Not<T>(this EntitySpecification<T> _, EntitySpecification<T> right) => !right;
 }

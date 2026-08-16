@@ -21,37 +21,41 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Events;
+using Aiel.EventSourcing;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
-public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
+public abstract class EventSourcedAggregateRoot<TKey> : AggregateRoot<TKey>, IRehydrateFromHistory
     where TKey : notnull, IStrongId
 {
-    private readonly List<IDomainEvent> _domainEvents = [];
-
-    public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents;
-
-    protected AggregateRoot(TKey id)
+    protected EventSourcedAggregateRoot(TKey id)
         : base(id)
     {
     }
 
-    protected AggregateRoot()
+    protected EventSourcedAggregateRoot()
     {
     }
 
-    protected void RaiseEvent(IDomainEvent domainEvent)
-    {
-        ArgumentNullException.ThrowIfNull(domainEvent);
+    protected abstract void Apply(IDomainEvent domainEvent);
 
-        OnRaiseEvent(domainEvent);
-        _domainEvents.Add(domainEvent);
+    protected override void OnRaiseEvent(IDomainEvent domainEvent)
+    {
+        Apply(domainEvent);
+        Version++;
     }
 
-    protected virtual void OnRaiseEvent(IDomainEvent domainEvent)
+    void IRehydrateFromHistory.RehydrateFromHistory(IEnumerable<IDomainEvent> history)
     {
-    }
+        ArgumentNullException.ThrowIfNull(history);
 
-    public void ClearDomainEvents() => _domainEvents.Clear();
+        foreach (var domainEvent in history)
+        {
+            ArgumentNullException.ThrowIfNull(domainEvent);
+
+            Apply(domainEvent);
+            Version++;
+        }
+    }
 }

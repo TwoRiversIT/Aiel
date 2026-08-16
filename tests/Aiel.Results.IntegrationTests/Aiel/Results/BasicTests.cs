@@ -42,7 +42,7 @@ public class BasicTests(WebApplicationFactory<Program> factory)
 
         // Act
         var json = await client.GetStringAsync("/success", TestContext.Current.CancellationToken);
-        //var result = await client.GetResultAsync<Result<IntrinsicTypes>>("/success", TestContext.Current.CancellationToken);
+
         var result = JsonSerializer.Deserialize<Result<IntrinsicTypes>>(json, options);
 
         // Assert
@@ -59,12 +59,74 @@ public class BasicTests(WebApplicationFactory<Program> factory)
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync<Result<IntrinsicTypes>>("/failure", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync<IntrinsicTypes>("/failure", TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().NotBeNull();
         result.Error.IsErrorType<SimpleError>().Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Success_Collection_Result_CanBeDeserialized()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        // Act
+        var result = await client.GetResultAsync<IReadOnlyList<IntrinsicTypes>>("/collection/success", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.IsSuccess.Should().BeTrue();
+        result.Error.Should().NotBeNull();
+        result.Error.IsErrorType<NoError>().Should().BeTrue();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().HaveCount(2);
+        result.Value[1].BoolValue.Should().BeTrue();
+        result.Value[1].DateTimeValue.Should().NotBe(DateTime.MinValue);
+        result.Value[1].DecimalValue.Should().Be(1.23m);
+        result.Value[1].DoubleValue.Should().Be(4.56);
+        result.Value[1].FloatValue.Should().Be(7.89f);
+        result.Value[1].GuidValue.Should().Be(Guid.Parse("11111111-1111-1111-1111-111111111111"));
+        result.Value[1].IntValue.Should().Be(84);
+        result.Value[1].StringValue.Should().Be("Hello, World!");
+    }
+
+    [Fact]
+    public async Task Failure_Collection_Result_CanBeDeserialized()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        // Act
+        var result = await client.GetResultAsync<IReadOnlyList<IntrinsicTypes>>("/collection/failure", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().NotBeNull();
+        result.Error.IsErrorType<SimpleError>().Should().BeTrue();
+        result.Value.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ComplexError_Result_CanBeDeserialized()
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        // Act
+        var result = await client.GetResultAsync("/error", TestContext.Current.CancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.IsSuccess.Should().BeFalse();
+        result.Error.Should().NotBeNull();
+        var error = result.Error as TransactionError;
+        error.Should().NotBeNull();
+        error.TransactionId.Should().Be("11111111-1111-1111-1111-111111111111");
+        error.Reason.Should().Be(TransactionFailureReason.InsufficientFunds);
     }
 }

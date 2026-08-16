@@ -24,9 +24,9 @@ using Aiel.Actions.Queries.Specifications;
 
 namespace Aiel.Actions.Queries;
 
-public abstract class Query<T>(IQuerySpecification<T> specification, SortRequest? sortRequest = null, PageRequest? pageRequest = null) : IQuery<T>
+public class Query<T> : IQuery<T>
 {
-    public IQuerySpecification<T> Specification { get; set; } = specification ?? throw new ArgumentNullException(nameof(specification));
-    public SortRequest SortRequest { get; } = sortRequest ?? SortRequest.Empty;
-    public PageRequest PageRequest { get; } = pageRequest ?? PageRequest.Default;
+    public required IQuerySpecification<T> Specification { get; set; }
+    public SortRequest SortRequest { get; set; } = SortRequest.Empty;
+    public PageRequest PageRequest { get; set; } = PageRequest.Default;
 }

@@ -24,9 +24,8 @@ using Aiel.Actions.Queries.EntityFrameworkCore;
 using Aiel.Framework;
 using Aiel.Testing;
 
-namespace Aiel.Actions.Queries.Specifications;
+namespace Aiel.Actions.Queries;
 
 [DependsOn(typeof(AielActionsQueriesEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]
 public sealed class AielActionsQueriesEntityFrameworkCoreIntegrationTests : AielDependencyConfigurator;
-

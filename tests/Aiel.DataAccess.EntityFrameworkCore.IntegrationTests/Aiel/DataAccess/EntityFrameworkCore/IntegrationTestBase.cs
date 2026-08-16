@@ -20,9 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.DataAccess.EntityFrameworkCore;
@@ -37,17 +37,19 @@ public abstract class EFCoreIntegrationTestFixture : IntegrationTestFixture
         new FamilyMember(Guid.NewGuid(), "Geordi",DateTime.SpecifyKind( new DateTime(2011, 9, 14), DateTimeKind.Utc))
     ];
 
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         var instance = Guid.NewGuid().ToString();
-        services.AddDbContext<IntegrationTestDbContext>(options =>
+        context.Services.AddDbContext<IntegrationTestDbContext>(options =>
             options.UseInMemoryDatabase(instance)
                    .EnableSensitiveDataLogging(true));
+
+        return ValueTask.CompletedTask;
     }
 
-    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+    public override async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
-        var dbContext = services.GetRequiredService<IntegrationTestDbContext>();
+        var dbContext = context.Services.GetRequiredService<IntegrationTestDbContext>();
 
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 

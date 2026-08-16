@@ -55,9 +55,11 @@ public abstract class IntegrationTestBase<TFixture>
     }
 
     /// <summary>
-    /// Asynchronously initializes the test fixture, preparing it for use in test execution.
+    /// Do not override this method! You have been warned!
     /// </summary>
-    /// <returns>A task that represents the asynchronous initialization operation.</returns>
+    /// <remarks>
+    /// This method is called by the test framework to initialize the test class and its dependencies.
+    /// </remarks>
     public async ValueTask InitializeAsync()
     {
         if (Fixture is IAsyncTestFixture asyncFixture)

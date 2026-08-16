@@ -20,16 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.EntityFrameworkCore;
+using Aiel.StrongIds;
 
-namespace Aiel.Actions.Queries.Specifications;
+namespace Aiel.Domain;
 
-public sealed class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options)
+public abstract class StateBasedAggregateRoot<TKey> : AggregateRoot<TKey>
+    where TKey : notnull, IStrongId
 {
-    public DbSet<Person> People { get; set; } = default!;
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected StateBasedAggregateRoot(TKey id)
+        : base(id)
     {
-        modelBuilder.Entity<Person>().HasKey(x => x.UID).HasName("Id");
+    }
+
+    protected StateBasedAggregateRoot()
+    {
     }
 }

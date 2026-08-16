@@ -21,32 +21,45 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions.Queries.Specifications;
+using Microsoft.EntityFrameworkCore;
 
-namespace Aiel.Actions.Queries.EntityFrameworkCore;
+namespace Aiel.Actions.Queries;
 
-public static class QuerySpecificationEvaluator<TEntity> where TEntity : class
+public record Person(Guid UID, String Name, DateOnly DateOfBirth, Gender Gender);
+public record PersonDto(Guid UID, String Name, DateOnly DateOfBirth, Gender Gender);
+
+[Flags]
+public enum Gender
 {
-    public static IQueryable<TEntity> GetQuery(
-        IQueryable<TEntity> query,
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
-        PageRequest? page = null)
+    Unknown = 0,
+    Female = 1,
+    Male = 2,
+    Other = 4
+}
+
+public class QueryPeople() : ListQuery<PersonDto>(DefaultSort, PageRequest.Default)
+{
+    public static readonly SortRequest DefaultSort = new([
+        new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending),
+        new SortField(nameof(PersonDto.Name))
+    ]);
+}
+
+public class HasGender(Gender gender) : EntitySpecification<Person>(user => (gender & user.Gender) != 0)
+{
+}
+
+public class IsAgeOfMajority(DateOnly date, Int32 age = 18)
+    : EntitySpecification<Person>(user => user.DateOfBirth <= date.AddYears(-age))
+{
+}
+
+public sealed class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options)
+{
+    public DbSet<Person> People { get; set; } = default!;
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        ArgumentNullException.ThrowIfNull(query);
-        ArgumentNullException.ThrowIfNull(specification);
-
-        query = query.Where(specification.ToExpression());
-
-        if (sort?.HasValues == true)
-        {
-            query = query.ApplySorting(sort);
-        }
-
-        if (page is not null)
-        {
-            query = query.ApplyPaging(page);
-        }
-
-        return query;
+        modelBuilder.Entity<Person>().HasKey(x => x.UID).HasName("Id");
     }
 }

@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Configuration;
+using Aiel.Framework;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
@@ -200,8 +200,10 @@ public class TestFixture : IntegrationTestFixture
     /// <summary>
     /// Configures the services for the test fixture.
     /// </summary>
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        services.AddSingleton<DummyService>();
+        context.Services.AddSingleton<DummyService>();
+
+        return ValueTask.CompletedTask;
     }
 }

@@ -37,8 +37,6 @@ public sealed class WebApplicationInitializationContext(IApplicationBuilder webA
     private readonly IEndpointRouteBuilder _endpointRouteBuilder = webApplication as IEndpointRouteBuilder
         ?? throw new AielException("The provided IApplicationBuilder must implement IEndpointRouteBuilder.");
 
-    public IServiceProvider Services => _host.Services;
-
     public Task StartAsync(CancellationToken cancellationToken = default)
         => _host.StartAsync(cancellationToken);
 

@@ -28,8 +28,6 @@ public sealed class HostApplicationInitializationContext(IHost host) : Initializ
 {
     private readonly IHost _host = host ?? throw new ArgumentNullException(nameof(host));
 
-    public IServiceProvider Services => _host.Services;
-
     public Task StartAsync(CancellationToken cancellationToken = default)
         => _host.StartAsync(cancellationToken);
 

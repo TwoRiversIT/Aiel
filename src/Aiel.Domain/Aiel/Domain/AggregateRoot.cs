@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Events;
-using Aiel.EventSourcing;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain;
@@ -56,51 +55,3 @@ public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
 
     public void ClearDomainEvents() => _domainEvents.Clear();
 }
-
-public abstract class StateBasedAggregateRoot<TKey> : AggregateRoot<TKey>
-    where TKey : notnull, IStrongId
-{
-    protected StateBasedAggregateRoot(TKey id)
-        : base(id)
-    {
-    }
-
-    protected StateBasedAggregateRoot()
-    {
-    }
-}
-
-public abstract class EventSourcedAggregateRoot<TKey> : AggregateRoot<TKey>, IRehydrateFromHistory
-    where TKey : notnull, IStrongId
-{
-    protected EventSourcedAggregateRoot(TKey id)
-        : base(id)
-    {
-    }
-
-    protected EventSourcedAggregateRoot()
-    {
-    }
-
-    protected abstract void Apply(IDomainEvent domainEvent);
-
-    protected override void OnRaiseEvent(IDomainEvent domainEvent)
-    {
-        Apply(domainEvent);
-        Version++;
-    }
-
-    void IRehydrateFromHistory.RehydrateFromHistory(IEnumerable<IDomainEvent> history)
-    {
-        ArgumentNullException.ThrowIfNull(history);
-
-        foreach (var domainEvent in history)
-        {
-            ArgumentNullException.ThrowIfNull(domainEvent);
-
-            Apply(domainEvent);
-            Version++;
-        }
-    }
-}
-

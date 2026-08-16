@@ -22,8 +22,8 @@
 
 using Aiel.Authorization.EntityFrameworkCore;
 using Aiel.Authorization.Testing;
+using Aiel.Framework;
 using Aiel.Testing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
@@ -43,9 +43,9 @@ public sealed class AuthorizationEfCoreFixture : IntegrationTestFixture
 
     private String _connectionString = String.Empty;
 
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        services.AddSingleton<TimeProvider>(TimeProvider);
+        context.Services.AddSingleton<TimeProvider>(TimeProvider);
 
         var manifests = new[]
         {
@@ -53,19 +53,21 @@ public sealed class AuthorizationEfCoreFixture : IntegrationTestFixture
             AuthorizationTestData.CreateRescheduleAppointmentManifest(),
         };
 
-        services.AddSingleton<IAuthorizationDefinitionRegistry>(new FakePermissionDefinitionRegistry(manifests));
+        context.Services.AddSingleton<IAuthorizationDefinitionRegistry>(new FakePermissionDefinitionRegistry(manifests));
 
-        services.AddScoped<IAuthorizationManager, DefaultPermissionManager>();
+        context.Services.AddScoped<IAuthorizationManager, DefaultPermissionManager>();
 
-        services.AddPermissionsNpgsql(GetConnectionString, options => options.EnableRetryOnFailure());
+        context.Services.AddPermissionsNpgsql(GetConnectionString, options => options.EnableRetryOnFailure());
+
+        return ValueTask.CompletedTask;
     }
 
-    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+    public override async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         await _postgresContainer.StartAsync(cancellationToken);
         _connectionString = _postgresContainer.GetConnectionString();
 
-        var initializer = services.GetRequiredService<AuthorizationDbInitializer>();
+        var initializer = context.Services.GetRequiredService<AuthorizationDbInitializer>();
         await initializer.EnsureCreatedAsync(cancellationToken);
     }
 

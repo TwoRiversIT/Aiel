@@ -20,26 +20,28 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.Testing;
 using Dapper;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.DataAccess.Dapper;
 
 public class ColumnMappingTestFixture : IntegrationTestFixture
 {
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        services.AddSingleton<IDbConnectionFactory, TestSqliteConnectionFactory>();
+        context.Services.AddSingleton<IDbConnectionFactory, TestSqliteConnectionFactory>();
+
+        return ValueTask.CompletedTask;
     }
 
     /// <summary>
     /// Initializes the test by creating an in-memory SQLite database.
     /// </summary>
-    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+    public override async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
-        var connection = await services.GetRequiredService<IDbConnectionFactory>().CreateConnectionAsync();
+        var connection = await context.Services.GetRequiredService<IDbConnectionFactory>().CreateConnectionAsync();
 
         ColumnMapper.MapTypesFromAssemblyContaining<Customer>();
 

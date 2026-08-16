@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Fakes;
 using Aiel.Framework;
 using Meziantou.Extensions.Logging.Xunit.v3;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +34,7 @@ namespace Aiel.Testing;
 /// <summary>
 /// Provides a concrete implementation of a test services that sets up a full .NET services with dependency injection for integration tests.
 /// </summary>
-public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncLifetime
+public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncLifetime, IConfigurator, IInitializer
 {
     private IHost? _host;
 
@@ -44,6 +45,11 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
     private Int32 _endCount;
 
     /// <summary>
+    /// Gets the configuration for the test fixture.
+    /// </summary>
+    public IConfiguration Configuration { get; private set; } = default!;
+
+    /// <summary>
     /// Gets or sets the test output helper used to capture and display test output.
     /// </summary>
     /// <remarks>Use this property to write diagnostic messages or additional information during test
@@ -51,167 +57,108 @@ public class IntegrationTestFixture : DisposableBase, IAsyncTestFixture, IAsyncL
     public ITestOutputHelper TestOutputHelper { get; set; } = default!;
 
     /// <summary>
-    /// Gets the configuration for the test fixture.
-    /// </summary>
-    public IConfiguration Configuration { get; private set; } = default!;
-
-    public FakeTimeProvider TimeProvider { get; } = new FakeTimeProvider();
-
-    /// <summary>
     /// Gets the dependency injection service provider for the current test scope.
     /// </summary>
     /// <exception cref="InvalidOperationException">Thrown when the fixture has not been initialized.</exception>
     public IServiceProvider Services => _testScope?.ServiceProvider
-        ?? throw new InvalidOperationException("Test scope has not been started. Call BeginTestAsync() before accessing Services.");
+        ?? throw new InvalidOperationException("The test scope has not been created. Did you override `InitializeAsync()` without calling `await base.InitializeAsync()`?");
 
     /// <summary>
-    /// Configures the fixture before tests run. Implementers should override <see cref="InitializeFixtureAsync(IServiceProvider)"/> to customize initialization.
+    /// Gets the fake time provider used to control and manipulate time during tests.
     /// </summary>
+    public FakeTimeProvider TimeProvider { get; } = new FakeTimeProvider();
+
+    /// <summary>
+    /// Do not override this method! You have been warned!
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This method is automatically called by the test framework to initialize the test fixture.
+    /// If you think you need to override this method, you are wrong.
+    /// Override <see cref="InitializeAsync(InitializationContext)"/> instead.
+    /// </para>
+    /// <para>
+    /// If the fixture is supplied via dependency injection, then this method will be called
+    /// before <see cref="IntegrationTestBase{TFixture}.InitializeAsync"/>
+    /// </para>
+    /// </remarks>
     public async ValueTask InitializeAsync()
     {
         _initializationCount++;
 
-        var settings = new HostApplicationBuilderSettings()
-        {
-            EnvironmentName = "Testing"
-        };
+        var builder = CreateBuilder();
 
-        await ConfigureSettingsAsync(settings, TestContext.Current.CancellationToken);
+        var configContext = new ConfigurationContext(FakeAielEnvironment.Create(), builder.Services, builder.Configuration);
 
-        var builder = Host.CreateEmptyApplicationBuilder(settings);
+        await PreConfigureAsync(configContext, TestContext.Current.CancellationToken);
 
-        await ConfigureBuilderAsync(builder, TestContext.Current.CancellationToken);
-
-        await ConfigureConfigurationAsync(builder.Configuration, TestContext.Current.CancellationToken);
-
-        await ConfigureLoggingAsync(builder.Logging, TestContext.Current.CancellationToken);
-
-        builder.Services.AddSingleton<ILoggerProvider>(_ => new XUnitLoggerProvider(TestOutputHelper, new XUnitLoggerOptions() { IncludeLogLevel = true, IncludeScopes = true }));
-
-        await ConfigureServicesAsync(builder.Services, builder.Configuration, TestContext.Current.CancellationToken);
+        await ConfigureAsync(configContext, TestContext.Current.CancellationToken);
 
         _host = builder.Build();
 
         Configuration = _host.Services.GetRequiredService<IConfiguration>();
 
-        using var scope = _host.Services.CreateScope();
-        await InitializeFixtureAsync(scope.ServiceProvider, TestContext.Current.CancellationToken);
+        using (var scope = _host.Services.CreateScope())
+        {
+            var initContext = new InitializationContext(scope.ServiceProvider);
+
+            await InitializeAsync(initContext, TestContext.Current.CancellationToken);
+        }
     }
 
-    /// <summary>
-    /// Called to configure services application builder settings before the services is created.
-    /// </summary>
-    /// <param name="settings">The services application builder settings to configure.</param>
-    /// <remarks>
-    /// Override this method in derived classes to customize services settings.
-    /// </remarks>
-    protected virtual void ConfigureSettings(HostApplicationBuilderSettings settings) { }
-    protected virtual ValueTask ConfigureSettingsAsync(HostApplicationBuilderSettings settings, CancellationToken cancellationToken = default)
+    protected virtual HostApplicationBuilder CreateBuilder()
     {
-        ConfigureSettings(settings);
+        var settings = new HostApplicationBuilderSettings()
+        {
+            EnvironmentName = "Testing"
+        };
 
-        return ValueTask.CompletedTask;
-    }
+        var builder = Host.CreateEmptyApplicationBuilder(settings);
 
-    /// <summary>
-    /// Allows derived fixtures to configure the base fixture's application builder.
-    /// </summary>
-    /// <remarks>This method is called during fixture initialization to allow customization of the host builder.
-    /// Derived classes can override this method to register services, modify configuration, or perform other setup
-    /// tasks before the application is built.</remarks>
-    /// <param name="builder">The host application builder to configure. Provides access to services, configuration, and other application
-    /// setup features.</param>
-    protected virtual void ConfigureBuilder(IHostApplicationBuilder builder) { }
-    protected virtual ValueTask ConfigureBuilderAsync(IHostApplicationBuilder builder, CancellationToken cancellationToken = default)
-    {
-        ConfigureBuilder(builder);
+        // appsettings.Testing.json is optional so local overrides never need to be committed for the fixture to load.
+        builder.Configuration
+            .SetBasePath(GetConfigurationBasePath())
+            .AddJsonFile("appsettings.Testing.json", optional: true);
 
-        return ValueTask.CompletedTask;
+        builder.Services.AddSingleton<ILoggerProvider>(_ => new XUnitLoggerProvider(TestOutputHelper, new XUnitLoggerOptions()
+        {
+            IncludeLogLevel = true,
+            IncludeScopes = true
+        }));
+
+        builder.Services.AddSingleton<TimeProvider>(_ => TimeProvider);
+
+        builder.Services.AddSingleton<IAielEnvironment>(FakeAielEnvironment.Create());
+
+        return builder;
     }
 
     /// <summary>
     /// Gets the base path used when loading integration-test configuration files.
     /// </summary>
     /// <remarks>
-    /// Override this method when a fixture needs to load configuration from a directory other than the current working
-    /// directory.
+    /// Override this method when a fixture needs to load appsettings.json from a
+    /// directory other than the current working directory.
     /// </remarks>
-    protected virtual String GetConfigurationBasePath()
-    {
-        return Directory.GetCurrentDirectory();
-    }
+    protected virtual String GetConfigurationBasePath() => Directory.GetCurrentDirectory();
+
+    // <inheritdoc />
+    public virtual ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+
+    // <inheritdoc />
+    public virtual ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+
+    // <inheritdoc />
+    public virtual ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 
     /// <summary>
-    /// Called to configure the configuration builder before services are configured.
-    /// </summary>
-    /// <param name="builder">The configuration builder to configure.</param>
-    /// <remarks>
-    /// By default, this loads appsettings.Testing.json from <see cref="GetConfigurationBasePath"/> when the file is
-    /// present and otherwise uses the host defaults.
-    /// Override this method in derived classes to customize configuration loading.
-    /// </remarks>
-    protected virtual void ConfigureConfiguration(IConfigurationBuilder builder)
-    {
-        var basePath = GetConfigurationBasePath();
-
-        builder.SetBasePath(basePath)
-            // appsettings.Testing.json is optional so local overrides never need to be committed for the fixture to load.
-            .AddJsonFile("appsettings.Testing.json", optional: true);
-    }
-    protected virtual ValueTask ConfigureConfigurationAsync(IConfigurationBuilder builder, CancellationToken cancellationToken = default)
-    {
-        ConfigureConfiguration(builder);
-
-        return ValueTask.CompletedTask;
-    }
-
-    /// <summary>
-    /// Configures the application's logging services.
-    /// </summary>
-    /// <remarks>Override this method to customize logging configuration for the application. By default, no
-    /// additional configuration is applied.</remarks>
-    /// <param name="logging">The <see cref="ILoggingBuilder"/> instance used to configure logging providers and settings.</param>
-    /// <returns>The <see cref="ILoggingBuilder"/> instance after applying any custom logging configuration.</returns>
-    protected virtual void ConfigureLogging(ILoggingBuilder logging) { }
-    protected virtual ValueTask ConfigureLoggingAsync(ILoggingBuilder logging, CancellationToken cancellationToken = default)
-    {
-        ConfigureLogging(logging);
-
-        return ValueTask.CompletedTask;
-    }
-
-    /// <summary>
-    /// Called to configure dependency injection services for the test services.
-    /// </summary>
-    /// <param name="services">The service collection to configure.</param>
-    /// <param name="configuration">The configuration instance to use.</param>
-    /// <remarks>
-    /// Override this method in derived classes to register services needed for tests.
-    /// </remarks>
-    protected virtual void ConfigureServices(IServiceCollection services, IConfiguration configuration) { }
-    protected virtual ValueTask ConfigureServicesAsync(IServiceCollection services, IConfiguration configuration, CancellationToken cancellationToken = default)
-    {
-        ConfigureServices(services, configuration);
-
-        return ValueTask.CompletedTask;
-    }
-
-    /// <summary>
-    /// Provides an opportunity to configure the services instance before tests run.
-    /// </summary>
-    /// <remarks>Override this method in a derived class to apply custom configuration to the services. This
-    /// method is called before the tests are started, allowing for additional setup or service registration.</remarks>
-    /// <param name="services">The services to configure. Cannot be null.</param>
-    protected virtual ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
-
-    /// <summary>
-    /// Called before each test to initialize the test scope.
+    /// Called before each test to ensure the test scope has been created.
     /// </summary>
     ValueTask IAsyncTestFixture.BeginTestAsync()
     {
         if (_initializationCount != 1 || _host is null)
         {
-            throw new InvalidOperationException("Fixture has not been initialized. Ensure your fixture is overriding InitializeFixtureAsync(IServiceProvider) and not InitializeAsync() before beginning tests.");
+            throw new InvalidOperationException("Fixture has not been initialized. Ensure your fixture is overriding InitializeAsync(InitializationContext) and not InitializeAsync().");
         }
 
         _beginCount++;

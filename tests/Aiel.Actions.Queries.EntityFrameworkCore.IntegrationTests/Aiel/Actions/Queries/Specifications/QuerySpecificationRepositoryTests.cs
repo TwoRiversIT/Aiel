@@ -22,13 +22,15 @@
 
 namespace Aiel.Actions.Queries.Specifications;
 
-public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture, ITestOutputHelper outputHelper)
-    : SpecificationTestBase(fixture, outputHelper)
+public class QuerySpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutputHelper outputHelper)
+    : QueriesTestBase(fixture, outputHelper)
 {
+    private DateOnly Today => DateOnly.FromDateTime(TimeProvider.GetUtcNow().Date);
+
     [Fact]
     public async Task And()
     {
-        var spec = new UserIsAgeOfMajority(TimeProvider).And(new UserHasGender(Gender.Male));
+        var spec = new IsAgeOfMajority(Today).And(new HasGender(Gender.Male));
 
         var count = await CountAsync(spec);
         count.Should().Be(1);
@@ -37,7 +39,7 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task Any()
     {
-        var any = await SUT.AnyAsync(p => p.DateOfBirth == new DateTime(1974, 10, 16), CancellationToken);
+        var any = await SUT.AnyAsync(p => p.DateOfBirth == new DateOnly(1974, 10, 16), CancellationToken);
 
         any.Should().BeTrue();
     }
@@ -53,7 +55,7 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task Not()
     {
-        var spec = !new UserIsAgeOfMajority(TimeProvider);
+        var spec = !new IsAgeOfMajority(Today);
 
         var count = await CountAsync(spec);
         count.Should().Be(3);
@@ -62,7 +64,7 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task Or()
     {
-        var spec = new UserIsAgeOfMajority(TimeProvider).Or(new UserHasGender(Gender.Male));
+        var spec = new IsAgeOfMajority(Today).Or(new HasGender(Gender.Male));
 
         var count = await CountAsync(spec);
         count.Should().Be(2);
@@ -71,7 +73,7 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task OrderBy()
     {
-        var spec = new QuerySpecification<Person>(_ => true);
+        var spec = new EntitySpecification<Person>(_ => true);
 
         await foreach (var person in SUT.FindAsync(spec, new SortRequest([new SortField(nameof(Person.Name))])))
         {
@@ -83,7 +85,7 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task OrderByDescending()
     {
-        var spec = new QuerySpecification<Person>(_ => true);
+        var spec = new EntitySpecification<Person>(_ => true);
 
         await foreach (var person in SUT.FindAsync(spec, new SortRequest([new SortField(nameof(Person.Name), SortDirection.Descending)])))
         {
@@ -95,7 +97,7 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task Paging()
     {
-        var spec = new QuerySpecification<Person>(_ => true);
+        var spec = new EntitySpecification<Person>(_ => true);
 
         await foreach (var person in SUT.FindAsync(
             spec,
@@ -109,7 +111,8 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task Query()
     {
-        var people = await SUT.FindAsync(new ListPeople())
+        var query = new ListPeople() { Specification = new EntitySpecification<Person>(_ => true) };
+        var people = await SUT.FindAsync(query)
                               .ToListAsync(CancellationToken);
 
         people.Should().HaveCount(4);
@@ -119,7 +122,7 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task UserIsAgeOfMajority()
     {
-        var spec = new UserIsAgeOfMajority(TimeProvider);
+        var spec = new IsAgeOfMajority(Today);
 
         var count = await CountAsync(spec);
         count.Should().Be(1);
@@ -128,13 +131,13 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
     [Fact]
     public async Task UserHasGender()
     {
-        var spec = new UserHasGender(Gender.Female);
+        var spec = new HasGender(Gender.Female);
 
         var count = await CountAsync(spec);
         count.Should().Be(2);
     }
 
-    private async Task<Int32> CountAsync(QuerySpecification<Person> spec)
+    private async Task<Int32> CountAsync(EntitySpecification<Person> spec)
     {
         var count = 0;
         await foreach (var user in SUT.FindAsync(spec))
@@ -147,8 +150,10 @@ public class QuerySpecificationRepositoryTests(SpecificationTestFixture fixture,
 
     private class ListPeople : Query<Person>
     {
-        public ListPeople() : base(new QuerySpecification<Person>(_ => true), new SortRequest([new SortField(nameof(Person.Name))]))
+        public ListPeople()
         {
+            Specification = new EntitySpecification<Person>(_ => true);
+            SortRequest = new SortRequest([new SortField(nameof(Person.Name))]);
         }
     }
 }

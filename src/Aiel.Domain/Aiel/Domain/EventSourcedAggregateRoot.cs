@@ -20,14 +20,42 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Aiel.Domain.Events;
+using Aiel.EventSourcing;
+using Aiel.StrongIds;
 
-namespace Aiel.Framework
+namespace Aiel.Domain;
+
+public abstract class EventSourcedAggregateRoot<TKey> : AggregateRoot<TKey>, IRehydrateFromHistory
+    where TKey : notnull, IStrongId
 {
-    public class InitializationContext(IServiceProvider serviceProvider)
-        : DependencyContext(serviceProvider.GetRequiredService<IAielEnvironment>(), serviceProvider.GetRequiredService<IConfiguration>())
+    protected EventSourcedAggregateRoot(TKey id)
+        : base(id)
     {
-        public virtual IServiceProvider Services { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    }
+
+    protected EventSourcedAggregateRoot()
+    {
+    }
+
+    protected abstract void Apply(IDomainEvent domainEvent);
+
+    protected override void OnRaiseEvent(IDomainEvent domainEvent)
+    {
+        Apply(domainEvent);
+        Version++;
+    }
+
+    void IRehydrateFromHistory.RehydrateFromHistory(IEnumerable<IDomainEvent> history)
+    {
+        ArgumentNullException.ThrowIfNull(history);
+
+        foreach (var domainEvent in history)
+        {
+            ArgumentNullException.ThrowIfNull(domainEvent);
+
+            Apply(domainEvent);
+            Version++;
+        }
     }
 }

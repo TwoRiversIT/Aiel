@@ -21,19 +21,32 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions.Queries.Specifications;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.Actions.Queries.EntityFrameworkCore;
 
-public static class QuerySpecificationEvaluator<TEntity> where TEntity : class
+public static class SpecificationQueryableFactory
 {
-    public static IQueryable<TEntity> GetQuery(
-        IQueryable<TEntity> query,
+    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, IListQuery queryList, IQuerySpecification<TEntity> specification)
+        where TEntity : class
+    {
+        ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(queryList);
+        ArgumentNullException.ThrowIfNull(specification);
+
+        return GetQueryable(dbContext, specification, queryList.SortRequest, queryList.PageRequest);
+    }
+
+    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext,
         IQuerySpecification<TEntity> specification,
         SortRequest? sort = null,
         PageRequest? page = null)
+    where TEntity : class
     {
-        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(dbContext);
         ArgumentNullException.ThrowIfNull(specification);
+
+        var query = dbContext.Set<TEntity>().AsQueryable();
 
         query = query.Where(specification.ToExpression());
 

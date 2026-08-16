@@ -20,10 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Fakes;
 using Aiel.Framework;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Testing;
@@ -31,16 +28,11 @@ namespace Aiel.Testing;
 public class AielDependencyTestFixture<TConfigurator> : IntegrationTestFixture
     where TConfigurator : AielDependencyConfigurator, new()
 {
-    protected override async ValueTask ConfigureServicesAsync(IServiceCollection services, IConfiguration configuration, CancellationToken cancellationToken = default)
+    public override async ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        var context = new ConfigurationContext(
-            environment: FakeAielEnvironment.Create(),
-            services,
-            configuration);
-
         var root = context.BuildDependencyTree<TConfigurator>();
 
-        services.TryAddSingleton(root);
+        context.Services.TryAddSingleton(root);
 
         await root.ConfigureDependenciesAsync(context, cancellationToken);
     }

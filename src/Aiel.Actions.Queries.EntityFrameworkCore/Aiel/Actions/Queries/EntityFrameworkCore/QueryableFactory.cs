@@ -53,7 +53,7 @@ public static class QueryableFactory
     {
         ArgumentNullException.ThrowIfNull(dbContext);
 
-        return dbContext.GetQueryable(sort, page, specification);
+        return dbContext.GetQueryable(sort, page, specification?.ToExpression());
     }
 
     public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, SortRequest? sort = null, PageRequest? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)

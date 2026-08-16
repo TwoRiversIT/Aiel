@@ -21,54 +21,48 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions.Queries.EntityFrameworkCore;
+using Aiel.Framework;
 using Aiel.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Actions.Queries.Specifications;
+namespace Aiel.Actions.Queries;
 
-public class SpecificationTestFixture : IntegrationTestFixture
+public abstract class QueriesTestBase(QueriesTestFixture fixture, ITestOutputHelper outputHelper)
+    : IntegrationTestBase<QuerySpecificationRepository<Person, TestDbContext>, QueriesTestFixture>(fixture, outputHelper)
 {
-    protected override void ConfigureConfiguration(IConfigurationBuilder builder)
-    {
-        // By default, the base IntegrationTestFixutre tries to load appsettings.Testing.json.
-        // We do not need that for these tests, so we override this method to do nothing,
-        // preventing the base class from trying to load a configuration file that does not
-        // exist and throwing an exception.
-    }
+}
 
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+public class QueriesTestFixture : IntegrationTestFixture
+{
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         var instance = Guid.NewGuid().ToString();
 
-        services.AddDbContext<TestDbContext>(options =>
+        context.Services.AddDbContext<TestDbContext>(options =>
             options.UseInMemoryDatabase(instance)
                    .EnableSensitiveDataLogging(true));
 
-        services.AddScoped<QuerySpecificationRepository<Person, TestDbContext>>();
+        context.Services.AddScoped<QuerySpecificationRepository<Person, TestDbContext>>();
+
+        return ValueTask.CompletedTask;
     }
 
-    protected override async ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+    public override async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         TimeProvider.SetDate(2024, 01, 01);
 
-        var dbContext = services.GetRequiredService<TestDbContext>();
+        var dbContext = context.Services.GetRequiredService<TestDbContext>();
 
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
         await dbContext.People.AddRangeAsync(
-            new Person(Guid.NewGuid(), "Doug", new DateTime(1974, 10, 16), Gender.Male),
-            new Person(Guid.NewGuid(), "Shyloh", new DateTime(2007, 10, 15), Gender.Female),
-            new Person(Guid.NewGuid(), "Piper", new DateTime(2008, 5, 19), Gender.Female),
-            new Person(Guid.NewGuid(), "Geordi", new DateTime(2011, 9, 14), Gender.Male)
+            new Person(Guid.NewGuid(), "Doug", new DateOnly(1974, 10, 16), Gender.Male),
+            new Person(Guid.NewGuid(), "Shyloh", new DateOnly(2007, 10, 15), Gender.Female),
+            new Person(Guid.NewGuid(), "Piper", new DateOnly(2008, 5, 19), Gender.Female),
+            new Person(Guid.NewGuid(), "Geordi", new DateOnly(2011, 9, 14), Gender.Male)
         );
 
         await dbContext.SaveChangesAsync(cancellationToken);
     }
-}
-
-public abstract class SpecificationTestBase(SpecificationTestFixture fixture, ITestOutputHelper outputHelper)
-    : IntegrationTestBase<QuerySpecificationRepository<Person, TestDbContext>, SpecificationTestFixture>(fixture, outputHelper)
-{
 }

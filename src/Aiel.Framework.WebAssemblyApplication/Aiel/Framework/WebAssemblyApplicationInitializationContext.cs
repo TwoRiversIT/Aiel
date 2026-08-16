@@ -28,13 +28,9 @@ public sealed class WebAssemblyApplicationInitializationContext : Initialization
 {
     public WebAssemblyApplicationInitializationContext(WebAssemblyHost webApplication) : base(webApplication.Services)
     {
-        Services = webApplication.Services;
     }
 
     internal WebAssemblyApplicationInitializationContext(IServiceProvider serviceProvider) : base(serviceProvider)
     {
-        Services = serviceProvider;
     }
-
-    public IServiceProvider Services { get; }
 }

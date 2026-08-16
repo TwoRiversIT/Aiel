@@ -22,13 +22,12 @@
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Aiel.Framework
 {
     public class InitializationContext(IServiceProvider serviceProvider)
         : DependencyContext(serviceProvider.GetRequiredService<IAielEnvironment>(), serviceProvider.GetRequiredService<IConfiguration>())
     {
-        public ILogger Logger { get; } = serviceProvider.GetRequiredService<ILogger<InitializationContext>>();
+        public virtual IServiceProvider Services { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 }

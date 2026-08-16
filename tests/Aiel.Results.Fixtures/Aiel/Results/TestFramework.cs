@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.Testing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
@@ -36,12 +36,6 @@ namespace Aiel.Results;
 /// </summary>
 public class ResultsIntegrationTestFixture : IntegrationTestFixture
 {
-    protected override void ConfigureConfiguration(IConfigurationBuilder builder)
-    {
-        // This override suppresses the requirement for the appsettings.Testing.json file.
-        // These tests do not require any configuration settings at this time.
-    }
-
     /// <summary>
     /// Registers the Results infrastructure. This is necessary to ensure that the
     /// JsonConverters and other infrastructure are properly registered for the tests. If you
@@ -50,15 +44,16 @@ public class ResultsIntegrationTestFixture : IntegrationTestFixture
     /// </summary>
     /// <param name="services">the service collection to which Results services will be added</param>
     /// <param name="configuration">the configuration instance for the test fixture</param>
-    protected override void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        services.AddResultPattern();
+        context.Services.AddResultPattern();
+        return ValueTask.CompletedTask;
     }
 
     [SuppressMessage("AielLogging", "AIEL00011:Do not call ILogger methods directly", Justification = "Just testing to see if we can actually suppress this warning.")]
-    protected override ValueTask InitializeFixtureAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+    public override ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
-        var logger = services.GetRequiredService<ILogger<ResultsIntegrationTestFixture>>();
+        var logger = context.Services.GetRequiredService<ILogger<ResultsIntegrationTestFixture>>();
         logger.LogInformation("Initializing Results integration test fixture. FYI: The module initializers in the Aiel.Results.UnitTests.CustomErrors assembly should have run by now.");
 
         return ValueTask.CompletedTask;

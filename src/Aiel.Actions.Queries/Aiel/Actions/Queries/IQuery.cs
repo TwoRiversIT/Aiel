@@ -27,3 +27,11 @@ namespace Aiel.Actions.Queries;
 /// </summary>
 /// <typeparam name="TResult">The type of the result returned by the query.</typeparam>
 public interface IQuery<TResult> : IAction;
+
+public interface IListQuery
+{
+    SortRequest SortRequest { get; set; }
+    PageRequest PageRequest { get; set; }
+}
+
+public interface IListQuery<TDto> : IListQuery, IQuery<IReadOnlyList<TDto>>;

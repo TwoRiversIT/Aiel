@@ -20,25 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Actions.Queries.Specifications;
+namespace Aiel.Actions.Queries;
 
-public record Person(Guid UID, String Name, DateTime DateOfBirth, Gender Gender);
-
-[Flags]
-public enum Gender
+public abstract class ListQuery<TDto>(SortRequest sortRequest, PageRequest? pageRequest) : IListQuery<TDto>
 {
-    Unknown = 0,
-    Female = 1,
-    Male = 2,
-    Other = 4
-}
-
-public class UserHasGender(Gender gender) : QuerySpecification<Person>(user => (gender & user.Gender) != 0)
-{
-}
-
-public class UserIsAgeOfMajority(TimeProvider? timeProvider = null)
-    : QuerySpecification<Person>(user => user.DateOfBirth <= (timeProvider ?? TimeProvider.System).GetUtcNow().Date.AddYears(-18))
-{
-    protected TimeProvider TimeProvider { get; } = timeProvider ?? TimeProvider.System;
+    public SortRequest SortRequest { get; set; } = sortRequest ?? SortRequest.Empty;
+    public PageRequest PageRequest { get; set; } = pageRequest ?? PageRequest.Default;
 }

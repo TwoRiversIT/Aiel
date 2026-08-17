@@ -21,6 +21,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
 
 namespace Aiel.Results;
 

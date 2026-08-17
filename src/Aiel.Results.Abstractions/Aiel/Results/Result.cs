@@ -40,6 +40,11 @@ public class Result
     public Boolean IsSuccess { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the operation failed.
+    /// </summary>
+    public Boolean IsFailure => !IsSuccess;
+
+    /// <summary>
     /// Gets the error associated with a failed result.
     /// </summary>
     public Error Error { get; }
@@ -51,16 +56,16 @@ public class Result
     /// <param name="error">The error associated with the result. Must be <see cref="NoError"/> for successful results.</param>
     /// <exception cref="ArgumentException">Thrown when the success state and error state are inconsistent.</exception>
     [JsonConstructor]
-    protected Result(Boolean isSuccess, Error error)
+    protected internal Result(Boolean isSuccess, Error error)
     {
         if (isSuccess && error is not null)
         {
-            throw new ArgumentException($"Success {GetType().Name} cannot have an error", nameof(error));
+            throw new ArgumentException("A Success Result must not have an error.", nameof(error));
         }
 
         if (!isSuccess && error is null)
         {
-            throw new ArgumentException($"Failure {GetType().Name} must have an error", nameof(error));
+            throw new ArgumentException("A Failure Result must have an error.", nameof(error));
         }
 
         IsSuccess = isSuccess;
@@ -71,22 +76,29 @@ public class Result
     /// Creates a successful result.
     /// </summary>
     /// <returns>A successful <see cref="Result"/>.</returns>
-    public static Result Success() => new(true, null!);
+    public static Result Success() => new(isSuccess: true, error: null!);
 
     /// <summary>
     /// Creates a successful result containing the specified value.
     /// </summary>
-    /// <typeparam name="TDto">The type of the value to be stored in the result.</typeparam>
+    /// <typeparam name="T">The type of the value to be stored in the result.</typeparam>
     /// <param name="value">The value to include in the successful result. Can be null for reference types.</param>
     /// <returns>A <see cref="Result{TValue}"/> representing a successful operation with the provided value.</returns>
-    public static Result<TDto> Success<TDto>(TDto value) => Result<TDto>.Success(value);
+    public static Result<T> Success<T>(T value) => Result<T>.Success(value);
 
     /// <summary>
     /// Creates a failed result with the specified error.
     /// </summary>
     /// <param name="error">The error for the failed result.</param>
     /// <returns>A failed <see cref="Result"/>.</returns>
-    public static Result Failure(Error error) => new(false, error);
+    public static Result Failure(Error error) => new(isSuccess: false, error);
+
+    /// <summary>
+    /// Creates a failed result with the specified error.
+    /// </summary>
+    /// <param name="error">The error for the failed result.</param>
+    /// <returns>A failed <see cref="Result"/>.</returns>
+    public static Result<T> Failure<T>(Error error, T value) => Result<T>.Failure(error, value);
 
     /// <summary>
     /// Implicit conversion from <see cref="Error"/> to <see cref="Result"/>.

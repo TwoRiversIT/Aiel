@@ -30,8 +30,8 @@ public interface IQuery<TResult> : IAction;
 
 public interface IListQuery
 {
-    SortRequest SortRequest { get; set; }
-    PageRequest PageRequest { get; set; }
+    SortRequest SortRequest { get; }
+    PageRequest PageRequest { get; }
 }
 
 public interface IListQuery<TDto> : IListQuery, IQuery<IReadOnlyList<TDto>>;

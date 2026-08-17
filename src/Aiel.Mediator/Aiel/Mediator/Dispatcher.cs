@@ -59,10 +59,10 @@ internal sealed class Dispatcher(
                 $"No handler registered for action type '{action.GetType().FullName}'.");
         }
 
-        // The pipeline runs as Result throughout (behaviors are TDto-agnostic).
-        // If the handler succeeded it returned a Result<TDto>; cast directly.
+        // The pipeline runs as Result throughout (behaviors are T-agnostic).
+        // If the handler succeeded it returned a Result<T>; cast directly.
         // If a behavior short-circuited with a plain Result.Failure, promote it
-        // to Result<TDto>.Failure so the caller gets the correct type in both paths.
+        // to Result<T>.Failure so the caller gets the correct type in both paths.
         await using var scope = scopeFactory.CreateAsyncScope();
         var result = await wrapper.HandleAsync(action, scope.ServiceProvider, cancellationToken);
         return result as Result<TDto> ?? Result<TDto>.Failure(result.Error);

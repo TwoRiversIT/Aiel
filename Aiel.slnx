@@ -183,6 +183,7 @@
     <Project Path="src/Aiel.Logging/Aiel.Logging.csproj" Id="9a36c8c7-09d0-43af-995b-ff824d1e59b7" />
     <Project Path="src/Aiel.Mediator.Abstractions/Aiel.Mediator.Abstractions.csproj" />
     <Project Path="src/Aiel.Mediator.Analyzers/Aiel.Mediator.Analyzers.csproj" />
+    <Project Path="src/Aiel.Mediator.FluentValidation/Aiel.Mediator.FluentValidation.csproj" Id="6071a59a-091f-4659-874d-abc5bef96b65" />
     <Project Path="src/Aiel.Mediator/Aiel.Mediator.csproj" />
     <Project Path="src/Aiel.MessageBus.Abstractions/Aiel.MessageBus.Abstractions.csproj" />
     <Project Path="src/Aiel.MessageBus.Sagas/Aiel.MessageBus.Sagas.csproj" />
@@ -256,6 +257,7 @@
     <Project Path="tests/Aiel.InternetTypes.UnitTests/Aiel.InternetTypes.UnitTests.csproj" />
     <Project Path="tests/Aiel.Logging.Analyzers.UnitTests/Aiel.Logging.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.Analyzers.UnitTests/Aiel.Mediator.Analyzers.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Mediator.FluentValidation.UnitTests/Aiel.Mediator.FluentValidation.UnitTests.csproj" Id="251bae64-707b-4a2d-a2e7-28a2da62aacd" />
     <Project Path="tests/Aiel.Mediator.UnitTests/Aiel.Mediator.UnitTests.csproj" />
     <Project Path="tests/Aiel.MessageBus.Sagas.UnitTests/Aiel.MessageBus.Sagas.UnitTests.csproj" />
     <Project Path="tests/Aiel.MessageBus.Testing.UnitTests/Aiel.MessageBus.Testing.UnitTests.csproj" />

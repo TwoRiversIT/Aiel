@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Authorization.Testing;
-using Aiel.Results;
 using Aiel.Actions;
 using Aiel.Actions.Commands;
+using Aiel.Authorization.Testing;
+using Aiel.Results;
 
 namespace Aiel.Authorization.AspNetCore;
 
@@ -81,7 +81,8 @@ public sealed class UnconfiguredAppointmentApplicationService : IAppointmentAppl
     {
         _ = context ?? throw new ArgumentNullException(nameof(context));
         _ = action ?? throw new ArgumentNullException(nameof(action));
-        return Task.FromResult(Result.Failure(new ResultError("No sample appointment application service is configured.")));
+
+        return Task.FromResult(Result.Failure(new GenericError("No sample appointment application service is configured.")));
     }
 }
 

@@ -25,15 +25,22 @@ namespace Aiel.Authorization;
 /// <summary>
 /// Represents the persisted grant polarity for a permission assignment.
 /// </summary>
+/// <remarks>
+/// Numbering deliberately starts at 1 so that <c>default(AuthorizationGrantDecision)</c> is not a valid
+/// member. A zero-valued <see cref="Granted"/> would mean that any default, uninitialized, or
+/// incorrectly-deserialized value would read as a granted permission — a fail-open authorization decision.
+/// Absence of a decision is modelled as <c>Maybe&lt;AuthorizationGrantDecision&gt;.None</c>, never as
+/// <see langword="default"/>.
+/// </remarks>
 public enum AuthorizationGrantDecision
 {
     /// <summary>
     /// The permission is granted for the matching subject and scope.
     /// </summary>
-    Granted = 0,
+    Granted = 1,
 
     /// <summary>
     /// The permission is explicitly prohibited for the matching subject and scope.
     /// </summary>
-    Prohibited = 1
+    Prohibited = 2
 }

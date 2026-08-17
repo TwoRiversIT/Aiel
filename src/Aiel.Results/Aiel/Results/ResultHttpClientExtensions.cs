@@ -49,6 +49,7 @@ public static class ResultHttpClientExtensions
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized result.</returns>
     public static async Task<Result<T>> GetResultAsync<T>(this HttpClient client, String requestUri, CancellationToken cancellationToken = default)
+        where T : notnull
     {
         var result = await client.GetFromJsonAsync<Result<T>>(requestUri, Results.JSO, cancellationToken);
         return result ?? Result<T>.Failure(new ApiError("Failed to retrieve data from the server."));
@@ -70,6 +71,7 @@ public static class ResultHttpClientExtensions
         String requestUri,
         TRequest content,
         CancellationToken cancellationToken = default)
+        where TResponse : notnull
     {
         try
         {
@@ -125,6 +127,7 @@ public static class ResultHttpClientExtensions
         String requestUri,
         TRequest content,
         CancellationToken cancellationToken = default)
+        where TResponse : notnull
     {
         try
         {
@@ -153,6 +156,7 @@ public static class ResultHttpClientExtensions
         String requestUri,
         TRequest content,
         CancellationToken cancellationToken = default)
+        where TResponse : notnull
     {
         try
         {
@@ -178,6 +182,7 @@ public static class ResultHttpClientExtensions
         this HttpClient httpClient,
         String requestUri,
         CancellationToken cancellationToken = default)
+        where T : notnull
     {
         try
         {
@@ -198,6 +203,7 @@ public static class ResultHttpClientExtensions
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public static async Task<Result<T>> ResultAsync<T>(this HttpResponseMessage response, CancellationToken cancellationToken = default)
+        where T : notnull
     {
         try
         {
@@ -241,11 +247,11 @@ public static class ResultHttpClientExtensions
                 return result.Error;
             }
 
-            return new ResultError(FormatErrorMessage(response));
+            return new ApiError(FormatErrorMessage(response));
         }
         catch (Exception)
         {
-            return new ResultError(FormatErrorMessage(response));
+            return new GenericError(FormatErrorMessage(response));
         }
     }
 

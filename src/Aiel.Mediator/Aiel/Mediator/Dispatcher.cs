@@ -50,6 +50,7 @@ internal sealed class Dispatcher(
     public async ValueTask<Result<TDto>> QueryAsync<TDto>(
         IQuery<TDto> action,
         CancellationToken cancellationToken = default)
+        where TDto : notnull
     {
         ArgumentNullException.ThrowIfNull(action);
 

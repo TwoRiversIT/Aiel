@@ -33,6 +33,11 @@ public class Program
 
         builder.Services.AddResultPattern();
 
+        // Minimal APIs serialize through Microsoft.AspNetCore.Http.Json.JsonOptions, which is a separate
+        // options instance from Results.JSO. Without this the Results converters are not applied and
+        // Result<T> falls through to reflection-based serialization.
+        builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.ConfigureForResults());
+
         var app = builder.Build();
 
         app.MapGet("/success", () => Task.FromResult(Result<IntrinsicTypes>.Success(new IntrinsicTypes())));

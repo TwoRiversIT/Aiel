@@ -58,17 +58,51 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
         deserialized.Value.Should().Be("Hello, World!");
     }
 
+    /// <summary>
+    /// A successful <see cref="Result{T}"/> can never carry <see langword="null"/>. Use
+    /// <c>Result&lt;Maybe&lt;T&gt;&gt;</c> to express "succeeded, and the answer is legitimately nothing".
+    /// </summary>
     [Fact]
-    public void ResultOfT_Success_WithNullString_ShouldRoundTrip()
+    public void ResultOfT_Success_WithNullString_ShouldThrow()
     {
-        var original = Result.Success<String?>(null);
+        // Act
+        Action act = () => Result.Success<String>(null!);
+
+        // Assert
+        act.Should().Throw<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void ResultOfMaybeOfT_None_ShouldRoundTrip()
+    {
+        // Arrange
+        var original = Result.Success(Maybe<String>.None);
+
+        // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);
+        var deserialized = JsonSerializer.Deserialize<Result<Maybe<String>>>(json, Results.JSO);
 
-        var deserialized = JsonSerializer.Deserialize<Result<String?>>(json, Results.JSO);
-
+        // Assert
         deserialized.Should().NotBeNull();
         deserialized.IsSuccess.Should().BeTrue();
-        deserialized.Value.Should().BeNull();
+        deserialized.Value.IsNone.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ResultOfMaybeOfT_Some_ShouldRoundTrip()
+    {
+        // Arrange
+        var original = Result.Success(Maybe<String>.Some("Hello, World!"));
+
+        // Act
+        var json = JsonSerializer.Serialize(original, Results.JSO);
+        var deserialized = JsonSerializer.Deserialize<Result<Maybe<String>>>(json, Results.JSO);
+
+        // Assert
+        deserialized.Should().NotBeNull();
+        deserialized.IsSuccess.Should().BeTrue();
+        deserialized.Value.HasValue.Should().BeTrue();
+        deserialized.Value.Value.Should().Be("Hello, World!");
     }
 
     [Fact]

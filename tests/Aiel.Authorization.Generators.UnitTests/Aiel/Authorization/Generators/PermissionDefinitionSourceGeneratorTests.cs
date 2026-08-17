@@ -30,164 +30,6 @@ namespace Aiel.Authorization.Generators;
 
 public class PermissionDefinitionSourceGeneratorTests
 {
-    /// <summary>
-    /// Minimal stubs for the types the generator and checker reference.
-    /// All are compiled into the same <see cref="CSharpCompilation"/> so that
-    /// <c>ForAttributeWithMetadataName</c> can resolve <c>AuthorizationDefinitionAttribute</c>
-    /// and the generated checker source compiles cleanly.
-    /// </summary>
-    private const String PermissionStub = """
-        using System;
-        using System.Collections.Generic;
-        using System.Threading;
-        using System.Threading.Tasks;
-        using Aiel.Results;
-
-        namespace Aiel.Actions
-        {
-            public interface IAction { }
-        }
-
-        namespace Aiel.Actions
-        {
-            public interface IActionExecutionContext<TAction>
-                where TAction : global::Aiel.Actions.IAction { }
-        }
-
-        namespace Aiel.Results
-        {
-            public readonly struct Result
-            {
-                public bool IsSuccess { get; }
-                public Error Error { get; }
-                public static Result Success() => default;
-                public static Result Failure(Error error) => default;
-            }
-
-            public readonly struct Result<T>
-            {
-                public bool IsSuccess { get; }
-                public T Value { get; }
-                public Error Error { get; }
-            }
-
-            public readonly struct Error { }
-        }
-
-        namespace Aiel.Authorization
-        {
-            public interface IAction : global::Aiel.Actions.IAction { }
-
-            public interface IActionAuthorizationChecker<TAction>
-                where TAction : global::Aiel.Actions.IAction { }
-
-            public interface IAuthorizationGrantEvaluator
-            {
-                Task<global::Aiel.Results.Result<AuthorizationGrantDecision?>> EvaluateAsync(
-                    PermissionName permissionName,
-                    AuthorizationScopeTypeName scopeType,
-                    AuthorizationScopeKey scopeKey,
-                    AuthorizationSubjectTypeName subjectType,
-                    AuthorizationSubjectKey subjectKey,
-                    CancellationToken cancellationToken = default);
-            }
-
-            public interface IAuthorizationScopeResolver<TAction>
-                where TAction : global::Aiel.Actions.IAction
-            {
-                Task<global::Aiel.Results.Result<AuthorizationScopeResolution>> ResolveAsync(
-                    global::Aiel.Actions.IActionExecutionContext<TAction> context,
-                    CancellationToken cancellationToken = default);
-            }
-
-            public interface IAuthorizationSubjectResolver<TAction>
-                where TAction : global::Aiel.Actions.IAction
-            {
-                AuthorizationSubjectKey ResolveSubjectKey(
-                    global::Aiel.Actions.IActionExecutionContext<TAction> context);
-            }
-
-            public enum AuthorizationGrantDecision { Granted = 0, Prohibited = 1 }
-
-            public enum PermissionLifecycle { Active = 0, Deprecated = 1 }
-
-            public readonly struct PermissionName
-            {
-                public static PermissionName From(string value) => default;
-            }
-
-            public readonly struct AuthorizationScopeTypeName
-            {
-                public static AuthorizationScopeTypeName From(string value) => default;
-            }
-
-            public readonly struct AuthorizationScopeKey { }
-
-            public readonly struct AuthorizationSubjectTypeName
-            {
-                public static AuthorizationSubjectTypeName From(string value) => default;
-            }
-
-            public readonly struct AuthorizationSubjectKey { }
-
-            public readonly struct PermissionStableId
-            {
-                public static PermissionStableId From(string value) => default;
-            }
-
-            public readonly struct AuthorizationScopeResolution
-            {
-                public AuthorizationScopeTypeName ScopeType { get; }
-                public AuthorizationScopeKey ScopeKey { get; }
-            }
-
-            public sealed record AuthorizationDefinitionManifest
-            {
-                public required PermissionName PermissionName { get; init; }
-                public required PermissionStableId StableId { get; init; }
-                public required Type ActionType { get; init; }
-                public required AuthorizationScopeTypeName ScopeType { get; init; }
-                public required AuthorizationSubjectTypeName SubjectType { get; init; }
-                public required string DisplayName { get; init; }
-                public string Description { get; init; } = string.Empty;
-                public PermissionLifecycle Lifecycle { get; init; } = PermissionLifecycle.Active;
-                public IReadOnlyList<PermissionName> PreviousNames { get; init; } = Array.Empty<PermissionName>();
-            }
-
-            [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-            public sealed class AuthorizationDefinitionAttribute : Attribute
-            {
-                public AuthorizationDefinitionAttribute(
-                    string permissionName, string scopeType, string subjectType, string displayName)
-                {
-                    PermissionName = permissionName;
-                    ScopeType = scopeType;
-                    SubjectType = subjectType;
-                    DisplayName = displayName;
-                }
-                public string PermissionName { get; }
-                public string ScopeType { get; }
-                public string SubjectType { get; }
-                public string DisplayName { get; }
-                public string Description { get; init; } = string.Empty;
-                public PermissionLifecycle Lifecycle { get; init; } = PermissionLifecycle.Active;
-                public string[] PreviousNames { get; init; } = Array.Empty<string>();
-                public string? StableId { get; init; }
-            }
-
-            [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-            public sealed class DoesNotRespectAuthorityAttribute : Attribute
-            {
-                public string Reason { get; init; } = "";
-            }
-
-            public static class AuthorizationErrors
-            {
-                public static global::Aiel.Results.Error PermissionDenied(PermissionName name) => default;
-            }
-        }
-        """;
-
     private const String ActionSource = """
         using Aiel.Authorization;
 
@@ -343,7 +185,6 @@ public class PermissionDefinitionSourceGeneratorTests
         // Build a new compilation that includes the generated source alongside the original
         var trees = new List<SyntaxTree>
         {
-            CSharpSyntaxTree.ParseText(PermissionStub, cancellationToken: TestContext.Current.CancellationToken),
             CSharpSyntaxTree.ParseText(ActionSource, cancellationToken: TestContext.Current.CancellationToken),
         };
         foreach (var tree in generatorResult.GeneratedTrees)
@@ -351,10 +192,7 @@ public class PermissionDefinitionSourceGeneratorTests
             trees.Add(tree);
         }
 
-        var references = new[]
-        {
-            MetadataReference.CreateFromFile(typeof(Object).Assembly.Location),
-        };
+        var references = ReferenceAssemblies;
 
         var compilationWithGeneratedCode = CSharpCompilation.Create(
             "IntegrationTest",
@@ -386,23 +224,33 @@ public class PermissionDefinitionSourceGeneratorTests
     private static GeneratorDriverRunResult RunGenerator(String source)
         => RunGeneratorWithUpdatedCompilation(source).RunResult;
 
+    /// <summary>
+    /// The real Aiel assemblies, not hand-written stubs.
+    /// </summary>
+    /// <remarks>
+    /// This test compilation previously used stub copies of <c>Result&lt;T&gt;</c>,
+    /// <c>IAuthorizationGrantEvaluator</c>, and <c>AuthorizationGrantDecision</c>. Because the stubs drifted
+    /// independently of the real contracts, a breaking change to a published contract could pass this suite
+    /// while breaking every consumer. Referencing the real assemblies means contract drift fails here first.
+    /// </remarks>
+    private static readonly MetadataReference[] ReferenceAssemblies =
+        ((String)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES")!)
+            .Split(Path.PathSeparator)
+            .Where(path => path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            .Select(path => (MetadataReference)MetadataReference.CreateFromFile(path))
+            .ToArray();
+
     private static (CSharpCompilation Compilation, GeneratorDriverRunResult RunResult) RunGeneratorWithUpdatedCompilation(String source)
     {
         var trees = new[]
         {
-            CSharpSyntaxTree.ParseText(PermissionStub),
             CSharpSyntaxTree.ParseText(source),
-        };
-
-        var references = new[]
-        {
-            MetadataReference.CreateFromFile(typeof(Object).Assembly.Location),
         };
 
         var compilation = CSharpCompilation.Create(
             "PermissionGeneratorUnitTests",
             trees,
-            references,
+            ReferenceAssemblies,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         var generator = new PermissionDefinitionSourceGenerator();

@@ -20,16 +20,28 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Results;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace Aiel.Actions.Queries;
+namespace Aiel.Results;
 
-public interface IQueryDispatcher
+/// <summary>
+/// JSON converter factory for <see cref="Maybe{T}"/> types.
+/// </summary>
+public sealed class MaybeJsonConverterFactory : JsonConverterFactory
 {
-    Task<Result<TResult>> DispatchAsync<TQuery, TResult>(
-        TQuery query,
-        IExecutionContext context,
-        CancellationToken cancellationToken = default)
-        where TQuery : IQuery<TResult>
-        where TResult : notnull;
+    /// <inheritdoc/>
+    public override Boolean CanConvert(Type typeToConvert)
+    {
+        return typeToConvert.IsGenericType &&
+               typeToConvert.GetGenericTypeDefinition() == typeof(Maybe<>);
+    }
+
+    /// <inheritdoc/>
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
+    {
+        var valueType = typeToConvert.GetGenericArguments()[0];
+        var converterType = typeof(MaybeJsonConverter<>).MakeGenericType(valueType);
+        return (JsonConverter)Activator.CreateInstance(converterType)!;
+    }
 }

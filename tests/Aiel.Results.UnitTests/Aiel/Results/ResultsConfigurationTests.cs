@@ -32,16 +32,17 @@ public class ResultsConfigurationTests(ResultsIntegrationTestFixture fixture, IT
     : ResultsUnitTestBase(fixture, output)
 {
     [Fact]
-    public void ConfigureForResults_WithValidOptions_ShouldAddAllThreeConverters()
+    public void ConfigureForResults_WithValidOptions_ShouldAddAllConverters()
     {
         var options = new JsonSerializerOptions();
 
         options.ConfigureForResults();
 
-        options.Converters.Should().HaveCount(3);
+        options.Converters.Should().HaveCount(4);
         options.Converters.Should().Contain(c => c.GetType() == typeof(ErrorJsonConverterFactory));
         options.Converters.Should().Contain(c => c.GetType() == typeof(ResultJsonConverter));
         options.Converters.Should().Contain(c => c.GetType() == typeof(ResultOfTJsonConverterFactory));
+        options.Converters.Should().Contain(c => c.GetType() == typeof(MaybeJsonConverterFactory));
     }
 
     [Fact]
@@ -65,8 +66,8 @@ public class ResultsConfigurationTests(ResultsIntegrationTestFixture fixture, IT
         options.ConfigureForResults();
         var countAfterSecondCall = options.Converters.Count;
 
-        countAfterFirstCall.Should().Be(3);
-        countAfterSecondCall.Should().Be(3, "duplicate converters should not be added");
+        countAfterFirstCall.Should().Be(4);
+        countAfterSecondCall.Should().Be(4, "duplicate converters should not be added");
     }
 
     [Fact]

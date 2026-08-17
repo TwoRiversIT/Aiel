@@ -32,7 +32,8 @@ namespace Aiel.Actions.Queries;
 /// </summary>
 /// <typeparam name="TResult">The result type returned by the query.</typeparam>
 public delegate Task<Result<TResult>> QueryPipelineHandlerDelegate<TResult>(
-    CancellationToken cancellationToken = default);
+    CancellationToken cancellationToken = default)
+    where TResult : notnull;
 
 /// <summary>
 /// Defines a cross-cutting behavior that wraps query dispatch.
@@ -54,6 +55,7 @@ public delegate Task<Result<TResult>> QueryPipelineHandlerDelegate<TResult>(
 /// <typeparam name="TResult">The result type returned by the query.</typeparam>
 public interface IQueryPipelineBehavior<TQuery, TResult>
     where TQuery : IQuery<TResult>
+    where TResult : notnull
 {
     /// <summary>
     /// Executes this behavior, invoking <paramref name="next"/> to continue the pipeline.

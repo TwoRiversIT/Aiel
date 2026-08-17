@@ -102,7 +102,15 @@ services.AddDispatcher(assembly).WithBehavior(typeof(ValidationBehavior<>)).Buil
 
 ### Result Pattern
 
-`Result` and `Result<T>` are the only allowed public API return types. No `null` returns, no exceptions for control flow. Chain with `.Map()`, `.Bind()`, `.Match()`, `.Tap()` and async variants. Custom error types inherit `Error` as `sealed class` with an internal `ErrorCode` singleton. Call `builder.Services.AddResultPattern()` at startup (required for Blazor WASM JSON deserialization).
+`Result` and `Result<T>` are the only allowed public API return types. No `null` returns, no exceptions for control flow.
+
+`Result<T>` is constrained to `where T : notnull`, and `Result<T>.Success` rejects `null` at runtime. A value is present if and only if `IsSuccess` is `true`. Read it with `TryGetValue(out var value)`, or with `.Value` once `IsSuccess` is established — `.Value` throws `ResultException` on a failed result rather than returning `null`.
+
+There are no combinators. `Map`/`Bind`/`Match`/`Tap` and their async variants were removed; use explicit early-return control flow instead.
+
+To model "the operation succeeded and the answer is legitimately nothing", return `Result<Maybe<T>>`. `Maybe<T>` is a `readonly record struct` in `Aiel.Results.Abstractions` whose `default` is `None`. Never use a nullable `T` to signal absence, and never give an enum a zero member that represents an affirmative decision — `default` must never read as a real answer.
+
+Custom error types inherit `Error` as `sealed class` with an internal `ErrorCode` singleton. Call `builder.Services.AddResultPattern()` at startup (required for Blazor WASM JSON deserialization). For ASP.NET Core minimal APIs also call `ConfigureHttpJsonOptions(o => o.SerializerOptions.ConfigureForResults())` — `AddResultPattern()` alone does not configure the HTTP JSON options.
 
 ### Strong IDs
 

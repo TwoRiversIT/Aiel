@@ -30,6 +30,15 @@ internal static partial class EfCoreMapper
 {
     public static AuthorizationGrant ToEntity(AuthorizationGrantRecord record)
     {
+        // AuthorizationGrantDecision deliberately has no zero member, so a stored 0 (or any other
+        // out-of-range value) is corrupt or pre-dates the current numbering. Fail loudly here rather
+        // than letting an undefined decision flow into an authorization check.
+        if (!Enum.IsDefined(typeof(AuthorizationGrantDecision), record.Decision))
+        {
+            throw new ResultException(
+                $"Grant '{record.Id}' has an undefined AuthorizationGrantDecision value of {record.Decision}.");
+        }
+
         var result = AuthorizationGrant.Create(
             AuthorizationGrantId.From(record.Id),
             PermissionStableId.From(record.StableId),

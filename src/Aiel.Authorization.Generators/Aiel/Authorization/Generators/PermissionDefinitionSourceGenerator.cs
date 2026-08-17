@@ -151,7 +151,15 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
         sb.AppendLine();
         sb.AppendLine("        if (!decisionResult.IsSuccess) { return global::Aiel.Results.Result.Failure(decisionResult.Error); }");
         sb.AppendLine();
-        sb.AppendLine("        return decisionResult.Value == global::Aiel.Authorization.AuthorizationGrantDecision.Granted");
+        sb.AppendLine("        // No grant covering this combination is a successful evaluation with no decision.");
+        sb.AppendLine("        // It must deny: absence of a grant is never permission.");
+        sb.AppendLine("        if (!decisionResult.Value.TryGetValue(out var decision))");
+        sb.AppendLine("        {");
+        sb.AppendLine("            return global::Aiel.Results.Result.Failure(");
+        sb.AppendLine("                global::Aiel.Authorization.AuthorizationErrors.PermissionDenied(permissionName));");
+        sb.AppendLine("        }");
+        sb.AppendLine();
+        sb.AppendLine("        return decision == global::Aiel.Authorization.AuthorizationGrantDecision.Granted");
         sb.AppendLine("            ? global::Aiel.Results.Result.Success()");
         sb.AppendLine("            : global::Aiel.Results.Result.Failure(");
         sb.AppendLine("                global::Aiel.Authorization.AuthorizationErrors.PermissionDenied(permissionName));");

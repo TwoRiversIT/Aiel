@@ -31,7 +31,13 @@ namespace Aiel.Results;
 /// <param name="Id">The ID.</param>
 /// <param name="Name">The name.</param>
 /// <param name="Email">The email address.</param>
-public record TestRecord(Int32 Id, String Name, String Email);
+public record TestRecord(Int32 Id, String Name, String Email)
+{
+    /// <summary>
+    /// An empty instance, used as a fallback value in tests.
+    /// </summary>
+    public static readonly TestRecord Empty = new(0, String.Empty, String.Empty);
+}
 
 public class InvoiceDto
 {

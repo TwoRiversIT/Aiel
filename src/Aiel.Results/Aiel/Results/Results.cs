@@ -87,6 +87,11 @@ public static class Results
             jso.Converters.Add(new ResultOfTJsonConverterFactory());
         }
 
+        if (!jso.Converters.Any(c => c.GetType() == typeof(MaybeJsonConverterFactory)))
+        {
+            jso.Converters.Add(new MaybeJsonConverterFactory());
+        }
+
         return jso;
     }
 

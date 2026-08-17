@@ -29,7 +29,7 @@ public class SerializationTests(ResultsIntegrationTestFixture fixture, ITestOutp
     : ResultsUnitTestBase(fixture, output)
 {
     [Fact]
-    public void ResultOfT_GetValueOrDefault_WorksAfterDeserialization()
+    public void ResultOfT_Value_SurvivesDeserialization()
     {
         // Arrange
         var original = Result.Success(99);
@@ -40,19 +40,26 @@ public class SerializationTests(ResultsIntegrationTestFixture fixture, ITestOutp
 
         // Assert
         deserialized.Should().NotBeNull();
-        deserialized.GetValueOrDefault().Should().Be(99);
+        deserialized.IsSuccess.Should().BeTrue();
+        deserialized.TryGetValue(out var value).Should().BeTrue();
+        value.Should().Be(99);
     }
 
     [Fact]
-    public void ResultOfT_Failure_GetValueOrDefault_WorksAfterDeserialization()
+    public void ResultOfT_Failure_HasNoValueAfterDeserialization()
     {
+        // Arrange
         Result<Int32> original = new SimpleError("Failed");
+
+        // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);
         var deserialized = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);
 
+        // Assert
         deserialized.Should().NotBeNull();
-        deserialized.GetValueOrDefault().Should().Be(0);
-        deserialized.GetValueOrDefault(42).Should().Be(42);
+        deserialized.IsFailure.Should().BeTrue();
+        deserialized.TryGetValue(out _).Should().BeFalse();
+        FluentActions.Invoking(() => deserialized.Value).Should().Throw<ResultException>();
     }
 
     [Fact]

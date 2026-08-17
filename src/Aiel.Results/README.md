@@ -1,11 +1,52 @@
 # Result Pattern
 
-> [Result Pattern in C#](https://adrianbailador.github.io/blog/44-result-pattern-)
-> by [Adrian Bailador](https://adrianbailador.github.io/)
+> Inspired by the [Result Pattern in C#](https://adrianbailador.github.io/blog/44-result-pattern-)
+> article by [Adrian Bailador](https://adrianbailador.github.io/)
 
 The `Result` class provides a way to represent the outcome of operations, encapsulating success and failure states along with relevant data or error messages.
 
+> ## :warning: Important Note regarding Blazor WebAssembly applications :warning:
+>
+> Even with the inclusion of `ILLink.Descriptors.xml` in a consuming proejct, when this assembly is used in a Blazor WebAssembly
+> application, required types are still trimmed, breaking the deserialization of `Result` and `Result<T>` and resulting in
+> inexplicable, and incredibly hard to debug, runtime errors when deserializing JSON responses. This is a
+> [known issue](https://github.com/dotnet/runtime/blob/main/docs/tools/illink/serialization.md) with the ILLinker.
+>
+> To avoid this, you must manually register the `ErrorJsonConverter` and `ErrorCodeJsonConverter` in your Blazor WebAssembly
+> application to ensure they are included in the final build. We have provided a convenience extension method to do this:
+>
+> ```csharp
+> builder.Services.AddResultPattern();
+> ```
+
 ## Basic Usage
+
+- A Failure Result must have an error.
+- A Success Result must not have an error.
+- When `Result.IsSuccess == true` then `Result.Error` contains returns the "special" `NoError` type instead of `null`.
+- `Result<TDto>`
+
+```csharp
+// Returns a Result indicating a successful operation: `Result.IsSuccess == true`
+Result.Success();
+
+// Returns a Result<String> indicating a successful operation: `Result.Value == "User was added."`
+Result.Success("User was added.");
+
+// Returns a Result indicating a failed operation: `Result.Error == ConcurrencyViolation("...")`
+Result.Failure(new ConcurrencyViolation("..."));
+
+// Returns a Failed Result with a value: `Result.Value == existingProduct`
+Result.Failure(new DuplicateViolation("A product exists with the same name."), existingProduct);
+
+// If the method signature is `public Result<Customer> FindCustomer(customerName)`...
+
+return customer; // Implicit conversion to Result<Customer> with `Result.IsSuccess == true` and `Result.Value == customer`.
+
+return new NotFound("Customer not found"); // Implicit conversion to Result<Customer> with `Result.IsSuccess == false` and `Result.Value == default!`.
+```
+
+### Full Class Example
 
 ```csharp
 public class UserService
@@ -31,12 +72,15 @@ public class UserService
             return Error.Conflict("A user with this email already exists");
 
         var user = new User(request.Name, request.Email);
-        _repository.Add(user);
+
+        _repository.Add(user); // Unit of Work calls SaveChangesAsync()
 
         return user;
     }
 }
 ```
+
+
 
 ## Error Codes
 
@@ -56,19 +100,8 @@ if (result.Error.IsErrorType<NotFoundError>())
 }
 ```
 
-> ## :warning: Important Note
->
-> Despite the inclusion of `ILLink.Descriptors.xml`, when this assembly is used in a Blazor WebAssembly application,
-> required types are still trimmed, breaking the deserialization of `Result` and `Result<T>` and resulting in inexplicable,
-> and incredibly hard to debug, runtime errors when deserializing JSON responses. This is a
-> [known issue](https://github.com/dotnet/runtime/blob/main/docs/tools/illink/serialization.md) with the ILLinker.
->
-> To avoid this, you must manually register the `ErrorJsonConverter` and `ErrorCodeJsonConverter` in your Blazor WebAssembly
-> application to ensure they are included in the final build. We have provided a convenience extension method to do this:
->
-> ```csharp
-> builder.Services.AddResultPattern();
-> ```
+For safety, the `Error` property never returns null. When `IsSuccess == true` then `Error.IsErrorType<NoError>() == true`.
+Contrast this with the `Value` property on `Result<T>` which *May* return `null` even when `IsSuccess == true`.
 
 **Note**: The `.ToString()` method is primarily for debugging and logging. For programmatic use, rely on the implicit `String` operator or `IsErrorType<T>()` method.
 

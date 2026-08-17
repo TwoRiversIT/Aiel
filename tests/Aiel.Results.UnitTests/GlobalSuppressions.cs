@@ -20,18 +20,4 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Actions.Queries;
-
-/// <summary>
-/// Represents a query operation that returns a result of the specified type.
-/// </summary>
-/// <typeparam name="TResult">The type of the result returned by the query.</typeparam>
-public interface IQuery<TResult> : IAction;
-
-public interface IListQuery
-{
-    SortRequest SortRequest { get; }
-    PageRequest PageRequest { get; }
-}
-
-public interface IListQuery<TDto> : IListQuery, IQuery<IReadOnlyList<TDto>>;
+[assembly: SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>", Scope = "namespaceanddescendants", Target = "~N:Aiel.Results")]

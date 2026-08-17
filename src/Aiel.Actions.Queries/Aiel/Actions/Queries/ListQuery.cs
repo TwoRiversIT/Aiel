@@ -22,18 +22,26 @@
 
 namespace Aiel.Actions.Queries;
 
-public abstract class ListQuery<TDto> : IListQuery<TDto>
+public abstract class ListQuery : IListQuery
 {
-    protected ListQuery() {}
-
+    protected ListQuery() { }
     protected ListQuery(SortRequest? sortRequest = null, PageRequest? pageRequest = null)
     {
         SortRequest = sortRequest ?? SortRequest.Empty;
         PageRequest = pageRequest ?? PageRequest.Default;
     }
-
     public SortRequest SortRequest { get; set; } = SortRequest.Empty;
     public PageRequest PageRequest { get; set; } = PageRequest.Default;
+}
+
+public abstract class ListQuery<TDto> : ListQuery, IListQuery<TDto>
+{
+    protected ListQuery() {}
+
+    protected ListQuery(SortRequest? sortRequest = null, PageRequest? pageRequest = null)
+        : base(sortRequest, pageRequest)
+    {
+    }
 }
 
 public abstract class ListQueryResult

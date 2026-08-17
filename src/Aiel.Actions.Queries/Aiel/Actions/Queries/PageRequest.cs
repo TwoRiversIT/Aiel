@@ -27,7 +27,8 @@ public sealed record PageRequest
     public const Int32 DefaultPageNumber = 1;
     public const Int32 DefaultPageSize = 20;
 
-    public static PageRequest Default { get; } = new(DefaultPageNumber, DefaultPageSize);
+    public static readonly PageRequest Default = new(DefaultPageNumber, DefaultPageSize);
+    public static readonly PageRequest All = new(DefaultPageNumber, Int32.MaxValue);
 
     public PageRequest(Int32 pageNumber, Int32 pageSize)
     {

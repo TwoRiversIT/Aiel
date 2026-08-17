@@ -40,6 +40,7 @@ public sealed class DefaultQueryDispatcher(IServiceProvider serviceProvider) : I
         IExecutionContext context,
         CancellationToken cancellationToken = default)
         where TQuery : IQuery<TResult>
+        where TResult : notnull
     {
         ArgumentNullException.ThrowIfNull(query);
         ArgumentNullException.ThrowIfNull(context);

@@ -25,16 +25,20 @@ using System.Text;
 
 namespace Aiel.Results;
 
+/// <summary>
+/// A sentinel error type that represents the absence of an error. This is used
+/// to indicate a successful operation in the context of a Result.
+/// </summary>
 public sealed partial class NoError : Error
 {
     internal const String DefaultMessage = "No error.";
 }
 
-public sealed partial class UnrecognizedError : Error
-{
-    internal const String DefaultMessage = "An unrecognized error occurred and may not have been deserialized correctly.";
-}
-
+/// <summary>
+/// Represents a generic error that occurred during an API call. This should be used to wrap
+/// HTTP-related errors, including deserialization issues, transport errors, etc., but not
+/// Application, Domain-Specific, or Infrastructure (database, message bus, etc.) errors.
+/// </summary>
 public sealed partial class ApiError : Error
 {
     public static ApiError FromException(Exception ex)
@@ -45,8 +49,36 @@ public sealed partial class ApiError : Error
     }
 }
 
+public sealed partial class ValidationError : Error;
+
 /// <summary>
-/// Represents an error that occurred during an API call. This should be used to wrap HTTP-related errors,
-/// including deserialization issues, transport errors, etc., but not Application or Domain-Specific errors.
+/// Represents a generic error that occurred during an operation that returns a Result.
+/// You should prefer to use a more specific error type if one is available, but this
+/// could be used to wrap Infrastructure (database, message bus, etc.) errors.
 /// </summary>
-public sealed partial class ResultError : Error;
+public sealed partial class InfrastructureError : Error
+{
+    public static InfrastructureError FromException(Exception ex)
+    {
+        var sb = new StringBuilder();
+        ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
+        return new InfrastructureError(sb.ToString());
+    }
+}
+
+/// <summary>
+/// Represents a generic error that occurred during an operation that returns a Result.
+/// You should prefer to use a more specific error type if one is available, but this
+/// could be used during development to quickly wrap unexpected exceptions before a
+/// more specific error type is created.
+/// </summary>
+// ToDo: Create an analyzer that will warn when a GenericError is used instead of a more specific error type.
+public sealed partial class GenericError : Error
+{
+    public static GenericError FromException(Exception ex)
+    {
+        var sb = new StringBuilder();
+        ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
+        return new GenericError(sb.ToString());
+    }
+}

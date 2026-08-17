@@ -20,27 +20,40 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Authorization;
+using Aiel.Results;
+using FluentValidation.Results;
+
+namespace Aiel.Mediator.Behaviors;
+
+// ToDo: Move this to Aiel.Mediator.FluentValidation package when it is created.
 
 /// <summary>
-/// Represents the persisted grant polarity for a permission assignment.
+/// Represents a dispatcher failure produced by FluentValidation validators.
 /// </summary>
-/// <remarks>
-/// Numbering deliberately starts at 1 so that <c>default(AuthorizationGrantDecision)</c> is not a valid
-/// member. A zero-valued <see cref="Granted"/> would mean that any default, uninitialized, or
-/// incorrectly-deserialized value would read as a granted permission — a fail-open authorization decision.
-/// Absence of a decision is modelled as <c>Maybe&lt;AuthorizationGrantDecision&gt;.None</c>, never as
-/// <see langword="default"/>.
-/// </remarks>
-public enum AuthorizationGrantDecision
+public sealed partial class FluentValidationError : Error
 {
-    /// <summary>
-    /// The permission is granted for the matching subject and scope.
-    /// </summary>
-    Granted = 1,
+    private const String ValidationFailed = "Validation failed.";
 
     /// <summary>
-    /// The permission is explicitly prohibited for the matching subject and scope.
+    /// Gets the validation failures returned by the validators that ran for the action.
     /// </summary>
-    Prohibited = 2
+    public IReadOnlyList<ValidationFailure> Failures { get; init; } = [];
+
+    /// <summary>
+    /// Creates a <see cref="FluentValidationError"/> from the supplied validation failures.
+    /// </summary>
+    /// <param name="failures">The validation failures to expose on the error.</param>
+    /// <param name="message">Optional custom error message.</param>
+    /// <returns>A validation error with the standard validation failure message.</returns>
+    public static FluentValidationError FromFailures(IReadOnlyList<ValidationFailure> failures, String? message = ValidationFailed)
+    {
+        if (String.IsNullOrWhiteSpace(message))
+        {
+            {
+                return new(ValidationFailed) { Failures = failures };
+            }
+        }
+
+        return new(message) { Failures = failures };
+    }
 }

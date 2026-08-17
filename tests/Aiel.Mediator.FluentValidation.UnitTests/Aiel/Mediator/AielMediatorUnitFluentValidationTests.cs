@@ -20,26 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Results;
-using FluentValidation.Results;
+using Aiel.Framework;
 
-namespace Aiel.Mediator.Behaviors;
+namespace Aiel.Mediator;
 
-/// <summary>
-/// Represents a dispatcher failure produced by FluentValidation validators.
-/// </summary>
-public sealed partial class ValidationError : Error
-{
-    /// <summary>
-    /// Gets the validation failures returned by the validators that ran for the action.
-    /// </summary>
-    public IReadOnlyList<ValidationFailure> Failures { get; init; } = [];
-
-    /// <summary>
-    /// Creates a <see cref="ValidationError"/> from the supplied validation failures.
-    /// </summary>
-    /// <param name="failures">The validation failures to expose on the error.</param>
-    /// <returns>A validation error with the standard validation failure message.</returns>
-    public static ValidationError FromFailures(IReadOnlyList<ValidationFailure> failures)
-        => new("Validation failed.") { Failures = failures };
-}
+[DependsOn(typeof(AielMediatorFluentValidation))]
+[DependsOn(typeof(AielMediatorUnitTests))]
+public sealed class AielMediatorUnitFluentValidationTests : AielDependencyConfigurator;

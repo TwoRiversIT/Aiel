@@ -23,8 +23,11 @@ The `Result` class provides a way to represent the outcome of operations, encaps
 
 - A Failure Result must have an error.
 - A Success Result must not have an error.
-- When `Result.IsSuccess == true` then `Result.Error` contains returns the "special" `NoError` type instead of `null`.
-- `Result<TDto>`
+- When `Result.IsSuccess == true` then `Result.Error` returns the "special" `NoError` type instead of `null`.
+- A value is present **if and only if** `IsSuccess` is `true`. `Result<T>` is constrained to `where T : notnull`,
+  and `Result<T>.Success` rejects `null` at runtime — a successful result can never carry `null`.
+- To model "the operation succeeded and the answer is legitimately nothing", use `Result<Maybe<T>>`.
+  See [Modelling Absence](#modelling-absence-with-maybet).
 
 ```csharp
 // Returns a Result indicating a successful operation: `Result.IsSuccess == true`
@@ -36,14 +39,14 @@ Result.Success("User was added.");
 // Returns a Result indicating a failed operation: `Result.Error == ConcurrencyViolation("...")`
 Result.Failure(new ConcurrencyViolation("..."));
 
-// Returns a Failed Result with a value: `Result.Value == existingProduct`
-Result.Failure(new DuplicateViolation("A product exists with the same name."), existingProduct);
+// Throws ArgumentNullException — a successful Result<T> cannot carry null.
+Result.Success<Customer>(null!);
 
 // If the method signature is `public Result<Customer> FindCustomer(customerName)`...
 
 return customer; // Implicit conversion to Result<Customer> with `Result.IsSuccess == true` and `Result.Value == customer`.
 
-return new NotFound("Customer not found"); // Implicit conversion to Result<Customer> with `Result.IsSuccess == false` and `Result.Value == default!`.
+return new NotFound("Customer not found"); // Implicit conversion to Result<Customer> with `Result.IsSuccess == false`. Reading `Result.Value` throws.
 ```
 
 ### Full Class Example
@@ -101,125 +104,126 @@ if (result.Error.IsErrorType<NotFoundError>())
 ```
 
 For safety, the `Error` property never returns null. When `IsSuccess == true` then `Error.IsErrorType<NoError>() == true`.
-Contrast this with the `Value` property on `Result<T>` which *May* return `null` even when `IsSuccess == true`.
+The `Value` property on `Result<T>` is symmetrical: it never returns `null`. When `IsFailure == true`, reading `Value`
+throws a `ResultException` carrying the `Error` rather than handing back a `null` you were not expecting.
 
 **Note**: The `.ToString()` method is primarily for debugging and logging. For programmatic use, rely on the implicit `String` operator or `IsErrorType<T>()` method.
 
-## Chaining Operations
+## Accessing the Value
+
+A value exists only on success. There are two accessors, and the right one depends on whether failure is
+an expected outcome at that call site.
 
 ```csharp
-public Result<OrderConfirmation> ProcessOrder(CreateOrderRequest request)
+var result = userService.GetById(userId);
+
+// Checked access — use this when failure is expected and you intend to handle it.
+if (result.TryGetValue(out var user))
 {
-    return ValidateOrder(request)
-        .Bind(order => CheckInventory(order))
-        .Bind(order => ProcessPayment(order))
-        .Bind(order => CreateShipment(order))
-        .Map(shipment => new OrderConfirmation(shipment.TrackingNumber));
+    Console.WriteLine($"Welcome, {user.Name}!");
+}
+else
+{
+    _logger.LogError("{Error}", result.Error.Message);
 }
 
-private Result<Order> ValidateOrder(CreateOrderRequest request)
+// Direct access — use this only once you have established IsSuccess.
+if (result.IsSuccess)
 {
-    if (request.Items.Count == 0)
-        return Error.Validation("Order must contain at least one item");
-    
-    return new Order(request.CustomerId, request.Items);
+    Console.WriteLine($"Welcome, {result.Value.Name}!");
 }
+```
 
-private Result<Order> CheckInventory(Order order)
+Reading `Value` on a failed result throws a `ResultException` that carries the underlying `Error`. This is
+deliberate: the alternative is a silent `null` that surfaces as a `NullReferenceException` somewhere further
+away from the actual mistake.
+
+> `Value` is annotated `[JsonIgnore]`. Because the getter throws, it must never sit in the path of a
+> serializer, logger, or object mapper that walks public properties. `Result<T>` is serialized by its
+> dedicated converter — call `ConfigureForResults()` on your `JsonSerializerOptions`, or
+> `AddResultPattern()` at startup.
+
+## Modelling Absence with `Maybe<T>`
+
+`Result<T>` has exactly two states: it worked, or it did not. Some operations have a third outcome — the
+operation worked and the answer is legitimately nothing. A lookup that finds no match did not *fail*.
+
+Encoding that as a failure forces every caller to inspect error *types* to find out whether anything actually
+went wrong, which is the "exceptions for control flow" problem rebuilt inside `Result`. Encoding it as a
+`null` value reintroduces the very thing the pattern exists to remove. `Maybe<T>` is the third option:
+
+```csharp
+public async Task<Result<Maybe<Customer>>> FindCustomerByEmailAsync(Email email, CancellationToken ct)
 {
-    foreach (var item in order.Items)
+    try
     {
-        if (!_inventory.IsAvailable(item.ProductId, item.Quantity))
-            return Error.Conflict($"Product {item.ProductId} is out of stock");
+        // FirstCustomerByEmailAsync is a IQueryable<Customer> extension method.
+        var customer = await _repository.FirstCustomerByEmailAsync(email, ct);
+
+        // FromNullable is the adapter for boundaries that still produce null.
+        return Result.Success(Maybe<Customer>.FromNullable(customer));
     }
-    return order;
-}
-```
-
-## Async Operations
-
-The Result pattern includes comprehensive async support for modern C# codebases:
-
-```csharp
-// Example 1: Async data access
-public async Task<Result<User>> GetUserAsync(Int32 userId)
-{
-    return await _repository.FindAsync(userId)
-        .MapAsync(user => user ?? Error.NotFound("User not found"));
-}
-
-// Example 2: Async pipeline with external services
-public async Task<Result<OrderConfirmation>> ProcessOrderAsync(CreateOrderRequest request)
-{
-    return await ValidateOrderAsync(request)
-        .BindAsync(async order => await CheckInventoryAsync(order))
-        .BindAsync(async order => await ProcessPaymentAsync(order))
-        .TapAsync(async order => await SendConfirmationEmailAsync(order))
-        .MapAsync(async order => await CreateConfirmationAsync(order));
-}
-
-private async Task<Result<Order>> CheckInventoryAsync(Order order)
-{
-    foreach (var item in order.Items)
+    catch (DbException ex)
     {
-        var isAvailable = await _inventoryService.CheckAvailabilityAsync(item.ProductId, item.Quantity);
-        if (!isAvailable)
-            return Error.Conflict($"Product {item.ProductId} is out of stock");
+        // This one really is a failure.
+        return InfrastructureError.FromException(ex);
     }
-    return order;
+}
+```
+
+The three outcomes are now distinct, and the compiler makes the caller deal with all of them:
+
+```csharp
+var result = await FindCustomerAsync(id, ct);
+
+if (result.IsFailure)
+{
+    return Problem(result.Error);          // the lookup broke
 }
 
-// Example 3: Async Match for handling results
-var message = await userService.GetUserAsync(userId)
-    .MatchAsync(
-        onSuccess: async user => 
-        {
-            await _analytics.TrackUserAccessAsync(user.Id);
-            return $"Welcome, {user.Name}!";
-        },
-        onFailure: async error => 
-        {
-            await _logger.LogErrorAsync(error.Description);
-            return $"Error: {error.Description}";
-        });
+if (!result.Value.TryGetValue(out var customer))
+{
+    return NotFound();                     // the lookup worked; there is no such customer
+}
+
+return Ok(customer);                       // the lookup worked; here it is
 ```
 
-**When to use async methods:**
+### `Maybe<T>` API
 
-- `MapAsync` - When transforming the result value requires async operations (e.g., calling external APIs, database queries)
-- `BindAsync` - When the next step in the pipeline is async and can fail (returns `Task<Result<T>>`)
-- `MatchAsync` - When handling success/failure cases requires async operations (e.g., logging, analytics)
-- `TapAsync` - When side effects are async but shouldn't affect the result (e.g., sending notifications, caching)
+| Member | Behaviour |
+|---|---|
+| `Maybe<T>.Some(value)` | Holds `value`. Throws `ArgumentNullException` if it is `null`. |
+| `Maybe<T>.None` | Holds nothing. This is also `default(Maybe<T>)`. |
+| `Maybe<T>.FromNullable(value)` | `None` when `value` is `null`, otherwise `Some(value)`. |
+| `HasValue` / `IsNone` | Whether a value is present. |
+| `TryGetValue(out value)` | Checked access. Prefer this. |
+| `Value` | Direct access. Throws `InvalidOperationException` when `None`. |
+| `GetValueOrDefault(fallback)` | The value, or `fallback` when `None`. |
 
-## Using Match
+Two properties are worth calling out:
 
-```csharp
-var message = userService.GetById(userId).Match(
-    onSuccess: user => $"Welcome, {user.Name}!",
-    onFailure: error => $"Error: {error.Description}"
-);
+- **`default(Maybe<T>)` is `None`.** An uninitialized or default-constructed value fails closed rather than
+  presenting `default(T)` as though it were a real answer. This matters most for enums and other value types,
+  where `default` is otherwise indistinguishable from a legitimate zero.
+- **`Some(default(T))` is still `Some`.** `Maybe<Int32>.Some(0)` has a value. A count of zero, an empty string,
+  and `Guid.Empty` are all answers, and `Maybe<T>` keeps them distinct from absence.
+
+### On the wire
+
+`Some` serializes as the bare underlying value and `None` serializes as `null`. The wrapper never appears in
+the JSON, so API contracts stay clean for consumers that have no notion of `Maybe<T>`:
+
+```jsonc
+{ "isSuccess": true, "value": { "id": 42, "name": "Ada" } }  // Success(Some(customer))
+{ "isSuccess": true, "value": null }                         // Success(None)
+{ "isSuccess": false, "error": { /* ... */ } }               // Failure
 ```
 
-## Getting Values Safely
+The absence of a wrapper on the wire does not weaken the guarantee. It is the type system, not the JSON, that
+forces callers to handle the empty case.
 
-```csharp
-// With explicit default
-var user = result.GetValueOrDefault(User.Guest);
-
-// With type default (null for reference types)
-var userId = result.GetValueOrDefault();
-
-// Using Match for custom logic
-var user = result.Match(
-    onSuccess: u => u,
-    onFailure: error => 
-    {
-        _logger.LogError(error.Description);
-        return User.Guest;
-    });
-```
-
-## Domain Errors
+## Example Convenience Methods for Domain Errors
 
 ```csharp
 public static class DomainErrors
@@ -355,16 +359,16 @@ Use pattern matching or `IsErrorType<T>()` to handle custom errors:
 ```csharp
 // Using pattern matching
 var result = customerService.GetCustomer(customerId);
-var message = result.Match(
-    onSuccess: customer => $"Welcome, {customer.Name}!",
-    onFailure: error => error switch
+var message = result.TryGetValue(out var customer)
+    ? $"Welcome, {customer.Name}!"
+    : result.Error switch
     {
-        OrderNotFoundError notFound => 
+        OrderNotFoundError notFound =>
             $"No customer found with ID: {notFound.CustomerId}",
-        TransactionError declined => 
+        TransactionError declined =>
             $"Payment declined: {declined.DeclineReason} (Ref: {declined.TransactionId})",
-        _ => $"Error: {error.Description}"
-    });
+        var error => $"Error: {error.Description}"
+    };
 
 // Using IsErrorType<T>()
 if (result.IsFailure && result.Error.IsErrorType<OrderNotFoundError>())
@@ -503,99 +507,79 @@ This separation ensures:
 - Type-safe domain logic with single error per operation
 - Clean architecture with clear responsibility boundaries
 
-## Web API Integration
+## AspNetCore WebAPI Integration
 
-This is packaged separately in `Aiel.WebApi` so you need to install that package as well.
-
-```pwsh
-Install-Package Aiel.WebApi
-```
-
-Or via .NET CLI:
-
-```pwsh
-dotnet add package Aiel.WebApi
-```
-
-Once installed, you can use the extension methods to convert `Result` instances to appropriate HTTP responses.
-
-```csharp
-var app = builder.Build();
-
-app.MapGet("/api/users/{id}", (Int32 id, UserService userService) =>
-{
-    return userService.GetById(id).ToApiResult();
-});
-
-app.MapPost("/api/users", (CreateUserRequest request, UserService userService) =>
-{
-    return userService.Create(request)
-        .ToCreatedResult($"/api/users/{request.Email}");
-});
-
-app.MapPost("/api/orders", (CreateOrderRequest request, OrderService orderService) =>
-{
-    return orderService.ProcessOrder(request).Match(
-        onSuccess: confirmation => Results.Ok(confirmation),
-        onFailure: error => error switch
-        {
-            ValidationError => Results.BadRequest(new { error.Code, error.Description }),
-            ConflictError => Results.Conflict(new { error.Code, error.Description }),
-            _ => Results.Problem(error.Description)
-        }
-    );
-});
-```
+> TODO: Add example of using `Result<T>` in ASP.NET Core WebAPI controller actions, including returning appropriate HTTP status codes based on success/failure.
 
 ## Async Operations
 
-The Result pattern includes comprehensive async support for modern C# codebases:
+`Result<T>` composes with `async`/`await` using ordinary control flow. There are no combinators to learn —
+each step checks the previous one and returns early:
 
 ```csharp
-// Example 1: Async data access
-public async Task<Result<User>> GetUserAsync(Int32 userId)
+// Example 1: Async data access, where "not found" is an expected outcome
+public async Task<Result<Maybe<User>>> FindUserAsync(Int32 userId, CancellationToken ct)
 {
-    return await _repository.FindAsync(userId)
-        .MapAsync(user => user ?? Error.NotFound("User not found"));
+    var user = await _repository.FindAsync(userId, ct);
+    return Result.Success(Maybe<User>.FromNullable(user));
 }
 
 // Example 2: Async pipeline with external services
-public async Task<Result<OrderConfirmation>> ProcessOrderAsync(CreateOrderRequest request)
+public async Task<Result<OrderConfirmation>> ProcessOrderAsync(CreateOrderRequest request, CancellationToken ct)
 {
-    return await ValidateOrderAsync(request)
-        .BindAsync(async order => await CheckInventoryAsync(order))
-        .BindAsync(async order => await ProcessPaymentAsync(order))
-        .TapAsync(async order => await SendConfirmationEmailAsync(order))
-        .MapAsync(async order => await CreateConfirmationAsync(order));
+    var validated = await ValidateOrderAsync(request, ct);
+    if (!validated.TryGetValue(out var order))
+    {
+        return validated.Error;
+    }
+
+    var stocked = await CheckInventoryAsync(order, ct);
+    if (stocked.IsFailure)
+    {
+        return stocked.Error;
+    }
+
+    var paid = await ProcessPaymentAsync(order, ct);
+    if (paid.IsFailure)
+    {
+        return paid.Error;
+    }
+
+    await SendConfirmationEmailAsync(order, ct);
+
+    return await CreateConfirmationAsync(order, ct);
 }
 
-private async Task<Result<Order>> CheckInventoryAsync(Order order)
+private async Task<Result> CheckInventoryAsync(Order order, CancellationToken ct)
 {
     foreach (var item in order.Items)
     {
-        var isAvailable = await _inventoryService.CheckAvailabilityAsync(item.ProductId, item.Quantity);
+        var isAvailable = await _inventoryService.CheckAvailabilityAsync(item.ProductId, item.Quantity, ct);
         if (!isAvailable)
-            return Error.Conflict($"Product {item.ProductId} is out of stock");
+        {
+            return new ConflictError($"Product {item.ProductId} is out of stock");
+        }
     }
-    return order;
+
+    return Result.Success();
 }
 
-// Example 3: Async Match for handling results
-var message = await userService.GetUserAsync(userId)
-    .MatchAsync(
-        onSuccess: async user => 
-        {
-            await _analytics.TrackUserAccessAsync(user.Id);
-            return $"Welcome, {user.Name}!";
-        },
-        onFailure: async error => 
-        {
-            await _logger.LogErrorAsync(error.Description);
-            return $"Error: {error.Description}";
-        });
+// Example 3: Handling both outcomes
+var result = await userService.GetUserAsync(userId, ct);
+
+if (result.TryGetValue(out var user))
+{
+    await _analytics.TrackUserAccessAsync(user.Id, ct);
+    message = $"Welcome, {user.Name}!";
+}
+else
+{
+    _logger.LogError("{Error}", result.Error.Message);
+    message = $"Error: {result.Error.Message}";
+}
 ```
 
-**When to use async methods:**
+### When to use async methods
 
 - `MapAsync` - When transforming the result value requires async operations (e.g., calling external APIs, database queries)
 - `BindAsync` - When the next step in the pipeline is async and can fail (returns `Task<Result<T>>`)
@@ -701,6 +685,13 @@ builder.Services.AddResultPattern(options =>
     options.WriteIndented = true;
 });
 ```
+
+## Combinators
+
+> Earlier versions of this package shipped `Map`, `Bind`, `Match`, and `Tap` combinators along with their
+> async variants. They have been removed. Explicit early-return reads better against the rest of the
+> framework, keeps stack traces intact, and avoids the awkward double-unwrapping that combinators require
+> once `Result<Maybe<T>>` enters the picture.
 
 ## License
 

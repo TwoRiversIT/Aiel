@@ -35,6 +35,7 @@ namespace Aiel.Results;
 /// persistence.</remarks>
 /// <typeparam name="T">The type of the value contained within the <see cref="Result{T}"/> instance.</typeparam>
 public sealed class ResultOfTJsonConverter<T> : JsonConverter<Result<T>>
+    where T : notnull
 {
     /// <inheritdoc/>
     public override Result<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

@@ -84,7 +84,8 @@ public interface ISender
     /// </returns>
     ValueTask<Result<TDto>> QueryAsync<TDto>(
         IQuery<TDto> action,
-        CancellationToken cancellationToken = default);
+        CancellationToken cancellationToken = default)
+        where TDto : notnull;
 }
 
 /// <summary>

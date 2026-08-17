@@ -32,6 +32,7 @@ public class ResultTests
         // Arrange
         var error = new SimpleError("Some error");
         var result = Result.Failure(error);
+
         // Act & Assert
         result.IsSuccess.Should().BeFalse();
         result.IsFailure.Should().BeTrue();
@@ -75,15 +76,75 @@ public class ResultTests
     }
 
     [Fact]
-    public void Failure_Result_May_Have_A_Value()
+    public void Success_Should_ThrowArgumentNullException_When_ValueIsNull()
     {
-        // Arrange
-        var guid = Guid.NewGuid();
-
         // Act
-        var result = Result.Failure(new SimpleError("Error Result with a Value"), guid);
+        Action act = () => Result<TestRecord>.Success(null!);
 
         // Assert
-        result.Value.Should().Be(guid);
+        act.Should().Throw<ArgumentNullException>(
+            "the notnull constraint is warning-level only, so it must be enforced at runtime");
+    }
+
+    [Fact]
+    public void Value_Should_ThrowResultException_When_Failure()
+    {
+        // Arrange
+        var error = new SimpleError("Not found");
+        var result = Result<TestRecord>.Failure(error);
+
+        // Act
+        Action act = () => _ = result.Value;
+
+        // Assert
+        act.Should().Throw<ResultException>()
+            .WithMessage("*Check IsSuccess before reading Value*")
+            .Which.Error.Should().Be(error);
+    }
+
+    [Fact]
+    public void TryGetValue_Should_ReturnTrueAndValue_When_Success()
+    {
+        // Arrange
+        var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
+        var result = Result<TestRecord>.Success(record);
+
+        // Act
+        var got = result.TryGetValue(out var value);
+
+        // Assert
+        got.Should().BeTrue();
+        value.Should().Be(record);
+    }
+
+    [Fact]
+    public void TryGetValue_Should_ReturnFalse_When_Failure()
+    {
+        // Arrange
+        var result = Result<TestRecord>.Failure(new SimpleError("Not found"));
+
+        // Act
+        var got = result.TryGetValue(out var value);
+
+        // Assert
+        got.Should().BeFalse();
+        value.Should().BeNull();
+    }
+
+    /// <summary>
+    /// A successful result whose value happens to equal <see langword="default"/> is still a
+    /// present value. This is the regression that the previous HasDefaultValue() probe introduced.
+    /// </summary>
+    [Fact]
+    public void Success_Should_CarryValue_When_ValueEqualsDefault()
+    {
+        // Act
+        var result = Result<Int32>.Success(0);
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be(0);
+        result.TryGetValue(out var value).Should().BeTrue();
+        value.Should().Be(0);
     }
 }

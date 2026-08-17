@@ -20,16 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Results;
+using Aiel.Framework;
 
-namespace Aiel.Actions.Queries;
+namespace Aiel.Mediator;
 
-public interface IQueryDispatcher
-{
-    Task<Result<TResult>> DispatchAsync<TQuery, TResult>(
-        TQuery query,
-        IExecutionContext context,
-        CancellationToken cancellationToken = default)
-        where TQuery : IQuery<TResult>
-        where TResult : notnull;
-}
+/// <summary>
+/// Ensures that the Aiel.Mediator participates in the dependency graph.
+/// </summary>
+[DependsOn(typeof(AielMediatorAbstractions))]
+public sealed class AielMediatorFluentValidation : AielDependencyConfigurator;

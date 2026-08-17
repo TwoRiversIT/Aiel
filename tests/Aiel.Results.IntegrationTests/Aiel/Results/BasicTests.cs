@@ -108,7 +108,8 @@ public class BasicTests(WebApplicationFactory<Program> factory)
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().NotBeNull();
         result.Error.IsErrorType<SimpleError>().Should().BeTrue();
-        result.Value.Should().BeNull();
+        result.TryGetValue(out var value).Should().BeFalse();
+        value.Should().BeNull();
     }
 
     [Fact]

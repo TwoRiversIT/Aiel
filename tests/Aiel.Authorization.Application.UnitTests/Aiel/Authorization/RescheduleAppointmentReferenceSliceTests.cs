@@ -77,6 +77,33 @@ public sealed class RescheduleAppointmentReferenceSliceTests
         log.Should().Equal("validate", "resolve-scope", "resolve-subject", "grant");
     }
 
+    /// <summary>
+    /// When no grant covers the permission/scope/subject combination the evaluator succeeds carrying
+    /// <see cref="Maybe{T}.None"/>. Absence of a grant must deny — this is the fail-closed path that
+    /// a zero-valued <see cref="AuthorizationGrantDecision.Granted"/> would previously have inverted.
+    /// </summary>
+    [Fact]
+    public async Task RescheduleAsync_WhenNoGrantCoversTheCombination_DeniesAndDoesNotLoadAggregate()
+    {
+        var log = new List<String>();
+        var services = CreateSliceServices(
+            log,
+            grantDecision: Maybe<AuthorizationGrantDecision>.None,
+            resourceAuthorizationResult: Result.Success());
+        var applicationService = CreateApplicationService(services);
+        var command = CreateValidCommand();
+
+        var result = await applicationService.RescheduleAsync(
+            CreateExecutionContext(),
+            command,
+            TestContext.Current.CancellationToken);
+
+        result.IsSuccess.Should().BeFalse("absence of a grant is never permission");
+        result.Error.Should().BeOfType<AuthorizationDeniedError>();
+        services.Repository.LoadCallCount.Should().Be(0);
+        log.Should().Equal("validate", "resolve-scope", "resolve-subject", "grant");
+    }
+
     [Fact]
     public async Task RescheduleAsync_WhenResourceAuthorizationFails_DoesNotSave()
     {
@@ -159,7 +186,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
 
     private static SliceServices CreateSliceServices(
         List<String> log,
-        AuthorizationGrantDecision grantDecision,
+        Maybe<AuthorizationGrantDecision> grantDecision,
         Result resourceAuthorizationResult)
     {
         var validator = new RescheduleAppointmentValidator(log);
@@ -327,12 +354,12 @@ internal sealed class RecordingAppointmentRepository(List<String> log) : IAppoin
     }
 }
 
-internal sealed class RecordingPermissionGrantEvaluator(List<String> log, AuthorizationGrantDecision decision)
+internal sealed class RecordingPermissionGrantEvaluator(List<String> log, Maybe<AuthorizationGrantDecision> decision)
     : IAuthorizationGrantEvaluator
 {
     public Int32 CallCount { get; private set; }
 
-    public Task<Result<AuthorizationGrantDecision?>> EvaluateAsync(
+    public Task<Result<Maybe<AuthorizationGrantDecision>>> EvaluateAsync(
         PermissionName permissionName,
         AuthorizationScopeTypeName scopeType,
         AuthorizationScopeKey scopeKey,
@@ -342,7 +369,7 @@ internal sealed class RecordingPermissionGrantEvaluator(List<String> log, Author
     {
         CallCount++;
         log.Add("grant");
-        return Task.FromResult(Result.Success<AuthorizationGrantDecision?>(decision));
+        return Task.FromResult(Result.Success(decision));
     }
 }
 

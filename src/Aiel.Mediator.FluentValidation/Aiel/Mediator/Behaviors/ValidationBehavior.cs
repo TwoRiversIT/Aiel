@@ -27,6 +27,8 @@ using FluentValidation.Results;
 
 namespace Aiel.Mediator.Behaviors;
 
+// ToDo: Move this to Aiel.Mediator.FluentValidation package when it is created.
+
 /// <summary>
 /// Runs FluentValidation validators for the current action before invoking the next pipeline step.
 /// </summary>
@@ -36,13 +38,13 @@ public sealed class ValidationBehavior<TAction>(IEnumerable<IValidator<TAction>>
     where TAction : IAction
 {
     /// <summary>
-    /// Validates the current action and short-circuits with a <see cref="ValidationError"/> when validation fails.
+    /// Validates the current action and short-circuits with a <see cref="FluentValidationError"/> when validation fails.
     /// </summary>
     /// <param name="request">The dispatched action being validated.</param>
     /// <param name="next">The next behavior or handler in the pipeline.</param>
     /// <param name="cancellationToken">The token that cancels validation or dispatch.</param>
     /// <returns>
-    /// The next pipeline result when validation succeeds, or a failure result containing a <see cref="ValidationError"/>
+    /// The next pipeline result when validation succeeds, or a failure result containing a <see cref="FluentValidationError"/>
     /// when any validator reports failures.
     /// </returns>
     public async ValueTask<Result> HandleAsync(
@@ -64,7 +66,7 @@ public sealed class ValidationBehavior<TAction>(IEnumerable<IValidator<TAction>>
 
         if (failures.Count > 0)
         {
-            return ValidationError.FromFailures(failures);
+            return FluentValidationError.FromFailures(failures);
         }
 
         return await next();

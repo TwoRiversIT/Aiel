@@ -36,6 +36,7 @@ public sealed class QueryLoggingPipelineBehavior<TQuery, TResult>(
     ILogger<QueryLoggingPipelineBehavior<TQuery, TResult>> logger)
     : IQueryPipelineBehavior<TQuery, TResult>
     where TQuery : IQuery<TResult>
+    where TResult : notnull
 {
     /// <inheritdoc />
     public async Task<Result<TResult>> HandleAsync(

@@ -99,7 +99,7 @@ public sealed partial class GenericError : Error
         }
 
         ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
-        
+
         return new GenericError(sb.ToString());
     }
 }

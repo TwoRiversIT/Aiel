@@ -96,7 +96,7 @@ public sealed class ValidationBehaviorTests
         nextCalled.Should().BeFalse();
         result.IsSuccess.Should().BeFalse();
         var error = result.Error.Should().BeOfType<FluentValidationError>().Subject;
-        error.Message.Should().Be("Validation failed.");
+        error.ErrorDescription.Should().Be("Validation failed.");
         error.Failures.Select(failure => failure.ErrorMessage)
             .Should().Contain("Name is required.");
     }

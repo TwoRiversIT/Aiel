@@ -48,8 +48,8 @@ public class ErrorClassGeneratorTests
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("internal partial class InternalError : global::Aiel.Results.Error")
-            .And.Contain("internal InternalError(String message)")
-            .And.Contain("base(InternalErrorCode.Instance, message)")
+            .And.Contain("internal InternalError(String errorDescription)")
+            .And.Contain("base(InternalErrorCode.Instance, errorDescription)")
             .And.Contain("public static readonly InternalErrorCode Instance = new()");
 
         result.CompilationDiagnostics.Should().BeEmpty();
@@ -78,16 +78,16 @@ public class ErrorClassGeneratorTests
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class AlphaError : global::Aiel.Results.Error")
-            .And.Contain("public AlphaError(String message)")
-            .And.Contain("base(AlphaErrorCode.Instance, message)")
+            .And.Contain("public AlphaError(String errorDescription)")
+            .And.Contain("base(AlphaErrorCode.Instance, errorDescription)")
             .And.Contain("public static readonly AlphaErrorCode Instance = new()")
             .And.Contain("public partial class BravoError : global::Aiel.Results.Error")
-            .And.Contain("public BravoError(String message)")
-            .And.Contain("base(BravoErrorCode.Instance, message)")
+            .And.Contain("public BravoError(String errorDescription)")
+            .And.Contain("base(BravoErrorCode.Instance, errorDescription)")
             .And.Contain("public static readonly BravoErrorCode Instance = new()")
             .And.Contain("public partial class CharlieError : global::Aiel.Results.Error")
-            .And.Contain("public CharlieError(String message)")
-            .And.Contain("base(CharlieErrorCode.Instance, message)")
+            .And.Contain("public CharlieError(String errorDescription)")
+            .And.Contain("base(CharlieErrorCode.Instance, errorDescription)")
             .And.Contain("public static readonly CharlieErrorCode Instance = new()");
     }
 
@@ -155,8 +155,8 @@ public class ErrorClassGeneratorTests
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
-            .And.Contain("public CustomError(String message)")
-            .And.Contain("base(CustomErrorCode.Instance, message)")
+            .And.Contain("public CustomError(String errorDescription)")
+            .And.Contain("base(CustomErrorCode.Instance, errorDescription)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 
@@ -211,8 +211,8 @@ public class ErrorClassGeneratorTests
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
-            .And.Contain("public CustomError(String message)")
-            .And.Contain("base(CustomErrorCode.Instance, message)")
+            .And.Contain("public CustomError(String errorDescription)")
+            .And.Contain("base(CustomErrorCode.Instance, errorDescription)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 
@@ -240,8 +240,8 @@ public class ErrorClassGeneratorTests
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
-            .And.Contain("public CustomError(String message)")
-            .And.Contain("base(CustomErrorCode.Instance, message)")
+            .And.Contain("public CustomError(String errorDescription)")
+            .And.Contain("base(CustomErrorCode.Instance, errorDescription)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 }

@@ -51,15 +51,15 @@ public class ResultException : AielException
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
-    /// message. Prefer using other constructors that accept an <see cref="Error"/> object.
+    /// errorDescription. Prefer using other constructors that accept an <see cref="Error"/> object.
     /// </summary>
-    public ResultException(String message) : base(message)
+    public ResultException(String errorDescription) : base(errorDescription)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
-    /// error message.
+    /// error errorDescription.
     /// </summary>
     public ResultException(Result result) : this(result.Error)
     {
@@ -67,42 +67,42 @@ public class ResultException : AielException
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
-    /// error message.
+    /// error errorDescription.
     /// </summary>
-    public ResultException(Error error) : this(error.Message, error)
+    public ResultException(Error error) : this(error.ErrorDescription, error)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
-    /// error message and an optional <see cref="Error"/> object containing additional details.
+    /// error errorDescription and an optional <see cref="Error"/> object containing additional details.
     /// </summary>
-    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="errorDescription">The error errorDescription that explains the reason for the exception.</param>
     /// <param name="error">An optional <see cref="Error"/> instance with structured error details.</param>
-    public ResultException(String? message, Error? error) : base(message ?? error?.Message ?? "An error occurred.")
+    public ResultException(String? errorDescription, Error? error) : base(errorDescription ?? error?.ErrorDescription ?? "An error occurred.")
     {
         Error = error;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
-    /// error message and a reference to the inner exception that is the cause of this exception.
+    /// error errorDescription and a reference to the inner exception that is the cause of this exception.
     /// </summary>
-    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="errorDescription">The error errorDescription that explains the reason for the exception.</param>
     /// <param name="innerException">The exception that is the cause of the current exception.</param>
-    public ResultException(String? message, Exception? innerException) : base(message, innerException)
+    public ResultException(String? errorDescription, Exception? innerException) : base(errorDescription, innerException)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
-    /// error message, an <see cref="Error"/> object containing additional details, and a
+    /// error errorDescription, an <see cref="Error"/> object containing additional details, and a
     /// reference to the inner exception that is the cause of this exception.
     /// </summary>
-    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="errorDescription">The error errorDescription that explains the reason for the exception.</param>
     /// <param name="error">An optional <see cref="Error"/> instance with structured error details.</param>
     /// <param name="innerException">The exception that is the cause of the current exception.</param>
-    public ResultException(String? message, Error? error, Exception? innerException) : base(message, innerException)
+    public ResultException(String? errorDescription, Error? error, Exception? innerException) : base(errorDescription, innerException)
     {
         Error = error;
     }

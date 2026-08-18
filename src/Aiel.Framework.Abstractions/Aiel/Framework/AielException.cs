@@ -43,19 +43,19 @@ public class AielException : Exception
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AielException"/> class with a specified
-    /// message.
+    /// errorDescription.
     /// </summary>
-    public AielException(String message) : base(message)
+    public AielException(String errorDescription) : base(errorDescription)
     {
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AielException"/> class with a specified
-    /// error message and a reference to the inner exception that is the cause of this exception.
+    /// error errorDescription and a reference to the inner exception that is the cause of this exception.
     /// </summary>
-    /// <param name="message">The error message that explains the reason for the exception.</param>
+    /// <param name="errorDescription">The error errorDescription that explains the reason for the exception. Not for the end-user.</param>
     /// <param name="innerException">The exception that is the cause of the current exception.</param>
-    public AielException(String? message, Exception? innerException) : base(message, innerException)
+    public AielException(String? errorDescription, Exception? innerException) : base(errorDescription, innerException)
     {
     }
 }

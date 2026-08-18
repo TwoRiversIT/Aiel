@@ -46,7 +46,7 @@ public abstract class CustomErrorSerializationTests(ResultsIntegrationTestFixtur
         var deserialized = JsonSerializer.Deserialize<TransactionError>(json, Results.JSO);
 
         deserialized.Should().NotBeNull();
-        deserialized!.Message.Should().Be("Payment declined");
+        deserialized!.ErrorDescription.Should().Be("Payment declined");
         deserialized.Reason.Should().Be(TransactionFailureReason.InsufficientFunds);
         deserialized.TransactionId.Should().Be("TXN12345");
     }
@@ -90,7 +90,7 @@ public abstract class CustomErrorSerializationTests(ResultsIntegrationTestFixtur
         var deserialized = JsonSerializer.Deserialize<OrderNotFoundError>(json, Results.JSO);
 
         deserialized.Should().NotBeNull();
-        deserialized!.Message.Should().Be("Customer ID 12345 not found");
+        deserialized!.ErrorDescription.Should().Be("Customer ID 12345 not found");
         deserialized.ErrorCode.Should().Be(original.ErrorCode);
     }
 
@@ -107,7 +107,7 @@ public abstract class CustomErrorSerializationTests(ResultsIntegrationTestFixtur
 
         deserialized.Should().NotBeNull();
         deserialized.Should().BeOfType<OrderNotFoundError>();
-        deserialized!.Message.Should().Be("Customer not found");
+        deserialized!.ErrorDescription.Should().Be("Customer not found");
     }
 
     [Fact]
@@ -124,7 +124,7 @@ public abstract class CustomErrorSerializationTests(ResultsIntegrationTestFixtur
         deserialized.Should().NotBeNull();
         deserialized.IsSuccess.Should().BeFalse();
         deserialized.Error.Should().BeOfType<OrderNotFoundError>();
-        deserialized.Error.Message.Should().Be("Customer ID 999 not found");
+        deserialized.Error.ErrorDescription.Should().Be("Customer ID 999 not found");
     }
 
     [Fact]
@@ -140,7 +140,7 @@ public abstract class CustomErrorSerializationTests(ResultsIntegrationTestFixtur
         var deserialized = JsonSerializer.Deserialize<TransactionError>(json, Results.JSO);
 
         deserialized.Should().NotBeNull();
-        deserialized!.Message.Should().Be("Payment declined");
+        deserialized!.ErrorDescription.Should().Be("Payment declined");
         deserialized.Reason.Should().Be(TransactionFailureReason.InsufficientFunds);
         deserialized.TransactionId.Should().Be("TXN12345");
     }

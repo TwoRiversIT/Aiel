@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
-
 namespace Aiel.Internal;
 
 /// <summary>
@@ -31,7 +29,7 @@ internal static class GeneratorConsts
 {
     public const String Company = "Aiel";
     public const String Resolver = "JsonTypeInfoResolver";
-    public const String MessageParameter = "message";
+    public const String MessageParameter = "errorDescription";
     public const String Error = "Error";
     public const String ErrorCode = Error + Suffix;
     public const String ErrorCodeFilename = Root + "_GeneratedErrors" + Extension;

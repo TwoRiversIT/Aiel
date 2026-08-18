@@ -32,7 +32,7 @@ public class ErrorTests
     [Fact]
     public void NoError_ShouldHave_Description()
     {
-        Result.NoError.Message.Should().Be(NoError.DefaultMessage);
+        Result.NoError.ErrorDescription.Should().Be(NoError.DefaultMessage);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class ErrorTests
         var error = new SimpleError("User not found");
 
         error.Should().BeOfType<SimpleError>();
-        error.Message.Should().Be("User not found");
+        error.ErrorDescription.Should().Be("User not found");
         String codeName = error.ErrorCode;
         codeName.Should().Be("SimpleError");
     }

@@ -41,10 +41,17 @@ public sealed partial class NoError : Error
 /// </summary>
 public sealed partial class ApiError : Error
 {
-    public static ApiError FromException(Exception ex)
+    public static ApiError FromException(Exception ex, String? message = null)
     {
         var sb = new StringBuilder();
+        if (!String.IsNullOrWhiteSpace(message))
+        {
+            sb.AppendLine(message);
+            sb.AppendLine();
+        }
+
         ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
+
         return new ApiError(sb.ToString());
     }
 }
@@ -58,10 +65,17 @@ public sealed partial class ValidationError : Error;
 /// </summary>
 public sealed partial class InfrastructureError : Error
 {
-    public static InfrastructureError FromException(Exception ex)
+    public static InfrastructureError FromException(Exception ex, String? message = null)
     {
         var sb = new StringBuilder();
+        if (!String.IsNullOrWhiteSpace(message))
+        {
+            sb.AppendLine(message);
+            sb.AppendLine();
+        }
+
         ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
+
         return new InfrastructureError(sb.ToString());
     }
 }
@@ -75,10 +89,17 @@ public sealed partial class InfrastructureError : Error
 // ToDo: Create an analyzer that will warn when a GenericError is used instead of a more specific error type.
 public sealed partial class GenericError : Error
 {
-    public static GenericError FromException(Exception ex)
+    public static GenericError FromException(Exception ex, String? message = null)
     {
         var sb = new StringBuilder();
+        if (!String.IsNullOrWhiteSpace(message))
+        {
+            sb.AppendLine(message);
+            sb.AppendLine();
+        }
+
         ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
+        
         return new GenericError(sb.ToString());
     }
 }

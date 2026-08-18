@@ -36,7 +36,10 @@ public abstract class Error
     public ErrorCode ErrorCode { get; }
 
     /// <summary>
-    /// Gets the human-readable description of the error.
+    /// Gets the human-readable description of the error. NOTE: This property is primarily
+    /// for logging and debugging purposes. For user-facing messages, consider adding a
+    /// property to your custom generated Error that provides a friendly, localized message
+    /// for the end user.
     /// </summary>
     public String Message { get; }
 
@@ -45,6 +48,11 @@ public abstract class Error
     /// </summary>
     /// <param name="errorCode">A code identifying the error. Must not be null.</param>
     /// <param name="message">A human-readable description of the error. Must not be null, empty, or whitespace.</param>
+    /// <remarks>
+    /// The <paramref name="message" /> parameter is for logging and debugging purposes. For
+    /// user-facing messages, consider adding a property to your custom generated Error that
+    /// provides a friendly, localized message for the end user.
+    /// </remarks>
     protected Error(ErrorCode errorCode, String message)
     {
         if (String.IsNullOrWhiteSpace(message))

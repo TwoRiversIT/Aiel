@@ -22,7 +22,7 @@
 
 namespace Aiel.StrongIds;
 
-[SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "Its freaking unit tests!")]
+[SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "It's freaking unit tests!")]
 public class StrongIdTests
 {
     [Fact]

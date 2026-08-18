@@ -579,13 +579,6 @@ else
 }
 ```
 
-### When to use async methods
-
-- `MapAsync` - When transforming the result value requires async operations (e.g., calling external APIs, database queries)
-- `BindAsync` - When the next step in the pipeline is async and can fail (returns `Task<Result<T>>`)
-- `MatchAsync` - When handling success/failure cases requires async operations (e.g., logging, analytics)
-- `TapAsync` - When side effects are async but shouldn't affect the result (e.g., sending notifications, caching)
-
 ## HTTP Client Integration
 
 The library provides specialized extension methods for working with `Result` and `Result<T>` types over HTTP:

@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Aiel.Results;
 
 /// <summary>
@@ -83,7 +81,7 @@ public readonly record struct Maybe<T>
     /// <exception cref="InvalidOperationException">Thrown when <see cref="HasValue"/> is <see langword="false"/>.</exception>
     public T Value => HasValue
         ? _value
-        : throw new InvalidOperationException($"Maybe<{typeof(T).Name}> has no value. Check HasValue before reading Value.");
+        : throw new InvalidOperationException($"Maybe<{typeof(T).Name}> has no value. Check the HasValue property before reading Value or use GetValueOrDefault and TryGetValue methods instead.");
 
     /// <summary>
     /// Gets a <see cref="Maybe{T}"/> that holds no value.

@@ -193,12 +193,17 @@ public sealed class Result<T> : Result
     /// Gets the value when the operation succeeded.
     /// </summary>
     /// <param name="value">
-    /// When this method returns <see langword="true"/>, contains the value; otherwise <see langword="default"/>.
+    /// When this method returns <see langword="true"/>, contains the value; otherwise <see langword="default" />.
     /// </param>
     /// <returns><see langword="true"/> when the operation succeeded; otherwise <see langword="false"/>.</returns>
-    public Boolean TryGetValue([NotNullWhen(true)] out T? value)
+
+    // NOTE: In a previous version the signature was `public Boolean TryGetValue(out T? value)`, but that was a
+    // regression from the original design. The intent is that a successful result always has a non-null value,
+    // so the out parameter should be non-nullable. The `[NotNullWhen(true)]` attribute communicates this to
+    // static analysis tools.
+    public Boolean TryGetValue([NotNullWhen(true)] out T value)
     {
-        value = IsSuccess ? ValueStorage : default;
+        value = IsSuccess ? ValueStorage! : default!;
         return IsSuccess;
     }
 

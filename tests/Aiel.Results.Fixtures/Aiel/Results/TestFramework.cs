@@ -50,7 +50,7 @@ public class ResultsIntegrationTestFixture : IntegrationTestFixture
         return ValueTask.CompletedTask;
     }
 
-    [SuppressMessage("AielLogging", "AIEL00011:Do not call ILogger methods directly", Justification = "Just testing to see if we can actually suppress this warning.")]
+    [UnconditionalSuppressMessage("AielLogging", "AIEL00011:Do not call ILogger methods directly", Justification = "Just testing to see if we can actually suppress this warning.")]
     public override ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         var logger = context.Services.GetRequiredService<ILogger<ResultsIntegrationTestFixture>>();

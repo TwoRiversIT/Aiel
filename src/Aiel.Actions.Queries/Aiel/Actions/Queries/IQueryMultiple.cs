@@ -94,34 +94,34 @@ public abstract class QueryMultipleResult
         set => _pageSize = value <= 0 ? Int32.MaxValue : value;
     }
 
-    public static Result<ListQueryResult<TDto>> Create<TDto>(IReadOnlyList<TDto> list, IQueryMultiple query, Int32 totalRecords = 0)
+    public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> list, IQueryMultiple query, Int32 totalRecords = 0)
         where TDto : notnull
     {
         return Create(list, query.Sort.Number, query.Sort.Size, totalRecords);
     }
 
-    public static Result<ListQueryResult<TDto>> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNo = 0, Int32 pageSize = 10, Int32 totalRecords = 0)
+    public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNo = 0, Int32 pageSize = 10, Int32 totalRecords = 0)
         where TDto : notnull
     {
-        return Result.Success(new ListQueryResult<TDto>(records, totalRecords, pageNo, pageSize)
+        return Result.Success(new QueryMultipleResult<TDto>(records, totalRecords, pageNo, pageSize)
         {
             List = records
         });
     }
 }
 
-public class ListQueryResult<TDto> : QueryMultipleResult
+public class QueryMultipleResult<TDto> : QueryMultipleResult
     where TDto : notnull
 {
-    public ListQueryResult() { }
+    public QueryMultipleResult() { }
 
-    public ListQueryResult(IReadOnlyList<TDto> list, Int32 totalRecords, IQueryMultiple query)
+    public QueryMultipleResult(IReadOnlyList<TDto> list, Int32 totalRecords, IQueryMultiple query)
         : this(list, totalRecords, query.Sort.Number, query.Sort.Size)
     {
         List = list ?? [];
     }
 
-    public ListQueryResult(IReadOnlyList<TDto> list, Int32 totalRecords, Int32 pageNo, Int32 pageSize)
+    public QueryMultipleResult(IReadOnlyList<TDto> list, Int32 totalRecords, Int32 pageNo, Int32 pageSize)
         : base(totalRecords, pageNo, pageSize)
     {
         List = list ?? [];

@@ -49,8 +49,8 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         var roundTrip = JsonSerializer.Deserialize<Result>(json, Results.JSO);
 
         roundTrip!.IsSuccess.Should().BeFalse();
-        roundTrip.Error.ErrorDescription.Should().Be(original.Error.ErrorDescription);
-        roundTrip.Error.ErrorCode.GetType().Should().Be(original.Error.ErrorCode.GetType());
+        roundTrip.Error.Description.Should().Be(original.Error.Description);
+        roundTrip.Error.Code.GetType().Should().Be(original.Error.Code.GetType());
     }
 
     [Fact]
@@ -90,8 +90,8 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         error.TryGetProperty("$errorType", out var errorType).Should().BeTrue();
         errorType.GetString().Should().Contain("SimpleError");
 
-        error.TryGetProperty("errorDescription", out var errorDescription).Should().BeTrue();
-        errorDescription.GetString().Should().Be("Not found");
+        error.TryGetProperty("description", out var description).Should().BeTrue();
+        description.GetString().Should().Be("Not found");
     }
 
     [Fact]

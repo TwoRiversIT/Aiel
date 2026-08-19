@@ -151,7 +151,7 @@ public class ErrorCodeTests(ResultsIntegrationTestFixture fixture, ITestOutputHe
             new DatabaseConnectionError("test")
         };
 
-        var errorCodes = errors.Select(e => e.ErrorCode).ToList();
+        var errorCodes = errors.Select(e => e.Code).ToList();
         var distinctCodes = errorCodes.Distinct().ToList();
 
         distinctCodes.Should().HaveCount(errorCodes.Count, "all error codes should have unique type+name combinations");

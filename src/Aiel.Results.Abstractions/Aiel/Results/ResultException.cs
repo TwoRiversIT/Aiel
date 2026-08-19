@@ -69,7 +69,7 @@ public class ResultException : AielException
     /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
     /// error errorDescription.
     /// </summary>
-    public ResultException(Error error) : this(error.ErrorDescription, error)
+    public ResultException(Error error) : this(error.Description, error)
     {
     }
 
@@ -79,7 +79,7 @@ public class ResultException : AielException
     /// </summary>
     /// <param name="errorDescription">The error errorDescription that explains the reason for the exception.</param>
     /// <param name="error">An optional <see cref="Error"/> instance with structured error details.</param>
-    public ResultException(String? errorDescription, Error? error) : base(errorDescription ?? error?.ErrorDescription ?? "An error occurred.")
+    public ResultException(String? errorDescription, Error? error) : base(errorDescription ?? error?.Description ?? "An error occurred.")
     {
         Error = error;
     }

@@ -42,8 +42,8 @@ public sealed class GeneratedErrorsTests
 
         // Assert
         error.OrderId.Should().Be("ORD-12345");
-        error.ErrorDescription.Should().Be("Order ORD-12345 was not found in the system");
-        error.ErrorCode.Should().NotBeNull();
+        error.Description.Should().Be("Order ORD-12345 was not found in the system");
+        error.Code.Should().NotBeNull();
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public sealed class GeneratedErrorsTests
         error.ProductSku.Should().Be("WIDGET-001");
         error.RequestedQuantity.Should().Be(100);
         error.AvailableQuantity.Should().Be(25);
-        error.ErrorDescription.Should().Be("Insufficient inventory for WIDGET-001");
+        error.Description.Should().Be("Insufficient inventory for WIDGET-001");
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public sealed class GeneratedErrorsTests
         var error = new DatabaseConnectionError("Failed to connect to database");
 
         // Assert
-        error.ErrorDescription.Should().Be("Failed to connect to database");
-        error.ErrorCode.Should().NotBeNull();
+        error.Description.Should().Be("Failed to connect to database");
+        error.Code.Should().NotBeNull();
     }
 }

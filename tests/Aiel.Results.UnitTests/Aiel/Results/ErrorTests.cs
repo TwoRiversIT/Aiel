@@ -32,13 +32,13 @@ public class ErrorTests
     [Fact]
     public void NoError_ShouldHave_Description()
     {
-        Result.NoError.ErrorDescription.Should().Be(NoError.DefaultMessage);
+        Result.NoError.Description.Should().Be(NoError.DefaultMessage);
     }
 
     [Fact]
     public void NoError_AssignedToString_ShouldBe_NoError()
     {
-        String codeName = Result.NoError.ErrorCode;
+        String codeName = Result.NoError.Code;
 
         codeName.Should().Be("NoError");
     }
@@ -49,8 +49,8 @@ public class ErrorTests
         var error = new SimpleError("User not found");
 
         error.Should().BeOfType<SimpleError>();
-        error.ErrorDescription.Should().Be("User not found");
-        String codeName = error.ErrorCode;
+        error.Description.Should().Be("User not found");
+        String codeName = error.Code;
         codeName.Should().Be("SimpleError");
     }
 
@@ -60,7 +60,7 @@ public class ErrorTests
         var error1 = new SimpleError("Description 1");
         var error2 = new SimpleError("Description 2");
 
-        error1.ErrorCode.Should().BeSameAs(error2.ErrorCode);
+        error1.Code.Should().BeSameAs(error2.Code);
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class ErrorTests
             }
         };
 
-        var codes = errors.Select(e => e.ErrorCode).ToList();
+        var codes = errors.Select(e => e.Code).ToList();
         var distinctCodes = codes.Distinct().ToList();
 
         distinctCodes.Should().HaveCount(codes.Count, "all error code singletons should be unique references");
@@ -132,7 +132,7 @@ public class ErrorTests
             TransactionId = "LKJ34567@UHBV"
         };
 
-        String codeAsString = error.ErrorCode;
+        String codeAsString = error.Code;
 
         codeAsString.Should().Be("TransactionError");
     }
@@ -146,7 +146,7 @@ public class ErrorTests
             TransactionId = "ASD98765@PLMN"
         };
 
-        var codeString = error.ErrorCode.ToString();
+        var codeString = error.Code.ToString();
 
         codeString.Should().Be(nameof(TransactionError), "ToString should return the error type name");
     }

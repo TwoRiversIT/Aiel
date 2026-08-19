@@ -37,4 +37,7 @@ public sealed record SortOrder
     public IReadOnlyList<SortField> Fields { get; init; } = [];
 
     public Boolean HasValues => Fields.Count > 0;
+
+    public static SortOrder From(params SortField[] fields)
+        => fields is null ? None : new(fields);
 }

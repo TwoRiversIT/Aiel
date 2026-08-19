@@ -47,7 +47,7 @@ public class Serialization_EdgeCases(ResultsIntegrationTestFixture fixture, ITes
 
         var deserialized1 = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);
         var deserialized2 = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);
-        deserialized1!.Error.ErrorCode.Should().Be(deserialized2!.Error.ErrorCode,
+        deserialized1!.Error.Code.Should().Be(deserialized2!.Error.Code,
             "ErrorCode should maintain value equality across deserializations");
     }
 

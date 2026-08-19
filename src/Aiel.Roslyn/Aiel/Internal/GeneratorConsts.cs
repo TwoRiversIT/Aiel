@@ -29,29 +29,27 @@ internal static class GeneratorConsts
 {
     public const String Company = "Aiel";
     public const String Resolver = "JsonTypeInfoResolver";
-    public const String MessageParameter = "errorDescription";
-    public const String Error = "Error";
-    public const String ErrorCode = Error + Suffix;
+    public const String DescriptionParameterName = "description";
+    public const String ErrorClassName = "Error";
+    public const String ErrorCodeClassName = ErrorClassName + Suffix;
+    public const String ErrorCodePropertyName = "Code";
     public const String ErrorCodeFilename = Root + "_GeneratedErrors" + Extension;
     public const String Extension = ".g.cs";
-    public const String FqErrorCodeType = Global + Root + "." + ErrorCode;
-    public const String FqErrorType = Global + Root + ".Error";
+    public const String FqErrorCodeType = Global + Root + "." + ErrorCodeClassName;
+    public const String FqErrorType = Global + Root + "." + ErrorClassName;
     public const String FqPolymorphismType = Global + Root + "." + Polymorphism + Initializer;
-    public const String FqRegistryType = Global + Root + "." + Registry;
+    public const String FqRegistryType = Global + Root + "." + RegistryClassName;
     public const String GeneratedPolymorphism = "_" + Polymorphism + Initializer;
     public const String Global = "global::";
     public const String Initializer = "Initializer";
     public const String Instance = "Instance";
     public const String JsonTypeInfoResolverFilename = Root + "_" + Resolver + Extension;
     public const String Polymorphism = "Polymorphism";
-    public const String PolymorphismIntitializer = Polymorphism + Initializer;
     public const String PolymorphismFilename = Root + "_" + Polymorphism + Extension;
     public const String RegisterMethod = "Register";
-    public const String Registry = "ErrorRegistry";
-    public const String ResultPatternServiceCollectionExtensions = Root + "ServiceCollectionExtensions";
+    public const String RegistryClassName = "ErrorRegistry";
     public const String Results = "Results";
     public const String Root = Company + "." + Results;
-    public const String ServiceCollectionExtensionMethod = "Add" + Root;
     public const String Suffix = "Code";
     public const String TypeDiscriminatorPropertyName = "TypeDiscriminatorPropertyName";
 }

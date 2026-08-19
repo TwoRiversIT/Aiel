@@ -173,7 +173,7 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
         deserialized.Should().NotBeNull();
         deserialized.IsSuccess.Should().BeFalse();
         deserialized.Error.Should().BeOfType<SimpleError>();
-        deserialized.Error.ErrorDescription.Should().Be("Customer not found");
+        deserialized.Error.Description.Should().Be("Customer not found");
     }
 
     [Fact]
@@ -191,12 +191,12 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
         deserialized.Should().NotBeNull();
         deserialized.IsSuccess.Should().BeFalse();
         deserialized.Error.Should().BeOfType<TransactionError>();
-        deserialized.Error.ErrorDescription.Should().Be("Could not connect to the payment gateway");
-        deserialized.Error.ErrorCode.Should().Be(new TransactionError("test")
+        deserialized.Error.Description.Should().Be("Could not connect to the payment gateway");
+        deserialized.Error.Code.Should().Be(new TransactionError("test")
         {
             Reason = TransactionFailureReason.NetworkError,
             TransactionId = "QWE23456@RTYU"
-        }.ErrorCode);
+        }.Code);
     }
 
     [Fact]
@@ -221,7 +221,7 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
             deserialized.Should().NotBeNull();
             deserialized.IsSuccess.Should().BeFalse();
             deserialized.Error.GetType().Should().Be(error.GetType());
-            deserialized.Error.ErrorCode.Should().Be(error.ErrorCode,
+            deserialized.Error.Code.Should().Be(error.Code,
                 $"{error.GetType().Name} should preserve ErrorCode value equality");
         }
     }

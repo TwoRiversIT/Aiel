@@ -67,8 +67,8 @@ public class ErrorCodeRegistryReflectionTests
         ErrorType.IsAssignableFrom(errorType).Should().BeTrue($"Expected {errorType.FullName} to be a subclass of {ErrorType.FullName}");
 
         // Find the Code property
-        var errorCodeProp = errorType.GetProperty(GeneratorConsts.ErrorCode, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        errorCodeProp.Should().NotBeNull($"Expected {errorType.FullName} to have a 'Code' property");
+        var errorCodeProp = errorType.GetProperty(GeneratorConsts.ErrorCodePropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        errorCodeProp.Should().NotBeNull($"Expected {errorType.FullName} to have a '{GeneratorConsts.ErrorCodePropertyName}' property");
 
         // Create an instance of the errorType
         var error = Activator.CreateInstance(errorType, NotEmpty);

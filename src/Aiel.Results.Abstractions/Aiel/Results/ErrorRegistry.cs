@@ -186,8 +186,8 @@ public static class ErrorRegistry
         }
 
         // Find the ErrorCode property
-        var errorCodeProp = errorType.GetProperty(GeneratorConsts.ErrorCode, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-            ?? throw new ArgumentException($"Type '{errorType.FullName}' must have a '{GeneratorConsts.ErrorCode}' property.", nameof(errorType));
+        var errorCodeProp = errorType.GetProperty(GeneratorConsts.ErrorCodePropertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            ?? throw new ArgumentException($"Type '{errorType.FullName}' must have a '{GeneratorConsts.ErrorCodePropertyName}' property.", nameof(errorType));
 
         try
         {
@@ -196,13 +196,13 @@ public static class ErrorRegistry
 
             // Get the value of the Code property
             var codeValue = errorCodeProp.GetValue(error)
-                ?? throw new ArgumentException($"Type '{errorType.FullName}' must have a non-null '{GeneratorConsts.ErrorCode}' property value.", nameof(errorType));
+                ?? throw new ArgumentException($"Type '{errorType.FullName}' must have a non-null '{GeneratorConsts.ErrorCodeClassName}' property value.", nameof(errorType));
 
             // Get the type of the ErrorCode
             var errorCodeType = codeValue.GetType();
             if (!ErrorCodeType.IsAssignableFrom(errorCodeType))
             {
-                throw new ArgumentException($"The '{GeneratorConsts.ErrorCode}' property of type '{errorType.FullName}' must be a derivative of {GeneratorConsts.Error}.", nameof(errorType));
+                throw new ArgumentException($"The '{GeneratorConsts.ErrorCodeClassName}' property of type '{errorType.FullName}' must be a derivative of {GeneratorConsts.ErrorClassName}.", nameof(errorType));
             }
 
             // Get the Instance property

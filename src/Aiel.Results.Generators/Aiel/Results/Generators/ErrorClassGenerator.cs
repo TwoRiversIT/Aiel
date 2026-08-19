@@ -66,8 +66,8 @@ public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncremen
             sb.AppendLine($"{spaces}    }}");
             sb.AppendLine();
 
-            sb.AppendLine($"{spaces}    {error.Accessibility} {error.ErrorName}(String {GeneratorConsts.MessageParameter})");
-            sb.AppendLine($"{spaces}        : base({error.ErrorCodeName}.{GeneratorConsts.Instance}, {GeneratorConsts.MessageParameter}) {{ }}");
+            sb.AppendLine($"{spaces}    {error.Accessibility} {error.ErrorName}(String {GeneratorConsts.DescriptionParameterName})");
+            sb.AppendLine($"{spaces}        : base({error.ErrorCodeName}.{GeneratorConsts.Instance}, {GeneratorConsts.DescriptionParameterName}) {{ }}");
             sb.AppendLine();
 
             sb.AppendLine($"{spaces}    public sealed class {error.ErrorCodeName} : {GeneratorConsts.FqErrorCodeType}");

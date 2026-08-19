@@ -294,18 +294,18 @@ public interface IQuerySpecification<T> : ISpecification<T>
     Expression<Func<T, Boolean>> Predicate { get; }
 }
 
-public interface IReadRepository<TEntity> : IDisposable
+public interface ISpecificationRepository<TEntity> : IDisposable
     where TEntity : class
 {
-    IAsyncEnumerable<TEntity> FindAsync(IQuerySpecification<TEntity> specification, SortRequest? sort = null, PageRequest? page = null);
-    Task<TEntity?> GetAsync(IQuerySpecification<TEntity> specification, SortRequest? sort = null, CancellationToken cancellationToken = default);
-    Task<Boolean> AnyAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default);
+    IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort = null, Page? page = null);
+    Task<TEntity?> GetAsync(ISpecification<TEntity> specification, SortOrder? sort = null, CancellationToken cancellationToken = default);
+    Task<Boolean> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
     Task<Boolean> AnyAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);
-    Task<Int32> CountAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default);
+    Task<Int32> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
     Task<Int32> CountAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);
 }
 
-public interface IQuerySpecificationRepository<TEntity> : IReadRepository<TEntity>
+public interface IQuerySpecificationRepository<TEntity> : ISpecificationRepository<TEntity>
     where TEntity : class;
 ```
 

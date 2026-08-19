@@ -73,7 +73,7 @@ Application-layer contracts for commands, queries, specifications, and read-side
 - `ICommand`, `IQuery<TResult>` — command and query markers
 - `IExecutionContext` — operation, correlation, causation, and actor metadata
 - `IDomainEventDispatcher` — domain event dispatch contract
-- `PageRequest`, `SortRequest`, and `PagedResult<T>` — read-side shaping
+- `Sort`, `SortOrder`, and `QueryMultipleResult<T>` — read-side shaping
 
 ### [Aiel.Application](./src/Aiel.Application/README.md)
 
@@ -116,7 +116,7 @@ Query-side CQRS contracts and dispatching.
 
 - `IQuery<TResult>`, `IQueryHandler<TQuery, TResult>`, `IQueryDispatcher`
 - `IQueryPipelineBehavior<T>` — query-scoped pipeline
-- `PageRequest` and `PagedResult<T>` for paged reads
+- `Sort` and `QueryMultipleResult<T>` for paged reads
 - Structured logging via `QueryLoggingPipelineBehavior`
 
 ### [Aiel.Actions.Queries.EntityFrameworkCore](./src/Aiel.Actions.Queries.EntityFrameworkCore/README.md)

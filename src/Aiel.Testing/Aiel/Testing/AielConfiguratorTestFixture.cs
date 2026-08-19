@@ -25,8 +25,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Testing;
 
-public class AielDependencyTestFixture<TConfigurator> : IntegrationTestFixture
-    where TConfigurator : AielDependencyConfigurator, new()
+public class AielConfiguratorTestFixture<TConfigurator> : IntegrationTestFixture
+    where TConfigurator : IConfigurator, new()
 {
     public override async ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

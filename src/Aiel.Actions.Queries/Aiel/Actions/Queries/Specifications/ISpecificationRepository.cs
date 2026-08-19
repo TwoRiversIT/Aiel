@@ -28,24 +28,24 @@ namespace Aiel.Actions.Queries.Specifications;
 /// Defines the read-side persistence contract for specification-based queries.
 /// </summary>
 /// <typeparam name="TEntity">The read model entity type.</typeparam>
-public interface IReadRepository<TEntity> : IDisposable
+public interface ISpecificationRepository<TEntity> : IDisposable
     where TEntity : class
 {
-    IAsyncEnumerable<TEntity> FindAsync(Query<TEntity> query);
+    IAsyncEnumerable<TEntity> FindAsync(IQueryMultipleSpecification<TEntity> query);
 
     IAsyncEnumerable<TEntity> FindAsync(
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
-        PageRequest? page = null);
+        ISpecification<TEntity> specification,
+        SortOrder? sort = null,
+        Page? page = null);
 
     Task<TEntity?> GetAsync(
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
+        ISpecification<TEntity> specification,
+        SortOrder? sort = null,
         CancellationToken cancellationToken = default);
 
-    Task<Boolean> AnyAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default);
+    Task<Boolean> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
     Task<Boolean> AnyAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);
 
-    Task<Int32> CountAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default);
+    Task<Int32> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
     Task<Int32> CountAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);
 }

@@ -1411,7 +1411,7 @@ This is exactly the consistency you want.
 
 2. Read‑side repository (same for both types)
 ```csharp
-public interface IReadRepository<TReadModel>
+public interface ISpecificationRepository<TReadModel>
 {
     Task<IReadOnlyList<TReadModel>> ListAsync(
         ISpecification<TReadModel> specification,
@@ -1438,7 +1438,7 @@ Same interface. Same usage. Different backing store.
 ✔ Developers always know what to do
 Write side → use IAggregateRepository<TAggregate, TId>
 
-Read side → use IReadRepository<TReadModel>
+Read side → use ISpecificationRepository<TReadModel>
 
 ✔ CQRS is explicit
 You are not pretending that event‑sourced aggregates can be queried like relational ones.
@@ -1509,7 +1509,7 @@ The developer does not care.
 🎁 The Bonus: You can even unify the repository names
 ```csharp
 IOrderRepository : IAggregateRepository<Order, OrderId>
-IOrderReadRepository : IReadRepository<OrderReadModel>
+IOrderReadRepository : ISpecificationRepository<OrderReadModel>
 This gives you:
 ```
 
@@ -1558,7 +1558,7 @@ Unified repository model:
 
 IAggregateRepository<TAggregate, TId> for writes
 
-IReadRepository<TReadModel> for reads
+ISpecificationRepository<TReadModel> for reads
 
 Specifications for querying
 
@@ -1793,7 +1793,7 @@ public sealed class EventStoreRepository<TAggregate, TId>
 }
 Read‑Side Repository (Unified for Both Types)
 ```csharp
-public interface IReadRepository<TReadModel>
+public interface ISpecificationRepository<TReadModel>
 {
     Task<IReadOnlyList<TReadModel>> ListAsync(
         ISpecification<TReadModel> spec,
@@ -1806,7 +1806,7 @@ public interface IReadRepository<TReadModel>
 EF implementation:
 
 ```csharp
-public sealed class EfReadRepository<TReadModel> : IReadRepository<TReadModel>
+public sealed class EfReadRepository<TReadModel> : ISpecificationRepository<TReadModel>
     where TReadModel : class
 {
     private readonly AppDbContext _db;
@@ -2126,7 +2126,7 @@ poll for freshness
 D. Command handlers never read from projections
 This keeps the write side pure.
 
-E. Read side always uses IReadRepository<T>
+E. Read side always uses ISpecificationRepository<T>
 This keeps the read side consistent.
 
 6. How this fits into your unified repository model
@@ -2455,7 +2455,7 @@ CustomerReadModel
 Both are queried through:
 
 ```csharp
-IReadRepository<TReadModel>
+ISpecificationRepository<TReadModel>
 Both use:
 
 ```csharp
@@ -2578,7 +2578,7 @@ CustomerReadModel
 Both read models live behind:
 
 ```csharp
-IReadRepository<TReadModel>
+ISpecificationRepository<TReadModel>
 Both are queried with:
 
 ```csharp
@@ -2642,7 +2642,7 @@ Both use IAggregateRepository<TAggregate, TId>
 Read side
 All read models → projections
 
-All queries → IReadRepository<TReadModel>
+All queries → ISpecificationRepository<TReadModel>
 
 All filters → ISpecification<TReadModel>
 
@@ -5943,7 +5943,7 @@ Diagram 1 — Logical Architecture (Conceptual Boundaries)
 │  - InvoiceReadModel                                                      │
 │                                                                          │
 │  Queried via:                                                            │
-│    IReadRepository<TReadModel>                                           │
+│    ISpecificationRepository<TReadModel>                                           │
 │    ISpecification<TReadModel>                                            │
 └──────────────────────────────────────────────────────────────────────────┘
 This diagram shows the flow of responsibility:
@@ -6012,7 +6012,7 @@ This shows how the system runs in real life.
 │                                                                          │
 │  - Denormalized read models                                              │
 │  - Optimized for queries                                                 │
-│  - Queried via IReadRepository + Specifications                          │
+│  - Queried via ISpecificationRepository + Specifications                          │
 │                                                                          │
 │  (Can be SQL, NoSQL, search index, etc.)                                 │
 └──────────────────────────────────────────────────────────────────────────┘

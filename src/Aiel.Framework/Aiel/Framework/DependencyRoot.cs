@@ -22,4 +22,4 @@
 
 namespace Aiel.Framework;
 
-public class DependencyRoot(Type type, AielDependencyConfigurator instance) : DependencyNode(type, 0, instance);
+public class DependencyRoot(Type type, IConfigurator instance) : DependencyNode(type, 0, instance);

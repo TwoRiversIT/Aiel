@@ -25,8 +25,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Actions.Queries;
 
-public sealed class AielActionsQueriesTests(AielDependencyTestFixture<AielActionsQueries> fixture, ITestOutputHelper output)
-    : IntegrationTestBase<AielDependencyTestFixture<AielActionsQueries>>(fixture, output)
+public sealed class AielActionsQueriesTests(AielConfiguratorTestFixture<AielActionsQueries> fixture, ITestOutputHelper output)
+    : IntegrationTestBase<AielConfiguratorTestFixture<AielActionsQueries>>(fixture, output)
 {
     [Fact]
     public void AielActionsQueries_RegistersIQueryDispatcher()

@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions.Queries.EntityFrameworkCore;
 using Aiel.Actions.Queries.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,20 +44,20 @@ public class DbContextExtensionTests(QueriesTestFixture fixture, ITestOutputHelp
     }
 }
 
-public sealed class ListPeople(SortRequest? sortRequest = null, PageRequest? pageRequest = null)
-    : ListQuery<PersonDto>(sortRequest ?? DefaultSort, pageRequest ?? PageRequest.Default)
+public sealed class ListPeople(SortOrder? sortRequest = null, Page? pageRequest = null)
+    : QueryMultiple<PersonDto>(sortRequest ?? DefaultSort, pageRequest ?? Page.Default)
 {
-    public static readonly SortRequest DefaultSort = new([
+    public static readonly SortOrder DefaultSort = new([
         new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending)
     ]);
 }
 
 public static class TestDbContextExtensions
 {
-    public static IQueryable<Person> ListPeople(this TestDbContext dbContext, ListPeople query)
+    public static IQueryable<Person> ListPeople(this TestDbContext dbContext, ListPeople request)
     {
         var specification = new EntitySpecification<Person>(p => true);
 
-        return dbContext.GetQueryable(query, specification);
+        return dbContext.QueryMultiple(request, specification);
     }
 }

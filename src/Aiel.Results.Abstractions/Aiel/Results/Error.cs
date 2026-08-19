@@ -25,7 +25,7 @@ using System.Text.Json.Serialization;
 namespace Aiel.Results;
 
 /// <summary>
-/// Represents an error with an error code and error message.
+/// Represents an error with an error code and error description.
 /// </summary>
 [JsonConverter(typeof(ErrorJsonConverter))]
 public abstract class Error
@@ -36,24 +36,32 @@ public abstract class Error
     public ErrorCode ErrorCode { get; }
 
     /// <summary>
-    /// Gets the human-readable description of the error.
+    /// Gets the human-readable description of the error. NOTE: This property is primarily
+    /// for logging and debugging purposes. For user-facing messages, consider adding a
+    /// property to your custom generated Error that provides a friendly, localized error
+    /// description for the end user.
     /// </summary>
-    public String Message { get; }
+    public String ErrorDescription { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Error"/> class.
     /// </summary>
     /// <param name="errorCode">A code identifying the error. Must not be null.</param>
-    /// <param name="message">A human-readable description of the error. Must not be null, empty, or whitespace.</param>
-    protected Error(ErrorCode errorCode, String message)
+    /// <param name="errorDescription">A human-readable description of the error. Must not be null, empty, or whitespace.</param>
+    /// <remarks>
+    /// The <paramref name="errorDescription" /> parameter is for logging and debugging purposes. For
+    /// user-facing messages, consider adding a property to your custom generated Error that
+    /// provides a friendly, localized error description for the end user.
+    /// </remarks>
+    protected Error(ErrorCode errorCode, String errorDescription)
     {
-        if (String.IsNullOrWhiteSpace(message))
+        if (String.IsNullOrWhiteSpace(errorDescription))
         {
-            throw new ArgumentException($"'{nameof(message)}' cannot be null or whitespace.", nameof(message));
+            throw new ArgumentException($"'{nameof(errorDescription)}' must not be null or whitespace.", nameof(errorDescription));
         }
 
         ErrorCode = errorCode ?? throw new ArgumentNullException(nameof(errorCode));
-        Message = message;
+        ErrorDescription = errorDescription;
     }
 
     /// <summary>

@@ -30,9 +30,6 @@
 //       defaults to "Aiel.AielEvent".
 // -----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
 namespace Aiel.Internal;
 
 public static class WellKnownTypes

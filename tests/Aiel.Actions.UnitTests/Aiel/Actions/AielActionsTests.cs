@@ -24,8 +24,8 @@ using Aiel.Testing;
 
 namespace Aiel.Actions;
 
-public sealed class AielActionsTests(AielDependencyTestFixture<AielActions> fixture, ITestOutputHelper output)
-    : IntegrationTestBase<AielDependencyTestFixture<AielActions>>(fixture, output)
+public sealed class AielActionsTests(AielConfiguratorTestFixture<AielActions> fixture, ITestOutputHelper output)
+    : IntegrationTestBase<AielConfiguratorTestFixture<AielActions>>(fixture, output)
 {
     [Fact]
     public void AielActions_RegistersIExecutionContext()

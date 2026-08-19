@@ -127,7 +127,7 @@ public sealed class AuthorizationApplicationContractsSurfaceTests
     {
         var permission = PermissionName.From("documents.read");
         var error = AuthorizationErrors.MissingAuthorizationStory(permission);
-        error.Message.Should().Contain("documents.read");
+        error.ErrorDescription.Should().Contain("documents.read");
     }
 
     [Fact]
@@ -135,6 +135,6 @@ public sealed class AuthorizationApplicationContractsSurfaceTests
     {
         var permission = PermissionName.From("documents.write");
         var error = AuthorizationErrors.PermissionDenied(permission);
-        error.Message.Should().Contain("documents.write");
+        error.ErrorDescription.Should().Contain("documents.write");
     }
 }

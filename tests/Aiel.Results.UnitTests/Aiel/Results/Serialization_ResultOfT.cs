@@ -173,7 +173,7 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
         deserialized.Should().NotBeNull();
         deserialized.IsSuccess.Should().BeFalse();
         deserialized.Error.Should().BeOfType<SimpleError>();
-        deserialized.Error.Message.Should().Be("Customer not found");
+        deserialized.Error.ErrorDescription.Should().Be("Customer not found");
     }
 
     [Fact]
@@ -191,7 +191,7 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
         deserialized.Should().NotBeNull();
         deserialized.IsSuccess.Should().BeFalse();
         deserialized.Error.Should().BeOfType<TransactionError>();
-        deserialized.Error.Message.Should().Be("Could not connect to the payment gateway");
+        deserialized.Error.ErrorDescription.Should().Be("Could not connect to the payment gateway");
         deserialized.Error.ErrorCode.Should().Be(new TransactionError("test")
         {
             Reason = TransactionFailureReason.NetworkError,

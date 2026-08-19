@@ -222,8 +222,8 @@ Semantics:
 - Application query messages use `Aiel.Application.Queries.IQuery<TResult>`.
 - Domain/business-rule composition uses `Aiel.Application.Specifications.ISpecification<T>`.
 - Read-side repository filtering uses `Aiel.Application.Specifications.IQuerySpecification<TReadModel>`.
-- Paging uses a dedicated `PageRequest` and paged responses should return a `PagedResult<T>`.
-- Sorting uses a dedicated `SortRequest` made up of one or more `SortField` values.
+- Paging uses a dedicated `Sort` and paged responses should return a `QueryMultipleResult<T>`.
+- Sorting uses a dedicated `SortOrder` made up of one or more `SortField` values.
 - Free-form search text should remain an application query concern or an infrastructure concern, not a universal core abstraction.
 
 Recommended minimal read-side shaping types:
@@ -231,7 +231,7 @@ Recommended minimal read-side shaping types:
 ```csharp
 namespace Aiel.Application.Queries;
 
-public sealed record PageRequest(Int32 Number, Int32 Size)
+public sealed record Sort(Int32 Number, Int32 Size)
 {
     public Int32 Offset => (Number - 1) * Size;
 }
@@ -244,9 +244,9 @@ public enum SortDirection
 
 public sealed record SortField(String Name, SortDirection Direction = SortDirection.Ascending);
 
-public sealed record SortRequest(IReadOnlyList<SortField> Fields);
+public sealed record SortOrder(IReadOnlyList<SortField> Fields);
 
-public sealed record PagedResult<T>(
+public sealed record QueryMultipleResult<T>(
     IReadOnlyList<T> Items,
     Int32 PageNumber,
     Int32 PageSize,
@@ -257,9 +257,9 @@ Design notes:
 
 - `ISpecification<T>` remains the pure business-rule abstraction.
 - `IQuerySpecification<TReadModel>` is the read-side abstraction for provider-translatable filtering.
-- `PageRequest` and `SortRequest` live at the application boundary, where transport input is interpreted and normalized.
+- `Sort` and `SortOrder` live at the application boundary, where transport input is interpreted and normalized.
 - HTTP query strings like `pageNumber`, `pageSize`, and `sortBy` should be translated into these types at the presentation boundary.
-- EF Core integration may translate `SortRequest` and `PageRequest` into `OrderBy`, `Skip`, and `Take` internally, but those `IQueryable` details should not become the public abstraction.
+- EF Core integration may translate `SortOrder` and `Sort` into `OrderBy`, `Skip`, and `Take` internally, but those `IQueryable` details should not become the public abstraction.
 - Reusable specification contracts now belong in `Aiel.Application.Specifications`; the old `Aiel.Specifications` package has been retired.
 - Offset pagination is the default initial model because it supports typical page-number navigation cleanly.
 - Keyset pagination is still valuable, but it should be added later as a distinct model rather than being forced into the initial abstraction.
@@ -294,7 +294,7 @@ Dependency note:
 
 - This contract intentionally does not include query operations. Aggregate querying belongs to explicit read-side repositories.
 
-### `IReadRepository<TReadModel>`
+### `ISpecificationRepository<TReadModel>`
 
 ```csharp
 using Aiel.Results;
@@ -302,7 +302,7 @@ using Aiel.Application.Specifications;
 
 namespace Aiel.Domain;
 
-public interface IReadRepository<TReadModel>
+public interface ISpecificationRepository<TReadModel>
     where TReadModel : class
 {
     Task<Result<IReadOnlyList<TReadModel>>> ListAsync(

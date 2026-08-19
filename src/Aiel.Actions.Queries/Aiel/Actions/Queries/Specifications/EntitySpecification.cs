@@ -25,70 +25,8 @@ using System.Linq.Expressions;
 namespace Aiel.Actions.Queries.Specifications;
 
 public class EntitySpecification<TEntity>(Expression<Func<TEntity, Boolean>> predicate)
-    : ExpressionSpecification<TEntity>(predicate), IQuerySpecification<TEntity>
+    : ExpressionSpecification<TEntity>(predicate), ISpecification<TEntity>
 {
-    public ICollection<Expression<Func<TEntity, Object>>> Includes { get; } = [];
-    public Expression<Func<TEntity, Object>>? OrderBy { get; private set; }
-    public Expression<Func<TEntity, Object>>? ThenBy { get; private set; }
-    public Expression<Func<TEntity, Object>>? OrderByDescending { get; private set; }
-    public Expression<Func<TEntity, Object>>? GroupBy { get; private set; }
-
-    public Int32 PageNo { get; private set; }
-    public Int32 PageSize { get; private set; }
-    public Boolean IsPagingEnabled => PageNo > 0 && PageSize > 0 && (OrderBy != null || OrderByDescending != null);
-    public Boolean IsReadOnly { get; private set; }
-
-    public virtual EntitySpecification<TEntity> SetReadOnly(Boolean isReadOnly = true)
-    {
-        IsReadOnly = isReadOnly;
-        return this;
-    }
-
-    public virtual EntitySpecification<TEntity> ApplyGroupBy(Expression<Func<TEntity, Object>> groupByExpression)
-    {
-        GroupBy = groupByExpression;
-        return this;
-    }
-
-    public virtual EntitySpecification<TEntity> AddInclude(Expression<Func<TEntity, Object>> includeExpression)
-    {
-        Includes.Add(includeExpression);
-        return this;
-    }
-
-    public virtual EntitySpecification<TEntity> ApplyOrderBy(Expression<Func<TEntity, Object>> orderByExpression)
-    {
-        OrderBy = orderByExpression;
-        return this;
-    }
-
-    public virtual EntitySpecification<TEntity> ApplyThenBy(Expression<Func<TEntity, Object>> orderByExpression)
-    {
-        ThenBy = orderByExpression;
-        return this;
-    }
-
-    public virtual EntitySpecification<TEntity> ApplyOrderByDescending(Expression<Func<TEntity, Object>> orderByDescendingExpression)
-    {
-        OrderByDescending = orderByDescendingExpression;
-        return this;
-    }
-
-    public virtual EntitySpecification<TEntity> ApplyPaging(Int32 pageNo, Int32 pageSize)
-    {
-        PageNo = pageNo;
-        PageSize = pageSize;
-        return this;
-    }
-
-    public virtual EntitySpecification<TEntity> ApplyPaging(Int32 pageNo, Int32 pageSize, Expression<Func<TEntity, Object>> orderByExpression, Expression<Func<TEntity, Object>>? thenByExpression = null)
-    {
-        PageNo = pageNo;
-        PageSize = pageSize;
-        OrderBy = orderByExpression;
-        ThenBy = thenByExpression;
-        return this;
-    }
     protected static EntitySpecification<TEntity> CombineSpecification(EntitySpecification<TEntity> left, EntitySpecification<TEntity> right, Func<Expression, Expression, BinaryExpression> combiner)
     {
         var leftExpression = left.ToExpression();

@@ -30,16 +30,16 @@ public class ResolutionException : Exception
     /// <summary>
     /// Constructs the exception
     /// </summary>
-    public ResolutionException(String message, params Object[] objs)
-        : base(String.Format(message, objs))
+    public ResolutionException(String errorDescription, params Object[] objs)
+        : base(String.Format(errorDescription, objs))
     {
     }
 
     /// <summary>
     /// Constructs the exception
     /// </summary>
-    public ResolutionException(Exception innerException, String message, params Object[] objs)
-        : base(String.Format(message, objs), innerException)
+    public ResolutionException(Exception innerException, String errorDescription, params Object[] objs)
+        : base(String.Format(errorDescription, objs), innerException)
     {
     }
 
@@ -47,11 +47,11 @@ public class ResolutionException : Exception
     {
     }
 
-    public ResolutionException(String? message) : base(message)
+    public ResolutionException(String? errorDescription) : base(errorDescription)
     {
     }
 
-    public ResolutionException(String? message, Exception? innerException) : base(message, innerException)
+    public ResolutionException(String? errorDescription, Exception? innerException) : base(errorDescription, innerException)
     {
     }
 }

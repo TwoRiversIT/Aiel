@@ -34,7 +34,7 @@ public static class DependencyDiscoveryExtensions
     /// </remarks>
 	/// <exception cref="CircularDependencyException">Thrown when a circular attribute is detected in the assembly attribute hierarchy.</exception>
 	public static DependencyRoot BuildDependencyTree<TDependency>(this ConfigurationContext _)
-        where TDependency : AielDependencyConfigurator, new()
+        where TDependency : IConfigurator, new()
     {
         // Tracks the assemblies we've already processed by Type.
         var processed = new HashSet<Type>();

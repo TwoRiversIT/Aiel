@@ -20,13 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions.Queries.Specifications;
+namespace Aiel.Actions.Queries.Specifications;
 
-namespace Aiel.Actions.Queries;
-
-public class Query<T> : IQuery<T>
+public interface IQueryMultipleSpecification<T> : IQueryMultiple<T>
+    where T : notnull
 {
-    public required IQuerySpecification<T> Specification { get; set; }
-    public SortRequest SortRequest { get; set; } = SortRequest.Empty;
-    public PageRequest PageRequest { get; set; } = PageRequest.Default;
+    ISpecification<T> Specification { get; }
+}
+
+public class QueryMultipleSpecification<T>(ISpecification<T> specification, SortOrder? sortRequest = null, Page? pageRequest = null)
+    : QueryMultiple<T>(sortRequest, pageRequest), IQueryMultipleSpecification<T>
+    where T : notnull
+{
+    public ISpecification<T> Specification { get; init; } = specification ?? throw new ArgumentNullException(nameof(specification));
 }

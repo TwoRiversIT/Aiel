@@ -249,7 +249,7 @@ using Aiel.Application.Specifications;
 
 namespace Aiel.Domain;
 
-public interface IReadRepository<TReadModel>
+public interface ISpecificationRepository<TReadModel>
     where TReadModel : class
 {
     Task<Result<IReadOnlyList<TReadModel>>> ListAsync(
@@ -302,8 +302,8 @@ Application query handlers can compose specifications, sorting, and paging witho
 
 ```csharp
 var specification = new OrdersByCustomerSpecification(query.CustomerId);
-var sort = query.Sort ?? SortRequest.Empty;
-var page = query.Page ?? PageRequest.Default;
+var sort = query.Sort ?? SortOrder.None;
+var page = query.Page ?? Page.Default;
 ```
 
 The usage pattern is the same whether the write model is state-based or event-sourced.
@@ -314,7 +314,7 @@ Typical naming should remain boring and obvious:
 
 ```csharp
 IOrderRepository : IAggregateRepository<Order, OrderId>
-IOrderReadRepository : IReadRepository<OrderReadModel>
+IOrderReadRepository : ISpecificationRepository<OrderReadModel>
 ```
 
 That provides:

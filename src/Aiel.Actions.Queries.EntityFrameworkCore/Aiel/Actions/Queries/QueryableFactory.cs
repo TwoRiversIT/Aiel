@@ -24,39 +24,39 @@ using Aiel.Actions.Queries.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Aiel.Actions.Queries.EntityFrameworkCore;
+namespace Aiel.Actions.Queries;
 
 public static class QueryableFactory
 {
-    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, IListQuery queryList, IQuerySpecification<TEntity> specification)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, ISpecification<TEntity> specification)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
-        ArgumentNullException.ThrowIfNull(queryList);
+        ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(specification);
 
-        return GetQueryable(dbContext, queryList.SortRequest, queryList.PageRequest, specification);
+        return QueryMultiple(dbContext, request.SortOrder, request.Sort, specification);
     }
 
-    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, IListQuery listQuery, Expression<Func<TEntity, Boolean>> predicate)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, Expression<Func<TEntity, Boolean>> predicate)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
-        ArgumentNullException.ThrowIfNull(listQuery);
+        ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(predicate);
 
-        return dbContext.GetQueryable(listQuery.SortRequest, listQuery.PageRequest, predicate);
+        return dbContext.QueryMultiple(request.SortOrder, request.Sort, predicate);
     }
 
-    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, SortRequest? sort = null, PageRequest? page = null, IQuerySpecification<TEntity>? specification = null)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, Page? page = null, ISpecification<TEntity>? specification = null)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
 
-        return dbContext.GetQueryable(sort, page, specification?.ToExpression());
+        return dbContext.QueryMultiple(sort, page, specification?.ToExpression());
     }
 
-    public static IQueryable<TEntity> GetQueryable<TEntity>(this DbContext dbContext, SortRequest? sort = null, PageRequest? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, Page? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);

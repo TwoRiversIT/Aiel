@@ -25,7 +25,7 @@ using Aiel.Framework;
 namespace Aiel.Mediator;
 
 /// <summary>
-/// Ensures that the Aiel.Mediator participates in the dependency graph.
+/// Ensures that the Aiel.Mediator.FluentValidation participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielMediatorAbstractions))]
 public sealed class AielMediatorFluentValidation : AielDependencyConfigurator;

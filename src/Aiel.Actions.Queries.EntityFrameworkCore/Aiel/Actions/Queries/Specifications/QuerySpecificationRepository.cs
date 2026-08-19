@@ -20,51 +20,44 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions.Queries.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Aiel.Actions.Queries.EntityFrameworkCore;
+namespace Aiel.Actions.Queries.Specifications;
 
-public class QuerySpecificationRepository<TEntity, TDbContext>(TDbContext context) : IQuerySpecificationRepository<TEntity>
+public class QuerySpecificationRepository<TEntity, TDbContext>(TDbContext context) : ISpecificationRepository<TEntity>
     where TEntity : class
     where TDbContext : DbContext
 {
     private readonly TDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private Boolean _disposed;
 
-    public IAsyncEnumerable<TEntity> FindAsync(Query<TEntity> query)
-        => FindAsync(query.Specification, query.SortRequest, query.PageRequest);
+    public IAsyncEnumerable<TEntity> FindAsync(IQueryMultipleSpecification<TEntity> query)
+        => FindAsync(query.Specification, query.SortOrder, query.Sort);
 
     public IAsyncEnumerable<TEntity> FindAsync(
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
-        PageRequest? page = null)
-        => _context.GetQueryable(sort, page, specification).AsAsyncEnumerable();
+        ISpecification<TEntity> specification,
+        SortOrder? sort = null,
+        Page? page = null)
+        => _context.QueryMultiple(sort, page, specification).AsAsyncEnumerable();
 
     public async Task<TEntity?> GetAsync(
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
+        ISpecification<TEntity> specification,
+        SortOrder? sort = null,
         CancellationToken cancellationToken = default)
-        => await _context.GetQueryable(sort, specification: specification).SingleOrDefaultAsync(cancellationToken);
+        => await _context.QueryMultiple(sort, specification: specification).SingleOrDefaultAsync(cancellationToken);
 
-    public async Task<Boolean> AnyAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        => await _context.GetQueryable(specification: specification).AnyAsync(cancellationToken);
+    public async Task<Boolean> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+        => await _context.QueryMultiple(specification: specification).AnyAsync(cancellationToken);
 
     public async Task<Boolean> AnyAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().AnyAsync(predicate, cancellationToken);
 
-    public async Task<Int32> CountAsync(IQuerySpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        => await _context.GetQueryable(specification: specification).CountAsync(cancellationToken);
+    public async Task<Int32> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+        => await _context.QueryMultiple(specification: specification).CountAsync(cancellationToken);
 
     public async Task<Int32> CountAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().CountAsync(predicate, cancellationToken);
-
-    protected virtual IQueryable<TEntity> ApplySpecification(
-        IQuerySpecification<TEntity> specification,
-        SortRequest? sort = null,
-        PageRequest? page = null)
-        => _context.GetQueryable(sort, page, specification);
 
     protected virtual void Dispose(Boolean disposing)
     {

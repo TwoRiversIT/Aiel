@@ -26,7 +26,7 @@ public class GpsException : InvalidOperationException
 {
     public GpsException() { }
 
-    public GpsException(String message) : base(message) { }
+    public GpsException(String errorDescription) : base(errorDescription) { }
 
-    public GpsException(String message, Exception innerException) : base(message, innerException) { }
+    public GpsException(String errorDescription, Exception innerException) : base(errorDescription, innerException) { }
 }

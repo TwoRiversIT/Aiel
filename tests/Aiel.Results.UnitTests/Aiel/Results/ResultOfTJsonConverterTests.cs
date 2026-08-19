@@ -50,7 +50,7 @@ public sealed class ResultOfTUnitTestBase(ResultsIntegrationTestFixture fixture,
         var roundTrip = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);
 
         roundTrip!.IsSuccess.Should().BeFalse();
-        roundTrip.Error.Message.Should().Be(original.Error.Message);
+        roundTrip.Error.ErrorDescription.Should().Be(original.Error.ErrorDescription);
         roundTrip.Error.ErrorCode.Should().BeOfType(original.Error.ErrorCode.GetType());
         roundTrip.Error.ErrorCode.Should().Be(original.Error.ErrorCode);
     }

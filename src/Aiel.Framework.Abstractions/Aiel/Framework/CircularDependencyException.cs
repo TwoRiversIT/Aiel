@@ -28,12 +28,12 @@ public class CircularDependencyException : AielException
     {
     }
 
-    public CircularDependencyException(String message) : base(message)
+    public CircularDependencyException(String errorDescription) : base(errorDescription)
     {
     }
 
-    public CircularDependencyException(String message, Exception? innerException)
-        : base(message, innerException)
+    public CircularDependencyException(String errorDescription, Exception? innerException)
+        : base(errorDescription, innerException)
     {
     }
 }

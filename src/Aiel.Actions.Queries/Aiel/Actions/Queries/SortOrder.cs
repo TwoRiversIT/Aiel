@@ -20,9 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+namespace Aiel.Actions.Queries;
 
-namespace Aiel.Actions.Queries.EntityFrameworkCore;
+public sealed record SortOrder
+{
+    public static SortOrder None { get; } = new() { Fields = [] };
 
-[DependsOn(typeof(AielActionsQueries))]
-public sealed class AielActionsQueriesEntityFrameworkCore : AielDependencyConfigurator;
+    public SortOrder() : this([]) { }
+
+    public SortOrder(IEnumerable<SortField> fields)
+    {
+        ArgumentNullException.ThrowIfNull(fields);
+        Fields = fields.ToArray();
+    }
+
+    public IReadOnlyList<SortField> Fields { get; init; } = [];
+
+    public Boolean HasValues => Fields.Count > 0;
+}

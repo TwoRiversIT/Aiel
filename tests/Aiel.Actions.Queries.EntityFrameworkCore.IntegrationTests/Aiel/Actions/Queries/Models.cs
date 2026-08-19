@@ -37,7 +37,7 @@ public enum Gender
     Other = 4
 }
 
-public class QueryPeople() : QueryMultiple<PersonDto>(DefaultSort, Page.Default)
+public class QueryPeople() : QueryMultiple<PersonDto>(DefaultSort, PageInfo.Default)
 {
     public static readonly SortOrder DefaultSort = new([
         new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending),

@@ -36,7 +36,7 @@ public interface ISpecificationRepository<TEntity> : IDisposable
     IAsyncEnumerable<TEntity> FindAsync(
         ISpecification<TEntity> specification,
         SortOrder? sort = null,
-        Page? page = null);
+        PageInfo? page = null);
 
     Task<TEntity?> GetAsync(
         ISpecification<TEntity> specification,

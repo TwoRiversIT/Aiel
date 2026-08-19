@@ -35,7 +35,7 @@ public static class QueryableFactory
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(specification);
 
-        return QueryMultiple(dbContext, request.SortOrder, request.Sort, specification);
+        return QueryMultiple(dbContext, request.Sort, request.Page, specification);
     }
 
     public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, Expression<Func<TEntity, Boolean>> predicate)
@@ -45,10 +45,10 @@ public static class QueryableFactory
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(predicate);
 
-        return dbContext.QueryMultiple(request.SortOrder, request.Sort, predicate);
+        return dbContext.QueryMultiple(request.Sort, request.Page, predicate);
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, Page? page = null, ISpecification<TEntity>? specification = null)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, PageInfo? page = null, ISpecification<TEntity>? specification = null)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
@@ -56,7 +56,7 @@ public static class QueryableFactory
         return dbContext.QueryMultiple(sort, page, specification?.ToExpression());
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, Page? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, PageInfo? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);

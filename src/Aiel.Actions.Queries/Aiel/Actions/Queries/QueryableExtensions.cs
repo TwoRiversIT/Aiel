@@ -31,7 +31,7 @@ public static class QueryableExtensions
     private const String OrderByDescending = nameof(Queryable.OrderByDescending);
     private const String ThenByDescending = nameof(Queryable.ThenByDescending);
 
-    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, Page page)
+    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, PageInfo page)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(page);
@@ -78,5 +78,22 @@ public static class QueryableExtensions
         }
 
         return count > 0 ? source.Provider.CreateQuery<T>(expression) : source;
+    }
+
+    /// <summary>
+    /// Applies <paramref name="predicate"/> to <paramref name="query"/> if <paramref name="condition"/> is true.
+    /// </summary>
+    /// <param name="query">Queryable to apply filtering</param>
+    /// <param name="condition">A boolean value</param>
+    /// <param name="predicate">Predicate to filter the query</param>
+    /// <returns>Filtered or not filtered query based on <paramref name="condition"/></returns>
+    public static IQueryable<T> WhereIf<T>([NotNull] this IQueryable<T> query, Boolean condition, Expression<Func<T, Boolean>> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(predicate);
+
+        return condition
+            ? query.Where(predicate)
+            : query;
     }
 }

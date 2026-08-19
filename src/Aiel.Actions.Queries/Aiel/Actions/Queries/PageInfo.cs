@@ -22,15 +22,15 @@
 
 namespace Aiel.Actions.Queries;
 
-public sealed record Page
+public sealed record PageInfo
 {
     public const Int32 DefaultPageNumber = 1;
     public const Int32 DefaultPageSize = 20;
 
-    public static readonly Page Default = new(DefaultPageNumber, DefaultPageSize);
-    public static readonly Page All = new(DefaultPageNumber, Int32.MaxValue);
+    public static readonly PageInfo Default = new(DefaultPageNumber, DefaultPageSize);
+    public static readonly PageInfo All = new(DefaultPageNumber, Int32.MaxValue);
 
-    public Page(Int32 pageNumber, Int32 pageSize = DefaultPageSize)
+    public PageInfo(Int32 pageNumber, Int32 pageSize = DefaultPageSize)
     {
         Number = pageNumber < 1
             ? throw new ArgumentOutOfRangeException(nameof(pageNumber), "Paging is 1 based. The pageNumber parameter must be greater than or equal to 1.")

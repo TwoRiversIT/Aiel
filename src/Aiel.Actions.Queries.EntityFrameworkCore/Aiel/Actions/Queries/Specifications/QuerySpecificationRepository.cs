@@ -33,12 +33,12 @@ public class QuerySpecificationRepository<TEntity, TDbContext>(TDbContext contex
     private Boolean _disposed;
 
     public IAsyncEnumerable<TEntity> FindAsync(IQueryMultipleSpecification<TEntity> query)
-        => FindAsync(query.Specification, query.SortOrder, query.Sort);
+        => FindAsync(query.Specification, query.Sort, query.Page);
 
     public IAsyncEnumerable<TEntity> FindAsync(
         ISpecification<TEntity> specification,
         SortOrder? sort = null,
-        Page? page = null)
+        PageInfo? page = null)
         => _context.QueryMultiple(sort, page, specification).AsAsyncEnumerable();
 
     public async Task<TEntity?> GetAsync(

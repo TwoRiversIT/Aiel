@@ -102,7 +102,7 @@ public class QuerySpecificationRepositoryTests(QueriesTestFixture fixture, ITest
         await foreach (var person in SUT.FindAsync(
             spec,
             new SortOrder([new SortField(nameof(Person.DateOfBirth))]),
-            new Page(2, 1)))
+            new PageInfo(2, 1)))
         {
             person.Name.Should().Be("Shyloh");
         }
@@ -152,7 +152,7 @@ public class QuerySpecificationRepositoryTests(QueriesTestFixture fixture, ITest
         : QueryMultipleSpecification<Person>(
             specification: new EntitySpecification<Person>(_ => true),
             sortRequest: new SortOrder([new SortField(nameof(Person.Name))]),
-            pageRequest: Page.Default)
+            pageRequest: PageInfo.Default)
     {
     }
 }

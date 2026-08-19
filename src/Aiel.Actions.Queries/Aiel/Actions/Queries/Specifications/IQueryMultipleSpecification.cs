@@ -28,7 +28,7 @@ public interface IQueryMultipleSpecification<T> : IQueryMultiple<T>
     ISpecification<T> Specification { get; }
 }
 
-public class QueryMultipleSpecification<T>(ISpecification<T> specification, SortOrder? sortRequest = null, Page? pageRequest = null)
+public class QueryMultipleSpecification<T>(ISpecification<T> specification, SortOrder? sortRequest = null, PageInfo? pageRequest = null)
     : QueryMultiple<T>(sortRequest, pageRequest), IQueryMultipleSpecification<T>
     where T : notnull
 {

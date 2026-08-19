@@ -31,7 +31,7 @@ public static class QueryableExtensions
     private const String OrderByDescending = nameof(Queryable.OrderByDescending);
     private const String ThenByDescending = nameof(Queryable.ThenByDescending);
 
-    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, Page page)
+    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, PageInfo page)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(page);

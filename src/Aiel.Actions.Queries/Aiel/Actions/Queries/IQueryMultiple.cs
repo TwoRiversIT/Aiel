@@ -26,8 +26,8 @@ namespace Aiel.Actions.Queries;
 
 public interface IQueryMultiple
 {
-    SortOrder SortOrder { get; }
-    Page Sort { get; }
+    SortOrder Sort { get; }
+    PageInfo Page { get; }
 }
 
 public interface IQueryMultiple<TDto> : IQueryMultiple, IQuery<IReadOnlyList<TDto>>
@@ -36,14 +36,14 @@ public interface IQueryMultiple<TDto> : IQueryMultiple, IQuery<IReadOnlyList<TDt
 public abstract class QueryMultiple : IQueryMultiple
 {
     protected QueryMultiple() { }
-    protected QueryMultiple(SortOrder? sortRequest = null, Page? pageRequest = null)
+    protected QueryMultiple(SortOrder? sortRequest = null, PageInfo? pageRequest = null)
     {
-        SortOrder = sortRequest ?? SortOrder.None;
-        Sort = pageRequest ?? Page.Default;
+        Sort = sortRequest ?? SortOrder.None;
+        Page = pageRequest ?? PageInfo.Default;
     }
 
-    public SortOrder SortOrder { get; set; } = SortOrder.None;
-    public Page Sort { get; set; } = Page.Default;
+    public SortOrder Sort { get; set; } = SortOrder.None;
+    public PageInfo Page { get; set; } = PageInfo.Default;
 }
 
 public abstract class QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
@@ -51,7 +51,7 @@ public abstract class QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
 {
     protected QueryMultiple() { }
 
-    protected QueryMultiple(SortOrder? sortRequest = null, Page? pageRequest = null)
+    protected QueryMultiple(SortOrder? sortRequest = null, PageInfo? pageRequest = null)
         : base(sortRequest, pageRequest)
     {
     }
@@ -62,7 +62,7 @@ public abstract class QueryMultipleResult
     protected QueryMultipleResult() { }
 
     protected QueryMultipleResult(Int32 totalRecords, IQueryMultiple query)
-        : this(totalRecords, query.Sort.Number, query.Sort.Size)
+        : this(totalRecords, query.Page.Number, query.Page.Size)
     {
     }
 
@@ -97,7 +97,7 @@ public abstract class QueryMultipleResult
     public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> list, IQueryMultiple query, Int32 totalRecords = 0)
         where TDto : notnull
     {
-        return Create(list, query.Sort.Number, query.Sort.Size, totalRecords);
+        return Create(list, query.Page.Number, query.Page.Size, totalRecords);
     }
 
     public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNo = 0, Int32 pageSize = 10, Int32 totalRecords = 0)
@@ -116,7 +116,7 @@ public class QueryMultipleResult<TDto> : QueryMultipleResult
     public QueryMultipleResult() { }
 
     public QueryMultipleResult(IReadOnlyList<TDto> list, Int32 totalRecords, IQueryMultiple query)
-        : this(list, totalRecords, query.Sort.Number, query.Sort.Size)
+        : this(list, totalRecords, query.Page.Number, query.Page.Size)
     {
         List = list ?? [];
     }

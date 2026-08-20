@@ -22,17 +22,48 @@
 
 namespace Aiel.Actions.Queries;
 
-public sealed record SortField
+public readonly struct SortField
 {
-    public SortField(String name, SortDirection direction = SortDirection.Ascending)
+    public const String InvalidName = "!INVALID!";
+
+    public static readonly SortField Empty = new(InvalidName, SortDirection.None);
+
+    public SortField() {
+        Name = InvalidName;
+        Direction = SortDirection.None;
+    }
+
+    public SortField([DisallowNull] String name, SortDirection direction = SortDirection.Ascending)
     {
-        Name = String.IsNullOrWhiteSpace(name)
-            ? throw new ArgumentException("Sort field name cannot be null, empty, or whitespace.", nameof(name))
-            : name;
+        Name = name;
         Direction = direction;
     }
 
-    public String Name { get; }
+    public String Name
+    {
+        get;
+        init
+        {
+            if (String.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException("Sort field name cannot be null, empty, or whitespace.", nameof(Name));
+            }
 
-    public SortDirection Direction { get; }
+            field = value;
+        }
+    }
+
+    public SortDirection Direction
+    {
+        get;
+        init
+        {
+            if (!Enum.IsDefined(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(Direction), "Invalid sort direction.");
+            }
+
+            field = value;
+        }
+    } = SortDirection.Ascending;
 }

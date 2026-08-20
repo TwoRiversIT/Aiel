@@ -61,12 +61,12 @@ public abstract class QueryMultipleResult
 {
     protected QueryMultipleResult() { }
 
-    protected QueryMultipleResult(Int32 totalRecords, IQueryMultiple query)
-        : this(totalRecords, query.Page.Number, query.Page.Size)
+    protected QueryMultipleResult(IQueryMultiple query, Int32 totalRecords)
+        : this(query.Page.Number, query.Page.Size, totalRecords)
     {
     }
 
-    protected QueryMultipleResult(Int32 totalRecords, Int32 pageNo, Int32 pageSize)
+    protected QueryMultipleResult(Int32 pageNo, Int32 pageSize, Int32 totalRecords)
     {
         TotalRecords = totalRecords;
         PageNo = pageNo;
@@ -85,13 +85,13 @@ public abstract class QueryMultipleResult
     public Int32 PageNo
     {
         get => _pageNo;
-        set => _pageNo = value < 0 ? 0 : value;
+        set => _pageNo = value < 1 ? PageInfo.DefaultPageNumber : value;
     }
 
     public Int32 PageSize
     {
         get => _pageSize;
-        set => _pageSize = value <= 0 ? Int32.MaxValue : value;
+        set => _pageSize = value <= 0 ? PageInfo.DefaultPageSize : value;
     }
 
     public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> list, IQueryMultiple query, Int32 totalRecords = 0)
@@ -100,10 +100,10 @@ public abstract class QueryMultipleResult
         return Create(list, query.Page.Number, query.Page.Size, totalRecords);
     }
 
-    public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNo = 0, Int32 pageSize = 10, Int32 totalRecords = 0)
+    public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNo = 1, Int32 pageSize = 10, Int32 totalRecords = 0)
         where TDto : notnull
     {
-        return Result.Success(new QueryMultipleResult<TDto>(records, totalRecords, pageNo, pageSize)
+        return Result.Success(new QueryMultipleResult<TDto>(records, pageNo, pageSize, totalRecords)
         {
             List = records
         });
@@ -115,14 +115,14 @@ public class QueryMultipleResult<TDto> : QueryMultipleResult
 {
     public QueryMultipleResult() { }
 
-    public QueryMultipleResult(IReadOnlyList<TDto> list, Int32 totalRecords, IQueryMultiple query)
-        : this(list, totalRecords, query.Page.Number, query.Page.Size)
+    public QueryMultipleResult(IReadOnlyList<TDto> list, IQueryMultiple query, Int32 totalRecords)
+        : this(list, query.Page.Number, query.Page.Size, totalRecords)
     {
         List = list ?? [];
     }
 
-    public QueryMultipleResult(IReadOnlyList<TDto> list, Int32 totalRecords, Int32 pageNo, Int32 pageSize)
-        : base(totalRecords, pageNo, pageSize)
+    public QueryMultipleResult(IReadOnlyList<TDto> list, Int32 pageNo, Int32 pageSize, Int32 totalRecords)
+        : base(pageNo, pageSize, totalRecords)
     {
         List = list ?? [];
     }

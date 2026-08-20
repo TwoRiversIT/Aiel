@@ -24,6 +24,8 @@ using Aiel.Mediator.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace Aiel.Mediator.Analyzers;

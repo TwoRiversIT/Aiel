@@ -35,26 +35,20 @@ public class QuerySpecificationRepository<TEntity, TDbContext>(TDbContext contex
     public IAsyncEnumerable<TEntity> FindAsync(IQueryMultipleSpecification<TEntity> query)
         => FindAsync(query.Specification, query.Sort, query.Page);
 
-    public IAsyncEnumerable<TEntity> FindAsync(
-        ISpecification<TEntity> specification,
-        SortOrder? sort = null,
-        PageInfo? page = null)
-        => _context.QueryMultiple(sort, page, specification).AsAsyncEnumerable();
+    public IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort, PageInfo? page)
+        => _context.QueryMultiple(sort ?? SortOrder.None, page ?? PageInfo.Default, specification).AsAsyncEnumerable();
 
-    public async Task<TEntity?> GetAsync(
-        ISpecification<TEntity> specification,
-        SortOrder? sort = null,
-        CancellationToken cancellationToken = default)
-        => await _context.QueryMultiple(sort, specification: specification).SingleOrDefaultAsync(cancellationToken);
+    public async Task<TEntity?> GetAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+        => await _context.GetQueryable<TEntity>().SingleOrDefaultAsync(specification.ToExpression(), cancellationToken);
 
     public async Task<Boolean> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        => await _context.QueryMultiple(specification: specification).AnyAsync(cancellationToken);
+        => await _context.GetQueryable<TEntity>().AnyAsync(specification.ToExpression(), cancellationToken);
 
     public async Task<Boolean> AnyAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().AnyAsync(predicate, cancellationToken);
 
     public async Task<Int32> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        => await _context.QueryMultiple(specification: specification).CountAsync(cancellationToken);
+        => await _context.GetQueryable<TEntity>().CountAsync(specification.ToExpression(), cancellationToken);
 
     public async Task<Int32> CountAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default)
         => await _context.Set<TEntity>().CountAsync(predicate, cancellationToken);

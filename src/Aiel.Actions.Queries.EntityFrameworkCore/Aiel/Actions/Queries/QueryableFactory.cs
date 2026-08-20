@@ -28,6 +28,15 @@ namespace Aiel.Actions.Queries;
 
 public static class QueryableFactory
 {
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request)
+        where TEntity : class
+    {
+        ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(request);
+
+        return QueryMultipleInt<TEntity>(dbContext, request.Sort, request.Page, null);
+    }
+
     public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, ISpecification<TEntity> specification)
         where TEntity : class
     {
@@ -35,7 +44,7 @@ public static class QueryableFactory
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(specification);
 
-        return QueryMultiple(dbContext, request.Sort, request.Page, specification);
+        return QueryMultipleInt(dbContext, request.Sort, request.Page, specification.ToExpression());
     }
 
     public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, Expression<Func<TEntity, Boolean>> predicate)
@@ -45,18 +54,21 @@ public static class QueryableFactory
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(predicate);
 
-        return dbContext.QueryMultiple(request.Sort, request.Page, predicate);
+        return QueryMultipleInt(dbContext, request.Sort, request.Page, predicate);
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, PageInfo? page = null, ISpecification<TEntity>? specification = null)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder sort, PageInfo page, ISpecification<TEntity> specification)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(sort);
+        ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(specification);
 
-        return dbContext.QueryMultiple(sort, page, specification?.ToExpression());
+        return QueryMultipleInt(dbContext, sort, page, specification.ToExpression());
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder? sort = null, PageInfo? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
+    internal static IQueryable<TEntity> QueryMultipleInt<TEntity>(DbContext dbContext, SortOrder? sort = null, PageInfo? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);

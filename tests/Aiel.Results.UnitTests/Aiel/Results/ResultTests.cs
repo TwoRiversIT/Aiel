@@ -87,7 +87,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Value_Should_ThrowResultException_When_Failure()
+    public void When_IsSuccess_Is_False_Value_Should_ThrowResultException()
     {
         // Arrange
         var error = new SimpleError("Not found");
@@ -98,7 +98,7 @@ public class ResultTests
 
         // Assert
         act.Should().Throw<ResultException>()
-            .WithMessage("*Check IsSuccess before reading Value*")
+            .WithMessage($"*Cannot read Value when IsSuccess == false.*{typeof(SimpleError).Name}*")
             .Which.Error.Should().Be(error);
     }
 

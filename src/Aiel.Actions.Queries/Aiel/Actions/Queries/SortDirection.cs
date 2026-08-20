@@ -24,6 +24,7 @@ namespace Aiel.Actions.Queries;
 
 public enum SortDirection
 {
-    Ascending = 0,
-    Descending = 1
+    None = 0,
+    Ascending = 1,
+    Descending = 2
 }

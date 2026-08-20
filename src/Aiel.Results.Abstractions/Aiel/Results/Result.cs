@@ -148,7 +148,7 @@ public sealed class Result<T> : Result
     public T Value => IsSuccess
         ? ValueStorage!
         : throw new ResultException(
-            $"Cannot read Value from a failed Result<{typeof(T).Name}>. Check IsSuccess before reading Value.",
+            $"Cannot read Value when IsSuccess == false. If you need to return a value when the operation fails, consider adding a property to {Error.GetType().Name}.",
             Error);
 
     /// <summary>

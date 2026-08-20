@@ -42,6 +42,5 @@ public static class DiagnosticDescriptors
         isEnabledByDefault: true,
         description: "Each call to ISender.ExecuteAsync, ISender.QueryAsync, or IPublisher.PublishAsync creates its own DI scope. " +
                      "Multiple calls in one method body may indicate that related operations should be composed into a single command/query, " +
-                     "or that a shared concern such as a transaction should be expressed as a pipeline behavior.",
-        customTags: []);
+                     "or that a shared concern such as a transaction should be expressed as a pipeline behavior.");
 }

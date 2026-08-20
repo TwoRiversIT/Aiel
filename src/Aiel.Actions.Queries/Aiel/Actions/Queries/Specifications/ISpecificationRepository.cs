@@ -33,15 +33,9 @@ public interface ISpecificationRepository<TEntity> : IDisposable
 {
     IAsyncEnumerable<TEntity> FindAsync(IQueryMultipleSpecification<TEntity> query);
 
-    IAsyncEnumerable<TEntity> FindAsync(
-        ISpecification<TEntity> specification,
-        SortOrder? sort = null,
-        PageInfo? page = null);
+    IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort = null, PageInfo? page = null);
 
-    Task<TEntity?> GetAsync(
-        ISpecification<TEntity> specification,
-        SortOrder? sort = null,
-        CancellationToken cancellationToken = default);
+    Task<TEntity?> GetAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
 
     Task<Boolean> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
     Task<Boolean> AnyAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);

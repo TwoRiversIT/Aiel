@@ -75,7 +75,7 @@ public class QuerySpecificationRepositoryTests(QueriesTestFixture fixture, ITest
     {
         var spec = new EntitySpecification<Person>(_ => true);
 
-        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.Name))])))
+        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.Name))]), PageInfo.Default))
         {
             person.Name.Should().Be("Doug");
             break;
@@ -87,7 +87,7 @@ public class QuerySpecificationRepositoryTests(QueriesTestFixture fixture, ITest
     {
         var spec = new EntitySpecification<Person>(_ => true);
 
-        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.Name), SortDirection.Descending)])))
+        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.Name), SortDirection.Descending)]), PageInfo.Default))
         {
             person.Name.Should().Be("Shyloh");
             break;
@@ -140,7 +140,7 @@ public class QuerySpecificationRepositoryTests(QueriesTestFixture fixture, ITest
     private async Task<Int32> CountAsync(EntitySpecification<Person> spec)
     {
         var count = 0;
-        await foreach (var user in SUT.FindAsync(spec))
+        await foreach (var user in SUT.FindAsync(spec, SortOrder.None, PageInfo.Default))
         {
             count++;
         }

@@ -35,7 +35,7 @@ public class MaybeSerializationTests(ResultsIntegrationTestFixture fixture, ITes
     public void Some_ShouldSerializeAsBareValue()
     {
         // Act
-        var json = JsonSerializer.Serialize(Maybe<String>.Some("Hello, World!"), Results.JSO);
+        var json = JsonSerializer.Serialize(Maybe.Some("Hello, World!"), Results.JSO);
 
         // Assert
         json.Should().Be("\"Hello, World!\"", "the Maybe wrapper must not leak into the wire format");
@@ -55,7 +55,7 @@ public class MaybeSerializationTests(ResultsIntegrationTestFixture fixture, ITes
     public void Some_ShouldRoundTrip()
     {
         // Arrange
-        var original = Maybe<TestRecord>.Some(new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com"));
+        var original = Maybe.Some(new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com"));
 
         // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);
@@ -88,7 +88,7 @@ public class MaybeSerializationTests(ResultsIntegrationTestFixture fixture, ITes
     public void Some_WithDefaultValue_ShouldRoundTripAsSome()
     {
         // Act
-        var json = JsonSerializer.Serialize(Maybe<Int32>.Some(0), Results.JSO);
+        var json = JsonSerializer.Serialize(Maybe.Some(0), Results.JSO);
         var deserialized = JsonSerializer.Deserialize<Maybe<Int32>>(json, Results.JSO);
 
         // Assert
@@ -101,7 +101,7 @@ public class MaybeSerializationTests(ResultsIntegrationTestFixture fixture, ITes
     {
         // Arrange
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
-        var original = Result.Success(Maybe<TestRecord>.Some(record));
+        var original = Result.Success(Maybe.Some(record));
 
         // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);

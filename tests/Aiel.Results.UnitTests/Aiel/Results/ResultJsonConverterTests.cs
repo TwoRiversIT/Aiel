@@ -37,7 +37,7 @@ public sealed class ResultJsonConverterTests(ResultsIntegrationTestFixture fixtu
         var roundTrip = JsonSerializer.Deserialize<Result>(json, Results.JSO);
 
         roundTrip!.IsSuccess.Should().BeTrue();
-        roundTrip.Error.Should().Be(Result.NoError);
+        roundTrip.Error.Should().BeSameAs(NoError.Instance);
     }
 
     [Fact]

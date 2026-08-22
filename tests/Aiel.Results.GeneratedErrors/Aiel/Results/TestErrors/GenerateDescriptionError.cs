@@ -20,13 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+namespace Aiel.Results.TestErrors;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+public sealed partial class GenerateDescriptionError : Error
+{
+    public Int32 ID { get; init; }
 
-namespace Aiel.Results;
-
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+    protected override String GenerateDescription()
+    {
+        return $"Custom error with ID: {ID}";
+    }
+}

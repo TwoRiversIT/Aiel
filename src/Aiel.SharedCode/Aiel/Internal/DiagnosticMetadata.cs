@@ -20,13 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+using System;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+namespace Aiel.Internal;
 
-namespace Aiel.Results;
-
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+public static class DiagnosticMetadata
+{
+    // Common category and help link base for Aiel logging analyzers
+    public const String HelpBase = "https://docs.aiel.ca/analyzers/";
+    public const String LoggingCategory = "AielLogging";
+    public const String StrongIdCategory = "AielStrongId";
+    public const String UsageCategory = "AielUsage";
+}

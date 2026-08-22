@@ -32,13 +32,13 @@ public class ErrorTests
     [Fact]
     public void NoError_ShouldHave_Description()
     {
-        Result.NoError.Description.Should().Be(NoError.DefaultMessage);
+        NoError.Instance.Description.Should().Be(NoError.DefaultMessage);
     }
 
     [Fact]
     public void NoError_AssignedToString_ShouldBe_NoError()
     {
-        String codeName = Result.NoError.Code;
+        String codeName = NoError.Instance.Code;
 
         codeName.Should().Be("NoError");
     }
@@ -108,7 +108,7 @@ public class ErrorTests
     {
         var errors = new Error[]
         {
-            Result.NoError,
+            NoError.Instance,
             new SimpleError("test"),
             new TransactionError("test")
             {
@@ -179,5 +179,14 @@ public class ErrorTests
         var result = error.IsErrorType<Error>();
 
         result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void IncorrectSignatureError_Code_and_Description_IndicatesMissingSourceGeneration()
+    {
+        var error = new IncorrectSignatureError();
+
+        error.Code.Should().BeOfType<NoSourceGeneratedError.NoSourceGeneratedErrorCode>();
+        error.Description.Should().Be("The source generator did not generate any code for this type: " + typeof(IncorrectSignatureError).Name);
     }
 }

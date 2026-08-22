@@ -30,6 +30,8 @@ namespace Aiel.Results;
 [JsonConverter(typeof(ErrorJsonConverter))]
 public abstract class Error
 {
+    internal const String NotImplemented = "Not Implemented";
+
     /// <summary>
     /// Gets the code identifying the error.
     /// </summary>
@@ -39,9 +41,47 @@ public abstract class Error
     /// Gets the human-readable description of the error. NOTE: This property is primarily
     /// for logging and debugging purposes. For user-facing messages, consider adding a
     /// property to your custom generated Error that provides a friendly, localized error
-    /// description for the end user.
+    /// description that is appropriate for a non-technical end user.
     /// </summary>
-    public String Description { get; }
+    public String Description
+    {
+        get
+        {
+            if (String.IsNullOrWhiteSpace(field))
+            {
+                return GenerateDescription();
+            }
+
+            return field;
+        }
+    }
+
+    private Error()
+    {
+        Code = NoSourceGeneratedError.NoSourceGeneratedErrorCode.Instance;
+        Description = NoSourceGeneratedError.DefaultMessage + GetType().Name;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Error"/> class.
+    /// </summary>
+    /// <param name="errorCode">A code identifying the error. Must not be null.</param>
+    /// <remarks>
+    /// <para>
+    /// This constructor must only be used when the derived implementation also implements
+    /// <see cref="Error.GenerateDescription"/>.
+    /// </para>
+    /// <para>
+    /// The <paramref name="description" /> parameter is for logging and debugging purposes. For
+    /// user-facing messages, consider adding a property to your custom generated Error that
+    /// provides a friendly, localized error description for the end user.
+    /// </para>
+    /// </remarks>
+    protected Error(ErrorCode errorCode)
+    {
+        Code = errorCode ?? throw new ArgumentNullException(nameof(errorCode));
+        Description = String.Empty;
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Error"/> class.
@@ -63,6 +103,13 @@ public abstract class Error
         Code = errorCode ?? throw new ArgumentNullException(nameof(errorCode));
         Description = description;
     }
+
+    /// <summary>
+    /// Gets a human-readable description of the error. This method can be overridden by derived
+    /// classes to provide a custom description using properties of the derived class.
+    /// </summary>
+    /// <returns>A string representing the error description.</returns>
+    protected virtual String GenerateDescription() => NotImplemented;
 
     /// <summary>
     /// Determines whether this error is of a specific error type.

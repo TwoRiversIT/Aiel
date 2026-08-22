@@ -250,7 +250,7 @@ else if (result.Error is ValidationError ve)
 }
 else
 {
-    return StatusCode(500, new { error = result.Error.Message });
+    return StatusCode(500, new { error = result.Error.Description });
 }
 ```
 

@@ -59,30 +59,34 @@ public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncremen
 
             sb.AppendLine($"{spaces}{error.Accessibility} partial class {error.ErrorName} : {GeneratorConsts.FqErrorType}");
             sb.AppendLine($"{spaces}{{");
-
             sb.AppendLine($"{spaces}    static {error.ErrorName}()");
             sb.AppendLine($"{spaces}    {{");
             sb.AppendLine($"{spaces}        {GeneratorConsts.FqRegistryType}.{GeneratorConsts.RegisterMethod}<{error.FqErrorName}>();");
             sb.AppendLine($"{spaces}    }}");
             sb.AppendLine();
 
+            if (error.OverridesGenerateDescription)
+            {
+                sb.AppendLine($"{spaces}    {error.Accessibility} {error.ErrorName}()");
+                sb.AppendLine($"{spaces}        : base({error.ErrorCodeName}.{GeneratorConsts.Instance}) {{ }}");
+                sb.AppendLine();
+            }
+
             sb.AppendLine($"{spaces}    {error.Accessibility} {error.ErrorName}(String {GeneratorConsts.DescriptionParameterName})");
             sb.AppendLine($"{spaces}        : base({error.ErrorCodeName}.{GeneratorConsts.Instance}, {GeneratorConsts.DescriptionParameterName}) {{ }}");
             sb.AppendLine();
-
             sb.AppendLine($"{spaces}    public sealed class {error.ErrorCodeName} : {GeneratorConsts.FqErrorCodeType}");
             sb.AppendLine($"{spaces}    {{");
             sb.AppendLine($"{spaces}        public static readonly {error.ErrorCodeName} {GeneratorConsts.Instance} = new();");
             sb.AppendLine($"{spaces}        protected override String Name => \"{error.ErrorName}\";");
             sb.AppendLine($"{spaces}    }}");
+            sb.AppendLine();
             sb.AppendLine($"{spaces}}}");
 
             if (error.HasNamespace)
             {
                 sb.AppendLine("}");
             }
-
-            sb.AppendLine();
         }
 
         sb.AppendLine("#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member");

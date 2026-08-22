@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results.TestErrors;
+using System.Text.Json;
 
 namespace Aiel.Results;
 
@@ -73,5 +74,70 @@ public sealed class GeneratedErrorsTests
         // Assert
         error.Description.Should().Be("Failed to connect to database");
         error.Code.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void GenerateDescriptionError_Description_Should_ReturnCustomDescription()
+    {
+        // Act
+        var error = new GenerateDescriptionError() { ID = 12345 };
+
+        // Assert
+        error.ID.Should().Be(12345);
+        error.Description.Should().Be("Custom error with ID: 12345");
+    }
+
+    [Fact]
+    public void When_GenerateDescription_IsNotOverridden_ItReturnsNotImplemented()
+    {
+        // Act
+        var error = new SimpleError("Custom error with ID: 12345");
+
+        // Assert
+        error.GenerateDescriptionValue.Should().Be(Error.NotImplemented);
+    }
+
+    [Fact]
+    public void CustomErrors_MayHave_CustomConstructors()
+    {
+        // ToDo: Custom constructors are allowed, however, the Results.Analyzer will raise the AIEL00002 warning that the custom error should have a single constructor that expects a String.
+
+        // Act
+        var error = new DecoratedCustomConstructorError("Custom constructor.", 12345);
+
+        // Assert
+        error.CustomerId.Should().Be(12345);
+        error.Description.Should().Be("Custom constructor.");
+    }
+
+    [Fact]
+    public void CustomErrors_WithCustomConstructor_DecoratedWith_JsonConstructorAttribute_ShouldSerializeAndDeserialize()
+    {
+        // Arrange 
+        var error = new DecoratedCustomConstructorError("Custom constructor.", 12345);
+
+        // Act
+        var serialized = JsonSerializer.Serialize(error);
+        var deserialized = JsonSerializer.Deserialize<DecoratedCustomConstructorError>(serialized);
+
+        // Assert
+        deserialized.Should().NotBeNull();
+        deserialized.CustomerId.Should().Be(12345);
+        deserialized.Description.Should().Be("Custom constructor.");
+    }
+
+    [Fact]
+    public void CustomErrors_WithoutCustomConstructor_DecoratedWith_JsonConstructorAttribute_Throws()
+    {
+        // Arrange 
+        var error = new UndecoratedCustomConstructorError("Custom constructor.", 12345);
+        var serialized = JsonSerializer.Serialize(error);
+
+        // Act
+        Action act = () => JsonSerializer.Deserialize<UndecoratedCustomConstructorError>(serialized);
+
+        // Assert
+        act.Should().Throw<NotSupportedException>()
+            .WithMessage("*Deserialization of types without a parameterless constructor*UndecoratedCustomConstructorError*");
     }
 }

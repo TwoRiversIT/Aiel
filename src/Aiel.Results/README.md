@@ -19,15 +19,11 @@ The `Result` class provides a way to represent the outcome of operations, encaps
 > builder.Services.AddResultPattern();
 > ```
 
-## Basic Usage
+## Results
 
-- A Failure Result must have an error.
-- A Success Result must not have an error.
-- When `Result.IsSuccess == true` then `Result.Error` returns the "special" `NoError` type instead of `null`.
-- A value is present **if and only if** `IsSuccess` is `true`. `Result<T>` is constrained to `where T : notnull`,
-  and `Result<T>.Success` rejects `null` at runtime — a successful result can never carry `null`.
-- To model "the operation succeeded and the answer is legitimately nothing", use `Result<Maybe<T>>`.
-  See [Modelling Absence](#modelling-absence-with-maybet).
+`Result<T>` is constrained to `where T : notnull`, and `Result<T>.Success(value)` rejects `null` at runtime. A successful result will never carry a `null` value.
+
+### Creating Results
 
 ```csharp
 // Returns a Result indicating a successful operation: `Result.IsSuccess == true`
@@ -46,73 +42,12 @@ Result.Success<Customer>(null!);
 
 return customer; // Implicit conversion to Result<Customer> with `Result.IsSuccess == true` and `Result.Value == customer`.
 
-return new NotFound("Customer not found"); // Implicit conversion to Result<Customer> with `Result.IsSuccess == false`. Reading `Result.Value` throws.
+return new NotFoundError("Customer not found"); // Implicit conversion to Result<Customer> with `Result.IsSuccess == false`. Reading `Result.Value` throws.
 ```
 
-### Full Class Example
+### Accessing the Value
 
-```csharp
-public class UserService
-{
-    private readonly IUserRepository _repository;
-
-    public Result<User> GetById(Int32 id)
-    {
-        var user = _repository.Find(id);
-        
-        if (user is null)
-            return Error.NotFound($"User with ID {id} was not found");
-
-        return user; // Implicit conversion to Result<User>.Success
-    }
-
-    public Result<User> Create(CreateUserRequest request)
-    {
-        // Validation happens in ASP.NET pipeline using FluentValidation
-        // Domain only handles business rules
-        
-        if (_repository.ExistsByEmail(request.Email))
-            return Error.Conflict("A user with this email already exists");
-
-        var user = new User(request.Name, request.Email);
-
-        _repository.Add(user); // Unit of Work calls SaveChangesAsync()
-
-        return user;
-    }
-}
-```
-
-
-
-## Error Codes
-
-Error codes use singleton instances with reference equality. Each error type has a unique code that can be used programmatically:
-
-```csharp
-// Programmatic use - implicit String conversion
-String errorName = error.Code;  // "NotFoundError"
-
-// Debugging - ToString() for logging
-Console.WriteLine(error.Code.ToString());  // "NotFoundError"
-
-// Type checking
-if (result.Error.IsErrorType<NotFoundError>())
-{
-    // Handle not found scenario
-}
-```
-
-For safety, the `Error` property never returns null. When `IsSuccess == true` then `Error.IsErrorType<NoError>() == true`.
-The `Value` property on `Result<T>` is symmetrical: it never returns `null`. When `IsFailure == true`, reading `Value`
-throws a `ResultException` carrying the `Error` rather than handing back a `null` you were not expecting.
-
-**Note**: The `.ToString()` method is primarily for debugging and logging. For programmatic use, rely on the implicit `String` operator or `IsErrorType<T>()` method.
-
-## Accessing the Value
-
-A value exists only on success. There are two accessors, and the right one depends on whether failure is
-an expected outcome at that call site.
+A value only exists when `Result.IsSuccess == true`. There are two ways to get the value and the right one depends on whether failure is an expected outcome at that call site.
 
 ```csharp
 var result = userService.GetById(userId);
@@ -124,24 +59,64 @@ if (result.TryGetValue(out var user))
 }
 else
 {
-    _logger.LogError("{Error}", result.Error.Message);
+    _logger.LogError("{Error}", result.Error.Description);
 }
 
-// Direct access — use this only once you have established IsSuccess.
+// Direct access — .Value is safe to use once you have established IsSuccess == true.
 if (result.IsSuccess)
 {
-    Console.WriteLine($"Welcome, {result.Value.Name}!");
+    Console.WriteLine($"Welcome, {result.Value.Name}.");
 }
 ```
 
-Reading `Value` on a failed result throws a `ResultException` that carries the underlying `Error`. This is
-deliberate: the alternative is a silent `null` that surfaces as a `NullReferenceException` somewhere further
-away from the actual mistake.
+The `Result<T>.Value` property is symmetrical: it never returns `null`. When `IsSuccess == false`, reading `Value` throws a `ResultException` carrying the `Error` rather than handing back a `null` you were not expecting. This is deliberate: the alternative is a silent `null` that surfaces as a `NullReferenceException` at runtime somewhere further away from the actual mistake.
 
-> `Value` is annotated `[JsonIgnore]`. Because the getter throws, it must never sit in the path of a
+This embraces the **Fail Fast** principle, while following the principle of **Least Surprise**: if you are reading `Value`, you are expecting a valid value, and if there is no value, you want to know about it immediately.
+
+> NOTE: `Value` is annotated `[JsonIgnore]`. Because the getter can throw, it must never sit in the path of a
 > serializer, logger, or object mapper that walks public properties. `Result<T>` is serialized by its
-> dedicated converter — call `ConfigureForResults()` on your `JsonSerializerOptions`, or
-> `AddResultPattern()` at startup.
+> dedicated `ErrorJsonConverter` converter. To make use of this converter, call `ConfigureForResults()` on 
+> your `JsonSerializerOptions`, or if you are using ASP.NET Core Blazor WebAssembly, call 
+> `services.AddResultPattern()` at startup.
+
+### Full Example
+
+```csharp
+// We will explain these errors in the next section.
+public sealed partial class NotFoundError : Error;
+
+public sealed partial class ConflictError : Error;
+
+public class UserService
+{
+    private readonly IUserRepository _repository;
+
+    public Result<User> GetById(Int32 id)
+    {
+        var user = _repository.Find(id);
+        
+        if (user is null)
+            return new NotFoundError($"User with ID {id} was not found");
+
+        return user; // Implicit conversion to Result<User> with `Result.IsSuccess == true` and `Result.Value == user`.
+    }
+
+    public Result<User> Create(CreateUserRequest request)
+    {
+        // Validation happens in ASP.NET pipeline, possibly using FluentValidation
+        // Domain only handles business rules
+        
+        if (_repository.ExistsByEmail(request.Email))
+            return new ConflictError("A user with this email already exists");
+
+        var user = new User(request.Name, request.Email);
+
+        _repository.Add(user); // Unit of Work calls SaveChangesAsync()
+
+        return user; // Implicit conversion to Result<User> with `Result.IsSuccess == true` and `Result.Value == user`.
+    }
+}
+```
 
 ## Modelling Absence with `Maybe<T>`
 
@@ -178,7 +153,7 @@ var result = await FindCustomerAsync(id, ct);
 
 if (result.IsFailure)
 {
-    return Problem(result.Error);          // the lookup broke
+    return Problem(result.Error);          // a real error occured during the search
 }
 
 if (!result.Value.TryGetValue(out var customer))
@@ -223,7 +198,33 @@ the JSON, so API contracts stay clean for consumers that have no notion of `Mayb
 The absence of a wrapper on the wire does not weaken the guarantee. It is the type system, not the JSON, that
 forces callers to handle the empty case.
 
-## Example Convenience Methods for Domain Errors
+## Failed Results and Errors
+
+Results always carry an `Error` object. When `IsSuccess == false`, the `Error` property contains the error that describes the failure. When `IsSuccess == true`, the `Error` property contains a sentinel `NoError` instance that indicates there was no error. This design ensures that the `Error` property is never null, simplifies error handling, reduces the risk of null reference exceptions, and avoids unnecessary allocations.
+
+In the previous example, `NotFoundError` and `ConflictError` are domain-specific errors that inherit from the base `Error` class. Each error type has a unique `ErrorCode` that can be used programmatically to identify the error type without relying on string comparisons or reflection. A source generator in `Aiel.Results.Generator` automatically generates the necessary boilerplate code for these domain specific errors, including error codes, constructors, properties, and JSON serialization support.
+
+Error codes use singleton instances with reference equality to avoid unnecessary allocations and ensure efficient comparisons.
+
+```csharp
+// Programmatic use - implicit String conversion
+String errorName = error.Code;  // "NotFoundError"
+
+// Debugging - ToString() for logging
+Console.WriteLine(error.Code.ToString());  // "NotFoundError"
+
+// Type checking
+if (result.Error.IsErrorType<NotFoundError>())
+{
+    // Handle not found scenario
+}
+```
+
+**Note**: `ErrorCode.ToString()` is primarily for debugging and logging. For programmatic use, rely on the implicit `String` operator or `IsErrorType<T>()` method.
+
+## Convenience Methods for Domain Errors
+
+`Aiel.Results` works hard to make returning results easy but it can only go so far. You can create your own convenience methods for your specific domain.
 
 ```csharp
 public static class DomainErrors
@@ -258,62 +259,96 @@ public static class DomainErrors
 }
 ```
 
-## Creating Custom Error Types
+## Customized Error Types
 
-The `Error` class is fully extensible, allowing you to create domain-specific error types with additional properties while maintaining type safety and automatic JSON serialization.
+There are times when a basic error does not carry enough information in the description and error code. Fortunately, the `Error` class is fully extensible, allowing you to create error types with additional properties while still allowing the source generator to generate the necessary constructors and boilerplate code. This allows carrying more error details while maintaining type safety and automatic JSON serialization.
+
+### Rules
+
+A Failure Result must have an error. A Success Result must not have an error. The `Error` base class handles this for you. What you end up with is a `Result<T>` that is either a success with a value, or a failure with an error. The following rules apply:
+
+**When `Result.IsSuccess == true`**
+
+- `Result.Value` can be safely accessed
+- `Result.Error` returns the sentinel `NoError` type instead of `null`
+
+**When `Result.IsSuccess == false`**
+
+- `Result.Value` throws an exception if accessed
+- `Result.Error` contains the error that caused the failure
 
 ### Basic Custom Error
 
-Create a custom error by inheriting from `Error` and defining an internal singleton `ErrorCode`:
+**Key requirements:**
+
+- Must inherit from `Error` as a `public sealed class` or `internal sealed class`.
+- May have additional domain-specific properties with getters, and optionally setters.
+- Optionally define a constructor that takes a description string and any additional properties, and call the base constructor with the appropriate `ErrorCode` instance and description.
+
+> Before the source generator runs you may see `CS1729: Error' does not contain a constructor that takes 0 arguments.`. This occurs because the source generator has not yet generated the constructor(s) that will call the correct base constructor. This error is resolved after the source generator runs.
+
+Start by creating an error that inherits from `Error`. Then add any additional properties as needed.
 
 ```csharp
-public sealed class OrderNotFoundError : Error
+public sealed partial class OrderNotFoundError : Error
 {
     public String CustomerId { get; }
 
+    // Optional custom constructor that takes a description and any additional properties.
+    [JsonConstructor]
     public OrderNotFoundError(String description, String customerId)
         : base(CustomerNotFoundErrorCode.Instance, description)
     {
         CustomerId = customerId;
     }
+}
+```
+
+That is pretty much it. The signature of the class declaration will attract the source generator and generate the remaining boilerplate. Use the error like any other.
+
+**Important:** If you implement a custom constructor to initialize your domain properties you must also decorate it with the `[JsonConstructor]` attribute so that JSON deserialization works correctly.
+
+### Advanced Custom Error
+
+Custom errors do not have to use the source generator. However, if they do not use the source generator, they must implement all the necessary boilerplate normally emitted by the source generator. 
+
+The following `CustomerNotFoundError` example demonstrates a fully custom error type that can still be used with the Result Pattern. Note that it does not include the `partial` keyword effectively hiding it from the source generator.
+
+- It has a custom property `CustomerId`.
+- It has a custom constructor that initializes the `CustomerId` property and calls the base constructor with the `CustomerNotFoundErrorCode` instance.
+- The custom constructor is decorated with the `[JsonConstructor]` attribute to ensure that JSON deserialization works correctly.
+- It defines a nested `CustomerNotFoundErrorCode`, overrides the `Name` property, and has a static `Instance` property.
+- It overrides the `GenerateDescription()` method to provide a meaningful error message. This allows an error to be created without requiring a description string to be formatted and passed to the constructor, simplifying error creation and eliminating an allocation if the error description is never accessed.
+- It registers itself with the `Aiel.Results.ErrorRegistry` in a static constructor. This is required for it to work with the `ErrorJsonConverter`.
+
+```csharp
+using Aiel.Results;                    // Required for Error, ErrorCode, and ErrorRegistry types.
+using System.Text.Json.Serialization;  // For the [JsonConstrucor] attribute.
+
+namespace Aiel.Results.TestErrors;
+
+public sealed class CustomerNotFoundError : Error
+{
+    static CustomerNotFoundError()
+        => ErrorRegistry.Register<CustomerNotFoundError>();
+
+    public String CustomerId { get; }
+
+    [JsonConstructor]
+    public CustomerNotFoundError(String customerId)
+        : base(CustomerNotFoundErrorCode.Instance)
+    {
+        CustomerId = customerId;
+    }
+
+    override protected String GenerateDescription()
+        => $"Customer was not found: {CustomerId}";
 
     internal sealed class CustomerNotFoundErrorCode : ErrorCode
     {
         public static readonly CustomerNotFoundErrorCode Instance = new();
-        protected override String Name => nameof(OrderNotFoundError);
-    }
-}
-```
 
-**Key requirements:**
-
-- Inherit from `Error` as a `sealed class`
-- Define an internal `ErrorCode` class with a singleton `Instance`
-- Override `Name` property to return the error type name
-- Call base constructor with `ErrorCode` and description
-- Add any additional domain-specific properties with getters
-
-### Custom Error with Additional Properties
-
-Custom errors can include domain-specific data that will automatically serialize:
-
-```csharp
-public sealed class TransactionError : Error
-{
-    public String DeclineReason { get; }
-    public String TransactionId { get; }
-
-    public TransactionError(String description, String declineReason, String transactionId) 
-        : base(PaymentDeclinedErrorCode.Instance, description)
-    {
-        DeclineReason = declineReason;
-        TransactionId = transactionId;
-    }
-
-    internal sealed class PaymentDeclinedErrorCode : ErrorCode
-    {
-        public static readonly PaymentDeclinedErrorCode Instance = new();
-        protected override String Name => nameof(TransactionError);
+        protected override String Name => "Customer Not Found"
     }
 }
 ```
@@ -330,24 +365,9 @@ public class CustomerService
         var customer = _repository.FindById(customerId);
         
         if (customer is null)
-            return new OrderNotFoundError(
-                $"Customer with ID '{customerId}' was not found",
-                customerId);
+            return new CustomerNotFoundError(customerId);
 
         return customer;
-    }
-
-    public Result<PaymentConfirmation> ProcessPayment(PaymentRequest request)
-    {
-        var result = _paymentGateway.Charge(request);
-        
-        if (!result.Success)
-            return new TransactionError(
-                "Payment was declined by the payment processor",
-                result.DeclineReason,
-                result.TransactionId);
-
-        return new PaymentConfirmation(result.TransactionId);
     }
 }
 ```
@@ -390,21 +410,26 @@ Result<Order> result = new TransactionError(
     "TXN-12345");
 
 var json = JsonSerializer.Serialize(result);
-// {
-//   "IsSuccess": false,
-//   "Error": {
-//     "$type": "MyApp.TransactionError, MyApp",
-//     "Code": { "$type": "...", "Name": "TransactionError" },
-//     "Description": "Card declined",
-//     "DeclineReason": "Insufficient funds",
-//     "TransactionId": "TXN-12345"
-//   }
-// }
 
 // Deserialization restores exact type
 var deserialized = JsonSerializer.Deserialize<Result<Order>>(json);
 deserialized.Error.GetType(); // TransactionError
 ((TransactionError)deserialized.Error).TransactionId; // "TXN-12345"
+```
+
+This is roughly what the serialized result looks like:
+
+```json
+{
+  "IsSuccess": false,
+  "Error": {
+    "$type": "MyApp.TransactionError, MyApp",
+    "Code": { "$type": "...", "Name": "TransactionError" },
+    "Description": "Card declined",
+    "DeclineReason": "Insufficient funds",
+    "TransactionId": "TXN-12345"
+  }
+}
 ```
 
 **How it works:**
@@ -419,31 +444,10 @@ Custom errors defined in any assembly will serialize correctly, even if the cons
 
 ## Exception Handling
 
-The `Error.Exception()` method is available to convert exceptions to errors, but its use should be **rare and discouraged**.
-
-**Why it exists:**
-
-In Blazor applications, unhandled exceptions can crash the entire app, forcing a page reload. Converting exceptions to errors provides a recovery path.
-
-**Important limitations:**
-
-```csharp
-try
-{
-    await externalService.CallAsync();
-}
-catch (Exception ex)
-{
-    // This deliberately loses stack trace and inner exceptions
-    return Error.Exception(ex);  
-}
-```
-
-**The conversion is deliberately minimal:**
+In Blazor applications, unhandled exceptions can crash the entire app, forcing a page reload. Converting exceptions to errors provides a recovery path. However, converting an exception to an error is deliberately minimal:
 
 - Captures exception type name and message only
 - Loses stack trace (security/privacy concern)
-- Loses inner exceptions
 - Loses custom exception properties
 
 **Why these limitations:**
@@ -453,7 +457,8 @@ catch (Exception ex)
 3. **Serialization** - Full exceptions are not serializable across API boundaries
 
 **Best practice:**
-Always log the full exception separately before converting:
+
+Always log the full exception separately before converting it to an error:
 
 ```csharp
 try
@@ -463,9 +468,48 @@ try
 catch (Exception ex)
 {
     _logger.LogError(ex, "Operation failed for user {UserId}", userId);
-    return Error.Exception(ex);  // Only for user-facing message
+    return PlaceholderError.FromException(ex);
 }
 ```
+
+### PlaceholderError
+
+The `PlaceholderError` exists for easing development when a more specific error type does not currently exist.
+
+```csharp
+public sealed partial class PlaceholderError : Error
+{
+    public static PlaceholderError FromException(Exception ex, String? message = null)
+    {
+        var sb = new StringBuilder();
+        if (!String.IsNullOrWhiteSpace(message))
+        {
+            sb.AppendLine(message);
+            sb.AppendLine();
+        }
+
+        ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
+
+        return new PlaceholderError(sb.ToString());
+    }
+}
+```
+
+Use it like this:
+
+```csharp
+try
+{
+    await externalService.CallAsync();
+}
+catch (Exception ex)
+{
+    // This deliberately loses stack trace and inner exceptions
+    return PlaceholderError.FromException(ex);  
+}
+```
+
+> While we provide the `PlaceholderError` as part of **Aiel.Results**, using it in production is **strongly discouraged**. We have worked hard to make it simple to create a rich set of domain-specific errors and encourage you to do so. The `PlaceholderError` is intended for development and prototyping only. An analyzer is forthcoming that will complain when it sees it in code.
 
 ## Input Validation vs Business Rules
 
@@ -574,8 +618,8 @@ if (result.TryGetValue(out var user))
 }
 else
 {
-    _logger.LogError("{Error}", result.Error.Message);
-    message = $"Error: {result.Error.Message}";
+    _logger.LogError("{Error}", result.Error.Description);
+    message = $"Error: {result.Error.Description}";
 }
 ```
 

@@ -94,6 +94,7 @@ public class ErrorClassGeneratorTests
     [Fact]
     public async Task Public_Partial_Class_Should_Not_Generate_CustomError()
     {
+        // Missing sealed modifier, so the generator should not generate a CustomErrorCode class.
         const String testCode = """
             using Aiel.Results; 
             
@@ -107,15 +108,19 @@ public class ErrorClassGeneratorTests
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
         result.GeneratedSources.Should().BeEmpty();
-
         result.CompilationDiagnostics.Should().ContainSingle();
-        // CS7036: There is no argument given that corresponds to the required parameter 'errorCode' of 'Error.Error(ErrorCode, string)'}.
-        result.CompilationDiagnostics[0].Id.Should().Be("CS7036");
+
+        // CS1729: 'Error' does not contain a constructor that takes 0 arguments.
+        // This is expected because the generator did not generate a CustomErrorCode class,
+        // therefore the compiler generated base constructor call in the CustomError class
+        // prototype is invalid.
+        result.CompilationDiagnostics[0].Id.Should().Be("CS1729");
     }
 
     [Fact]
     public async Task Public_Sealed_Class_Should_Not_Generate_CustomError()
     {
+        // Missing partial modifier, so the generator should not generate a CustomErrorCode class.
         const String testCode = """
             using Aiel.Results; 
             
@@ -129,10 +134,13 @@ public class ErrorClassGeneratorTests
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
         result.GeneratedSources.Should().BeEmpty();
-
         result.CompilationDiagnostics.Should().ContainSingle();
-        // CS7036: There is no argument given that corresponds to the required parameter 'errorCode' of 'Error.Error(ErrorCode, string)'}.
-        result.CompilationDiagnostics[0].Id.Should().Be("CS7036");
+
+        // CS1729: 'Error' does not contain a constructor that takes 0 arguments.
+        // This is expected because the generator did not generate a CustomErrorCode class,
+        // therefore the compiler generated base constructor call in the CustomError class
+        // prototype is invalid.
+        result.CompilationDiagnostics[0].Id.Should().Be("CS1729");
     }
 
     [Fact]
@@ -181,10 +189,13 @@ public class ErrorClassGeneratorTests
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
         result.GeneratedSources.Should().BeEmpty();
-
         result.CompilationDiagnostics.Should().ContainSingle();
-        // CS7036: There is no argument given that corresponds to the required parameter 'errorCode' of 'Error.Error(ErrorCode, string)'}.
-        result.CompilationDiagnostics[0].Id.Should().Be("CS7036");
+
+        // CS1729: 'Error' does not contain a constructor that takes 0 arguments.
+        // This is expected because the generator did not generate a CustomErrorCode class,
+        // therefore the compiler generated base constructor call in the CustomError class
+        // prototype is invalid.
+        result.CompilationDiagnostics[0].Id.Should().Be("CS1729");
     }
 
     [Fact]
@@ -240,6 +251,41 @@ public class ErrorClassGeneratorTests
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
+            .And.Contain("public CustomError(String description)")
+            .And.Contain("base(CustomErrorCode.Instance, description)")
+            .And.Contain("public static readonly CustomErrorCode Instance = new()");
+    }
+
+    [Fact]
+    public async Task Class_Overrides_GenerateDescription_Should_Generate_ParameterlessConstructor()
+    {
+        const String testCode = """
+            using Aiel.Results; 
+            using System;
+            
+            namespace TestNamespace;
+            
+            public sealed partial class CustomError : Error
+            {
+                public Int32 ID { get; init; }
+
+                protected override String GenerateDescription()
+                {
+                    return $"CustomError with ID: {ID}";
+                }
+            }            
+            """;
+
+        var result = Driver.Generate(testCode);
+
+        result.Should().NotBeNull();
+        result.CompilationDiagnostics.Should().BeEmpty();
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should().ContainSingle();
+        var source = result.GeneratedSources[0].Source.ToString();
+        source.Should().NotBeNullOrWhiteSpace()
+            .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
+            .And.Contain("public CustomError()")
             .And.Contain("public CustomError(String description)")
             .And.Contain("base(CustomErrorCode.Instance, description)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");

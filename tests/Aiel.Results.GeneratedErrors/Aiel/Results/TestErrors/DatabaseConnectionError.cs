@@ -20,13 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+namespace Aiel.Results.TestErrors;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
-
-namespace Aiel.Results;
-
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+/// <summary>
+/// Example of a dynamically generated custom error with no additional properties.
+/// </summary>
+public sealed partial class DatabaseConnectionError : Error
+{
+    // No additional properties - just uses the base description
+}

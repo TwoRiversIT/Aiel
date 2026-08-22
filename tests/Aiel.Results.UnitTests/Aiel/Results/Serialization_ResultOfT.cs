@@ -92,7 +92,7 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
     public void ResultOfMaybeOfT_Some_ShouldRoundTrip()
     {
         // Arrange
-        var original = Result.Success(Maybe<String>.Some("Hello, World!"));
+        var original = Result.Success(Maybe.Some("Hello, World!"));
 
         // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);

@@ -35,21 +35,19 @@ public class ConstructorAnalyzerTests : AnalyzerTestBase<ConstructorAnalyzer>
     public async Task ValidError_WithSingleStringConstructor_ShouldNotReportDiagnostic()
     {
         const String testCode = """
+            using Aiel.Results;
 
-using Aiel.Results;
-
-public sealed class NotFoundError : Error
-{
-    public NotFoundError(String message) : base(NotFoundErrorCode.Instance, message) { }
+            public sealed class NotFoundError : Error
+            {
+                public NotFoundError(String description) : base(NotFoundErrorCode.Instance, description) { }
     
-    public sealed class NotFoundErrorCode : ErrorCode
-    {
-        public static readonly NotFoundErrorCode Instance = new();
-        protected override String Name => "NotFoundError";
-    }
-}
-
-""";
+                public sealed class NotFoundErrorCode : ErrorCode
+                {
+                    public static readonly NotFoundErrorCode Instance = new();
+                    protected override String Name => "NotFoundError";
+                }
+            }
+            """;
 
         var test = CreateTest(testCode);
         await test.RunAsync(TestContext.Current.CancellationToken);
@@ -59,81 +57,51 @@ public sealed class NotFoundError : Error
     public async Task ValidError_WithInitProperties_ShouldNotReportDiagnostic()
     {
         const String testCode = """
+            using Aiel.Results;
 
-using Aiel.Results;
-
-public sealed class OrderNotFoundError : Error
-{
-    public String OrderId { get; init; }
+            public sealed class OrderNotFoundError : Error
+            {
+                public String OrderId { get; init; }
     
-    public OrderNotFoundError(String message) : base(OrderNotFoundErrorCode.Instance, message) { }
+                public OrderNotFoundError(String description) : base(OrderNotFoundErrorCode.Instance, description) { }
     
-    public sealed class OrderNotFoundErrorCode : ErrorCode
-    {
-        public static readonly OrderNotFoundErrorCode Instance = new();
-        protected override String Name => "OrderNotFoundError";
-    }
-}
-
-""";
+                public sealed class OrderNotFoundErrorCode : ErrorCode
+                {
+                    public static readonly OrderNotFoundErrorCode Instance = new();
+                    protected override String Name => "OrderNotFoundError";
+                }
+            }
+            """;
 
         var test = CreateTest(testCode);
         await test.RunAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
-    public async Task ErrorWithNoPublicConstructor_ShouldReportDiagnostic()
+    public async Task Error_PublicConstructors_WithTwoOrMoreParameters_ShouldReportDiagnostic()
     {
         const String testCode = """
+            using Aiel.Results;
 
-using Aiel.Results;
-
-public sealed class InvalidError : Error
-{
-    private InvalidError(String message) : base(InvalidErrorCode.Instance, message) { }
+            public sealed partial class ConflictError : Error
+            {
+                // This one is valid
+                public ConflictError(String message) : base(ConflictErrorCode.Instance, message) { }
     
-    public sealed class InvalidErrorCode : ErrorCode
-    {
-        public static readonly InvalidErrorCode Instance = new();
-        protected override String Name => "InvalidError";
-    }
-}
-
-""";
-
-        var diagnostic = new DiagnosticResult(DiagnosticDescriptors.DerivedErrorTypesMustHaveSingleStringConstructor)
-            .WithArguments("InvalidError")
-            .WithLocation(4, 21);
-
-        var test = CreateTest(testCode, diagnostic);
-        await test.RunAsync(TestContext.Current.CancellationToken);
-    }
-
-    [Fact]
-    public async Task ErrorWithMultiplePublicConstructors_ShouldReportDiagnostic()
-    {
-        const String testCode = """
-
-using Aiel.Results;
-
-public sealed class ConflictError : Error
-{
-    public ConflictError(String message) : base(ConflictErrorCode.Instance, message) { }
+                // This one is invalid because it has a second parameter
+                public ConflictError(String message, Int32 code) : base(ConflictErrorCode.Instance, message) { }
     
-    public ConflictError(String message, Int32 code) : base(ConflictErrorCode.Instance, message) { }
-    
-    public sealed class ConflictErrorCode : ErrorCode
-    {
-        public static readonly ConflictErrorCode Instance = new();
-        protected override String Name => "ConflictError";
-    }
-}
-
-""";
+                public sealed class ConflictErrorCode : ErrorCode
+                {
+                    public static readonly ConflictErrorCode Instance = new();
+                    protected override String Name => "ConflictError";
+                }
+            }
+            """;
 
         var diagnostic = new DiagnosticResult(DiagnosticDescriptors.DerivedErrorTypesMustHaveSingleStringConstructor)
             .WithArguments("ConflictError")
-            .WithLocation(4, 21);
+            .WithLocation(3, 29);
 
         var test = CreateTest(testCode, diagnostic);
         await test.RunAsync(TestContext.Current.CancellationToken);

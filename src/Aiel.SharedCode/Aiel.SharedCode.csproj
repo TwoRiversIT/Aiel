@@ -1,0 +1,10 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <RootNamespace />
+      <TargetFramework>netstandard2.0</TargetFramework>
+      <AssemblyName>Aiel.SharedCode</AssemblyName>
+      <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+</Project>

@@ -57,7 +57,7 @@ public class MaybeTests
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
 
         // Act
-        var maybe = Maybe<TestRecord>.Some(record);
+        var maybe = Maybe.Some(record);
 
         // Assert
         maybe.HasValue.Should().BeTrue();
@@ -69,7 +69,7 @@ public class MaybeTests
     public void Some_Should_ThrowArgumentNullException_When_ValueIsNull()
     {
         // Act
-        Action act = () => Maybe<TestRecord>.Some(null!);
+        Action act = () => Maybe.Some<TestRecord>(null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>();
@@ -79,7 +79,7 @@ public class MaybeTests
     public void Value_Should_ThrowInvalidOperationException_When_None()
     {
         // Arrange
-        var maybe = Maybe<TestRecord>.None;
+        var maybe = Maybe.None<TestRecord>();
 
         // Act
         Action act = () => _ = maybe.Value;
@@ -94,7 +94,7 @@ public class MaybeTests
     {
         // Arrange
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
-        var maybe = Maybe<TestRecord>.Some(record);
+        var maybe = Maybe.Some(record);
 
         // Act
         var got = maybe.TryGetValue(out var value);
@@ -123,7 +123,7 @@ public class MaybeTests
     {
         // Arrange
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
-        var maybe = Maybe<TestRecord>.Some(record);
+        var maybe = Maybe.Some(record);
 
         // Act & Assert
         maybe.GetValueOrDefault(TestRecord.Empty).Should().Be(record);
@@ -133,7 +133,7 @@ public class MaybeTests
     public void GetValueOrDefault_Should_ReturnFallback_When_None()
     {
         // Arrange
-        var maybe = Maybe<TestRecord>.None;
+        var maybe = Maybe.None<TestRecord>();
 
         // Act & Assert
         maybe.GetValueOrDefault(TestRecord.Empty).Should().Be(TestRecord.Empty);
@@ -143,7 +143,7 @@ public class MaybeTests
     public void GetValueOrDefault_Should_ThrowArgumentNullException_When_FallbackIsNull()
     {
         // Arrange
-        var maybe = Maybe<TestRecord>.None;
+        var maybe = Maybe.None<TestRecord>();
 
         // Act
         Action act = () => maybe.GetValueOrDefault(null!);
@@ -156,7 +156,7 @@ public class MaybeTests
     public void FromNullable_Should_ReturnNone_When_Null()
     {
         // Act
-        var maybe = Maybe<TestRecord>.FromNullable(null);
+        var maybe = Maybe.FromNullable<TestRecord>(null);
 
         // Assert
         maybe.IsNone.Should().BeTrue();
@@ -169,7 +169,7 @@ public class MaybeTests
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
 
         // Act
-        var maybe = Maybe<TestRecord>.FromNullable(record);
+        var maybe = Maybe.FromNullable(record);
 
         // Assert
         maybe.HasValue.Should().BeTrue();
@@ -198,18 +198,18 @@ public class MaybeTests
         var other = new TestRecord(7, "Lisa Simpson", "lisa@thesimpsons.com");
 
         // Act & Assert
-        Maybe<TestRecord>.Some(record).Should().Be(Maybe<TestRecord>.Some(record));
-        Maybe<TestRecord>.Some(record).Should().NotBe(Maybe<TestRecord>.Some(other));
-        Maybe<TestRecord>.Some(record).Should().NotBe(Maybe<TestRecord>.None);
-        Maybe<TestRecord>.None.Should().Be(Maybe<TestRecord>.None);
+        Maybe.Some(record).Should().Be(Maybe.Some(record));
+        Maybe.Some(record).Should().NotBe(Maybe.Some(other));
+        Maybe.Some(record).Should().NotBe(Maybe.None<TestRecord>());
+        Maybe.None<TestRecord>().Should().Be(Maybe.None<TestRecord>());
     }
 
     [Fact]
     public void ToString_Should_DistinguishSomeFromNone()
     {
         // Act & Assert
-        Maybe<Int32>.None.ToString().Should().Be("None");
-        Maybe<Int32>.Some(42).ToString().Should().Be("Some(42)");
+        Maybe.None<Int32>().ToString().Should().Be("None");
+        Maybe.Some(42).ToString().Should().Be("Some(42)");
     }
 
     /// <summary>
@@ -220,8 +220,8 @@ public class MaybeTests
     public void Some_Should_BeDistinctFromNone_When_ValueEqualsDefault()
     {
         // Act
-        var zero = Maybe<Int32>.Some(0);
-        var none = Maybe<Int32>.None;
+        var zero = Maybe.Some(0);
+        var none = Maybe.None<Int32>();
 
         // Assert
         zero.HasValue.Should().BeTrue();

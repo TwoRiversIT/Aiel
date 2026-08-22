@@ -20,13 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+namespace Aiel.Results.TestErrors;
 
-namespace Aiel.Results;
-
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+// We suppress this warning because this is an example of a dynamically
+// generated custom error with an incorrect signature. The code generator will
+// not generate the derived error class because it has an incorrect signature,
+// but we want to include this class in the unit tests to verify that the code
+// analyzer correctly identifies and reports the error.
+[SuppressMessage("AielUsage", "AIEL00002:Types derived from Error must have a constructor that accepts a single string parameter", Justification = "<Pending>")]
+public sealed class IncorrectSignatureError : Error
+{
+    // This is a workaround to allow the code to compile so that the unit
+    // tests can run. Without this workaround, the compiler will generate an
+    // error because the base class Error does not have an accessible
+    // parameterless constructor.
+    public IncorrectSignatureError()
+        : base(NoSourceGeneratedError.NoSourceGeneratedErrorCode.Instance, NoSourceGeneratedError.DefaultMessage + nameof(IncorrectSignatureError))
+    {
+    }
+}

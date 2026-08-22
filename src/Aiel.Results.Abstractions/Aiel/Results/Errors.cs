@@ -26,12 +26,29 @@ using System.Text;
 namespace Aiel.Results;
 
 /// <summary>
-/// A sentinel error type that represents the absence of an error. This is used
-/// to indicate a successful operation in the context of a Result.
+/// A sentinel error that represents the absence of an error. When the
+/// operation is successful <see cref="Result.Error"/> property will be set to
+/// an instance of this type instead of <see langword="null" />, thereby avoiding
+/// the need for null checks, or worse, <see cref="NullReferenceException"/>.
 /// </summary>
 public sealed partial class NoError : Error
 {
     internal const String DefaultMessage = "No error.";
+    public static readonly NoError Instance = new(DefaultMessage);
+}
+
+/// <summary>
+/// A sentinel error type that indicates that the source generator was not
+/// able to generate the error type specified in the <see cref="Error.Description"/>.
+/// </summary>
+/// <remarks>
+/// This is used to indicate a problem at runtime. with the error prototype
+/// that prevented source generation. Not ideal, but there
+/// are a set of analyzers that warn about this at compile time, so this should be rare in practice.
+/// </remarks>
+public sealed partial class NoSourceGeneratedError : Error
+{
+    internal const String DefaultMessage = "The source generator did not generate any code for this type: ";
 }
 
 /// <summary>
@@ -81,15 +98,13 @@ public sealed partial class InfrastructureError : Error
 }
 
 /// <summary>
-/// Represents a generic error that occurred during an operation that returns a Result.
-/// You should prefer to use a more specific error type if one is available, but this
-/// could be used during development to quickly wrap unexpected exceptions before a
-/// more specific error type is created.
+/// A placeholder error for use during development to quickly wrap unexpected
+/// exceptions before a more specific error type is created.
 /// </summary>
-// ToDo: Create an analyzer that will warn when a GenericError is used instead of a more specific error type.
-public sealed partial class GenericError : Error
+// ToDo: Create an analyzer that will warn when PlaceholderError is used instead of a more specific error type.
+public sealed partial class PlaceholderError : Error
 {
-    public static GenericError FromException(Exception ex, String? message = null)
+    public static PlaceholderError FromException(Exception ex, String? message = null)
     {
         var sb = new StringBuilder();
         if (!String.IsNullOrWhiteSpace(message))
@@ -100,6 +115,6 @@ public sealed partial class GenericError : Error
 
         ex.Visit((iex) => sb.AppendLine($"{iex.GetType().Name}: {iex.Message}"));
 
-        return new GenericError(sb.ToString());
+        return new PlaceholderError(sb.ToString());
     }
 }

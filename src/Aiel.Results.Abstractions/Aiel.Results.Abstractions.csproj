@@ -11,8 +11,6 @@
         <None Include="./README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
-    <Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
-
     <!--
     Include the analyzer and generator DLLs in the NuGet package so consuming projects
     automatically load and run them. Any assembly packed under analyzers/dotnet/cs is
@@ -33,6 +31,13 @@
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticMetadata.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticRuleIDs.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\GeneratorConsts.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\WellKnownTypes.cs" />
     </ItemGroup>
 
     <ItemGroup>

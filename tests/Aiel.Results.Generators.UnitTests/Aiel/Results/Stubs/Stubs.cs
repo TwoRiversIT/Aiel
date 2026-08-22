@@ -20,13 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+using Aiel.Resources;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+namespace Aiel.Results.Stubs;
 
-namespace Aiel.Results;
-
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+public static class Stubs
+{
+    // Load stub definitions for Aiel.Framework types from the original source files in the Aiel.Framework project.
+    // This ensures that the stubs are always up to date with the actual code, and reduces the maintenance burden
+    // of keeping the stubs in sync with the real code. It also means that when the tests fail due to changes in
+    // the Aiel.Framework code, then either the test is now bad, or the source generator is now bad, but the stubs
+    // are always correct, so we can be confident that the tests are failing for the right reasons.
+    public static String[] AielDependencies => RH.GetStrings<Placeholder>(
+        "Error.txt",
+        "ErrorCode.txt",
+        "ErrorJsonConverter.txt",
+        //"Errors.txt",
+        "Maybe.txt",
+        "Result.txt",
+        "Usings.txt"
+        ).ToArray();
+}

@@ -22,49 +22,6 @@
 
 namespace Aiel.Results.TestErrors;
 
-public sealed partial class SimpleError : Error;
-
-/// <summary>
-/// Example of a dynamically generated custom error with no additional properties.
-/// </summary>
-public sealed partial class DatabaseConnectionError : Error
-{
-    // No additional properties - just uses the base description
-}
-
-/// <summary>
-/// Example of a dynamically generated custom error with multiple properties.
-/// </summary>
-public sealed partial class InventoryInsufficientError : Error
-{
-    /// <summary>
-    /// The product SKU that has insufficient inventory.
-    /// </summary>
-    public String ProductSku { get; init; }
-
-    /// <summary>
-    /// The requested quantity.
-    /// </summary>
-    public Int32 RequestedQuantity { get; init; }
-
-    /// <summary>
-    /// The available quantity in inventory.
-    /// </summary>
-    public Int32 AvailableQuantity { get; init; }
-}
-
-/// <summary>
-/// Example of a dynamically generated domain-specific error in a consuming application.
-/// This demonstrates how the generator handles errors defined outside the core library.
-/// </summary>
-public sealed partial class OrderNotFoundError : Error
-{
-    /// <summary>
-    /// The unique identifier of the order that was not found.
-    /// </summary>
-    public String OrderId { get; init; }
-}
-
 /// <summary>
 /// Manually created custom error type for testing purposes.
 /// </summary>

@@ -59,7 +59,7 @@ public sealed class MaybeJsonConverter<T> : JsonConverter<Maybe<T>>
 
         var value = JsonSerializer.Deserialize<T>(ref reader, options);
 
-        return Maybe<T>.FromNullable(value);
+        return Maybe.FromNullable(value);
     }
 
     /// <inheritdoc/>

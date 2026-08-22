@@ -41,6 +41,7 @@ public static class GenerateCS<T>
         var references = AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") is String trustedPlatformAssemblies
             ? trustedPlatformAssemblies
                 .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
+                .Order() // Makes debugging tests easier when the references are listed alphabetically.
                 .Select(static path => (MetadataReference)MetadataReference.CreateFromFile(path))
                 .ToList()
             : [];

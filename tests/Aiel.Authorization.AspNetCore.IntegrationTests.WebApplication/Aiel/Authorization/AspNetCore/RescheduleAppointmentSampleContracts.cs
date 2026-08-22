@@ -82,7 +82,7 @@ public sealed class UnconfiguredAppointmentApplicationService : IAppointmentAppl
         _ = context ?? throw new ArgumentNullException(nameof(context));
         _ = action ?? throw new ArgumentNullException(nameof(action));
 
-        return Task.FromResult(Result.Failure(new GenericError("No sample appointment application service is configured.")));
+        return Task.FromResult(Result.Failure(new PlaceholderError("No sample appointment application service is configured.")));
     }
 }
 

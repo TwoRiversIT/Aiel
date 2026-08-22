@@ -30,11 +30,6 @@ namespace Aiel.Results;
 public class Result
 {
     /// <summary>
-    /// Gets a special <see cref="NoError"/> instance representing no error.
-    /// </summary>
-    internal static readonly NoError NoError = new(NoError.DefaultMessage);
-
-    /// <summary>
     /// Gets a value indicating whether the operation was successful.
     /// </summary>
     public Boolean IsSuccess { get; }
@@ -69,7 +64,7 @@ public class Result
         }
 
         IsSuccess = isSuccess;
-        Error = error ?? NoError;
+        Error = error ?? NoError.Instance;
     }
 
     /// <summary>

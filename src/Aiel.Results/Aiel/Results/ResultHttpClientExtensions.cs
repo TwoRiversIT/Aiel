@@ -251,7 +251,7 @@ public static class ResultHttpClientExtensions
         }
         catch (Exception)
         {
-            return new GenericError(FormatErrorMessage(response));
+            return new PlaceholderError(FormatErrorMessage(response));
         }
     }
 

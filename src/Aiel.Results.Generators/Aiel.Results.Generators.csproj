@@ -24,20 +24,18 @@
         <None Include="./README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
-    <!-- BEGIN: Generator and Analyzer specific settings -->
+    <!-- BEGIN: Generator specific settings -->
     <ItemGroup>
         <Compile Remove="bin\**" />
         <EmbeddedResource Remove="bin\**" />
         <None Remove="bin\**" />
         <None Remove="bin\Debug\netstandard2.0\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Remove="bin\Debug\netstandard2.0\$(AssemblyName).dll" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\GeneratorConsts.cs" Pack="false" Path="\Aiel\Internal\GeneratorConsts.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,8 +45,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-
-    <Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
-    <!-- END: Generator and Analyzer specific settings -->
+    <!-- END: Generator specific settings -->
 
 </Project>

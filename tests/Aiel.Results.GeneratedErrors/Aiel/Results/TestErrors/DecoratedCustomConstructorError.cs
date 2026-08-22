@@ -20,13 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+namespace Aiel.Results.TestErrors;
 
-namespace Aiel.Results;
+public sealed partial class DecoratedCustomConstructorError : Error
+{
+    public Int32 CustomerId { get; }
 
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+    [JsonConstructor]
+    public DecoratedCustomConstructorError(String description, Int32 customerId)
+        : base(DecoratedCustomConstructorErrorCode.Instance, description)
+    {
+        CustomerId = customerId;
+    }
+}
+
+public sealed partial class UndecoratedCustomConstructorError : Error
+{
+    public Int32 CustomerId { get; }
+
+    public UndecoratedCustomConstructorError(String description, Int32 customerId)
+        : base(UndecoratedCustomConstructorErrorCode.Instance, description)
+    {
+        CustomerId = customerId;
+    }
+}

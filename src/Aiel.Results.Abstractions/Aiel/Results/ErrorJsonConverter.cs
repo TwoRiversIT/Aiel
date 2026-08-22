@@ -32,17 +32,18 @@ public sealed class ErrorJsonConverter : JsonConverter<Error>
 {
     internal const String Discriminator = "$errorType";
 
+    // Create fresh options with Web defaults and camelCase naming to avoid issues with parameter binding
+    // This avoids the ErrorJsonConverterFactory and ensures proper deserialization
+    private static readonly JsonSerializerOptions CleanJSO = new(JsonSerializerDefaults.Web);
+
     /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, Error value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
         writer.WriteString(Discriminator, value.GetType().FullName);
 
-        // Create fresh options with Web defaults to avoid infinite recursion with factory
-        var cleanOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-
         foreach (var prop in JsonDocument
-            .Parse(JsonSerializer.Serialize(value, value.GetType(), cleanOptions))
+            .Parse(JsonSerializer.Serialize(value, value.GetType(), CleanJSO))
             .RootElement.EnumerateObject())
         {
             prop.WriteTo(writer);
@@ -50,10 +51,6 @@ public sealed class ErrorJsonConverter : JsonConverter<Error>
 
         writer.WriteEndObject();
     }
-
-    // Create fresh options with Web defaults and camelCase naming to avoid issues with parameter binding
-    // This avoids the ErrorJsonConverterFactory and ensures proper deserialization
-    readonly JsonSerializerOptions _cleanOptions = new(JsonSerializerDefaults.Web);
 
     /// <inheritdoc/>
     public override Error Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -69,7 +66,7 @@ public sealed class ErrorJsonConverter : JsonConverter<Error>
         var deserializedError = (Error?)JsonSerializer.Deserialize(
             root.GetRawText(),
             errorType,
-            _cleanOptions
+            CleanJSO
         );
 
         return deserializedError ?? throw new JsonException($"Failed to deserialize error of type {errorType.FullName}.");

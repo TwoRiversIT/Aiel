@@ -30,12 +30,13 @@ public static class DiagnosticDescriptors
     /// <summary>
     /// AIEL00002 is raised when the generator detects an error type that does not have exactly one public constructor accepting a single string parameter for the error message.
     /// </summary>
+    // ToDo: Review this diagnostic descriptor. It probably is not valid anymore..
     public static readonly DiagnosticDescriptor DerivedErrorTypesMustHaveSingleStringConstructor = new(
         id: DiagnosticRuleIDs.AIEL00002_ErrorTypesMustHaveSingleStringConstructorId,
-        title: "Derived error types must have a single string constructor",
-        messageFormat: "Error type '{0}' must have a single string constructor accepting the error message",
+        title: "Types derived from Error must have a constructor that accepts a single string parameter",
+        messageFormat: "The type '{0}' derives from Error and must have a constructor that accepts a single string parameter named 'description' so that it can be mapped to the Description property during desrialization",
         category: DiagnosticMetadata.UsageCategory,
-        defaultSeverity: DiagnosticSeverity.Error,
+        defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "All error types derived from Error must have exactly one public constructor that accepts a single string parameter for the error message.",
         customTags: []

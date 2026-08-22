@@ -25,7 +25,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Aiel.Results.Generators;
 
-public class ErrorInfo(String ns, String error, String errorCode, String accessibility)
+public class ErrorInfo(String ns, String error, String errorCode, String accessibility, Boolean overridesGenerateDescription)
 {
     public static ErrorInfo FromSymbol(INamedTypeSymbol symbol)
     {
@@ -40,7 +40,11 @@ public class ErrorInfo(String ns, String error, String errorCode, String accessi
         var errorName = symbol.Name;
         var codeName = errorName + GeneratorConsts.Suffix;
 
-        return new ErrorInfo(ns ?? "", errorName, codeName, accessibility);
+        var overridesGenerateDescription = symbol.GetMembers(GeneratorConsts.GenerateDecriptionMethodName)
+            .OfType<IMethodSymbol>()
+            .Any(m => m.IsOverride);
+
+        return new ErrorInfo(ns ?? "", errorName, codeName, accessibility, overridesGenerateDescription);
     }
 
     public String Namespace { get; } = ns;
@@ -48,6 +52,7 @@ public class ErrorInfo(String ns, String error, String errorCode, String accessi
     public String FqErrorName => HasNamespace ? $"{GeneratorConsts.Global}{Namespace}.{ErrorName}" : $"{GeneratorConsts.Global}{ErrorName}";
     public String ErrorCodeName { get; } = errorCode;
     public String Accessibility { get; } = accessibility;
+    public Boolean OverridesGenerateDescription { get; } = overridesGenerateDescription;
 
     public String ErrorAndCodeName => $"{ErrorName}.{ErrorCodeName}";
     public String FqErrorCodeName => HasNamespace ? $"{GeneratorConsts.Global}{Namespace}.{ErrorName}.{ErrorCodeName}" : $"{GeneratorConsts.Global}{ErrorName}.{ErrorCodeName}";

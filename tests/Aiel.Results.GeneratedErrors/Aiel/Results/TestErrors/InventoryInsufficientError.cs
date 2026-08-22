@@ -20,13 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+namespace Aiel.Results.TestErrors;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+/// <summary>
+/// Example of a dynamically generated custom error with multiple properties.
+/// </summary>
+public sealed partial class InventoryInsufficientError : Error
+{
+    /// <summary>
+    /// The product SKU that has insufficient inventory.
+    /// </summary>
+    public String ProductSku { get; init; }
 
-namespace Aiel.Results;
+    /// <summary>
+    /// The requested quantity.
+    /// </summary>
+    public Int32 RequestedQuantity { get; init; }
 
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+    /// <summary>
+    /// The available quantity in inventory.
+    /// </summary>
+    public Int32 AvailableQuantity { get; init; }
+}

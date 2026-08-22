@@ -25,18 +25,22 @@
 
     <!-- BEGIN: Generator and Analyzer specific settings -->
     <ItemGroup>
+        <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+        <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Remove="bin\**" />
         <EmbeddedResource Remove="bin\**" />
         <None Remove="bin\**" />
         <None Remove="bin\Debug\netstandard2.0\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Remove="bin\Debug\netstandard2.0\$(AssemblyName).dll" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticMetadata.cs" Pack="false" Path="\Aiel\Internal\DiagnosticMetadata.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticRuleIDs.cs" Pack="false" Path="\Aiel\Internal\DiagnosticRuleIDs.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -46,13 +50,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
-        <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
-    </ItemGroup>
-
-    <Import Project="..\Aiel.Roslyn\Aiel.Roslyn.projitems" Label="Shared" />
     <!-- END: Generator and Analyzer specific settings -->
 
 </Project>

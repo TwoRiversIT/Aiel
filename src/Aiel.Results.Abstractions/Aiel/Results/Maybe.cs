@@ -22,6 +22,21 @@
 
 namespace Aiel.Results;
 
+public static class Maybe
+{
+    public static Maybe<T> None<T>()
+        where T : notnull
+        => Maybe<T>.None;
+
+    public static Maybe<T> Some<T>(T value)
+        where T : notnull
+        => Maybe<T>.Some(value);
+
+    public static Maybe<T> FromNullable<T>(T? value)
+        where T : notnull
+        => value is null ? Maybe<T>.None : Maybe<T>.Some(value);
+}
+
 /// <summary>
 /// Represents a value that may or may not be present, without using <see langword="null"/>.
 /// </summary>
@@ -84,30 +99,6 @@ public readonly record struct Maybe<T>
         : throw new InvalidOperationException($"Maybe<{typeof(T).Name}> has no value. Check the HasValue property before reading Value or use GetValueOrDefault and TryGetValue methods instead.");
 
     /// <summary>
-    /// Gets a <see cref="Maybe{T}"/> that holds no value.
-    /// </summary>
-    public static Maybe<T> None => default;
-
-    /// <summary>
-    /// Creates a <see cref="Maybe{T}"/> holding the specified value.
-    /// </summary>
-    /// <param name="value">The value to hold. Must not be <see langword="null"/>.</param>
-    /// <returns>A <see cref="Maybe{T}"/> holding <paramref name="value"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
-    public static Maybe<T> Some(T value) => new(value);
-
-    /// <summary>
-    /// Creates a <see cref="Maybe{T}"/> from a value that may be <see langword="null"/>.
-    /// </summary>
-    /// <remarks>
-    /// This is the adapter for boundaries that still produce <see langword="null"/>, such as
-    /// <c>FirstOrDefaultAsync</c> on a data-access query.
-    /// </remarks>
-    /// <param name="value">The value to convert. May be <see langword="null"/>.</param>
-    /// <returns><see cref="None"/> when <paramref name="value"/> is <see langword="null"/>; otherwise <see cref="Some(T)"/>.</returns>
-    public static Maybe<T> FromNullable(T? value) => value is null ? None : Some(value);
-
-    /// <summary>
     /// Gets the contained value when one is present.
     /// </summary>
     /// <param name="value">
@@ -138,6 +129,30 @@ public readonly record struct Maybe<T>
     /// </summary>
     /// <returns><c>Some(value)</c> when a value is present; otherwise <c>None</c>.</returns>
     public override String ToString() => HasValue ? $"Some({_value})" : "None";
+
+    /// <summary>
+    /// Gets a <see cref="Maybe{T}"/> that holds no value.
+    /// </summary>
+    public static Maybe<T> None => default;
+
+    /// <summary>
+    /// Creates a <see cref="Maybe{T}"/> holding the specified value.
+    /// </summary>
+    /// <param name="value">The value to hold. Must not be <see langword="null"/>.</param>
+    /// <returns>A <see cref="Maybe{T}"/> holding <paramref name="value"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
+    internal static Maybe<T> Some(T value) => new(value);
+
+    /// <summary>
+    /// Creates a <see cref="Maybe{T}"/> from a value that may be <see langword="null"/>.
+    /// </summary>
+    /// <remarks>
+    /// This is the adapter for boundaries that still produce <see langword="null"/>, such as
+    /// <c>FirstOrDefaultAsync</c> on a data-access query.
+    /// </remarks>
+    /// <param name="value">The value to convert. May be <see langword="null"/>.</param>
+    /// <returns><see cref="None"/> when <paramref name="value"/> is <see langword="null"/>; otherwise <see cref="Some(T)"/>.</returns>
+    internal static Maybe<T> FromNullable(T? value) => value is null ? None : Some(value);
 
     /// <summary>
     /// Implicit conversion from a value to a <see cref="Maybe{T}"/> holding that value.

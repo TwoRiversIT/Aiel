@@ -61,47 +61,58 @@ public sealed class ConstructorAnalyzer : DiagnosticAnalyzer
             return;
         }
 
+        var overridesGenerateDescription = OverridesGenerateDescription(typeSymbol);
+        var hasSingleStringConstructor = false;
+
         // Get all public instance constructors
         var ctors = typeSymbol.InstanceConstructors
-            .Where(c => c.DeclaredAccessibility == Accessibility.Public)
+            .Where(c => c.DeclaredAccessibility is Accessibility.Public or Accessibility.Internal or Accessibility.ProtectedAndInternal or Accessibility.ProtectedOrInternal)
             .ToArray();
 
-        // Must have exactly one public constructor
-        if (ctors.Length != 1)
+        foreach (var ctor in ctors)
         {
-            Report(context, typeSymbol);
-            return;
+            var parameters = ctor.Parameters;
+
+            // When GenerateDescription() is overridden, one constructor may have no parameters.
+            if (parameters.Length == 0 && overridesGenerateDescription)
+            {
+                continue;
+            }
+
+            // When GenerateDescription() is not overridden, one constructor must accept a single string parameter.
+            if (parameters.Length == 1 && !overridesGenerateDescription)
+            {
+                var param = parameters[0];
+                if (param.Type.SpecialType != SpecialType.System_String)
+                {
+                    Report(context, typeSymbol);
+                    return;
+                }
+
+                // I can see some crazy developer down the line deciding that the 'description' parameter should
+                // contain JSON, Markdown, or a Base64‑encoded goat. We cannot really prevent that, but we can at
+                // least ensure that the parameter is named 'description' so that JSON deserializers can map the
+                // constructor parameter to the Description property.
+                if (!String.Equals(param.Name, "description", StringComparison.Ordinal))
+                {
+                    Report(context, typeSymbol);
+                    return;
+                }
+
+                hasSingleStringConstructor = true;
+            }
         }
 
-        var ctor = ctors[0];
-        var parameters = ctor.Parameters;
-
-        // Must have exactly one parameter
-        if (parameters.Length != 1)
+        if (!hasSingleStringConstructor && !overridesGenerateDescription)
         {
             Report(context, typeSymbol);
-            return;
         }
-
-        var param = parameters[0];
-
-        // Must be string
-        if (param.Type.SpecialType != SpecialType.System_String)
-        {
-            Report(context, typeSymbol);
-            return;
-        }
-
-        // MS Copilot originally put this in but I can see some crazy developer down the line deciding that
-        // the 'message' parameter should contain JSON, Markdown, or a Base64‑encoded goat.
-
-        // Must be named "message"
-        //if (!String.Equals(param.Name, "message", StringComparison.Ordinal))
-        //{
-        //    Report(context, typeSymbol);
-        //    return;
-        //}
     }
+
+    private static Boolean OverridesGenerateDescription(INamedTypeSymbol typeSymbol)
+        => typeSymbol.GetMembers(GeneratorConsts.GenerateDecriptionMethodName)
+            .OfType<IMethodSymbol>()
+            .Any(m => m.IsOverride);
 
     private static Boolean DerivesFromError(INamedTypeSymbol? type)
     {

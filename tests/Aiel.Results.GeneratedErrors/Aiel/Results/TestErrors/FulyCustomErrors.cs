@@ -20,13 +20,28 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using System.Runtime.CompilerServices;
+// Requires `using Aiel.Results;` for the Error, ErrorCode, and ErrorRegistry types.
+using System.Text.Json.Serialization;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+namespace Aiel.Results.TestErrors;
 
-namespace Aiel.Results;
+[method: JsonConstructor]
+public sealed class CustomerNotFoundError(Guid customerId)
+    : Error(CustomerNotFoundErrorCode.Instance)
+{
+    static CustomerNotFoundError()
+    {
+        ErrorRegistry.Register<CustomerNotFoundError>();
+    }
 
-[DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+    public Guid CustomerId { get; } = customerId;
+
+    override protected String GenerateDescription()
+        => $"Customer was not found: {CustomerId}";
+
+    internal sealed class CustomerNotFoundErrorCode : ErrorCode
+    {
+        public static readonly CustomerNotFoundErrorCode Instance = new();
+        protected override String Name => nameof(CustomerNotFoundError);
+    }
+}

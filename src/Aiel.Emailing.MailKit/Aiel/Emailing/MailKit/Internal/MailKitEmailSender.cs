@@ -50,7 +50,22 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
                 ? SecureSocketOptions.StartTls
                 : SecureSocketOptions.StartTlsWhenAvailable;
 
-    public async Task SendAsync(System.Net.Mail.MailMessage message, CancellationToken cancelationToken = default)
+    public Task SendEmailAsync(String email, String subject, String htmlMessage, CancellationToken cancellationToken = default)
+    {
+        var mailMessage = new System.Net.Mail.MailMessage
+        {
+            From = new System.Net.Mail.MailAddress(_options.FromAddress, _options.FromName),
+            Subject = subject,
+            Body = htmlMessage,
+            IsBodyHtml = true
+        };
+
+        mailMessage.To.Add(new System.Net.Mail.MailAddress(email));
+
+        return SendEmailAsync(mailMessage, cancellationToken);
+    }
+
+    public async Task SendEmailAsync(System.Net.Mail.MailMessage message, CancellationToken cancellationToken = default)
     {
         var mimeMessage = message.ToMimeMessage();
 
@@ -63,7 +78,7 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
             mimeMessage.Bcc.Add(new MailboxAddress(_options.ArchiveBccName, _options.ArchiveBccAddress!));
         }
 
-        await SendAsync(mimeMessage, cancelationToken);
+        await SendAsync(mimeMessage, cancellationToken);
     }
 
     private Boolean AddTestModeRecipients(MimeMessage mimeMessage)
@@ -166,11 +181,6 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
         {
             _logger.LogSending(message.Subject!, message.From[0].ToString(), message.To[0].ToString(), _options.SmtpServer, _options.SmtpPort, SSO.ToString(), message.Attachments.Count());
         }
-    }
-
-    public Task SendEmailAsync(String email, String subject, String htmlMessage)
-    {
-        throw new NotImplementedException();
     }
 }
 

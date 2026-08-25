@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Net.Mail;
+
 namespace Aiel.Emailing;
 
 /// <summary>
@@ -27,5 +29,6 @@ namespace Aiel.Emailing;
 /// </summary>
 public interface IEmailSender
 {
-    Task SendEmailAsync(String email, String subject, String htmlMessage);
+    Task SendEmailAsync(String email, String subject, String htmlMessage, CancellationToken cancellationToken = default);
+    Task SendEmailAsync(MailMessage message, CancellationToken cancellationToken = default);
 }

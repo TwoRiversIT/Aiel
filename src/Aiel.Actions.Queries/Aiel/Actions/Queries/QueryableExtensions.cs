@@ -31,12 +31,15 @@ public static class QueryableExtensions
     private const String OrderByDescending = nameof(Queryable.OrderByDescending);
     private const String ThenByDescending = nameof(Queryable.ThenByDescending);
 
-    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, PageInfo page)
+    public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, IQueryMultiple query)
+        => source.ApplySorting(query.Sort).ApplyPaging(query.Page);
+
+    public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, PageInfo page, SortOrder sort)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(page);
-
-        return source.Skip(page.Offset).Take(page.Size);
+        ArgumentNullException.ThrowIfNull(sort);
+        return source.ApplySorting(sort).ApplyPaging(page);
     }
 
     public static IQueryable<T> ApplySorting<T>(this IQueryable<T> source, SortOrder sort)
@@ -78,6 +81,14 @@ public static class QueryableExtensions
         }
 
         return count > 0 ? source.Provider.CreateQuery<T>(expression) : source;
+    }
+
+    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, PageInfo page)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(page);
+
+        return source.Skip(page.Offset).Take(page.Size);
     }
 
     /// <summary>

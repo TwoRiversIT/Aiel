@@ -22,6 +22,7 @@
 
 using Aiel.Framework;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Aiel.Results;
 
@@ -49,6 +50,27 @@ public sealed partial class NoError : Error
 public sealed partial class NoSourceGeneratedError : Error
 {
     internal const String DefaultMessage = "The source generator did not generate any code for this type: ";
+}
+
+public sealed partial class AggregateError : Error
+{
+    private const String DefaultMessage = "Multiple errors occurred.";
+
+    public AggregateError(params Error[] errors)
+        : base(AggregateErrorCode.Instance,  DefaultMessage)
+    {
+        Errors = errors.ToArray();
+    }
+
+    // Private to hide from public API, but needed for deserialization.
+    [JsonConstructor]
+    private AggregateError(IReadOnlyList<Error> errors)
+        : base(AggregateErrorCode.Instance, DefaultMessage)
+    {
+        Errors = errors.ToArray();
+    }
+
+    public IReadOnlyList<Error> Errors { get; }
 }
 
 /// <summary>

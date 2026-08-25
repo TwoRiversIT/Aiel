@@ -147,4 +147,52 @@ public class ResultTests
         result.TryGetValue(out var value).Should().BeTrue();
         value.Should().Be(0);
     }
+
+    [Fact]
+    public void Error_can_be_assigned_to_Result()
+    {
+        // Arrange
+        var error = new SimpleError("Some error");
+
+        // Act
+        Result result = error;
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().BeOfType<SimpleError>();
+    }
+
+    [Fact]
+    public void Error_can_be_assigned_to_ResultOfT()
+    {
+        // Arrange
+        var error = new SimpleError("Some error");
+
+        // Act
+        Result<Int32> singleResult = error;
+        Result<IReadOnlyCollection<Int32>> collectionResult = error;
+
+        // Assert
+        singleResult.IsFailure.Should().BeTrue();
+        singleResult.Error.Should().BeOfType<SimpleError>();
+        collectionResult.IsFailure.Should().BeTrue();
+        collectionResult.Error.Should().BeOfType<SimpleError>();
+    }
+
+    [Fact]
+    public void Value_can_be_assigned_to_ResultOfT()
+    {
+        // Arrange
+        var error = new SimpleError("Some error");
+
+        // Act
+        Result<Int32> singleResult = 42;
+        Result<IReadOnlyCollection<Int32>> collectionResult = new[] { 42 };
+
+        // Assert
+        singleResult.IsSuccess.Should().BeTrue();
+        singleResult.Value.Should().Be(42);
+        collectionResult.IsSuccess.Should().BeTrue();
+        collectionResult.Value.Should().BeEquivalentTo([42]);
+    }
 }

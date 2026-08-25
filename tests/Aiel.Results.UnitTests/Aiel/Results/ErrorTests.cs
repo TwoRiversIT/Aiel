@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results.TestErrors;
+using System.Text.Json;
 
 namespace Aiel.Results;
 
@@ -29,6 +30,43 @@ namespace Aiel.Results;
 /// </summary>
 public class ErrorTests
 {
+    [Fact]
+    public void AggregateError_ShouldBe_Creatable()
+    {
+        // Arrange
+        var error1 = new SimpleError("Error 1");
+        var error2 = new TransactionError("Error 2") { TransactionId = "XDV83401@FVAD" };
+
+        // Act
+        var aggregateError = new AggregateError(error1, error2);
+
+        // Assert
+        aggregateError.Should().BeOfType<AggregateError>();
+        aggregateError.Errors.Should().Contain(error1);
+        aggregateError.Errors.Should().Contain(error2);
+        String codeName = aggregateError.Code;
+        codeName.Should().Be("AggregateError");
+    }
+
+    [Fact]
+    public void AggregateError_ShouldBe_Serializable()
+    {
+        // Arrange
+        var error1 = new SimpleError("Error 1");
+        var error2 = new TransactionError("Error 2") { TransactionId = "XDV83401@FVAD" };
+        var aggregateError = new AggregateError(error1, error2);
+
+        // Act
+        var serialized = JsonSerializer.Serialize(aggregateError);
+        var deserialized = JsonSerializer.Deserialize<AggregateError>(serialized);
+
+        // Assert
+        deserialized.Should().BeOfType<AggregateError>();
+        deserialized.Errors.Should().HaveCount(2);
+        deserialized.Errors.First(e => e is SimpleError).Description.Should().Be("Error 1");
+        deserialized.Errors.First(e => e is TransactionError).As<TransactionError>().TransactionId.Should().Be("XDV83401@FVAD");
+    }
+
     [Fact]
     public void NoError_ShouldHave_Description()
     {

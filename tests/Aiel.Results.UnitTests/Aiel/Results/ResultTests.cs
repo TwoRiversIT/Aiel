@@ -180,6 +180,34 @@ public class ResultTests
     }
 
     [Fact]
+    public void HasValue_Returns_False_When_ResultOfT_Is_Failure()
+    {
+        // Arrange
+        var error = new SimpleError("Some error");
+
+        // Act
+        Result<String> result = error;
+        
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.HasValue.Should().BeFalse();
+    }
+
+    [Fact]
+    public void HasValue_Returns_True_When_ResultOfT_Is_Success()
+    {
+        // Arrange
+        var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
+
+        // Act
+        var result = Result<TestRecord>.Success(record);
+        
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.HasValue.Should().BeTrue();
+    }
+
+    [Fact]
     public void Value_can_be_assigned_to_ResultOfT()
     {
         // Arrange

@@ -146,6 +146,8 @@ public sealed class Result<T> : Result
             $"Cannot read Value when IsSuccess == false. If you need to return a value when the operation fails, consider adding a property to {Error.GetType().Name}.",
             Error);
 
+    public Boolean HasValue => ValueStorage != null;
+
     /// <summary>
     /// Initializes a new successful instance of the <see cref="Result{TValue}"/> class.
     /// </summary>

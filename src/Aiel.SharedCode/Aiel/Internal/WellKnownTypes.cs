@@ -20,9 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-
 namespace Aiel.Internal;
 
 /// <summary>
@@ -34,7 +31,7 @@ namespace Aiel.Internal;
 /// It is configurable per-project via AnalyzerConfiguration and
 /// defaults to "Aiel.AielEvent".
 /// </remarks>
-public static class WellKnownTypes
+internal static class WellKnownTypes
 {
     // ── Microsoft.Extensions.Logging ────────────────────────────────────
     public const String ILogger = "Microsoft.Extensions.Logging.ILogger";

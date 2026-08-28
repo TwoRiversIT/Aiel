@@ -20,33 +20,31 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System;
-
 namespace Aiel.Internal;
 
 // IMPORTANT: All diagnostic descriptor IDs must start with the canonical "AIEL" prefix.
 // Never use any other prefix (e.g. TRAF, TRSG, TRMD). See GitHub issue #7.
-public static class DiagnosticRuleIDs
+internal static class DiagnosticRuleIDs
 {
-    public const String AIEL00001_AielDependencyRequiredId = "AIEL00001";
-    public const String AIEL00002_ErrorTypesMustHaveSingleStringConstructorId = "AIEL00002";
-    public const String AIEL00003_PreferResultHttpClientExtensionsId = "AIEL00003";
-    public const String AIEL00004_AmbiguousProjectTypeDiagnosticId = "AIEL00004";
-    public const String AIEL00005_MultipleDispatchCallsInMethodId = "AIEL00005";
-    public const String AIEL00006_ActionHasNoAuthorizationStoryId = "AIEL00006";
-    public const String AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId = "AIEL00007";
-    public const String AIEL00008_UseAielEventIdsId = "AIEL00008";
-    public const String AIEL00009_MissingEventIdParameterId = "AIEL00009";
-    public const String AIEL00010_MissingTemplateEventIdPlaceholder = "AIEL00010";
-    public const String AIEL00011_NoDirectILoggerCallsId = "AIEL00011";
-    public const String AIEL00012_EventIdMismatchId = "AIEL00012";
-    public const String AIEL00013_MustBePartialRecordTypeId = "AIEL00013";
-    public const String AIEL00014_MustNotUsePositionalRecordSyntaxId = "AIEL00014";
-    public const String AIEL00015_MustImplementMatchingInterfaceId = "AIEL00015";
-    public const String AIEL00016_MustNotDeclareValueMemberId = "AIEL00016";
-    public const String AIEL00017_MustNotDeclareInstanceConstructorsId = "AIEL00017";
-    public const String AIEL00018_BackingTypeUnsupportedId = "AIEL00018";
-    public const String AIEL00019_NoNmeaMessageTypesDiscoveredId = "AIEL00019";
-    public const String AIEL00020_DependencyIsNotSealedId = "AIEL00020";
-    public const String AIEL00021_MultipleAielDependencyImplementationsId = "AIEL00021";
+    internal const String AIEL00001_AielDependencyRequiredId = "AIEL00001";
+    internal const String AIEL00002_ErrorTypesMustHaveSingleStringConstructorId = "AIEL00002";
+    internal const String AIEL00003_PreferResultHttpClientExtensionsId = "AIEL00003";
+    internal const String AIEL00004_AmbiguousProjectTypeDiagnosticId = "AIEL00004";
+    internal const String AIEL00005_MultipleDispatchCallsInMethodId = "AIEL00005";
+    internal const String AIEL00006_ActionHasNoAuthorizationStoryId = "AIEL00006";
+    internal const String AIEL00007_DoesNotRespectAuthorityReasonIsEmptyId = "AIEL00007";
+    internal const String AIEL00008_UseAielEventIdsId = "AIEL00008";
+    internal const String AIEL00009_MissingEventIdParameterId = "AIEL00009";
+    internal const String AIEL00010_MissingTemplateEventIdPlaceholder = "AIEL00010";
+    internal const String AIEL00011_NoDirectILoggerCallsId = "AIEL00011";
+    internal const String AIEL00012_EventIdMismatchId = "AIEL00012";
+    internal const String AIEL00013_MustBePartialRecordTypeId = "AIEL00013";
+    internal const String AIEL00014_MustNotUsePositionalRecordSyntaxId = "AIEL00014";
+    internal const String AIEL00015_MustImplementMatchingInterfaceId = "AIEL00015";
+    internal const String AIEL00016_MustNotDeclareValueMemberId = "AIEL00016";
+    internal const String AIEL00017_MustNotDeclareInstanceConstructorsId = "AIEL00017";
+    internal const String AIEL00018_BackingTypeUnsupportedId = "AIEL00018";
+    internal const String AIEL00019_NoNmeaMessageTypesDiscoveredId = "AIEL00019";
+    internal const String AIEL00020_DependencyIsNotSealedId = "AIEL00020";
+    internal const String AIEL00021_MultipleAielDependencyImplementationsId = "AIEL00021";
 }

@@ -40,7 +40,7 @@ public static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "All LoggerMessage event IDs must reference AielEvent enum members so that IDs remain consistent across the framework.",
-        helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00008");
+        helpLinkUri: DiagnosticMetadata.HelpBaseUrl + "AIEL00008");
 
     /// <summary>
     /// AIEL00009 is raised when an Aiel logging helper method does not include an optional
@@ -54,7 +54,7 @@ public static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Every Aiel logging helper method must have an optional AielEvent parameter so callers can override the default event ID at call sites.",
-        helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00009");
+        helpLinkUri: DiagnosticMetadata.HelpBaseUrl + "AIEL00009");
 
     /// <summary>
     /// AIEL00010 is raised when a <c>[LoggerMessage]</c> message template does not contain
@@ -68,7 +68,7 @@ public static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Aiel log message templates must include '[{EventId}]' so structured log consumers can filter and correlate events.",
-        helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00010");
+        helpLinkUri: DiagnosticMetadata.HelpBaseUrl + "AIEL00010");
 
     /// <summary>
     /// AIEL00011 is raised when production code calls <c>ILogger</c> extension methods
@@ -83,7 +83,7 @@ public static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Calling ILogger extension methods directly prevents structured event-ID tracking and consistent message formatting.",
-        helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00011");
+        helpLinkUri: DiagnosticMetadata.HelpBaseUrl + "AIEL00011");
 
     /// <summary>
     /// AIEL00012 is raised when the numeric EventId in a <c>[LoggerMessage]</c>
@@ -98,5 +98,5 @@ public static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "The numeric EventId declared in [LoggerMessage] must match the AielEvent member used as the default value for the 'eventId' parameter.",
-        helpLinkUri: DiagnosticMetadata.HelpBase + "AIEL00012");
+        helpLinkUri: DiagnosticMetadata.HelpBaseUrl + "AIEL00012");
 }

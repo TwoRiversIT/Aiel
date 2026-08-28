@@ -133,6 +133,7 @@
     <File Path="src/Directory.Build.targets" />
     <Project Path="src/Aiel.Actions.Commands/Aiel.Actions.Commands.csproj" />
     <Project Path="src/Aiel.Actions.Queries.EntityFrameworkCore/Aiel.Actions.Queries.EntityFrameworkCore.csproj" />
+    <Project Path="src/Aiel.Actions.Queries.FluentValidation/Aiel.Actions.Queries.FluentValidation.csproj" Id="832f88eb-4edc-424d-b119-335ed8823b63" />
     <Project Path="src/Aiel.Actions.Queries/Aiel.Actions.Queries.csproj" />
     <Project Path="src/Aiel.Actions/Aiel.Actions.csproj" Id="87688b42-8701-4c89-bb41-f81a29678a7c" />
     <Project Path="src/Aiel.Application.Contracts/Aiel.Application.Contracts.csproj" />

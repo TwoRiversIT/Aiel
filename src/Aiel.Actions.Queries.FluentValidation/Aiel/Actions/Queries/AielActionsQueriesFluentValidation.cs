@@ -20,30 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Internal;
+using Aiel.Framework;
 
-/// <summary>
-/// Provides metadata for diagnostics used in Aiel analyzers, including common categories and help link base.
-/// </summary>
-public static class DiagnosticMetadata
-{
-    /// <summary>
-    /// Gets the base URL for help links related to Aiel analyzers.
-    /// </summary>
-    public const String HelpBaseUrl = "https://docs.aiel.ca/analyzers/";
+namespace Aiel.Actions.Queries;
 
-    /// <summary>
-    /// Gets the logging category used for Aiel analyzers.
-    /// </summary>
-    public const String LoggingCategory = "AielLogging";
-
-    /// <summary>
-    /// Gets the category used for diagnostics related to strong identifiers in Aiel analyzers.
-    /// </summary>
-    public const String StrongIdCategory = "AielStrongId";
-
-    /// <summary>
-    /// Gets the category used for diagnostics related to usage in Aiel analyzers.
-    /// </summary>
-    public const String UsageCategory = "AielUsage";
-}
+[DependsOn(typeof(AielActionsQueries))]
+public class AielActionsQueriesFluentValidation : AielDependencyConfigurator;

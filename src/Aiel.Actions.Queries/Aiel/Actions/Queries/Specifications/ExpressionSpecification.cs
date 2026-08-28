@@ -24,11 +24,18 @@ using System.Linq.Expressions;
 
 namespace Aiel.Actions.Queries.Specifications;
 
-public class ExpressionSpecification<T>(Expression<Func<T, Boolean>> expression) : AbstractSpecification<T>
+public class ExpressionSpecification<T> : AbstractSpecification<T>
 {
-    private readonly Expression<Func<T, Boolean>> _expression = expression ?? throw new ArgumentNullException(nameof(expression));
+    public ExpressionSpecification(Expression<Func<T, Boolean>> expression)
+    {
+        PredicateExpression = expression ?? throw new ArgumentNullException(nameof(expression));
+    }
 
-    public override Expression<Func<T, Boolean>> ToExpression() => _expression;
+    protected ExpressionSpecification() { }
+
+    protected Expression<Func<T, Boolean>>? PredicateExpression { get; init; }
+
+    public override Expression<Func<T, Boolean>> ToExpression() => PredicateExpression ?? throw new InvalidOperationException("The expression has not been set.");
 
     protected static ExpressionSpecification<T> CombineSpecification(ExpressionSpecification<T> left, ExpressionSpecification<T> right, Func<Boolean, Boolean, Boolean> combiner)
     {

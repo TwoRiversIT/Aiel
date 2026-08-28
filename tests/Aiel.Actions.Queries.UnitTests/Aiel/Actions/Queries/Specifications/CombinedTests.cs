@@ -56,6 +56,20 @@ public class ExpressionSpecifications
         isTen.IsSatisfiedBy(input).Should().Be(expected);
     }
 
+    [Theory]
+    [InlineData(-1, false)]
+    [InlineData(0, true)]
+    [InlineData(1, true)]
+    [InlineData(9, true)]
+    [InlineData(10, false)]
+    [InlineData(111, false)]
+    public void InternalExpression_Still_Works(Int32 input, Boolean expected)
+    {
+        var spec = new ZeroToNine();
+
+        spec.IsSatisfiedBy(input).Should().Be(expected);
+    }
+
     internal class NullSpecification : ExpressionSpecification<String>
     {
         public NullSpecification() : base(_ => false) { }
@@ -68,5 +82,13 @@ public class ExpressionSpecifications
 
     internal class IsMultiple(Int32 factor) : ExpressionSpecification<Int32>(n => n % factor == 0)
     {
+    }
+
+    internal sealed class ZeroToNine : ExpressionSpecification<Int32>
+    {
+        public ZeroToNine() : base()
+        {
+            PredicateExpression = n => n >= 0 && n < 10;
+        }
     }
 }

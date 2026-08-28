@@ -22,10 +22,20 @@
 
 namespace Aiel.Results;
 
+/// <summary>
+/// Provides extension methods for working with Result and Maybe types.
+/// </summary>
 public static class ResultExtensions
 {
+    /// <summary>
+    /// Attempts to retrieve the value from a <see cref="Result{T}"/> where T is <see cref="Maybe{T}"/>. If the Result is successful and contains a value, it returns true and outputs the value; otherwise, it returns false and outputs the default value of T.
+    /// </summary>
+    /// <typeparam name="T">The type of the value that may be present.</typeparam>
+    /// <param name="result">The  instance to retrieve the value from.</param>
+    /// <param name="value">When this method returns, contains the value if the Result is successful and contains a value; otherwise, the default value of T.</param>
+    /// <returns><see langword="true"/> if the Result is successful and contains a value; otherwise, <see langword="false"/>.</returns>
     public static Boolean MaybeGetValue<T>(this Result<Maybe<T>> result, out T? value)
-        where T:notnull
+        where T : notnull
     {
         value = result.TryGetValue(out var maybe) && maybe.TryGetValue(out var innerValue)
               ? innerValue

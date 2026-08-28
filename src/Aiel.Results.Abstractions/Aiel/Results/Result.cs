@@ -146,6 +146,9 @@ public sealed class Result<T> : Result
             $"Cannot read Value when IsSuccess == false. If you need to return a value when the operation fails, consider adding a property to {Error.GetType().Name}.",
             Error);
 
+    /// <summary>
+    /// Gets a value indicating whether a value is present.
+    /// </summary>
     public Boolean HasValue => ValueStorage != null;
 
     /// <summary>

@@ -28,5 +28,8 @@ using System.Runtime.CompilerServices;
 
 namespace Aiel.Results;
 
+/// <summary>
+/// Represents the Aiel.Results.Abstractions assembly, which provides abstractions for handling results and errors in the Aiel framework.
+/// </summary>
 [DependsOn(typeof(AielFrameworkAbstractions))]
 public sealed class AielResultsAbstractions : AielDependencyConfigurator;

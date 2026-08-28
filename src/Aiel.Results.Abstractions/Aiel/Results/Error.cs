@@ -71,12 +71,8 @@ public abstract class Error
     /// This constructor must only be used when the derived implementation also implements
     /// <see cref="Error.GenerateDescription"/>.
     /// </para>
-    /// <para>
-    /// The <paramref name="description" /> parameter is for logging and debugging purposes. For
-    /// user-facing messages, consider adding a property to your custom generated Error that
-    /// provides a friendly, localized error description for the end user.
-    /// </para>
     /// </remarks>
+    // ToDo: Write and analyzer that will warn if a derived class uses this constructor but does not override GenerateDescription.
     protected Error(ErrorCode errorCode)
     {
         Code = errorCode ?? throw new ArgumentNullException(nameof(errorCode));

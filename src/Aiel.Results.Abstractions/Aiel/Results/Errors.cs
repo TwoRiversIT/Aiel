@@ -35,6 +35,10 @@ namespace Aiel.Results;
 public sealed partial class NoError : Error
 {
     internal const String DefaultMessage = "No error.";
+
+    /// <summary>
+    /// Gets a singleton instance of <see cref="NoError"/> that can be used to represent the absence of an error.
+    /// </summary>
     public static readonly NoError Instance = new(DefaultMessage);
 }
 
@@ -52,12 +56,19 @@ public sealed partial class NoSourceGeneratedError : Error
     internal const String DefaultMessage = "The source generator did not generate any code for this type: ";
 }
 
+/// <summary>
+/// Represents an error that aggregates multiple errors.
+/// </summary>
 public sealed partial class AggregateError : Error
 {
     private const String DefaultMessage = "Multiple errors occurred.";
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AggregateError"/> class with the specified errors.
+    /// </summary>
+    /// <param name="errors">The errors to aggregate.</param>
     public AggregateError(params Error[] errors)
-        : base(AggregateErrorCode.Instance,  DefaultMessage)
+        : base(AggregateErrorCode.Instance, DefaultMessage)
     {
         Errors = errors.ToArray();
     }
@@ -70,6 +81,9 @@ public sealed partial class AggregateError : Error
         Errors = errors.ToArray();
     }
 
+    /// <summary>
+    /// Gets the errors aggregated by this <see cref="AggregateError"/>.
+    /// </summary>
     public IReadOnlyList<Error> Errors { get; }
 }
 
@@ -80,6 +94,12 @@ public sealed partial class AggregateError : Error
 /// </summary>
 public sealed partial class ApiError : Error
 {
+    /// <summary>
+    /// Creates an <see cref="ApiError"/> instance from the specified exception and optional message.
+    /// </summary>
+    /// <param name="ex">The exception to wrap.</param>
+    /// <param name="message">An optional message to include.</param>
+    /// <returns>An <see cref="ApiError"/> instance.</returns>
     public static ApiError FromException(Exception ex, String? message = null)
     {
         var sb = new StringBuilder();
@@ -95,6 +115,10 @@ public sealed partial class ApiError : Error
     }
 }
 
+/// <summary>
+/// Represents a generic error that occurred during validation of input data. This should be used to wrap
+/// validation errors, for commands and queries.
+/// </summary>
 public sealed partial class ValidationError : Error;
 
 /// <summary>
@@ -104,6 +128,12 @@ public sealed partial class ValidationError : Error;
 /// </summary>
 public sealed partial class InfrastructureError : Error
 {
+    /// <summary>
+    /// Creates an <see cref="InfrastructureError"/> instance from the specified exception and optional message.
+    /// </summary>
+    /// <param name="ex">The exception to wrap.</param>
+    /// <param name="message">An optional message to include.</param>
+    /// <returns>An <see cref="InfrastructureError"/> instance.</returns>
     public static InfrastructureError FromException(Exception ex, String? message = null)
     {
         var sb = new StringBuilder();
@@ -126,6 +156,12 @@ public sealed partial class InfrastructureError : Error
 // ToDo: Create an analyzer that will warn when PlaceholderError is used instead of a more specific error type.
 public sealed partial class PlaceholderError : Error
 {
+    /// <summary>
+    /// Creates a <see cref="PlaceholderError"/> instance from the specified exception and optional message.
+    /// </summary>
+    /// <param name="ex">The exception to wrap.</param>
+    /// <param name="message">An optional message to include.</param>
+    /// <returns>A <see cref="PlaceholderError"/> instance.</returns>
     public static PlaceholderError FromException(Exception ex, String? message = null)
     {
         var sb = new StringBuilder();

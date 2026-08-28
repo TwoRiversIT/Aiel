@@ -22,16 +22,36 @@
 
 namespace Aiel.Results;
 
+/// <summary>
+/// Provides convenience methods for creating instances of <see cref="Maybe{T}"/>.
+/// </summary>
 public static class Maybe
 {
+    /// <summary>
+    /// Returns a <see cref="Maybe{T}"/> instance representing no value.
+    /// </summary>
+    /// <typeparam name="T">The type of the value that may be present.</typeparam>
+    /// <returns>A <see cref="Maybe{T}"/> instance representing no value.</returns>
     public static Maybe<T> None<T>()
         where T : notnull
-        => Maybe<T>.None;
+    => Maybe<T>.None;
 
+    /// <summary>
+    /// Returns a <see cref="Maybe{T}"/> instance representing a value.
+    /// </summary>
+    /// <typeparam name="T">The type of the value that may be present.</typeparam>
+    /// <param name="value">The value to wrap.</param>
+    /// <returns>A <see cref="Maybe{T}"/> instance representing the specified value.</returns>
     public static Maybe<T> Some<T>(T value)
         where T : notnull
         => Maybe<T>.Some(value);
 
+    /// <summary>
+    /// Returns a <see cref="Maybe{T}"/> instance representing a value that may be <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the value that may be present.</typeparam>
+    /// <param name="value">The value to wrap.</param>
+    /// <returns>A <see cref="Maybe{T}"/> instance representing the specified value, or <see cref="None"/> if the value is <see langword="null"/>.</returns>
     public static Maybe<T> FromNullable<T>(T? value)
         where T : notnull
         => value is null ? Maybe<T>.None : Maybe<T>.Some(value);

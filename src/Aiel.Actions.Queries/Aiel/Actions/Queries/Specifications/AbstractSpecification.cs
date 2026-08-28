@@ -26,6 +26,8 @@ namespace Aiel.Actions.Queries.Specifications;
 
 public abstract class AbstractSpecification<T> : ISpecification<T>
 {
+    protected AbstractSpecification() { }
+
     public virtual Boolean IsSatisfiedBy(T entity)
         => ToExpression().Compile().Invoke(entity);
 

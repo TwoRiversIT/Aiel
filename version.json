@@ -16,5 +16,9 @@
     "branchName": "release/v{version}",
     "versionIncrement": "build",
     "firstUnstableTag": "beta"
+  },
+  "assemblyVersion": {
+    "version": "0.0",
+    "precision": "revision"
   }
 }

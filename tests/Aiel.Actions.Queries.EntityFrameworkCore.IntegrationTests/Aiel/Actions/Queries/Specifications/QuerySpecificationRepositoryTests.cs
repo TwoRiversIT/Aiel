@@ -102,7 +102,7 @@ public class QuerySpecificationRepositoryTests(QueriesTestFixture fixture, ITest
         await foreach (var person in SUT.FindAsync(
             spec,
             new SortOrder([new SortField(nameof(Person.DateOfBirth))]),
-            new PageInfo(2, 1)))
+            PageInfo.Page(2, 1, 0)))
         {
             person.Name.Should().Be("Shyloh");
         }

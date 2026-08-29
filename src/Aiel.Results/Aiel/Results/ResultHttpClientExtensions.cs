@@ -51,8 +51,10 @@ public static class ResultHttpClientExtensions
     public static async Task<Result<T>> GetResultAsync<T>(this HttpClient client, String requestUri, CancellationToken cancellationToken = default)
         where T : notnull
     {
-        var result = await client.GetFromJsonAsync<Result<T>>(requestUri, Results.JSO, cancellationToken);
-        return result ?? Result<T>.Failure(new ApiError("Failed to retrieve data from the server."));
+        var response = await client.GetAsync(requestUri, cancellationToken);
+        var result = await response.ResultAsync<T>(cancellationToken);
+        //var result = await client.GetFromJsonAsync<Result<T>>(requestUri, Results.JSO, cancellationToken);
+        return result ?? new ApiError("Failed to retrieve data from the server.");
     }
 
     /// <summary>
@@ -207,8 +209,9 @@ public static class ResultHttpClientExtensions
     {
         try
         {
-            return await response.Content.ReadFromJsonAsync<Result<T>>(Results.JSO, cancellationToken)
-                ?? await ErrorAsync(response, cancellationToken);
+            var json = await response.Content.ReadAsStringAsync(cancellationToken);
+            var result = JsonSerializer.Deserialize<Result<T>>(json, Results.JSO);
+            return result ?? await ErrorAsync(response, cancellationToken);
         }
         catch (Exception ex)
         {

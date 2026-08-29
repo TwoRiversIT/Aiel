@@ -40,11 +40,10 @@ public class ErrorInfo(String ns, String error, String errorCode, String accessi
         var errorName = symbol.Name;
         var codeName = errorName + GeneratorConsts.Suffix;
 
-        var overridesGenerateDescription = symbol.GetMembers(GeneratorConsts.GenerateDecriptionMethodName)
-            .OfType<IMethodSymbol>()
-            .Any(m => m.IsOverride);
+        var overridesDescription = symbol.GetMembers(GeneratorConsts.GenerateDecriptionMethodName).OfType<IMethodSymbol>().Any(m => m.IsOverride)
+            || symbol.GetMembers(GeneratorConsts.DefaultDescriptionPropertyName).OfType<IPropertySymbol>().Any(p => p.IsOverride);
 
-        return new ErrorInfo(ns ?? "", errorName, codeName, accessibility, overridesGenerateDescription);
+        return new ErrorInfo(ns ?? "", errorName, codeName, accessibility, overridesDescription);
     }
 
     public String Namespace { get; } = ns;

@@ -22,7 +22,7 @@
 
 namespace Aiel.Results.TestErrors;
 
-public sealed partial class SimpleError : Error
+public sealed partial class DefaultDescriptionError : Error
 {
-    public String? GenerateDescriptionValue => GenerateDescription();
+    protected override String? DefaultDescription => "This is the default description for DefaultDescriptionError.";
 }

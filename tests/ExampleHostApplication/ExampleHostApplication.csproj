@@ -6,7 +6,6 @@
         <IsPackable>false</IsPackable>
         <!-- Specifically for testing Aiel.Framework.Generators -->
         <ImplicitUsings>disable</ImplicitUsings>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <ItemGroup>

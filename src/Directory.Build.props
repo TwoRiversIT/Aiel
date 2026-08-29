@@ -16,7 +16,6 @@
         <NBGV_ThisAssemblyNamespace>$(AssemblyName)</NBGV_ThisAssemblyNamespace>
         <NBGV_ThisAssemblyIncludesPackageVersion>true</NBGV_ThisAssemblyIncludesPackageVersion>
         <GitVersionBaseDirectory>$(MSBuildThisFileDirectory)</GitVersionBaseDirectory>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <!-- NuGet metadata (applies to all packable projects) -->

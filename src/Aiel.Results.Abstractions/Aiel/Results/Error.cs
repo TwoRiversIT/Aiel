@@ -33,6 +33,11 @@ public abstract class Error
     internal const String NotImplemented = "Not Implemented";
 
     /// <summary>
+    /// Gets the default description for the error. Derived classes can override this property to provide a custom default description.
+    /// </summary>
+    protected virtual String? DefaultDescription => NotImplemented;
+
+    /// <summary>
     /// Gets the code identifying the error.
     /// </summary>
     public ErrorCode Code { get; }
@@ -43,13 +48,15 @@ public abstract class Error
     /// property to your custom generated Error that provides a friendly, localized error
     /// description that is appropriate for a non-technical end user.
     /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when the description is null or whitespace because errors are required to have a description.</exception>
     public String Description
     {
         get
         {
             if (String.IsNullOrWhiteSpace(field))
             {
-                return GenerateDescription();
+                return GenerateDescription()
+                    ?? throw new InvalidOperationException("Description must not be null or whitespace.");
             }
 
             return field;
@@ -105,7 +112,7 @@ public abstract class Error
     /// classes to provide a custom description using properties of the derived class.
     /// </summary>
     /// <returns>A string representing the error description.</returns>
-    protected virtual String GenerateDescription() => NotImplemented;
+    protected virtual String? GenerateDescription() => DefaultDescription;
 
     /// <summary>
     /// Determines whether this error is of a specific error type.

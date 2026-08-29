@@ -140,4 +140,13 @@ public sealed class GeneratedErrorsTests
         act.Should().Throw<NotSupportedException>()
             .WithMessage("*Deserialization of types without a parameterless constructor*UndecoratedCustomConstructorError*");
     }
+
+    [Fact]
+    public void CustomErrors_WithDefaultDescriptions_ShouldReturnDefaultDescription_WhenDescriptionIsNotSet()
+    {
+        // Arrange & Act
+        var error = new DefaultDescriptionError();
+        // Assert
+        error.Description.Should().Be("This is the default description for DefaultDescriptionError.");
+    }
 }

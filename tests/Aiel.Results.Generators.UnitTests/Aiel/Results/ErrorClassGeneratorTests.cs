@@ -290,4 +290,34 @@ public class ErrorClassGeneratorTests
             .And.Contain("base(CustomErrorCode.Instance, description)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
+
+    [Fact]
+    public void Class_Overrides_GenerateDescription_Should_Generate_ParameterlessConstructor_And_Description()
+    {
+        const String testCode = """
+            #nullable enable
+            using Aiel.Results; 
+            using System;
+            
+            namespace TestNamespace;
+            
+            public sealed partial class CustomError : Error
+            {
+                protected override String? DefaultDescription => "This is the default description for CustomError.";
+            }            
+            """;
+
+        var result = Driver.Generate(testCode);
+        result.Should().NotBeNull();
+        result.CompilationDiagnostics.Should().BeEmpty();
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.GeneratedSources.Should().ContainSingle();
+        var source = result.GeneratedSources[0].Source.ToString();
+        source.Should().NotBeNullOrWhiteSpace()
+            .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
+            .And.Contain("public CustomError()")
+            .And.Contain("public CustomError(String description)")
+            .And.Contain("base(CustomErrorCode.Instance, description)")
+            .And.Contain("public static readonly CustomErrorCode Instance = new()");
+    }
 }

@@ -5,7 +5,6 @@
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <StartupObject>ExampleWebApplication.Program</StartupObject>
         <IsPackable>false</IsPackable>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
 
     <ItemGroup>

@@ -20,12 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Text.Json;
+
 namespace Aiel.Actions.Queries;
 
 public class PageInfoTests
 {
     [Fact]
-    public void PageInfo_Constructor_SetsProperties()
+    public void PageInfo_Page_SetsProperties()
     {
         // Arrange
         var pageNumber = 2;
@@ -33,65 +35,80 @@ public class PageInfoTests
         var totalRecords = 50;
 
         // Act
-        var pageInfo = new PageInfo(pageNumber, pageSize, totalRecords);
+        var pageBased = PageInfo.Page(pageNumber, pageSize, totalRecords);
 
         // Assert
-        pageInfo.Number.Should().Be(pageNumber);
-        pageInfo.Size.Should().Be(pageSize);
-        pageInfo.Total.Should().Be(totalRecords);
+        pageBased.Number.Should().Be(pageNumber);
+        pageBased.Size.Should().Be(pageSize);
+        pageBased.Total.Should().Be(totalRecords);
     }
 
     [Fact]
-    public void PageInfo_Constructor_ThrowsArgumentOutOfRangeException_WhenPageNumberIsLessThan1()
-    {
-        // Act
-        Action act = () => _ = new PageInfo(0, 10, 1);
-
-        // Assert
-        act.Should().Throw<ArgumentOutOfRangeException>()
-            .WithMessage("Paging is 1 based. The pageNumber parameter must be greater than or equal to 1.*");
-    }
-
-    [Fact]
-    public void PageInfo_Constructor_ThrowsArgumentOutOfRangeException_WhenPageSizeIsLessThan1()
-    {
-        // Act
-        Action act = () => _ = new PageInfo(1, 0, 1);
-
-        // Assert
-        act.Should().Throw<ArgumentOutOfRangeException>()
-            .WithMessage("The pageSize parameter must be greater than or equal to 1.*");
-    }
-
-    [Fact]
-    public void PageInfo_Number_Setter_ThrowsArgumentOutOfRangeException_WhenValueIsLessThan1()
+    public void PageInfo_SkipTake_SetsProperties()
     {
         // Arrange
-        var pageInfo = new PageInfo(1, 10);
+        var skip = 30;
+        var take = 50;
+
         // Act
-        Action act = () => pageInfo.Number = 0;
+        var skipTake = PageInfo.SkipTake(skip, take);
+
         // Assert
-        act.Should().Throw<ArgumentOutOfRangeException>()
-            .WithMessage("Paging is 1 based. The pageNumber parameter must be greater than or equal to 1.*");
+        skipTake.Offset.Should().Be(skip);
+        skipTake.Size.Should().Be(take);
     }
 
     [Fact]
-    public void PageInfo_Size_Setter_ThrowsArgumentOutOfRangeException_WhenValueIsLessThan1()
+    public void PageInfo_Page_SetsPageNumberToOne_WhenPageNumberIsLessThanOne()
     {
-        // Arrange
-        var pageInfo = new PageInfo(1, 10);
         // Act
-        Action act = () => pageInfo.Size = 0;
+        var pageInfo = PageInfo.Page(0, 10, 1);
+
         // Assert
-        act.Should().Throw<ArgumentOutOfRangeException>()
-            .WithMessage("The pageSize parameter must be greater than or equal to 1.*");
+        pageInfo.Number.Should().Be(1);
     }
 
     [Fact]
-    public void PageInfo_Offset_CalculatesCorrectly()
+    public void PageInfo_Page_SetsPageSizeToOne_WhenPageSizeIsLessThanOne()
+    {
+        // Act
+        var pageInfo = PageInfo.Page(1, 0, 1);
+
+        // Assert
+        pageInfo.Size.Should().Be(1);
+    }
+
+    [Fact]
+    public void PageInfo_Number_Setter_SetsPageNumberToOne_WhenValueIsLessThanOne()
     {
         // Arrange
-        var pageInfo = new PageInfo(3, 10);
+        var pageInfo = PageInfo.Page(1, 10, 1);
+
+        // Act
+        pageInfo.Number = 0;
+
+        // Assert
+        pageInfo.Number.Should().Be(1);
+    }
+
+    [Fact]
+    public void PageInfo_Size_Setter_SetsPageSizeToOne_WhenValueIsLessThanOne()
+    {
+        // Arrange
+        var pageInfo = PageInfo.Page(10, 10, 1);
+
+        // Act
+        pageInfo.Size = 0;
+
+        // Assert
+        pageInfo.Size.Should().Be(1);
+    }
+
+    [Fact]
+    public void PageInfo_Page_Calculates_Offset_Correctly()
+    {
+        // Arrange
+        var pageInfo = PageInfo.Page(3, 10, 1);
 
         // Act
         var offset = pageInfo.Offset;
@@ -101,25 +118,125 @@ public class PageInfoTests
     }
 
     [Fact]
+    public void PageInfo_SkipTake_Calculates_Offset_Correctly()
+    {
+        // Arrange
+        var pageInfo = PageInfo.SkipTake(3, 10, 1);
+
+        // Act
+        var offset = pageInfo.Offset;
+
+        // Assert
+        offset.Should().Be(3);
+    }
+
+    [Fact]
+    public void PageInfo_Offset_Can_Be_Set()
+    {
+        // Arrange
+        var pageInfo = PageInfo.Page(3, 10, 100);
+
+        // Act
+        pageInfo.Offset = 15;
+
+        // Assert
+        pageInfo.Offset.Should().Be(15);
+    }
+
+    [Fact]
+    public void PageInfo_Offset_Can_Be_Reset()
+    {
+        // Arrange & Sanity Check
+        var pageInfo = PageInfo.All;
+        pageInfo.Offset.Should().Be(0);
+        pageInfo.Size.Should().Be(Int32.MaxValue);
+
+        // Act
+        pageInfo.Offset = 15;
+
+        // Assert
+        pageInfo.Offset.Should().Be(15);
+    }
+
+    [Fact]
     public void PageInfo_Calculates_Pages_Correctly()
     {
         // Act
-        var pageInfo = new PageInfo(1, 10) { Total = 45 };
+        var pageInfo = PageInfo.Page(10, 10, 45);
 
         // Assert
         pageInfo.Pages.Should().Be(5);
     }
 
     [Fact]
-    public void PageInfo_WhenTotalIsZero_Pages_ReturnsNegativeOne()
+    public void PageInfo_Page_CanBeSerialized()
     {
         // Arrange
-        var pageInfo = new PageInfo(1, 10) { Total = 0 };
-        
+        var pageInfo = PageInfo.Page(2, 10, 50);
+
         // Act
-        var pages = pageInfo.Pages;
-     
+        var serialized = JsonSerializer.Serialize(pageInfo);
+        var deserialized = JsonSerializer.Deserialize<PageInfo>(serialized);
+
         // Assert
-        pages.Should().Be(-1);
+        deserialized.Should().NotBeNull();
+        deserialized.Number.Should().Be(pageInfo.Number);
+        deserialized.Size.Should().Be(pageInfo.Size);
+        deserialized.Offset.Should().Be(pageInfo.Offset);
+        deserialized.Total.Should().Be(pageInfo.Total);
+    }
+
+    [Fact]
+    public void PageInfo_SkipTake_CanBeSerialized()
+    {
+        // Arrange
+        var pageInfo = PageInfo.SkipTake(2, 10, 50);
+
+        // Act
+        var serialized = JsonSerializer.Serialize(pageInfo);
+        var deserialized = JsonSerializer.Deserialize<PageInfo>(serialized);
+
+        // Assert
+        deserialized.Should().NotBeNull();
+        deserialized.Number.Should().Be(pageInfo.Number);
+        deserialized.Size.Should().Be(pageInfo.Size);
+        deserialized.Offset.Should().Be(pageInfo.Offset);
+        deserialized.Total.Should().Be(pageInfo.Total);
+    }
+
+    [Fact]
+    public void PageInfo_WhenTotalIsZero_Pages_ReturnsZero()
+    {
+        // Act
+        var pageInfo = PageInfo.Page(1, 10, 0);
+
+        // Assert
+        pageInfo.Pages.Should().Be(0);
+    }
+
+    [Fact]
+    public void PageInfo_Page_WithInsaneValues_Returns_SaneValue()
+    {
+        // Act
+        var pageInfo = PageInfo.Page(-99, -99, -1000);
+
+        // Assert
+        pageInfo.Pages.Should().Be(0);
+        pageInfo.Total.Should().Be(0);
+        pageInfo.Size.Should().Be(1);
+        pageInfo.Number.Should().Be(1);
+    }
+
+    [Fact]
+    public void PageInfo_SkipTake_WithInsaneValues_Returns_SaneValue()
+    {
+        // Act
+        var pageInfo = PageInfo.SkipTake(-99, -99, -1000);
+
+        // Assert
+        pageInfo.Pages.Should().Be(0);
+        pageInfo.Total.Should().Be(0);
+        pageInfo.Size.Should().Be(1);
+        pageInfo.Number.Should().Be(1);
     }
 }

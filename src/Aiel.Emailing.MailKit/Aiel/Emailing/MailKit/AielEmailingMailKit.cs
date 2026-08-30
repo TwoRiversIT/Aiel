@@ -28,7 +28,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Aiel.Emailing.MailKit;
 
 [DependsOn(typeof(AielEmailing))]
-public sealed class CpcaEmailingMailKit : AielDependencyConfigurator
+public sealed class AielEmailingMailKit : AielDependencyConfigurator
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

@@ -33,6 +33,12 @@ public interface IQueryMultiple
 public interface IQueryMultiple<TDto> : IQueryMultiple, IQuery<IReadOnlyList<TDto>>
     where TDto : notnull;
 
+/// <summary>
+/// Base class for queries that return multiple results with sorting and paging.
+/// By default, the Sort property is set to <see cref="SortOrder.None"/> and the
+/// Page property is set to <see cref="PageInfo.Default"/>. Derived classes can
+/// override these defaults as needed.
+/// </summary>
 public abstract class QueryMultiple : IQueryMultiple
 {
     protected QueryMultiple() { }
@@ -46,6 +52,12 @@ public abstract class QueryMultiple : IQueryMultiple
     public PageInfo Page { get; set; } = PageInfo.Default;
 }
 
+/// <summary>
+/// Base class for queries that return multiple results with sorting and paging.
+/// By default, the Sort property is set to <see cref="SortOrder.None"/> and the
+/// Page property is set to <see cref="PageInfo.Default"/>. Derived classes can
+/// override these defaults as needed.
+/// </summary>
 public abstract class QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
  where TDto : notnull
 {
@@ -57,6 +69,9 @@ public abstract class QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
     }
 }
 
+/// <summary>
+/// Base class for query results that return multiple items with paging information.
+/// </summary>
 public abstract class QueryMultipleResult
 {
     protected QueryMultipleResult() { }

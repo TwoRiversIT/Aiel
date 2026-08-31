@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Results.Generators.UnitTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsToolingTests>true</IsToolingTests>
+        <NoWarn>$(NoWarn);NU1603</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\src\Aiel.Results.Abstractions\Aiel\Results\Error.cs" Link="Aiel\Results\Stubs\Error.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Results.Abstractions\Aiel\Results\ErrorCode.cs" Link="Aiel\Results\Stubs\ErrorCode.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Results.Abstractions\Aiel\Results\ErrorJsonConverter.cs" Link="Aiel\Results\Stubs\ErrorJsonConverter.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Results.Abstractions\Aiel\Results\Errors.cs" Link="Aiel\Results\Stubs\Errors.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Results.Abstractions\Aiel\Results\Maybe.cs" Link="Aiel\Results\Stubs\Maybe.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Results.Abstractions\Aiel\Results\Result.cs" Link="Aiel\Results\Stubs\Result.txt" />
+        <EmbeddedResource Include="Aiel\Results\Stubs\Usings.txt" Link="Aiel\Results\Stubs\Usings.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing.CodeAnalysis\Aiel.Testing.CodeAnalysis.csproj" />
+    </ItemGroup>
+
+
+</Project>

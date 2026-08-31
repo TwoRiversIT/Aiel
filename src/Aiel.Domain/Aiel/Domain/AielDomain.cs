@@ -21,9 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
-[DependsOn(typeof(AielStrongIds))]
+[DependsOn(typeof(AielDomainShared))]
 public sealed class AielDomain : AielDependencyConfigurator;

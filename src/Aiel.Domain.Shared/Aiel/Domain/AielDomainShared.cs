@@ -25,4 +25,5 @@ using Aiel.Framework;
 namespace Aiel.Domain;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
+[DependsOn(typeof(AielDomainAbstractions))]
 public sealed class AielDomainShared : AielDependencyConfigurator;

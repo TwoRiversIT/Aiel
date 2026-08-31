@@ -26,6 +26,9 @@ public abstract class ValueObject : IEquatable<ValueObject>
 {
     protected abstract IEnumerable<Object?> GetEqualityComponents();
 
+    public sealed override Boolean Equals(Object? obj)
+        => obj is ValueObject other && Equals(other);
+
     public Boolean Equals(ValueObject? other)
     {
         if (ReferenceEquals(this, other))
@@ -33,44 +36,16 @@ public abstract class ValueObject : IEquatable<ValueObject>
             return true;
         }
 
-        if (other is null)
+        if (other is null || other.GetType() != GetType())
         {
             return false;
         }
 
-        if (GetType() != other.GetType())
-        {
-            return false;
-        }
-
-        using var left = GetEqualityComponents().GetEnumerator();
-        using var right = other.GetEqualityComponents().GetEnumerator();
-
-        while (true)
-        {
-            var leftHasNext = left.MoveNext();
-            var rightHasNext = right.MoveNext();
-
-            if (!leftHasNext && !rightHasNext)
-            {
-                return true;
-            }
-
-            if (leftHasNext != rightHasNext)
-            {
-                return false;
-            }
-
-            if (!Equals(left.Current, right.Current))
-            {
-                return false;
-            }
-        }
+        return GetEqualityComponents()
+            .SequenceEqual(other.GetEqualityComponents());
     }
 
-    public override Boolean Equals(Object? obj) => Equals(obj as ValueObject);
-
-    public override Int32 GetHashCode()
+    public sealed override Int32 GetHashCode()
     {
         var hash = new HashCode();
 
@@ -83,9 +58,8 @@ public abstract class ValueObject : IEquatable<ValueObject>
     }
 
     public static Boolean operator ==(ValueObject? left, ValueObject? right)
-        => left is null
-            ? right is null
-            : left.Equals(right);
+        => Equals(left, right);
 
-    public static Boolean operator !=(ValueObject? left, ValueObject? right) => !(left == right);
+    public static Boolean operator !=(ValueObject? left, ValueObject? right)
+        => !Equals(left, right);
 }

@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results.IntegrationTests;
-using Aiel.Results.Models;
-using Aiel.Results.TestErrors;
+using Aiel.Testing.Errors;
+using Aiel.Testing.Models;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Text.Json;
 

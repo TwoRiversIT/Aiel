@@ -21,10 +21,11 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.StrongIds;
 
 namespace Aiel.MultiTenancy;
 
 [DependsOn(typeof(AielMultiTenancy))]
-[DependsOn(typeof(StrongIds.AielStrongIds))]
+[DependsOn(typeof(AielStrongIds))]
 public sealed class AielMultiTenancyUnitTests : AielDependencyConfigurator;
 

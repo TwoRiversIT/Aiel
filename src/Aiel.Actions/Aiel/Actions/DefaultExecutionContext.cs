@@ -31,10 +31,11 @@ public sealed class DefaultExecutionContext(
     IActor actor,
     Guid operationId,
     Guid correlationId,
+    DateTimeOffset timestamp,
     Guid? causationId,
     Guid? clientInstanceId,
     IDictionary<String, Object?> properties
-    ) : ExecutionContextBase(actor, operationId, correlationId, causationId, clientInstanceId, properties)
+    ) : ExecutionContextBase(actor, operationId, correlationId, timestamp, causationId, clientInstanceId, properties)
 {
 
     /// <summary>
@@ -54,6 +55,7 @@ public sealed class DefaultExecutionContext(
             actor,
             operationId: Guid.NewGuid(),
             correlationId: EnsureNotEmpty(parent.CorrelationId, nameof(parent.CorrelationId)),
+            timestamp: parent.Timestamp,
             causationId: EnsureNotEmpty(parent.OperationId, nameof(parent.OperationId)),
             clientInstanceId: parent.ClientInstanceId,
             properties: new Dictionary<String, Object?>(parent.Properties));
@@ -80,7 +82,8 @@ public sealed class DefaultExecutionContext(
     public static DefaultExecutionContext CreateRoot(
         IActor actor,
         Guid? correlationId = null,
-        Guid? clientInstanceId = null)
+        Guid? clientInstanceId = null,
+        DateTimeOffset? timestamp = null)
     {
         ArgumentNullException.ThrowIfNull(actor);
 
@@ -90,6 +93,7 @@ public sealed class DefaultExecutionContext(
             actor,
             operationId,
             correlationId ?? operationId,
+            timestamp: timestamp ?? DateTimeOffset.UtcNow,
             causationId: null,
             clientInstanceId,
             properties: new Dictionary<String, Object?>());

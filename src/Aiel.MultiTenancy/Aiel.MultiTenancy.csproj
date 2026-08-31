@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -12,12 +12,14 @@
     </ItemGroup>
 
     <!-- Include the analyzer and generator DLL in the NuGet package to ensure it is available and used during compilation of consuming projects.  -->
+    <!--
     <ItemGroup>
         <None Include="..\Aiel.Results.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Results.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\Aiel.Results.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Results.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\Aiel.StrongIds.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\Aiel.StrongIds.Generators\bin\$(Configuration)\netstandard2.0\Aiel.StrongIds.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
+    -->
 
     <!-- Reference the analyzer and generator project as an analyzer to ensure it is used during compilation of this project. -->
     <ItemGroup>
@@ -28,8 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
-        <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
+        <ProjectReference Include="..\Aiel.MultiTenancy.Abstractions\Aiel.MultiTenancy.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

@@ -20,12 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.DataAccess.EntityFrameworkCore;
-using Aiel.DataAccess.EntityFrameworkCore.Migrations;
+using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.Framework;
 using Aiel.Security;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -55,7 +53,7 @@ public static class Program
 
 [DependsOn(typeof(AielFrameworkHostApplication))]
 [DependsOn(typeof(AielSecurity))]
-[DependsOn(typeof(AielDataAccessEntityFrameworkCore))]
+[DependsOn(typeof(AielEntityFrameworkCoreMigrations))]
 public sealed class Configurator : AielApplicationConfigurator
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;

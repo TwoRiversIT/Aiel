@@ -20,11 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Domain;
+using Aiel.Emailing;
 using Aiel.Framework;
+using Aiel.Results;
 
 namespace Aiel.Application;
 
-[DependsOn(typeof(Domain.AielDomain))]
-[DependsOn(typeof(Results.AielResults))]
+[DependsOn(typeof(AielDomain))]
+[DependsOn(typeof(AielEmailingAbstractions))]
+[DependsOn(typeof(AielResults))]
 public sealed class AielApplicationContracts : AielDependencyConfigurator;
-

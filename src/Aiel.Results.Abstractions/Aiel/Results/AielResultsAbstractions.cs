@@ -23,8 +23,7 @@
 using Aiel.Framework;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Aiel.Results.GeneratedErrors")]
-//[assembly: InternalsVisibleTo("Aiel.Results.UnitTests")]
+[assembly: InternalsVisibleTo("Aiel.Testing.Dummies")]
 
 namespace Aiel.Results;
 

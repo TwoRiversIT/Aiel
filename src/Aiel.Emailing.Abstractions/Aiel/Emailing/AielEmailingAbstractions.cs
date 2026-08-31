@@ -20,9 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Domain;
 using Aiel.Framework;
 
 namespace Aiel.Emailing;
 
-[DependsOn(typeof(AielFrameworkAbstractions))]
+[DependsOn(typeof(AielDomainShared))]
 public sealed class AielEmailingAbstractions : AielDependencyConfigurator;

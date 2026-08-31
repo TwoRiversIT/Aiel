@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Domain;
 using Aiel.Framework;
 using Aiel.Security;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,7 @@ using Microsoft.Extensions.Options;
 
 namespace Aiel.Emailing;
 
+[DependsOn(typeof(AielDomainShared))]
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielEmailingAbstractions))]
 public sealed class AielEmailing : AielDependencyConfigurator

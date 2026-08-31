@@ -13,6 +13,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Domain\Aiel.Domain.csproj" />
+        <ProjectReference Include="..\Aiel.Emailing.Abstractions\Aiel.Emailing.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Results\Aiel.Results.csproj" />
     </ItemGroup>
 

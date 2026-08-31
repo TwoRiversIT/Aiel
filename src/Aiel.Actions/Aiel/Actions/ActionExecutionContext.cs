@@ -30,11 +30,12 @@ public sealed class ActionExecutionContext<TAction>(
     IActor actor,
     Guid operationId,
     Guid correlationId,
+    DateTimeOffset timestamp,
     Guid? causationId,
     Guid? clientInstanceId,
     IDictionary<String, Object?> properties,
     TAction action
-    ) : ExecutionContextBase(actor, operationId, correlationId, causationId, clientInstanceId, properties), IActionExecutionContext<TAction>
+    ) : ExecutionContextBase(actor, operationId, correlationId, timestamp, causationId, clientInstanceId, properties), IActionExecutionContext<TAction>
     where TAction : IAction
 {
     /// <inheritdoc />
@@ -57,6 +58,7 @@ public sealed class ActionExecutionContext<TAction>(
             actor: actor,
             operationId: Guid.NewGuid(),
             correlationId: EnsureNotEmpty(parent.CorrelationId, nameof(parent.CorrelationId)),
+            timestamp: parent.Timestamp,
             causationId: EnsureNotEmpty(parent.OperationId, nameof(parent.OperationId)),
             clientInstanceId: parent.ClientInstanceId,
             properties: new Dictionary<String, Object?>(parent.Properties),

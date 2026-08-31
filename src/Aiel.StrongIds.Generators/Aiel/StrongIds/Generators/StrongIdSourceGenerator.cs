@@ -111,6 +111,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 
         builder.AppendLine(GetTypeDeclaration(model));
         builder.AppendLine("{");
+        EmitEmpty(builder, model, 1);
         builder.AppendLine($"    public {model.BackingTypeName} Value {{ get; }}");
         builder.AppendLine();
 
@@ -154,6 +155,26 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine("}");
 
         return builder.ToString();
+    }
+
+    private static void EmitEmpty(StringBuilder builder, StrongIdModel model, Int32 indentLevel)
+    {
+        var indent = new String(' ', indentLevel * 4);
+
+        if (model.AllowDefault)
+        {
+            if (String.Equals(model.BackingTypeName, "global::System.String", StringComparison.Ordinal))
+            {
+                // String.Empty is considered a default value for string-based strong IDs.
+                builder.AppendLine($"{indent}public static readonly {model.TypeSymbol.Name} None = new(global::System.String.Empty);");
+            }
+            else
+            {
+                builder.AppendLine($"{indent}public static readonly {model.TypeSymbol.Name} None = new(default);");
+            }
+
+            builder.AppendLine();
+        }
     }
 
     private static void EmitValidation(StringBuilder builder, StrongIdModel model, Int32 indentLevel)

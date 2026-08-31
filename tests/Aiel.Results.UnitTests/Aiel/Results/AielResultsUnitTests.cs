@@ -21,11 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Testing;
 
 namespace Aiel.Results;
 
 [DependsOn(typeof(AielResults))]
 [DependsOn(typeof(AielResultsFixtures))]
-[DependsOn(typeof(AielResultsGeneratedErrors))]
+[DependsOn(typeof(AielTestingDummies))]
 public sealed class AielResultsUnitTests : AielDependencyConfigurator;
 

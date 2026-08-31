@@ -1,6 +1,6 @@
-# Aiel.DataAccess
+# Aiel.EntityFrameworkCore.Abstractions
 
-This project contains the data access layer for the Aiel library.
+This project contains the EntityFrameworkCore contracts for the Aiel library.
 
 ## License
 

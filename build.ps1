@@ -7,8 +7,10 @@ param(
     [switch] $PreserveArtifacts,
     [string] $ArtifactsBasePath = ".\artifacts",
     [string] $LocalPackagesPath = ".\LocalPackages",
-    [string] $NuGetSource = "https://git.dkw.io/api/packages/tworiversit/nuget/index.json",
-    [string] $NuGetApiKeyName = "GITEA_PERSONAL_ACCESS_TOKEN"
+    # [string] $NuGetSource = "https://git.dkw.io/api/packages/tworiversit/nuget/index.json",
+    # [string] $NuGetApiKeyName = "GITEA_PERSONAL_ACCESS_TOKEN"
+    [string] $NuGetSource = "http://localhost:9000/v3/index.json",
+    [string] $NuGetApiKeyName = "BAGETTER_TOKEN"
 )
 
 $BuildLogPath = Join-Path $PSScriptRoot "build.log"

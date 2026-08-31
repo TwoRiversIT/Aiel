@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results;
+using System.Text.Json.Serialization;
 
 namespace Aiel.Actions.Queries;
 
@@ -72,9 +73,9 @@ public abstract class QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
 /// <summary>
 /// Base class for query results that return multiple items with paging information.
 /// </summary>
-public abstract class QueryMultipleResult
+public abstract class QueryMultipleResult : Result
 {
-    protected QueryMultipleResult() { }
+    protected QueryMultipleResult(Error error) : base(false, error) { }
 
     protected QueryMultipleResult(IQueryMultiple query, Int32 totalRecords)
         : this(query.Page.Number, query.Page.Size, totalRecords)
@@ -82,6 +83,7 @@ public abstract class QueryMultipleResult
     }
 
     protected QueryMultipleResult(Int32 pageNo, Int32 pageSize, Int32 totalRecords)
+        : base(true, null!)
     {
         TotalRecords = totalRecords;
         PageNo = pageNo;
@@ -109,38 +111,29 @@ public abstract class QueryMultipleResult
         set => _pageSize = value <= 0 ? PageInfo.DefaultPageSize : value;
     }
 
-    public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> list, IQueryMultiple query, Int32 totalRecords = 0)
+    public static QueryMultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords = 0)
         where TDto : notnull
     {
-        return Create(list, query.Page.Number, query.Page.Size, totalRecords);
+        return Create(records, query.Page.Number, query.Page.Size, totalRecords);
     }
 
-    public static Result<QueryMultipleResult<TDto>> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNo = 1, Int32 pageSize = 10, Int32 totalRecords = 0)
+    public static QueryMultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNo = 1, Int32 pageSize = 10, Int32 totalRecords = 0)
         where TDto : notnull
     {
-        return Result.Success(new QueryMultipleResult<TDto>(records, pageNo, pageSize, totalRecords)
-        {
-            List = records
-        });
+        return new QueryMultipleResult<TDto>(records, pageNo, pageSize, totalRecords);
     }
 }
 
-public class QueryMultipleResult<TDto> : QueryMultipleResult
+[method: JsonConstructor]
+public sealed class QueryMultipleResult<TDto>(IReadOnlyList<TDto> records, Int32 pageNo, Int32 pageSize, Int32 totalRecords)
+    : QueryMultipleResult(pageNo, pageSize, totalRecords)
     where TDto : notnull
 {
-    public QueryMultipleResult() { }
-
-    public QueryMultipleResult(IReadOnlyList<TDto> list, IQueryMultiple query, Int32 totalRecords)
-        : this(list, query.Page.Number, query.Page.Size, totalRecords)
+    public QueryMultipleResult(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords)
+        : this(records, query.Page.Number, query.Page.Size, totalRecords)
     {
-        List = list ?? [];
+        Records = records ?? [];
     }
 
-    public QueryMultipleResult(IReadOnlyList<TDto> list, Int32 pageNo, Int32 pageSize, Int32 totalRecords)
-        : base(pageNo, pageSize, totalRecords)
-    {
-        List = list ?? [];
-    }
-
-    public IReadOnlyList<TDto> List { get; init; } = [];
+    public IReadOnlyList<TDto> Records { get; init; } = records ?? [];
 }

@@ -62,14 +62,14 @@ public class QueryMultipleResultTests
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<Result<QueryMultipleResult<Int32>>>();
+        result.Should().BeOfType<QueryMultipleResult<Int32>>();
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().NotBeNull();
-        result.Value.TotalRecords.Should().Be(totalCount);
-        result.Value.TotalRecords.Should().Be(totalCount);
-        result.Value.TotalPages.Should().Be(pageCount);
-        result.Value.PageSize.Should().Be(pageSize);
-        result.Value.PageNo.Should().Be(currentPage);
+        result.Records.Should().NotBeNull();
+        result.TotalRecords.Should().Be(totalCount);
+        result.TotalRecords.Should().Be(totalCount);
+        result.TotalPages.Should().Be(pageCount);
+        result.PageSize.Should().Be(pageSize);
+        result.PageNo.Should().Be(currentPage);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class QueryMultipleResultTests
         // Act
         var serialized = JsonSerializer.Serialize(queryMultipleResult);
         var deserialized = JsonSerializer.Deserialize<QueryMultipleResult<Int32>>(serialized);
-        
+
         // Assert
         deserialized.Should().NotBeNull();
         deserialized.TotalRecords.Should().Be(totalCount);

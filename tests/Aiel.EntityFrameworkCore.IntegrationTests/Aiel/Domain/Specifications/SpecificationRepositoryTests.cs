@@ -114,8 +114,8 @@ public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutpu
         var query = new ListPeople() { Specification = new EntitySpecification<Person>(_ => true) };
         var result = await SUT.QueryAsync(query, CancellationToken);
 
-        result.List.Should().HaveCount(4);
-        result.List.Should().BeInAscendingOrder(p => p.LastName);
+        result.Records.Should().HaveCount(4);
+        result.Records.Should().BeInAscendingOrder(p => p.LastName);
     }
 
     private class ListPeople()

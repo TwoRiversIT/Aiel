@@ -20,11 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Aiel.Testing;
+namespace Aiel.Domain.Contacts;
 
-namespace Aiel.Emailing;
+public static class EmailValidator
+{
+    public static IEmailValidator Instance { get; private set; } = new PatternEmailValidator();
 
-[DependsOn(typeof(AielEmailing))]
-[DependsOn(typeof(AielTestingDummies))]
-public sealed class AielEmailingUnitTests : AielDependencyConfigurator;
+    public static Boolean IsValid(String? email) => Instance.IsValid(email);
+
+    public static Boolean IsValid(EmailAddress? emailAddress) => Instance.IsValid(emailAddress);
+
+    public static void SetValidator(IEmailValidator validator)
+    {
+        ArgumentNullException.ThrowIfNull(validator);
+
+        Instance = validator;
+    }
+}

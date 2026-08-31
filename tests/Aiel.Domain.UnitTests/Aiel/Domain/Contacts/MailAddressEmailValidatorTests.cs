@@ -20,45 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Net.Mail;
+namespace Aiel.Domain.Contacts;
 
-namespace Aiel.Emailing;
-
-public class MailAddressEmailValidator : IEmailValidator
+// This is 'internal' to block the tests from running because too many fail
+internal class MailAddressEmailValidatorTests : EmailValidatorTestBase
 {
-    public Boolean IsValid(String? email)
+    public MailAddressEmailValidatorTests()
     {
-        if (String.IsNullOrWhiteSpace(email))
-        {
-            return false;
-        }
-
-        try
-        {
-            _ = new MailAddress(email);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
+        Validator = new MailAddressEmailValidator();
     }
 
-    public Boolean IsValid(EmailAddress? emailAddress)
-    {
-        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
-        {
-            return false;
-        }
-
-        try
-        {
-            _ = new MailAddress(emailAddress.Email, emailAddress.Name);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
+    protected override IEmailValidator Validator { get; }
 }

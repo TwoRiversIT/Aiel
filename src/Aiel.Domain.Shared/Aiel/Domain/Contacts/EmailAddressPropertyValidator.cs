@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Emailing;
+using FluentValidation;
 using FluentValidation.Validators;
 
-namespace FluentValidation;
+namespace Aiel.Domain.Contacts;
 
 public class EmailAddressPropertyValidator<T>()
     : PropertyValidator<T, EmailAddress>
@@ -31,7 +31,7 @@ public class EmailAddressPropertyValidator<T>()
     public override String Name => "EmailAddressValidator";
 
     public override Boolean IsValid(ValidationContext<T> context, EmailAddress value)
-        => Aiel.Emailing.EmailValidator.IsValid(value);
+        => EmailValidator.IsValid(value);
 }
 
 public class NullableEmailAddressPropertyValidator<T>
@@ -43,7 +43,7 @@ public class NullableEmailAddressPropertyValidator<T>
 
     public override Boolean IsValid(ValidationContext<T> context, EmailAddress? value)
         // Null is not invalid
-        => value is null || Aiel.Emailing.EmailValidator.IsValid(value);
+        => value is null || EmailValidator.IsValid(value);
 }
 
 public static partial class EmailAddressValidatorExtensions

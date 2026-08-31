@@ -20,20 +20,36 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Emailing;
+using Aiel.UI;
 
-public static class EmailValidator
+namespace Aiel.Testing.Fakes;
+
+public sealed class FakeMarkdownRenderer : IMarkdownRenderer
 {
-    public static IEmailValidator Instance { get; private set; } = new PatternEmailValidator();
+    private String? _markdown;
+    private Int32 _count;
 
-    public static Boolean IsValid(String? email) => Instance.IsValid(email);
+    public Int32 Count => _count;
 
-    public static Boolean IsValid(EmailAddress? emailAddress) => Instance.IsValid(emailAddress);
-
-    public static void SetValidator(IEmailValidator validator)
+    public FakeMarkdownRenderer()
     {
-        ArgumentNullException.ThrowIfNull(validator);
+    }
 
-        Instance = validator;
+    public FakeMarkdownRenderer(String markdown)
+    {
+        _markdown = markdown;
+    }
+
+    public String Render(String markdown)
+    {
+        _count++;
+        return _markdown ?? markdown;
+    }
+
+    public void SetMarkdown(String markdown) => _markdown = markdown;
+    public void Reset()
+    {
+        _count = 0;
+        _markdown = null;
     }
 }

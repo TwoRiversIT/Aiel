@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Contacts;
-using Aiel.Emailing;
 using Aiel.Security;
 using Aiel.UI;
 using System.Net.Mail;
@@ -167,12 +166,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     {
         EnsureNotDisposedOrBuilt();
 
-        if (String.IsNullOrWhiteSpace(markdown))
-        {
-            throw new ArgumentException($"'{nameof(markdown)}' cannot be null or whitespace.", nameof(markdown));
-        }
-
-        _markdown.AppendLine(markdown);
+        _markdown.AppendLine(markdown ?? String.Empty);
 
         return this;
     }
@@ -269,16 +263,17 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
 
     /// <summary>
     /// Gets the current body of the email message based on the available content in the following
-    /// order of preference: Markdown, HTML, and Plain Text.
+    /// order of preference: Markdown, HTML, and Plain Text. NOTE: Markdown will not be rendered to
+    /// HTML until the <see cref="Build"/> method is called.
     /// </summary>
     /// <returns>A string containing the current body content. May be empty.</returns>
     public String Body()
     {
         return _markdown.Length > 0
-                ? _markdownRenderer.Render(_markdown.ToString())
-                : !String.IsNullOrWhiteSpace(_html)
-                    ? _html
-                    : _text ?? String.Empty;
+                ? _markdown.ToString()
+                : String.IsNullOrWhiteSpace(_html)
+                    ? _text ?? String.Empty
+                    : _html;
     }
 
     /// <summary>

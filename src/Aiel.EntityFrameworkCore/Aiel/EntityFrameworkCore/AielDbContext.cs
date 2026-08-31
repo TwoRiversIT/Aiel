@@ -29,11 +29,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Aiel.EntityFrameworkCore;
 
 /// <summary>
-/// Extends the Entity Framework Core DbContext class to provide a base context for
-/// Aiel applications. This class can be further extended to include common
+/// Extends the EntityFrameworkCore DbContext class to provide a base context
+/// for Aiel applications. This class can be further extended to include common
 /// functionality, configurations, or conventions that are specific to Aiel
-/// applications, allowing for a consistent and reusable data access layer across
-/// different projects.
+/// applications, allowing for a consistent and reusable EntityFrameworkCore
+/// across different projects.
 /// </summary>
 public class AielDbContext : DbContext, IUnitOfWork
 {

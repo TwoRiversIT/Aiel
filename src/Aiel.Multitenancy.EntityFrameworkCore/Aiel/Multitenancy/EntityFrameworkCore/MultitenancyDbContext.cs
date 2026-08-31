@@ -31,7 +31,7 @@ namespace Aiel.Multitenancy.EntityFrameworkCore;
 /// Extends the Entity Framework Core DbContext class to provide a base context for
 /// Aiel applications. This class can be further extended to include common
 /// functionality, configurations, or conventions that are specific to Aiel
-/// applications, allowing for a consistent and reusable data access layer across
+/// applications, allowing for a consistent and reusable EntityFrameworkCore across
 /// different projects.
 /// </summary>
 public class MultitenancyDbContext : AielDbContext

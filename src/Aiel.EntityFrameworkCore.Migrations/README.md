@@ -1,6 +1,6 @@
-# Aiel.EntityFrameworkCore
+# Aiel.EntityFrameworkCore.Migrations
 
-Provides opinionated, production-ready tooling for databases with Entity Framework Core.
+This project contains the EntityFrameworkCore migrations support for the Aiel library.
 
 ## License
 

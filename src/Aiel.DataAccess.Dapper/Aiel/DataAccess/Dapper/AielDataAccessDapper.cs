@@ -20,9 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.EntityFrameworkCore;
 using Aiel.Framework;
 
 namespace Aiel.DataAccess.Dapper;
 
-[DependsOn(typeof(AielDataAccess))]
+[DependsOn(typeof(AielEntityFrameworkCoreAbstractions))]
 public sealed class AielDataAccessDapper : AielDependencyConfigurator;

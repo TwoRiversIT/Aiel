@@ -81,7 +81,7 @@
     </ItemGroup>
 
     <!-- Fody weavers -->
-    <ItemGroup Condition="'$(IsTestProject)' == 'false'">
+    <ItemGroup>
         <PackageReference Include="Fody" Version="6.9.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>

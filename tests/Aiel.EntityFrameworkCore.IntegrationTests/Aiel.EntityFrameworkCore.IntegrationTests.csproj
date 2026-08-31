@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.EntityFrameworkCore.IntegrationTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore.Migrations\Aiel.EntityFrameworkCore.Migrations.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore.Queries\Aiel.EntityFrameworkCore.Queries.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore.Seeding\Aiel.EntityFrameworkCore.Seeding.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore\Aiel.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.StrongIds.EntityFrameworkCore\Aiel.StrongIds.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
+        <ProjectReference Include="..\Aiel.Domain.UnitTests\Aiel.Domain.UnitTests.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Aiel\Domain\Contacts\" />
+    </ItemGroup>
+
+</Project>

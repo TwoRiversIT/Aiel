@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.MultiTenancy.IntegrationTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.Multitenancy.EntityFrameworkCore\Aiel.Multitenancy.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\Aiel.MultiTenancy.UnitTests\Aiel.MultiTenancy.UnitTests.csproj" />
+    </ItemGroup>
+
+</Project>

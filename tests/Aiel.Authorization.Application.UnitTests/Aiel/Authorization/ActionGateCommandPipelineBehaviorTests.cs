@@ -152,12 +152,13 @@ public sealed class ActionGateCommandPipelineBehaviorTests
         : IActionExecutionContext<TAction>
         where TAction : IAction
     {
-        public TAction Action => action;
-        public Guid OperationId => parent.OperationId;
         public IActor Actor => parent.Actor;
+        public Guid OperationId => parent.OperationId;
         public Guid CorrelationId => parent.CorrelationId;
+        public DateTimeOffset Timestamp { get; }
         public Guid? CausationId => parent.CausationId;
         public Guid? ClientInstanceId => parent.ClientInstanceId;
         public IDictionary<String, Object?> Properties => parent.Properties;
+        public TAction Action => action;
     }
 }

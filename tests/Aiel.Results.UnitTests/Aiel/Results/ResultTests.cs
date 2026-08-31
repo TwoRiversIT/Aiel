@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Results.TestErrors;
+using Aiel.Testing.Errors;
 
 namespace Aiel.Results;
 
@@ -187,7 +187,7 @@ public class ResultTests
 
         // Act
         Result<String> result = error;
-        
+
         // Assert
         result.IsFailure.Should().BeTrue();
         result.HasValue.Should().BeFalse();
@@ -201,7 +201,7 @@ public class ResultTests
 
         // Act
         var result = Result<TestRecord>.Success(record);
-        
+
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.HasValue.Should().BeTrue();

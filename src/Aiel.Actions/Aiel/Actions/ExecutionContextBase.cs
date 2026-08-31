@@ -28,6 +28,7 @@ public class ExecutionContextBase : IExecutionContext
         IActor actor,
         Guid operationId,
         Guid correlationId,
+        DateTimeOffset timestamp,
         Guid? causationId,
         Guid? clientInstanceId,
         IDictionary<String, Object?> properties)
@@ -35,10 +36,16 @@ public class ExecutionContextBase : IExecutionContext
         ArgumentNullException.ThrowIfNull(actor);
 
         Actor = actor;
+
         OperationId = EnsureNotEmpty(operationId, nameof(operationId));
         CorrelationId = EnsureNotEmpty(correlationId, nameof(correlationId));
-        CausationId = causationId;
-        ClientInstanceId = clientInstanceId;
+
+        Timestamp = timestamp == default ? throw new ArgumentException("Timestamp cannot be the default value.", nameof(timestamp)) : timestamp;
+
+        // Optional identifiers can be null, but if they are provided, they cannot be empty.
+        ClientInstanceId = clientInstanceId == null ? null : EnsureNotEmpty(clientInstanceId.Value, nameof(clientInstanceId));
+        CausationId = causationId == null ? null : EnsureNotEmpty(causationId.Value, nameof(causationId));
+
         Properties = properties ?? new Dictionary<String, Object?>();
     }
 
@@ -56,6 +63,9 @@ public class ExecutionContextBase : IExecutionContext
 
     /// <inheritdoc />
     public Guid OperationId { get; }
+
+    /// <inheritdoc />
+    public DateTimeOffset Timestamp { get; }
 
     /// <inheritdoc />
     public IDictionary<String, Object?> Properties { get; }

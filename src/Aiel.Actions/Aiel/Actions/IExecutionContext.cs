@@ -27,14 +27,17 @@ namespace Aiel.Actions;
 /// </summary>
 public interface IExecutionContext
 {
-    /// <summary>Gets the unique identifier for this specific operation.</summary>
-    Guid OperationId { get; }
-
     /// <summary>Gets the actor responsible for the execution chain.</summary>
     IActor Actor { get; }
 
+    /// <summary>Gets the unique identifier for this specific operation.</summary>
+    Guid OperationId { get; }
+
     /// <summary>Gets the identifier that groups all operations in the same logical request chain.</summary>
     Guid CorrelationId { get; }
+
+    /// <summary>Gets the timestamp of when this execution context was created.</summary>
+    DateTimeOffset Timestamp { get; }
 
     /// <summary>Gets the parent operation identifier that caused this one, if any.</summary>
     Guid? CausationId { get; }

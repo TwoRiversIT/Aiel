@@ -61,6 +61,69 @@ public class StrongIdSourceGeneratorTests
     }
 
     [Fact]
+    public void WhenAllowDefaultIsFalse_BackingTypeIsStruct_OmitsNone()
+    {
+        const String source = """
+            using System;
+            using Aiel.StrongIds;
+
+            namespace Test;
+
+            [StrongId<Guid>(AllowDefault = false)]
+            public readonly partial record struct OrderId;
+            """;
+
+        var result = RunGenerator(source);
+
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.CompilationDiagnostics.Should().NotContain(d => d.Severity == DiagnosticSeverity.Error);
+        result.GeneratedSources.Should().ContainSingle();
+        result.GeneratedSources[0].SourceText.ToString().Should().NotContain("public static readonly OrderId None = new(default);");
+    }
+
+    [Fact]
+    public void WhenAllowDefaultIsTrue_BackingTypeIsStruct_IncludesNone()
+    {
+        const String source = """
+            using System;
+            using Aiel.StrongIds;
+
+            namespace Test;
+
+            [StrongId<Guid>(AllowDefault = true)]
+            public readonly partial record struct OrderId;
+            """;
+
+        var result = RunGenerator(source);
+
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.CompilationDiagnostics.Should().NotContain(d => d.Severity == DiagnosticSeverity.Error);
+        result.GeneratedSources.Should().ContainSingle();
+        result.GeneratedSources[0].SourceText.ToString().Should().Contain("public static readonly OrderId None = new(default);");
+    }
+
+    [Fact]
+    public void WhenAllowDefaultIsTrue_BackingTypeIsString_IncludesNone()
+    {
+        const String source = """
+            using System;
+            using Aiel.StrongIds;
+
+            namespace Test;
+
+            [StrongId<String>(AllowDefault = true)]
+            public readonly partial record struct OrderId;
+            """;
+
+        var result = RunGenerator(source);
+
+        result.GeneratorDiagnostics.Should().BeEmpty();
+        result.CompilationDiagnostics.Should().NotContain(d => d.Severity == DiagnosticSeverity.Error);
+        result.GeneratedSources.Should().ContainSingle();
+        result.GeneratedSources[0].SourceText.ToString().Should().Contain("public static readonly OrderId None = new(global::System.String.Empty);");
+    }
+
+    [Fact]
     public void WhenGenerateTryFromIsFalse_OmitsTryFrom()
     {
         const String source = """

@@ -9,7 +9,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
         <ProjectReference Include="..\Aiel.Results.Fixtures\Aiel.Results.Fixtures.csproj" />
-        <ProjectReference Include="..\Aiel.Results.GeneratedErrors\Aiel.Results.GeneratedErrors.csproj" />
+        <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
     </ItemGroup>
 
 </Project>

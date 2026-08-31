@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Aiel.StrongIds;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.MultiTenancy;
@@ -30,7 +29,7 @@ namespace Aiel.MultiTenancy;
 /// Ensures that the Aiel.MultiTenancy participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielFrameworkAbstractions))]
-[DependsOn(typeof(AielStrongIds))]
+[DependsOn(typeof(AielMultiTenancyAbstractions))]
 public sealed class AielMultiTenancy : AielDependencyConfigurator
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

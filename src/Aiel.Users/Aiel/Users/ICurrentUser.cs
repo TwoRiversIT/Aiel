@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Authorization;
-using Aiel.Emailing;
+using Aiel.Domain.Contacts;
 using OpenIddict.Abstractions;
 using System.Security.Claims;
 
@@ -45,7 +45,7 @@ public abstract class CurrentUser
 
     public abstract Boolean EmailVerified { get; }
 
-    public abstract NorthAmericanPhoneNumber? PhoneNumber { get; }
+    public abstract PhoneNumber? PhoneNumber { get; }
     public abstract Boolean PhoneNumberVerified { get; }
     public abstract String[] Roles { get; }
 
@@ -70,7 +70,7 @@ public abstract class CurrentUser
         public override String LastName => String.Empty;
         public override Email? Email => Email.Empty;
         public override Boolean EmailVerified => false;
-        public override NorthAmericanPhoneNumber? PhoneNumber => NorthAmericanPhoneNumber.Empty;
+        public override PhoneNumber? PhoneNumber => PhoneNumber.Empty;
         public override Boolean PhoneNumberVerified => false;
         public override String[] Roles { get; } = [];
         public override Claim? FindClaim(String claimType) => null;
@@ -93,7 +93,7 @@ public class PrincipalCurrentUser(ClaimsPrincipal principal) : CurrentUser
     private String? _email;
     private Boolean? _emailVerified;
     private Boolean? _phoneNumberVerified;
-    private NorthAmericanPhoneNumber? _phoneNumber;
+    private PhoneNumber? _phoneNumber;
     private String? _username;
 
     public override UserId Id => _id ??= UserId.From(FindValue(OpenIddictConstants.Claims.Subject, Guid.Empty));
@@ -103,7 +103,7 @@ public class PrincipalCurrentUser(ClaimsPrincipal principal) : CurrentUser
     public override String LastName => _lastName ??= FindValue(OpenIddictConstants.Claims.FamilyName, String.Empty);
     public override Email? Email => _email ??= FindValue(OpenIddictConstants.Claims.Email, Email.Empty);
     public override Boolean EmailVerified => _emailVerified ??= FindValue(OpenIddictConstants.Claims.EmailVerified, false);
-    public override NorthAmericanPhoneNumber? PhoneNumber => _phoneNumber ??= FindValue(OpenIddictConstants.Claims.PhoneNumber, NorthAmericanPhoneNumber.Empty);
+    public override PhoneNumber? PhoneNumber => _phoneNumber ??= FindValue(OpenIddictConstants.Claims.PhoneNumber, PhoneNumber.Empty);
     public override Boolean PhoneNumberVerified => _phoneNumberVerified ??= FindValue(OpenIddictConstants.Claims.PhoneNumberVerified, false);
     public override String[] Roles { get; } = [];
 
@@ -131,10 +131,10 @@ public class PrincipalCurrentUser(ClaimsPrincipal principal) : CurrentUser
         return Email.TryParse(claim?.Value, out var result) ? result : defaultValue;
     }
 
-    private NorthAmericanPhoneNumber FindValue(String claimType, NorthAmericanPhoneNumber defaultValue)
+    private PhoneNumber FindValue(String claimType, PhoneNumber defaultValue)
     {
         var claim = _principal.FindFirst(claimType);
-        return NorthAmericanPhoneNumber.TryParse(claim?.Value, out var result) ? result : defaultValue;
+        return PhoneNumber.TryParse(claim?.Value, out var result) ? result : defaultValue;
     }
 
     public static CurrentUser FromClaimsPrincipal(ClaimsPrincipal principal)

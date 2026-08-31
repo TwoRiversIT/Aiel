@@ -29,9 +29,10 @@ public sealed class ActionExecutionContextTests
     {
         var actor = new TestActor();
         var parent = new TestExecutionContext(
-            operationId: Guid.NewGuid(),
             actor: actor,
+            operationId: Guid.NewGuid(),
             correlationId: Guid.NewGuid(),
+            timestamp: DateTimeOffset.UtcNow,
             causationId: Guid.NewGuid(),
             clientInstanceId: Guid.NewGuid());
         var action = new TestAction("reschedule-appointment");
@@ -56,20 +57,19 @@ public sealed class ActionExecutionContextTests
     private sealed class TestActor : IActor;
 
     private sealed class TestExecutionContext(
-        Guid operationId,
         IActor actor,
+        Guid operationId,
         Guid correlationId,
+        DateTimeOffset timestamp,
         Guid? causationId,
         Guid? clientInstanceId) : IExecutionContext
     {
-        public Guid OperationId { get; } = operationId;
-
         public IActor Actor { get; } = actor;
-
+        public Guid OperationId { get; } = operationId;
         public Guid CorrelationId { get; } = correlationId;
+        public DateTimeOffset Timestamp { get; } = timestamp;
 
         public Guid? CausationId { get; } = causationId;
-
         public Guid? ClientInstanceId { get; } = clientInstanceId;
 
         public IDictionary<String, Object?> Properties { get; } = new Dictionary<String, Object?>();

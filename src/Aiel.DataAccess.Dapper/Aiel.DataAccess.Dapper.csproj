@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.DataAccess\Aiel.DataAccess.csproj" />
+      <ProjectReference Include="..\Aiel.EntityFrameworkCore.Abstractions\Aiel.EntityFrameworkCore.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

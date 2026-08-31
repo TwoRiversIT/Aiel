@@ -218,7 +218,7 @@ Column mapping for Dapper enabling property-to-column name mapping via attribute
 - `ColumnMapper` for automatic mapping discovery from assemblies
 - Type-safe mapping without manual configuration
 
-### [Aiel.DataAccess.EntityFrameworkCore](./src/Aiel.DataAccess.EntityFrameworkCore/README.md)
+### [Aiel.EntityFrameworkCore](./src/Aiel.EntityFrameworkCore/README.md)
 
 EF Core migration and seeding infrastructure.
 

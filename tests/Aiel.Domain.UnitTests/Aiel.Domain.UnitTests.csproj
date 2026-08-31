@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <AssemblyName>Aiel.Domain.UnitTests</AssemblyName>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Aiel.Domain\Aiel.Domain.csproj" />
+      <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -11,12 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Temporarily disabled until the analyzer is fixed to not crash the Diagnostic Analyzer Runner.
-        <ProjectReference Include="..\..\src\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" OutputItemType="Analyzer" />
-        -->
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
     </ItemGroup>

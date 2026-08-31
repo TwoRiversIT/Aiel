@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.AspNetCore.Logging</AssemblyName>
+        <AssemblyName>Aiel.AspNetCore.Logging.Serilog</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

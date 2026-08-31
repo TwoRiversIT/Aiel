@@ -8,8 +8,9 @@ param(
     [string] $ArtifactsBasePath = ".\artifacts",
     [string] $LocalPackagesPath = ".\LocalPackages",
     # [string] $NuGetSource = "https://git.dkw.io/api/packages/tworiversit/nuget/index.json",
-    [string] $NuGetSource = "\\\\diskstation\\nuget",
-    [string] $NuGetApiKeyName = "GITEA_PERSONAL_ACCESS_TOKEN"
+    # [string] $NuGetApiKeyName = "GITEA_PERSONAL_ACCESS_TOKEN"
+    [string] $NuGetSource = "http://localhost:9000/v3/index.json",
+    [string] $NuGetApiKeyName = "BAGETTER_TOKEN"
 )
 
 $BuildLogPath = Join-Path $PSScriptRoot "build.log"
@@ -401,11 +402,10 @@ if ($Publish -or $DryRun) {
         Write-Host "Publishing packages..." -ForegroundColor Cyan
 
         dotnet nuget push (Join-Path $LocalPackagesPath "*.nupkg") `
-        --source $NuGetSource `
-        --skip-duplicate `
-        --no-symbols
-
-        # --api-key $apiKey `
+            --api-key $apiKey `
+            --source $NuGetSource `
+            --skip-duplicate `
+            --no-symbols
             
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Publishing failed. Might not have any PDB files in it. Continuing on..." -ForegroundColor Yellow

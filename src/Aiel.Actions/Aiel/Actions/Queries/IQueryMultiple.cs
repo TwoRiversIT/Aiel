@@ -124,16 +124,24 @@ public abstract class QueryMultipleResult : Result
     }
 }
 
-[method: JsonConstructor]
-public sealed class QueryMultipleResult<TDto>(IReadOnlyList<TDto> records, Int32 pageNo, Int32 pageSize, Int32 totalRecords)
-    : QueryMultipleResult(pageNo, pageSize, totalRecords)
+public sealed class QueryMultipleResult<TDto> : QueryMultipleResult
     where TDto : notnull
 {
+    [JsonConstructor]
+    public QueryMultipleResult(IReadOnlyList<TDto> records, Int32 pageNo, Int32 pageSize, Int32 totalRecords) : base(pageNo, pageSize, totalRecords)
+    {
+        Records = records ?? [];
+    }
+
     public QueryMultipleResult(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords)
         : this(records, query.Page.Number, query.Page.Size, totalRecords)
     {
         Records = records ?? [];
     }
 
-    public IReadOnlyList<TDto> Records { get; init; } = records ?? [];
+    private QueryMultipleResult(Error error) : base(error) { }
+
+    public IReadOnlyList<TDto> Records { get; init; } = [];
+
+    public static implicit operator QueryMultipleResult<TDto>(Error error) => new(error);
 }

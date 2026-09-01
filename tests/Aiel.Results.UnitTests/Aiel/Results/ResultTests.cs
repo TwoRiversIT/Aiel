@@ -51,13 +51,10 @@ public class ResultTests
     }
 
     [Fact]
-    public void Result_Should_ThrowArgumentException_When_CreatedWithInconsistentState()
+    public void Result_Constructor_Should_ThrowArgumentException_When_CreatedWithInconsistentState()
     {
-        // Arrange
-        var error = new SimpleError("Some error");
-
         // Act
-        Action act = () => new Result(true, error);
+        Action act = () => new Result(true, new SimpleError("Some error"));
 
         // Assert
         act.Should().Throw<ArgumentException>()
@@ -65,7 +62,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Result_Should_ThrowArgumentException_When_CreatedWithNullErrorForFailure()
+    public void Result_Constructor_Should_ThrowArgumentException_When_CreatedWithNullErrorForFailure()
     {
         // Act
         Action act = () => new Result(false, null!);
@@ -76,7 +73,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void Success_Should_ThrowArgumentNullException_When_ValueIsNull()
+    public void ResultOfT_Success_Should_ThrowArgumentNullException_When_ValueIsNull()
     {
         // Act
         Action act = () => Result<TestRecord>.Success(null!);
@@ -87,7 +84,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void When_IsSuccess_Is_False_Value_Should_ThrowResultException()
+    public void ResultOfT_When_IsFailed_ValueProperty_Should_ThrowResultException()
     {
         // Arrange
         var error = new SimpleError("Not found");
@@ -103,7 +100,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void TryGetValue_Should_ReturnTrueAndValue_When_Success()
+    public void ResultOfT_TryGetValue_Should_ReturnTrueAndValue_When_IsSuccess()
     {
         // Arrange
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
@@ -118,7 +115,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void TryGetValue_Should_ReturnFalse_When_Failure()
+    public void ResultOfT_TryGetValue_Should_ReturnFalseAndDefault_When_IsFailed()
     {
         // Arrange
         var result = Result<TestRecord>.Failure(new SimpleError("Not found"));
@@ -131,21 +128,63 @@ public class ResultTests
         value.Should().BeNull();
     }
 
+    [Fact]
+    public void Result_TryGetValue_Should_ReturnFalse_When_ResultIsNotResultOfT()
+    {
+        // Arrange
+        var result = Result.Success();
+
+        // Act
+        var got = result.TryGetValue(out Int32 value);
+
+        // Assert
+        got.Should().BeFalse();
+        value.Should().Be(default);
+    }
+
+    [Fact]
+    public void Result_TryGetValue_Should_ReturnTrue_When_ResultIsResultOfT_IsSuccess()
+    {
+        // Arrange
+        Result result = Result.Success(42);
+
+        // Act
+        var got = result.TryGetValue(out Int32 value);
+
+        // Assert
+        got.Should().BeTrue();
+        value.Should().Be(42);
+    }
+
+    [Fact]
+    public void Result_TryGetValue_Should_ReturnFalse_When_ResultIsResultOfT_IsFailed()
+    {
+        // Arrange
+        Result result = Result<Int32>.Failure(new SimpleError("Not found"));
+
+        // Act
+        var got = result.TryGetValue(out Int32 value);
+
+        // Assert
+        got.Should().BeFalse();
+        value.Should().Be(default);
+    }
+
     /// <summary>
     /// A successful result whose value happens to equal <see langword="default"/> is still a
     /// present value. This is the regression that the previous HasDefaultValue() probe introduced.
     /// </summary>
     [Fact]
-    public void Success_Should_CarryValue_When_ValueEqualsDefault()
+    public void ResultOfT_Success_Should_SetValue_When_ValueEqualsDefault()
     {
         // Act
-        var result = Result<Int32>.Success(0);
+        var result = Result<Int32>.Success(default);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().Be(0);
+        result.Value.Should().Be(default);
         result.TryGetValue(out var value).Should().BeTrue();
-        value.Should().Be(0);
+        value.Should().Be(default);
     }
 
     [Fact]
@@ -180,7 +219,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void HasValue_Returns_False_When_ResultOfT_Is_Failure()
+    public void ResultOfT_HasValue_Returns_False_When_ResultIsFailure()
     {
         // Arrange
         var error = new SimpleError("Some error");
@@ -194,7 +233,7 @@ public class ResultTests
     }
 
     [Fact]
-    public void HasValue_Returns_True_When_ResultOfT_Is_Success()
+    public void ResultOfT_HasValue_Returns_True_When_ResultIsSuccess()
     {
         // Arrange
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
@@ -208,11 +247,8 @@ public class ResultTests
     }
 
     [Fact]
-    public void Value_can_be_assigned_to_ResultOfT()
+    public void ResultOfT_Value_can_be_assigned()
     {
-        // Arrange
-        var error = new SimpleError("Some error");
-
         // Act
         Result<Int32> singleResult = 42;
         Result<IReadOnlyCollection<Int32>> collectionResult = new[] { 42 };

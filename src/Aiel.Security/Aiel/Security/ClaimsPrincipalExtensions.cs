@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Emailing;
+using Aiel.Domain.Contacts;
 using System.Security.Claims;
 
 namespace Aiel.Security;

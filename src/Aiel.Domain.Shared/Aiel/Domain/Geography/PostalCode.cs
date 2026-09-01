@@ -24,6 +24,7 @@ namespace Aiel.Domain.Geography;
 
 public sealed record PostalCode(String FSA, String LDU) : IPostCode
 {
+    public static readonly PostalCode Empty = new(String.Empty, String.Empty);
     public String Code => $"{FSA} {LDU}";
 
     public override String ToString() => Code;

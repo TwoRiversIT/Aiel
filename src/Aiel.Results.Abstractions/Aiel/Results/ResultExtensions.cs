@@ -43,4 +43,25 @@ public static class ResultExtensions
 
         return maybe.HasValue;
     }
+
+    /// <summary>
+    /// Attempts to retrieve the value from a <see cref="Result"/> instance if it is of type <see cref="Result{TValue}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of value to retrieve.</typeparam>
+    /// <param name="result">The result instance to retrieve the value from.</param>
+    /// <param name="value">When this method returns, contains the value from the result if it is of type <see cref="Result{TValue}"/>; otherwise, the default value for the type.</param>
+    /// <returns><see langword="true"/> if the value was successfully retrieved; otherwise, <see langword="false"/>.</returns>
+    public static Boolean TryGetValue<T>(this Result result, out T value)
+        where T : notnull
+    {
+        if (result is Result<T> tResult)
+        {
+            return tResult.TryGetValue(out value);
+
+        }
+
+        value = default!;
+
+        return false;
+    }
 }

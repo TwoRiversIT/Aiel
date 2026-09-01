@@ -11,10 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="12.1.1" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Aiel.Domain.Shared\Aiel.Domain.Shared.csproj" />
     </ItemGroup>
 

@@ -16,17 +16,19 @@
         <None Include="./README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
-    <!-- Explicit paths are required; %(TargetPath) on ProjectReference items gives only the filename, not the full path -->
+    <!-- Explicit paths are required; %(TargetPath) on ProjectReference items gives only the filename, not the full path
     <ItemGroup>
         <None Include="..\Aiel.Logging.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="..\Aiel.Logging.Analyzers.CodeFixes\bin\$(Configuration)\netstandard2.0\Aiel.Logging.Analyzers.CodeFixes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="Aiel.Logging.props" Pack="true" PackagePath="buildTransitive/" Visible="false" />
     </ItemGroup>
+    -->
 
-    <!-- Keep ProjectReferences so MSBuild builds the DLLs before packing -->
+    <!-- Keep ProjectReferences so MSBuild builds the DLLs before packing
     <ItemGroup>
         <ProjectReference Include="..\Aiel.Logging.Analyzers\Aiel.Logging.Analyzers.csproj" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\Aiel.Logging.Analyzers.CodeFixes\Aiel.Logging.Analyzers.CodeFixes.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
+    -->
 
 </Project>

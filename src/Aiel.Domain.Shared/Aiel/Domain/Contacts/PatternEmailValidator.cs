@@ -20,15 +20,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Emailing;
+using System.Text.RegularExpressions;
 
-// This is 'internal' to block the tests from running because too many fail
-internal class MailAddressEmailValidatorTests : EmailValidatorTestBase
+namespace Aiel.Domain.Contacts;
+
+public partial class PatternEmailValidator : IEmailValidator
 {
-    public MailAddressEmailValidatorTests()
+    public Boolean IsValid(String? email)
     {
-        Validator = new MailAddressEmailValidator();
+        if (String.IsNullOrWhiteSpace(email) || email.Length is < 3 or >= 255)
+        {
+            return false;
+        }
+
+        return GeneralEmail().IsMatch(email);
     }
 
-    protected override IEmailValidator Validator { get; }
+    public Boolean IsValid(EmailAddress? emailAddress)
+    {
+        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
+        {
+            return false;
+        }
+
+        return IsValid(emailAddress.Email);
+    }
+
+    [GeneratedRegex("^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-US")]
+    private static partial Regex GeneralEmail();
 }

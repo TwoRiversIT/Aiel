@@ -23,7 +23,7 @@
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace Aiel.Emailing;
+namespace Aiel.Domain.Contacts;
 
 /// <summary>
 /// Validates email addresses using a parsing algorithm.

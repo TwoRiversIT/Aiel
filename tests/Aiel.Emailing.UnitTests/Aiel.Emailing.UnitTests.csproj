@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Emailing\Aiel.Emailing.csproj" />
+        <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
     </ItemGroup>
 
 </Project>

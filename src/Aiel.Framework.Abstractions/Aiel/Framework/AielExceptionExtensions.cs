@@ -20,6 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Globalization;
+using System.Text;
+
 namespace Aiel.Framework;
 
 public static class AielExceptionExtensions
@@ -42,5 +45,12 @@ public static class AielExceptionExtensions
             action(iex);
             iex = iex.InnerException;
         }
+    }
+
+    public static String FormatException(this Exception ex)
+    {
+        var sb = new StringBuilder();
+        ex.Visit((iex) => sb.AppendLine(CultureInfo.CurrentCulture, $"{iex.GetType().Name}: {iex.Message}"));
+        return sb.ToString();
     }
 }

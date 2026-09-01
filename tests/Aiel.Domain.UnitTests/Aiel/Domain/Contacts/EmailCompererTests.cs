@@ -20,9 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
-
-namespace Aiel.Emailing;
+namespace Aiel.Domain.Contacts;
 
 public class EmailComparerTests
 {

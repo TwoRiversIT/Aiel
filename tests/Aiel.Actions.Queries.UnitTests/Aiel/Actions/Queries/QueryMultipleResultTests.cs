@@ -94,4 +94,16 @@ public class QueryMultipleResultTests
         deserialized.PageSize.Should().Be(pageSize);
         deserialized.PageNo.Should().Be(currentPage);
     }
+
+    [Fact]
+    public void QueryMultipleResultOfT_Can_Be_Assigned_Error()
+    {
+        // Act
+        QueryMultipleResult<Int32> result = new ApiError("An error occurred while processing the query.");
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Error.Should().BeOfType<ApiError>();
+        result.IsSuccess.Should().BeFalse();
+    }
 }

@@ -44,7 +44,7 @@ public class QueryMultipleResultTests
         result.TotalRecords.Should().Be(totalCount);
         result.TotalPages.Should().Be(pageCount);
         result.PageSize.Should().Be(pageSize);
-        result.PageNo.Should().Be(currentPage);
+        result.PageNumber.Should().Be(currentPage);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class QueryMultipleResultTests
         result.TotalRecords.Should().Be(totalCount);
         result.TotalPages.Should().Be(pageCount);
         result.PageSize.Should().Be(pageSize);
-        result.PageNo.Should().Be(currentPage);
+        result.PageNumber.Should().Be(currentPage);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class QueryMultipleResultTests
         deserialized.TotalRecords.Should().Be(totalCount);
         deserialized.TotalPages.Should().Be(pageCount);
         deserialized.PageSize.Should().Be(pageSize);
-        deserialized.PageNo.Should().Be(currentPage);
+        deserialized.PageNumber.Should().Be(currentPage);
     }
 
     [Fact]

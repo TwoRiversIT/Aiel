@@ -24,7 +24,9 @@
     them and, with a wrong path, causes CS0006 in consuming projects).
     -->
     <ItemGroup>
+        <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
         <None Include="..\Aiel.Framework.Analyzers\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Analyzers.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        -->
         <None Include="..\Aiel.Framework.Generators\bin\$(Configuration)\netstandard2.0\Aiel.Framework.Generators.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
@@ -34,7 +36,9 @@
     not themselves packed as dependencies.
     -->
     <ItemGroup>
+        <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
         <ProjectReference Include="..\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        -->
         <ProjectReference Include="..\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 

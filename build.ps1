@@ -399,13 +399,20 @@ if ($Publish -or $DryRun) {
 
     if ($Publish) {
 
-        Write-Host "Publishing packages..." -ForegroundColor Cyan
+        Write-Host "Publishing packages to $NuGetSource..." -ForegroundColor Cyan
 
-        dotnet nuget push (Join-Path $LocalPackagesPath "*.nupkg") `
+        $localPackages = Join-Path $LocalPackagesPath "*.nupkg"
+
+        dotnet nuget push $localPackages `
             --api-key $apiKey `
             --source $NuGetSource `
             --skip-duplicate `
+            -AllowInsecureConnections `
             --no-symbols
+
+        Write-Host "Publishing packages to \\DiskStation\nuget..." -ForegroundColor Cyan
+
+        nuget push $localPackages -Source \\DiskStation\nuget -SkipDuplicate
             
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Publishing failed. Might not have any PDB files in it. Continuing on..." -ForegroundColor Yellow
@@ -434,3 +441,6 @@ if ($script:TranscriptStarted) {
     Stop-Transcript | Out-Null
     $script:TranscriptStarted = $false
 }
+
+# Next: Try to run the following
+# git checkout main && git pull && .\build.ps1 -Release -Publish && git checkout develop && git merge --no-edit -s ours main && dotnet build

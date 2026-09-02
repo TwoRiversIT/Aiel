@@ -25,35 +25,20 @@ namespace Aiel.Actions.Queries;
 /// <summary>
 /// Base class for queries that return multiple results with sorting and paging.
 /// By default, the Sort property is set to <see cref="SortOrder.None"/> and the
-/// Page property is set to <see cref="PageInfo.Default"/>. Derived classes can
+/// Page property is set to <see cref="Page.Default"/>. Derived classes can
 /// override these defaults as needed.
 /// </summary>
-public abstract class QueryMultiple : IQueryMultiple
+public abstract record QueryMultiple<TDto> : IQueryMultiple<TDto>
+    where TDto : notnull
 {
     protected QueryMultiple() { }
-    protected QueryMultiple(SortOrder? sortRequest = null, PageInfo? pageRequest = null)
+
+    protected QueryMultiple(SortOrder? sortRequest = null, Page? pageRequest = null)
     {
         Sort = sortRequest ?? SortOrder.None;
-        Page = pageRequest ?? PageInfo.Default;
+        Page = pageRequest ?? Page.Default;
     }
 
     public SortOrder Sort { get; set; } = SortOrder.None;
-    public PageInfo Page { get; set; } = PageInfo.Default;
-}
-
-/// <summary>
-/// Base class for queries that return multiple results with sorting and paging.
-/// By default, the Sort property is set to <see cref="SortOrder.None"/> and the
-/// Page property is set to <see cref="PageInfo.Default"/>. Derived classes can
-/// override these defaults as needed.
-/// </summary>
-public abstract class QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
- where TDto : notnull
-{
-    protected QueryMultiple() { }
-
-    protected QueryMultiple(SortOrder? sortRequest = null, PageInfo? pageRequest = null)
-        : base(sortRequest, pageRequest)
-    {
-    }
+    public Page Page { get; set; } = Page.Default;
 }

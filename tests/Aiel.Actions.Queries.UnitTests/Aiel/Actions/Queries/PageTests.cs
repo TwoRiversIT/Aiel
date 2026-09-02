@@ -24,10 +24,10 @@ using System.Text.Json;
 
 namespace Aiel.Actions.Queries;
 
-public class PageInfoTests
+public class PageTests
 {
     [Fact]
-    public void PageInfo_Page_SetsProperties()
+    public void Page_Create_SetsProperties()
     {
         // Arrange
         var pageNumber = 2;
@@ -35,7 +35,7 @@ public class PageInfoTests
         var totalRecords = 50;
 
         // Act
-        var pageBased = PageInfo.Page(pageNumber, pageSize, totalRecords);
+        var pageBased = Page.Create(pageNumber, pageSize, totalRecords);
 
         // Assert
         pageBased.Number.Should().Be(pageNumber);
@@ -44,14 +44,14 @@ public class PageInfoTests
     }
 
     [Fact]
-    public void PageInfo_SkipTake_SetsProperties()
+    public void Page_SkipTake_SetsProperties()
     {
         // Arrange
         var skip = 30;
         var take = 50;
 
         // Act
-        var skipTake = PageInfo.SkipTake(skip, take);
+        var skipTake = Page.SkipTake(skip, take);
 
         // Assert
         skipTake.Offset.Should().Be(skip);
@@ -59,56 +59,57 @@ public class PageInfoTests
     }
 
     [Fact]
-    public void PageInfo_Page_SetsPageNumberToOne_WhenPageNumberIsLessThanOne()
+    public void Page_Create_SetsPageNumberToOne_WhenPageNumberIsLessThanOne()
     {
         // Act
-        var pageInfo = PageInfo.Page(0, 10, 1);
+        var pageInfo = Page.Create(0, 0, 0);
 
         // Assert
         pageInfo.Number.Should().Be(1);
     }
 
     [Fact]
-    public void PageInfo_Page_SetsPageSizeToOne_WhenPageSizeIsLessThanOne()
+    public void Page_Create_SetsPageSizeToOne_WhenPageSizeIsLessThanOne()
     {
         // Act
-        var pageInfo = PageInfo.Page(1, 0, 1);
+        var pageInfo = Page.Create(0, 0, 0);
 
         // Assert
         pageInfo.Size.Should().Be(1);
     }
 
     [Fact]
-    public void PageInfo_Number_Setter_SetsPageNumberToOne_WhenValueIsLessThanOne()
+    public void Page_Number_Setter_SetsPageNumberToOne_WhenValueIsLessThanOne()
     {
         // Arrange
-        var pageInfo = PageInfo.Page(1, 10, 1);
+        var pageInfo = Page.Create(10, 10, 100);
 
         // Act
-        pageInfo.Number = 0;
+        pageInfo = pageInfo with { Number = 0 };
 
         // Assert
         pageInfo.Number.Should().Be(1);
     }
 
     [Fact]
-    public void PageInfo_Size_Setter_SetsPageSizeToOne_WhenValueIsLessThanOne()
+    public void Page_Size_Setter_SetsPageSizeToOne_WhenValueIsLessThanOne()
     {
         // Arrange
-        var pageInfo = PageInfo.Page(10, 10, 1);
+        var pageInfo = Page.Create(10, 10, 100);
 
         // Act
-        pageInfo.Size = 0;
+        pageInfo = pageInfo with { Size = 0 };
 
         // Assert
         pageInfo.Size.Should().Be(1);
     }
 
     [Fact]
-    public void PageInfo_Page_Calculates_Offset_Correctly()
+    public void Page_Create_Calculates_Offset_Correctly()
     {
         // Arrange
-        var pageInfo = PageInfo.Page(3, 10, 1);
+        // Remember, Paging is 1-based, so Page 3 with a size of 10 means the offset is 20 (0-based).
+        var pageInfo = Page.Create(3, 10, 1);
 
         // Act
         var offset = pageInfo.Offset;
@@ -118,10 +119,10 @@ public class PageInfoTests
     }
 
     [Fact]
-    public void PageInfo_SkipTake_Calculates_Offset_Correctly()
+    public void Page_SkipTake_Calculates_Offset_Correctly()
     {
         // Arrange
-        var pageInfo = PageInfo.SkipTake(3, 10, 1);
+        var pageInfo = Page.SkipTake(3, 10, 1);
 
         // Act
         var offset = pageInfo.Offset;
@@ -131,52 +132,52 @@ public class PageInfoTests
     }
 
     [Fact]
-    public void PageInfo_Offset_Can_Be_Set()
+    public void Page_Offset_Can_Be_Set()
     {
         // Arrange
-        var pageInfo = PageInfo.Page(3, 10, 100);
+        var pageInfo = Page.Create(3, 10, 100);
 
         // Act
-        pageInfo.Offset = 15;
+        pageInfo = pageInfo with { Offset = 15 };
 
         // Assert
         pageInfo.Offset.Should().Be(15);
     }
 
     [Fact]
-    public void PageInfo_Offset_Can_Be_Reset()
+    public void Page_Offset_Can_Be_Reset()
     {
         // Arrange & Sanity Check
-        var pageInfo = PageInfo.All;
+        var pageInfo = Page.All;
         pageInfo.Offset.Should().Be(0);
         pageInfo.Size.Should().Be(Int32.MaxValue);
 
         // Act
-        pageInfo.Offset = 15;
+        pageInfo = pageInfo with { Offset = 15 };
 
         // Assert
         pageInfo.Offset.Should().Be(15);
     }
 
     [Fact]
-    public void PageInfo_Calculates_Pages_Correctly()
+    public void Page_Calculates_Pages_Correctly()
     {
         // Act
-        var pageInfo = PageInfo.Page(10, 10, 45);
+        var pageInfo = Page.Create(10, 10, 45);
 
         // Assert
         pageInfo.Pages.Should().Be(5);
     }
 
     [Fact]
-    public void PageInfo_Page_CanBeSerialized()
+    public void Page_Create_CanBeSerialized()
     {
         // Arrange
-        var pageInfo = PageInfo.Page(2, 10, 50);
+        var pageInfo = Page.Create(2, 10, 50);
 
         // Act
         var serialized = JsonSerializer.Serialize(pageInfo);
-        var deserialized = JsonSerializer.Deserialize<PageInfo>(serialized);
+        var deserialized = JsonSerializer.Deserialize<Page>(serialized);
 
         // Assert
         deserialized.Should().NotBeNull();
@@ -187,14 +188,14 @@ public class PageInfoTests
     }
 
     [Fact]
-    public void PageInfo_SkipTake_CanBeSerialized()
+    public void Page_SkipTake_CanBeSerialized()
     {
         // Arrange
-        var pageInfo = PageInfo.SkipTake(2, 10, 50);
+        var pageInfo = Page.SkipTake(2, 10, 50);
 
         // Act
         var serialized = JsonSerializer.Serialize(pageInfo);
-        var deserialized = JsonSerializer.Deserialize<PageInfo>(serialized);
+        var deserialized = JsonSerializer.Deserialize<Page>(serialized);
 
         // Assert
         deserialized.Should().NotBeNull();
@@ -205,20 +206,20 @@ public class PageInfoTests
     }
 
     [Fact]
-    public void PageInfo_WhenTotalIsZero_Pages_ReturnsZero()
+    public void Page_WhenTotalIsZero_Pages_ReturnsZero()
     {
         // Act
-        var pageInfo = PageInfo.Page(1, 10, 0);
+        var pageInfo = Page.Create(1, 10, 0);
 
         // Assert
         pageInfo.Pages.Should().Be(0);
     }
 
     [Fact]
-    public void PageInfo_Page_WithInsaneValues_Returns_SaneValue()
+    public void Page_Create_WithInsaneValues_Returns_SaneValue()
     {
         // Act
-        var pageInfo = PageInfo.Page(-99, -99, -1000);
+        var pageInfo = Page.Create(-99, -99, -1000);
 
         // Assert
         pageInfo.Pages.Should().Be(0);
@@ -228,10 +229,10 @@ public class PageInfoTests
     }
 
     [Fact]
-    public void PageInfo_SkipTake_WithInsaneValues_Returns_SaneValue()
+    public void Page_SkipTake_WithInsaneValues_Returns_SaneValue()
     {
         // Act
-        var pageInfo = PageInfo.SkipTake(-99, -99, -1000);
+        var pageInfo = Page.SkipTake(-99, -99, -1000);
 
         // Assert
         pageInfo.Pages.Should().Be(0);

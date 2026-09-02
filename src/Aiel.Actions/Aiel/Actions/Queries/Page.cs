@@ -25,28 +25,28 @@ namespace Aiel.Actions.Queries;
 /// <summary>
 /// Carries paging information both directions for a query. The page number is 1 based, and the page size must be greater than or equal to 1.
 /// </summary>
-public record PageInfo
+public record Page
 {
     public const Int32 DefaultPageNumber = 1;
     public const Int32 DefaultPageSize = 20;
 
-    public static readonly PageInfo Default = new()
+    public static readonly Page Default = new()
     {
         Number = DefaultPageNumber,
         Size = DefaultPageSize,
         Total = 0
     };
 
-    public static readonly PageInfo All = new()
+    public static readonly Page All = new()
     {
         Number = DefaultPageNumber,
         Size = Int32.MaxValue,
         Total = 0
     };
 
-    public static PageInfo Page(Int32 pageNumber, Int32 pageSize, Int32 totalRecords = 0)
+    public static Page Create(Int32 pageNumber, Int32 pageSize, Int32 totalRecords = 0)
     {
-        return new PageInfo
+        return new Page
         {
             Number = pageNumber,
             Size = pageSize,
@@ -54,9 +54,9 @@ public record PageInfo
         };
     }
 
-    public static PageInfo SkipTake(Int32 skip, Int32 take, Int32 totalRecords = 0)
+    public static Page SkipTake(Int32 skip, Int32 take, Int32 totalRecords = 0)
     {
-        return new PageInfo
+        return new Page
         {
             Offset = skip,
             Size = take,
@@ -64,43 +64,33 @@ public record PageInfo
         };
     }
 
-    //public PageInfo(Int32 pageNumber, Int32 pageSize, Int32 totalRecords)
-    //{
-    //    Number = pageNumber;
-    //    Size = pageSize;
-    //    Total = totalRecords;
-    //}
-
-    //public PageInfo(Int32 skip, Int32 take)
-    //{
-    //    Offset = skip;
-    //    Size = take;
-    //}
-
-    public Boolean IncludeTotalCount { get; set; }
+    public Boolean IncludeTotalCount { get; init; }
 
     /// <summary>
     /// Gets or sets the current page number. The page number is 1 based, and must be greater than or equal to 1.
     /// </summary>
     public Int32 Number
     {
-        get; set => field = value < 1 ? 1 : value;
-    } = DefaultPageNumber;
+        get => field < 1 ? 1 : field;
+        init => field = value < 1 ? 1 : value;
+    }
 
     /// <summary>
     /// Gets or sets the number of records per page. The page size must be greater than or equal to 1.
     /// </summary>
     public Int32 Size
     {
-        get; set => field = value < 1 ? 1 : value;
-    } = DefaultPageSize;
+        get => field < 1 ? 1 : field;
+        init => field = value < 1 ? 1 : value;
+    }
 
     /// <summary>
     /// Gets or sets the total number of records available for the query. This property is typically set by the query handler and is used to calculate the total number of pages.
     /// </summary>
     public Int32 Total
     {
-        get; set => field = value < 0 ? 0 : value;
+        get => field < 0 ? 0 : field;
+        init => field = value < 0 ? 0 : value;
     }
 
     /// <summary>
@@ -109,7 +99,7 @@ public record PageInfo
     public Int32 Offset
     {
         get => (field <= 0) ? (Number - 1) * Size : field;
-        set;
+        init => field = value < 0 ? 0 : value;
     }
 
     /// <summary>

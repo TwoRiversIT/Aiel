@@ -22,11 +22,27 @@
 
 namespace Aiel.Actions.Queries;
 
-public interface IQueryMultiple
+public class QueryMultipleTests
 {
-    SortOrder Sort { get; }
-    Page Page { get; }
-}
+    [Fact]
+    public void QueryMultiple_Is_Immutable()
+    {
+        // Arrange
+        var query = new TestQueryMultiple();
 
-public interface IQueryMultiple<TDto> : IQueryMultiple, IQuery<IReadOnlyCollection<TDto>>
-    where TDto : notnull;
+        // Act
+        query = query with { Id = 1, UID = Guid.NewGuid() };
+
+        // Assert
+        query.Sort.Should().Be(SortOrder.None);
+        query.Page.Should().Be(Page.Default);
+        query.Id.Should().Be(1);
+        query.UID.Should().NotBeEmpty();
+    }
+
+    private record TestQueryMultiple : QueryMultiple<String>
+    {
+        public Int32 Id { get; init; }
+        public Guid UID { get; init; }
+    }
+}

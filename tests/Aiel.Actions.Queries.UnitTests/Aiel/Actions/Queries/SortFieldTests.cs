@@ -66,9 +66,9 @@ public class SortFieldTests
         Action act3 = () => _ = new SortField("   ");
 
         // Assert
-        act1.Should().Throw<ArgumentException>().WithMessage("Sort field name cannot be null, empty, or whitespace.*");
-        act2.Should().Throw<ArgumentException>().WithMessage("Sort field name cannot be null, empty, or whitespace.*");
-        act3.Should().Throw<ArgumentException>().WithMessage("Sort field name cannot be null, empty, or whitespace.*");
+        act1.Should().Throw<ArgumentException>().WithMessage("Sort field name must not be null, empty, or whitespace.*");
+        act2.Should().Throw<ArgumentException>().WithMessage("Sort field name must not be null, empty, or whitespace.*");
+        act3.Should().Throw<ArgumentException>().WithMessage("Sort field name must not be null, empty, or whitespace.*");
     }
 
     [Fact]

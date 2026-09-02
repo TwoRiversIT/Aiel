@@ -24,8 +24,6 @@ using Aiel.Logging.Configuration;
 using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System;
-using System.Linq;
 
 namespace Aiel.Logging.Analyzers;
 

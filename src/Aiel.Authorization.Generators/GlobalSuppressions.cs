@@ -20,6 +20,4 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics.CodeAnalysis;
-
 [assembly: SuppressMessage("Roslynator", "RCS1214:Unnecessary interpolated string", Justification = "<Pending>", Scope = "namespace", Target = "~N:Aiel.Authorization.Generators")]

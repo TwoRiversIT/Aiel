@@ -27,7 +27,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.Domain.Queries;
 
-public class QueryPeople() : QueryMultiple<PersonDto>(DefaultSort, PageInfo.Default)
+public record QueryPeople() : QueryMultiple<PersonDto>(DefaultSort, Page.Default)
 {
     public static readonly SortOrder DefaultSort = new([
         new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending),

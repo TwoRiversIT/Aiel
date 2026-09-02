@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using BenchmarkDotNet.Attributes;
-using System.Buffers;
 using HpGLL = Aiel.Gps.HP.Sentences.GLL;
 using HpGllParser = Aiel.Gps.HP.Sentences.GllParser;
 using HpNmeaBatchReader = Aiel.Gps.HP.NmeaBatchReader;

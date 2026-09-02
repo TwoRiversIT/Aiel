@@ -78,8 +78,21 @@ public class ResultException : AielException
     /// error errorDescription and an optional <see cref="Error"/> object containing additional details.
     /// </summary>
     /// <param name="errorDescription">The error errorDescription that explains the reason for the exception.</param>
+    /// <param name="result">A <see cref="Result"/> instance with structured error details.</param>
+    public ResultException(String errorDescription, Result result)
+        : base(errorDescription ?? result.Error.Description)
+    {
+        Error = result.Error;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ResultException"/> class with a specified
+    /// error errorDescription and an optional <see cref="Error"/> object containing additional details.
+    /// </summary>
+    /// <param name="errorDescription">The error errorDescription that explains the reason for the exception.</param>
     /// <param name="error">An optional <see cref="Error"/> instance with structured error details.</param>
-    public ResultException(String? errorDescription, Error? error) : base(errorDescription ?? error?.Description ?? "An error occurred.")
+    public ResultException(String errorDescription, Error error)
+        : base(errorDescription ?? error.Description)
     {
         Error = error;
     }

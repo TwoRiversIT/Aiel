@@ -35,7 +35,7 @@ public static class QueryableExtensions
     public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, IQueryMultiple query)
         => source.ApplySorting(query.Sort).ApplyPaging(query.Page);
 
-    public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, PageInfo page, SortOrder sort)
+    public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, Page page, SortOrder sort)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(page);
@@ -84,7 +84,7 @@ public static class QueryableExtensions
         return count > 0 ? source.Provider.CreateQuery<T>(expression) : source;
     }
 
-    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, PageInfo page)
+    public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> source, Page page)
     {
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(page);

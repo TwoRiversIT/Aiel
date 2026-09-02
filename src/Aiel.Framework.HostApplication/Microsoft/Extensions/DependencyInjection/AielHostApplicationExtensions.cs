@@ -26,7 +26,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static partial class AielHostExtensions
+public static partial class AielHostApplicationExtensions
 {
     /// <summary>
     /// Resolves the registered dependency graph and calls
@@ -46,5 +46,5 @@ public static partial class AielHostExtensions
     }
 
     [LoggerMessage(EventId = 0, Level = LogLevel.Debug, Message = "Initializing Dependency {DependencyType}.")]
-    private static partial void LogInitializingDependency(ILogger logger, string dependencyType);
+    private static partial void LogInitializingDependency(ILogger logger, String dependencyType);
 }

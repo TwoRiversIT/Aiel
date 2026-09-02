@@ -24,9 +24,16 @@ using Aiel.Actions.Queries;
 
 namespace Aiel.Domain.Specifications;
 
-public class QueryMultipleSpecification<T>(ISpecification<T> specification, SortOrder? sortRequest = null, PageInfo? pageRequest = null)
-    : QueryMultiple<T>(sortRequest, pageRequest), IQueryMultipleSpecification<T>
+public record QueryMultipleSpecification<T> : QueryMultiple<T>, IQueryMultipleSpecification<T>
     where T : notnull
 {
-    public ISpecification<T> Specification { get; init; } = specification ?? throw new ArgumentNullException(nameof(specification));
+    protected QueryMultipleSpecification() { }
+
+    public QueryMultipleSpecification(ISpecification<T> specification, SortOrder? sortRequest = null, Page? pageRequest = null)
+        : base(sortRequest ?? SortOrder.None, pageRequest ?? Page.Default)
+    {
+        Specification = specification ?? throw new ArgumentNullException(nameof(specification));
+    }
+
+    public required ISpecification<T> Specification { get; init; }
 }

@@ -25,7 +25,7 @@ using FluentValidation.Validators;
 namespace Aiel.Actions.Queries;
 
 public class QueryMultipleValidator<TRequest> : AbstractValidator<TRequest>
-    where TRequest : QueryMultiple
+    where TRequest : IQueryMultiple
 {
     public QueryMultipleValidator()
     {
@@ -35,7 +35,7 @@ public class QueryMultipleValidator<TRequest> : AbstractValidator<TRequest>
 }
 
 public class SortValidator<T> : IPropertyValidator<T, SortOrder>
-    where T : QueryMultiple
+    where T : IQueryMultiple
 {
     public String Name => "Sort Order";
 
@@ -48,7 +48,7 @@ public class SortValidator<T> : IPropertyValidator<T, SortOrder>
         => value.Fields?.All(f => !String.IsNullOrWhiteSpace(f.Name) && (f.Direction == SortDirection.Ascending || f.Direction == SortDirection.Descending)) == true;
 }
 
-public class PageValidator<T> : IPropertyValidator<T, PageInfo>
+public class PageValidator<T> : IPropertyValidator<T, Page>
 {
     public String Name => "Page";
 
@@ -57,6 +57,6 @@ public class PageValidator<T> : IPropertyValidator<T, PageInfo>
         return "{PropertyName} is invalid.";
     }
 
-    public Boolean IsValid(ValidationContext<T> context, PageInfo value)
+    public Boolean IsValid(ValidationContext<T> context, Page value)
         => value.Number >= 1 && value.Size >= 1;
 }

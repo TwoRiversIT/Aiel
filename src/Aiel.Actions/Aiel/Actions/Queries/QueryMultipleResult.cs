@@ -46,8 +46,8 @@ public abstract class QueryMultipleResult : Result
         Count = count;
     }
 
-    private Int32 _pageSize = PageInfo.DefaultPageSize;
-    private Int32 _pageNumber = PageInfo.DefaultPageNumber;
+    private Int32 _pageSize = Page.DefaultPageSize;
+    private Int32 _pageNumber = Page.DefaultPageNumber;
 
     public Int32 Count { get; }
 
@@ -58,18 +58,18 @@ public abstract class QueryMultipleResult : Result
         : (TotalRecords / PageSize) + 1;
 
     /// <summary>
-    /// Gets or sets the current page number. If the value is less than 1, it defaults to <see cref="PageInfo.DefaultPageNumber"/>.
+    /// Gets or sets the current page number. If the value is less than 1, it defaults to <see cref="Page.DefaultPageNumber"/>.
     /// </summary>
     public Int32 PageNumber
     {
         get => _pageNumber;
-        set => _pageNumber = value < 1 ? PageInfo.DefaultPageNumber : value;
+        set => _pageNumber = value < 1 ? Page.DefaultPageNumber : value;
     }
 
     public Int32 PageSize
     {
         get => _pageSize;
-        set => _pageSize = value <= 0 ? PageInfo.DefaultPageSize : value;
+        set => _pageSize = value <= 0 ? Page.DefaultPageSize : value;
     }
 
     public static QueryMultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords = 0)

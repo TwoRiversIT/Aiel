@@ -31,7 +31,7 @@ namespace Aiel.Domain.Specifications;
 public interface ISpecificationRepository<TEntity> : IDisposable
     where TEntity : class
 {
-    IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort = null, PageInfo? page = null);
+    IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort = null, Page? page = null);
     //IAsyncEnumerable<TEntity> FindAsync(Expression<Func<TEntity, Boolean>> predicate, SortOrder? sort = null, PageInfo? page = null);
 
     Task<TEntity?> GetAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);

@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Internet;
-using System.Diagnostics.CodeAnalysis;
 using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.InternetTypes;

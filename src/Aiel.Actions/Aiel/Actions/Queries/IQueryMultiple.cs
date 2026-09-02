@@ -20,15 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Results;
-using System.Text.Json.Serialization;
-
 namespace Aiel.Actions.Queries;
 
 public interface IQueryMultiple
 {
     SortOrder Sort { get; }
-    PageInfo Page { get; }
+    Page Page { get; }
 }
 
 public interface IQueryMultiple<TDto> : IQueryMultiple, IQuery<IReadOnlyCollection<TDto>>

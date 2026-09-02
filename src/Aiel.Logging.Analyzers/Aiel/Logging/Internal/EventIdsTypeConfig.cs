@@ -23,7 +23,6 @@
 using Aiel.Logging.Configuration;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System;
 
 namespace Aiel.Logging.Internal;
 

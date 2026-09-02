@@ -75,7 +75,7 @@ public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutpu
     {
         var spec = new EntitySpecification<Person>(_ => true);
 
-        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.DateOfBirth), SortDirection.Descending)]), PageInfo.Default))
+        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.DateOfBirth), SortDirection.Descending)]), Page.Default))
         {
             person.FirstName.Should().Be("Geordi");
             break;
@@ -87,7 +87,7 @@ public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutpu
     {
         var spec = new EntitySpecification<Person>(_ => true);
 
-        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.LastName), SortDirection.Ascending), new SortField(nameof(Person.FirstName), SortDirection.Ascending)]), PageInfo.Default))
+        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.LastName), SortDirection.Ascending), new SortField(nameof(Person.FirstName), SortDirection.Ascending)]), Page.Default))
         {
             person.FirstName.Should().Be("Shyloh");
             break;
@@ -102,7 +102,7 @@ public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutpu
         await foreach (var person in SUT.FindAsync(
             spec,
             new SortOrder([new SortField(nameof(Person.DateOfBirth))]),
-            PageInfo.Page(2, 1, 0)))
+            Page.Create(2, 1, 0)))
         {
             person.FirstName.Should().Be("Shyloh");
         }
@@ -118,11 +118,11 @@ public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutpu
         result.Records.Should().BeInAscendingOrder(p => p.LastName);
     }
 
-    private class ListPeople()
+    private record ListPeople()
         : QueryMultipleSpecification<Person>(
             specification: new EntitySpecification<Person>(_ => true),
             sortRequest: new SortOrder([new SortField(nameof(Person.LastName)), new SortField(nameof(Person.FirstName))]),
-            pageRequest: PageInfo.Default)
+            pageRequest: Page.Default)
     {
     }
 }

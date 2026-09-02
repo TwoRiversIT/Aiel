@@ -34,8 +34,8 @@ public class SpecificationRepository<TEntity, TDbContext>(TDbContext context) : 
     private readonly TDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
     private Boolean _disposed;
 
-    public IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort = null, PageInfo? page = null)
-        => _context.QueryMultiple(sort ?? SortOrder.None, page ?? PageInfo.Default, specification).AsAsyncEnumerable();
+    public IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort = null, Page? page = null)
+        => _context.QueryMultiple(sort ?? SortOrder.None, page ?? Page.Default, specification).AsAsyncEnumerable();
 
     public async Task<TEntity?> GetAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
         => await _context.GetQueryable<TEntity>().SingleOrDefaultAsync(specification.ToExpression(), cancellationToken);

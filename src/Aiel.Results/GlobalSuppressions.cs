@@ -20,6 +20,4 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Diagnostics.CodeAnalysis;
-
 [assembly: SuppressMessage("Usage", "AIEL00003:Use ResultHttpClientExtensions for Result types", Justification = "<Pending>", Scope = "NamespaceAndDescendants", Target = "~N:Aiel.Results")]

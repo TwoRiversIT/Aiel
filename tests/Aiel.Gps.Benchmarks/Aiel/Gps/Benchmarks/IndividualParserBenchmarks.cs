@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using BenchmarkDotNet.Attributes;
-using System.Buffers;
 using System.Text;
 
 namespace Aiel.Gps.Benchmarks;

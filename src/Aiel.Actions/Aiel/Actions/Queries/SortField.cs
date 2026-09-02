@@ -28,7 +28,8 @@ public readonly struct SortField
 
     public static readonly SortField Empty = new(InvalidName, SortDirection.None);
 
-    public SortField() {
+    public SortField()
+    {
         Name = InvalidName;
         Direction = SortDirection.None;
     }
@@ -42,28 +43,16 @@ public readonly struct SortField
     public String Name
     {
         get;
-        init
-        {
-            if (String.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("Sort field name cannot be null, empty, or whitespace.", nameof(Name));
-            }
-
-            field = value;
-        }
+        init => field = String.IsNullOrWhiteSpace(value)
+            ? throw new ArgumentException("Sort field name must not be null, empty, or whitespace.", nameof(Name))
+            : value;
     }
 
     public SortDirection Direction
     {
         get;
-        init
-        {
-            if (!Enum.IsDefined(value))
-            {
-                throw new ArgumentOutOfRangeException(nameof(Direction), "Invalid sort direction.");
-            }
-
-            field = value;
-        }
+        init => field = Enum.IsDefined(value)
+            ? value
+            : throw new ArgumentOutOfRangeException(nameof(Direction), "Invalid sort direction.");
     } = SortDirection.Ascending;
 }

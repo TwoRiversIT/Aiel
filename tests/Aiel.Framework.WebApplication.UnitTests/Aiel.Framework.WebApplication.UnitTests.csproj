@@ -8,7 +8,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
         <ProjectReference Include="..\..\src\Aiel.Framework.Analyzers\Aiel.Framework.Analyzers.csproj" OutputItemType="Analyzer" />
+        -->
         <ProjectReference Include="..\..\src\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 

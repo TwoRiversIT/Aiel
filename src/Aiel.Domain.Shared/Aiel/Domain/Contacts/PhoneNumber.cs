@@ -31,13 +31,16 @@ public sealed partial class PhoneNumber : IEquatable<PhoneNumber>, IComparable<P
     public String AreaCode { get; } = String.Empty;
     public String Exchange { get; } = String.Empty;
     public String SubscriberNumber { get; } = String.Empty;
+    public String Extension { get; } = String.Empty;
 
-    public String Hyphenated => $"{AreaCode}-{Exchange}-{SubscriberNumber}";
-    public String Digits => $"{AreaCode}{Exchange}{SubscriberNumber}";
+    public String Hyphenated => $"{AreaCode}-{Exchange}-{SubscriberNumber}" + Ext;
+    public String Digits => $"{AreaCode}{Exchange}{SubscriberNumber}{Extension}";
     public String E164 => $"+1{Digits}";
     public String National => $"({AreaCode}) {Exchange}-{SubscriberNumber}";
-    public String Dashes => $"{AreaCode}-{Exchange}-{SubscriberNumber}";
+    public String Dashes => $"{AreaCode}-{Exchange}-{SubscriberNumber}" + (String.IsNullOrWhiteSpace(Extension) ? String.Empty : $"-{Extension}");
     public String RFC3966 => $"tel:+1-{AreaCode}-{Exchange}-{SubscriberNumber}";
+
+    private String Ext => String.IsNullOrWhiteSpace(Extension) ? String.Empty : $" ext {Extension}";
 
     public Boolean IsValid { get; set; }
 
@@ -46,15 +49,16 @@ public sealed partial class PhoneNumber : IEquatable<PhoneNumber>, IComparable<P
 
     }
 
-    private PhoneNumber(String area, String exchange, String subscriber)
+    private PhoneNumber(String area, String exchange, String subscriber, String extension)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(area);
         ArgumentException.ThrowIfNullOrWhiteSpace(exchange);
         ArgumentException.ThrowIfNullOrWhiteSpace(subscriber);
 
-        AreaCode = area;
-        Exchange = exchange;
-        SubscriberNumber = subscriber;
+        AreaCode = area.Trim();
+        Exchange = exchange.Trim();
+        SubscriberNumber = subscriber.Trim();
+        Extension = extension?.Trim() ?? String.Empty;
     }
 
     public static Boolean TryParse(String? input, [NotNullWhen(true)] out PhoneNumber number)
@@ -71,10 +75,12 @@ public sealed partial class PhoneNumber : IEquatable<PhoneNumber>, IComparable<P
             return false;
         }
 
+        var ext = match.Groups.Count > 4 ? match.Groups[4].Value : String.Empty;
         number = new PhoneNumber(
             match.Groups[1].Value,
             match.Groups[2].Value,
-            match.Groups[3].Value
+            match.Groups[3].Value,
+            ext
         );
 
         return true;
@@ -161,6 +167,8 @@ public sealed partial class PhoneNumber : IEquatable<PhoneNumber>, IComparable<P
         };
     }
 
-    [GeneratedRegex(@"^(?:\+?1)?\D*([2-9]\d{2})\D*([2-9]\d{2})\D*(\d{4})$", RegexOptions.Compiled)]
+    public static implicit operator String(PhoneNumber number) => number.Hyphenated;
+
+    [GeneratedRegex(@"^(?:\+?1)?\D*([2-9]\d{2})\D*([2-9]\d{2})\D*(\d{4})\D*(\d{3,6})?$", RegexOptions.Compiled)]
     private static partial Regex NanpRegex();
 }

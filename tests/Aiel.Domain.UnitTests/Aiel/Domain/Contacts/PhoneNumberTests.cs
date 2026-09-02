@@ -44,6 +44,26 @@ public class PhoneNumberTests
     }
 
     [Theory]
+    [InlineData("234-567-8901-123")]
+    [InlineData("(234) 567-8901 ext 123")]
+    [InlineData("+1 234 567 8901 x 123")]
+    [InlineData("1.234.567.8901.123")]
+    [InlineData("2345678901123")]
+    public void TryParse_ValidNumberFormats_WithExtension_ShouldReturnTrue(String input)
+    {
+        // Act
+        var parsed = PhoneNumber.TryParse(input, out var number);
+
+        // Assert
+        parsed.Should().BeTrue();
+        number.Should().NotBeNull();
+        number.AreaCode.Should().Be("234");
+        number.Exchange.Should().Be("567");
+        number.SubscriberNumber.Should().Be("8901");
+        number.Extension.Should().Be("123");
+    }
+
+    [Theory]
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
@@ -64,6 +84,7 @@ public class PhoneNumberTests
     [InlineData("234-567-890")]
     [InlineData("234-567-89012")]
     [InlineData("abc-def-ghij")]
+    [InlineData("012345678901234567890")]
     public void TryParse_InvalidNumbers_ShouldReturnFalse(String input)
     {
         // Act
@@ -89,6 +110,21 @@ public class PhoneNumberTests
         phoneNumber.Dashes.Should().Be("234-567-8901");
         phoneNumber.National.Should().Be("(234) 567-8901");
         phoneNumber.E164.Should().Be("+12345678901");
+        phoneNumber.RFC3966.Should().Be("tel:+1-234-567-8901");
+    }
+
+    [Fact]
+    public void Parse_ValidNumber_WithExtension_ShouldPopulateAllFormats()
+    {
+        // Act
+        var phoneNumber = PhoneNumber.Parse("234-567-8901-123");
+
+        // Assert
+        phoneNumber.Digits.Should().Be("2345678901123");
+        phoneNumber.Hyphenated.Should().Be("234-567-8901 ext 123");
+        phoneNumber.Dashes.Should().Be("234-567-8901-123");
+        phoneNumber.National.Should().Be("(234) 567-8901");
+        phoneNumber.E164.Should().Be("+12345678901123");
         phoneNumber.RFC3966.Should().Be("tel:+1-234-567-8901");
     }
 
@@ -223,5 +259,18 @@ public class PhoneNumberTests
         empty.Hyphenated.Should().Be("--");
         empty.National.Should().Be("() -");
         empty.RFC3966.Should().Be("tel:+1---");
+    }
+
+    [Fact]
+    public void PhoneNumber_ShouldBeAssignableToString()
+    {
+        // Arrange
+        var number = PhoneNumber.Parse("234-567-8901");
+
+        // Act
+        String asString = number;
+
+        // Assert
+        asString.Should().Be("234-567-8901");
     }
 }

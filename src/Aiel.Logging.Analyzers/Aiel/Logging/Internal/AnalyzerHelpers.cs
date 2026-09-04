@@ -29,7 +29,7 @@
 //       the EventIdsTypeConfig resolved by AnalyzerConfiguration.Resolve().
 // -----------------------------------------------------------------------
 
-using Aiel.Internal;
+using Aiel.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

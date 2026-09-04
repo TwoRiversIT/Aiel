@@ -54,9 +54,3 @@ public sealed class StrongIdAttribute<TValue> : Attribute
     /// </summary>
     public StrongIdBackingKind BackingKind { get; init; } = StrongIdBackingKind.Value;
 }
-
-public enum StrongIdBackingKind
-{
-    Value,
-    Reference,
-}

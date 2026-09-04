@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -35,10 +35,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticMetadata.cs" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticRuleIDs.cs" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\GeneratorConsts.cs" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\WellKnownTypes.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\DiagnosticMetadata.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\DiagnosticRuleIDs.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\GeneratorConsts.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\WellKnownTypes.cs" />
     </ItemGroup>
 
     <ItemGroup>

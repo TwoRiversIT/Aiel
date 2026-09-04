@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.CodeAnalysis;
 using Aiel.StrongIds.Internal;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -32,12 +33,6 @@ public sealed class StrongIdBackingTypeAnalyzer : DiagnosticAnalyzer
 {
     private const String StrongIdAttributeName = "StrongIdAttribute";
     private const String StrongIdNamespace = "Aiel.StrongIds";
-    private static readonly SymbolDisplayFormat TypeNameFormat = new(
-        globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
-        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
-        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
-
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         => [DiagnosticDescriptors.StrongIdBackingTypeUnsupported];
 
@@ -72,23 +67,15 @@ public sealed class StrongIdBackingTypeAnalyzer : DiagnosticAnalyzer
         }
 
         // Validate the backing type is supported
-        if (!IsSupportedBackingType(backingType))
+        if (!backingType.IsSupportedBackingType())
         {
             var displayName = typeSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
             context.ReportDiagnostic(Diagnostic.Create(
                 DiagnosticDescriptors.StrongIdBackingTypeUnsupported,
                 typeSymbol.Locations.FirstOrDefault(),
                 displayName,
-                backingType.ToDisplayString(TypeNameFormat)));
+                backingType.ToDisplayString()));
         }
-    }
-
-    private static Boolean IsSupportedBackingType(ITypeSymbol valueType)
-    {
-        return valueType.SpecialType == SpecialType.System_Int32
-            || valueType.SpecialType == SpecialType.System_Int64
-            || valueType.SpecialType == SpecialType.System_String
-            || String.Equals(valueType.ToDisplayString(TypeNameFormat), "global::System.Guid", StringComparison.Ordinal);
     }
 
     private static Boolean IsStrongIdAttribute(INamedTypeSymbol? attributeClass)

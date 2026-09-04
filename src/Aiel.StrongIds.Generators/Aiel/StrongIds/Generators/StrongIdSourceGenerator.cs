@@ -20,23 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
+using static Aiel.StrongIds.Generators.Consts;
 
 namespace Aiel.StrongIds.Generators;
 
 [Generator(LanguageNames.CSharp)]
 public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 {
-    private const String BackingKindPropertyName = "BackingKind";
-    private const String AllowDefaultPropertyName = "AllowDefault";
-    private const String GenerateTryFromPropertyName = "GenerateTryFrom";
-    private const String GenerateTryParsePropertyName = "GenerateTryParse";
-    private const String StrongIdAttributeMetadataName = "Aiel.StrongIds.StrongIdAttribute`1";
-    private const Int32 ReferenceBackingKindValue = 1;
-
     private static readonly SymbolDisplayFormat TypeNameFormat = new(
         globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
         typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
@@ -68,21 +63,18 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         }
 
         var valueType = GetBackingType(candidate.AttributeData);
-        if (valueType == null || !IsSupportedBackingType(valueType))
+        if (valueType?.IsSupportedBackingType() != true)
         {
             return;
         }
 
-        var model = CreateModel(candidate);
+        var model = CreateModel(candidate, valueType);
         var source = Render(model);
         context.AddSource(GetHintName(model.TypeSymbol), SourceText.From(source, Encoding.UTF8));
     }
 
-    private static StrongIdModel CreateModel(StrongIdCandidate candidate)
+    private static StrongIdModel CreateModel(StrongIdCandidate candidate, ITypeSymbol valueType)
     {
-        var valueType = GetBackingType(candidate.AttributeData)
-            ?? throw new InvalidOperationException("StrongId attribute must have a backing type.");
-
         return new StrongIdModel(
             candidate.TypeSymbol,
             valueType,
@@ -109,49 +101,56 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine("using Aiel.StrongIds;");
         builder.AppendLine();
 
+        builder.AppendLine($"//  BackingType: {model.BackingTypeName}");
+        builder.AppendLine($"//         Kind: {model.BackingKind}");
+        builder.AppendLine($"// DefaultValue: {model.DefaultValue}");
+        builder.AppendLine($"// AllowDefault: {model.AllowDefault}");
+        builder.AppendLine($"//      TryFrom: {model.GenerateTryFrom}");
+        builder.AppendLine($"//     TryParse: {model.GenerateTryParse}");
         builder.AppendLine(GetTypeDeclaration(model));
         builder.AppendLine("{");
         EmitEmpty(builder, model, 1);
         builder.AppendLine($"    public {model.BackingTypeName} Value {{ get; }}");
         builder.AppendLine();
 
+        // Constructor
         var constructorAccessibility = model.BackingKind == StrongIdBackingKindOption.Reference ? "private" : "public";
-        builder.AppendLine($"    {constructorAccessibility} {model.TypeSymbol.Name}({model.BackingTypeName} value)");
+        builder.AppendLine($"    {constructorAccessibility} {model.TypeSymbol.Name}({model.BackingTypeName} {ValueParameterName})");
         builder.AppendLine("    {");
-        EmitValidation(builder, model, 2);
-        builder.AppendLine($"        Value = {model.StoredValueExpression};");
+        EmitValidation(builder, model, ValueParameterName, 2);
+        builder.AppendLine($"        {BackingPropertyName} = {model.NormalizedValue};");
         builder.AppendLine("    }");
         builder.AppendLine();
 
-        builder.AppendLine($"    public static {model.TypeSymbol.Name} From({model.BackingTypeName} value) => new(value);");
+        builder.AppendLine($"    public static {model.TypeSymbol.Name} From({model.BackingTypeName} {ValueParameterName}) => new({ValueParameterName});");
 
         if (model.GenerateTryFrom)
         {
             builder.AppendLine();
-            builder.AppendLine($"    public static bool TryFrom({model.BackingTypeName} value, out {model.TypeSymbol.Name} id)");
+            builder.AppendLine($"    public static global::System.Boolean TryFrom({model.BackingTypeName} {ValueParameterName}, out {model.TypeSymbol.Name} id)");
             builder.AppendLine("    {");
-            EmitTryFrom(builder, model, "value", 2);
+            EmitTryFrom(builder, model, ValueParameterName, 2);
             builder.AppendLine("    }");
         }
 
         if (model.GenerateTryParse)
         {
             builder.AppendLine();
-            builder.AppendLine($"    public static bool TryParse(string? value, global::System.IFormatProvider? provider, out {model.TypeSymbol.Name} id)");
+            builder.AppendLine($"    public static global::System.Boolean TryParse(global::System.String? value, global::System.IFormatProvider? provider, out {model.TypeSymbol.Name} id)");
             builder.AppendLine("    {");
-            EmitTryParse(builder, model);
+            EmitTryParse(builder, model, ParsedParameterName);
             builder.AppendLine($"        id = {GetDefaultAssignment(model)};");
             builder.AppendLine("        return false;");
             builder.AppendLine("    }");
 
             builder.AppendLine();
-            builder.AppendLine($"    public static bool TryParse(string value, out {model.TypeSymbol.Name} id) => TryParse(value, null, out id);");
+            builder.AppendLine($"    public static global::System.Boolean TryParse(global::System.String value, out {model.TypeSymbol.Name} id) => TryParse(value, null, out id);");
         }
 
         builder.AppendLine();
-        builder.AppendLine($"    public bool IsDefault => {model.IsDefaultExpression};");
+        builder.AppendLine($"    public global::System.Boolean IsDefault => {model.DefaultExpression(BackingPropertyName)};");
         builder.AppendLine();
-        builder.AppendLine($"    public override string ToString() => {model.ToStringExpression};");
+        builder.AppendLine($"    public override global::System.String ToString() => {model.ToStringExpression};");
         builder.AppendLine("}");
 
         return builder.ToString();
@@ -159,7 +158,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
 
     private static void EmitEmpty(StringBuilder builder, StrongIdModel model, Int32 indentLevel)
     {
-        var indent = new String(' ', indentLevel * 4);
+        var indent = new String(' ', indentLevel * Spaces);
 
         if (model.AllowDefault)
         {
@@ -177,9 +176,9 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         }
     }
 
-    private static void EmitValidation(StringBuilder builder, StrongIdModel model, Int32 indentLevel)
+    private static void EmitValidation(StringBuilder builder, StrongIdModel model, String parameterName, Int32 indentLevel)
     {
-        var indent = new String(' ', indentLevel * 4);
+        var indent = new String(' ', indentLevel * Spaces);
 
         if (model.AllowDefault)
         {
@@ -187,9 +186,9 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             if (String.Equals(model.BackingTypeName, "global::System.String", StringComparison.Ordinal))
             {
                 // String.Empty is considered a default value for string-based strong IDs, so we check for that as well as null or whitespace.
-                builder.AppendLine($"{indent}if (string.IsNullOrWhiteSpace(value))");
+                builder.AppendLine($"{indent}if (global::System.String.IsNullOrWhiteSpace({parameterName}))");
                 builder.AppendLine($"{indent}{{");
-                builder.AppendLine($"{indent}    value = string.Empty;");
+                builder.AppendLine($"{indent}    {parameterName} = global::System.String.Empty;");
                 builder.AppendLine($"{indent}}}");
                 builder.AppendLine();
             }
@@ -197,20 +196,20 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             return;
         }
 
-        builder.AppendLine($"{indent}if ({model.InvalidValueExpression})");
+        builder.AppendLine($"{indent}if ({model.InvalidValueExpression(parameterName)})");
         builder.AppendLine($"{indent}{{");
-        builder.AppendLine($"{indent}    throw new global::System.ArgumentException(\"{model.ValidationErrorMessage}\", nameof(value));");
+        builder.AppendLine($"{indent}    throw new global::System.ArgumentException(\"{model.ValidationErrorMessage}\", nameof({parameterName}));");
         builder.AppendLine($"{indent}}}");
         builder.AppendLine();
     }
 
-    private static void EmitTryFrom(StringBuilder builder, StrongIdModel model, String valueExpression, Int32 indentLevel)
+    private static void EmitTryFrom(StringBuilder builder, StrongIdModel model, String valueParameterName, Int32 indentLevel)
     {
-        var indent = new String(' ', indentLevel * 4);
+        var indent = new String(' ', indentLevel * Spaces);
 
         if (!model.AllowDefault)
         {
-            builder.AppendLine($"{indent}if ({model.GetInvalidValueExpression(valueExpression)})");
+            builder.AppendLine($"{indent}if ({model.InvalidValueExpression(valueParameterName)})");
             builder.AppendLine($"{indent}{{");
             builder.AppendLine($"{indent}    id = {GetDefaultAssignment(model)};");
             builder.AppendLine($"{indent}    return false;");
@@ -218,30 +217,26 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             builder.AppendLine();
         }
 
-        builder.AppendLine($"{indent}id = new({model.GetStoredValueExpression(valueExpression)});");
+        builder.AppendLine($"{indent}id = new({model.AssignValue(valueParameterName)});");
         builder.AppendLine($"{indent}return true;");
     }
 
-    private static void EmitTryParse(StringBuilder builder, StrongIdModel model)
+    private static void EmitTryParse(StringBuilder builder, StrongIdModel model, String parameterName)
     {
         switch (model.ValueType.SpecialType)
         {
+            case SpecialType.System_Int16:
             case SpecialType.System_Int32:
-                builder.AppendLine("        if (global::System.Int32.TryParse(value, provider, out var parsedValue))");
-                builder.AppendLine("        {");
-                EmitTryFrom(builder, model, "parsedValue", 3);
-                builder.AppendLine("        }");
-                builder.AppendLine();
-                return;
-
             case SpecialType.System_Int64:
-                builder.AppendLine("        if (global::System.Int64.TryParse(value, provider, out var parsedValue))");
+            case SpecialType.System_UInt16:
+            case SpecialType.System_UInt32:
+            case SpecialType.System_UInt64:
+                builder.AppendLine($"        if ({model.BackingTypeName}.TryParse(value, provider, out var {parameterName}))");
                 builder.AppendLine("        {");
-                EmitTryFrom(builder, model, "parsedValue", 3);
+                EmitTryFrom(builder, model, parameterName, 3);
                 builder.AppendLine("        }");
                 builder.AppendLine();
-                return;
-
+                break;
             case SpecialType.System_String:
                 builder.AppendLine("        if (value is not null)");
                 builder.AppendLine("        {");
@@ -251,9 +246,9 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
                 return;
 
             default:
-                builder.AppendLine("        if (global::System.Guid.TryParse(value, provider, out var parsedValue))");
+                builder.AppendLine($"        if (global::System.Guid.TryParse(value, provider, out var {parameterName}))");
                 builder.AppendLine("        {");
-                EmitTryFrom(builder, model, "parsedValue", 3);
+                EmitTryFrom(builder, model, parameterName, 3);
                 builder.AppendLine("        }");
                 builder.AppendLine();
                 return;
@@ -343,14 +338,6 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             .All(static declaration => declaration.Modifiers.Any(static modifier => modifier.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword)));
     }
 
-    private static Boolean IsSupportedBackingType(ITypeSymbol valueType)
-    {
-        return valueType.SpecialType == SpecialType.System_Int32
-            || valueType.SpecialType == SpecialType.System_Int64
-            || valueType.SpecialType == SpecialType.System_String
-            || String.Equals(valueType.ToDisplayString(TypeNameFormat), "global::System.Guid", StringComparison.Ordinal);
-    }
-
     private static Boolean GetBooleanNamedArgument(AttributeData attributeData, String propertyName, Boolean defaultValue)
     {
         foreach (var namedArgument in attributeData.NamedArguments)
@@ -404,77 +391,77 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             """;
     }
 
-    private sealed class StrongIdCandidate(INamedTypeSymbol typeSymbol, AttributeData attributeData)
-    {
-        public INamedTypeSymbol TypeSymbol { get; } = typeSymbol;
+    //private sealed class StrongIdCandidate(INamedTypeSymbol typeSymbol, AttributeData attributeData)
+    //{
+    //    public INamedTypeSymbol TypeSymbol { get; } = typeSymbol;
 
-        public AttributeData AttributeData { get; } = attributeData;
-    }
+    //    public AttributeData AttributeData { get; } = attributeData;
+    //}
 
-    private sealed class StrongIdModel(
-        INamedTypeSymbol typeSymbol,
-        ITypeSymbol valueType,
-        Boolean allowDefault,
-        Boolean generateTryFrom,
-        Boolean generateTryParse,
-        Boolean isReadOnlyRecordStruct,
-        StrongIdBackingKindOption backingKind)
-    {
-        public INamedTypeSymbol TypeSymbol { get; } = typeSymbol;
+    //private sealed class StrongIdModel(
+    //    INamedTypeSymbol typeSymbol,
+    //    ITypeSymbol valueType,
+    //    Boolean allowDefault,
+    //    Boolean generateTryFrom,
+    //    Boolean generateTryParse,
+    //    Boolean isReadOnlyRecordStruct,
+    //    StrongIdBackingKindOption backingKind)
+    //{
+    //    public INamedTypeSymbol TypeSymbol { get; } = typeSymbol;
 
-        public ITypeSymbol ValueType { get; } = valueType;
+    //    public ITypeSymbol ValueType { get; } = valueType;
 
-        public Boolean AllowDefault { get; } = allowDefault;
+    //    public Boolean AllowDefault { get; } = allowDefault;
 
-        public StrongIdBackingKindOption BackingKind { get; } = backingKind;
+    //    public StrongIdBackingKindOption BackingKind { get; } = backingKind;
 
-        public Boolean GenerateTryFrom { get; } = generateTryFrom;
-        public Boolean GenerateTryParse { get; } = generateTryParse;
+    //    public Boolean GenerateTryFrom { get; } = generateTryFrom;
+    //    public Boolean GenerateTryParse { get; } = generateTryParse;
 
-        public Boolean IsReadOnlyRecordStruct { get; } = isReadOnlyRecordStruct;
+    //    public Boolean IsReadOnlyRecordStruct { get; } = isReadOnlyRecordStruct;
 
-        public String BackingTypeName => ValueType.ToDisplayString(TypeNameFormat);
+    //    public String BackingTypeName => ValueType.ToDisplayString(TypeNameFormat);
 
-        public String GetInvalidValueExpression(String valueExpression)
-            => ValueType.SpecialType switch
-            {
-                SpecialType.System_Int32 => $"{valueExpression} == 0",
-                SpecialType.System_Int64 => $"{valueExpression} == 0",
-                SpecialType.System_String => $"string.IsNullOrWhiteSpace({valueExpression})",
-                _ => $"{valueExpression} == global::System.Guid.Empty",
-            };
+    //    public String GetInvalidValueExpression(String valueExpression)
+    //        => ValueType.SpecialType switch
+    //        {
+    //            SpecialType.System_Int32 => $"{valueExpression} == 0",
+    //            SpecialType.System_Int64 => $"{valueExpression} == 0",
+    //            SpecialType.System_String => $"global::System.String.IsNullOrWhiteSpace({valueExpression})",
+    //            _ => $"{valueExpression} == global::System.Guid.Empty",
+    //        };
 
-        public String GetStoredValueExpression(String valueExpression)
-            => ValueType.SpecialType == SpecialType.System_String
-                ? $"{valueExpression}.Trim()"
-                : valueExpression;
+    //    public String GetStoredValueExpression(String valueExpression)
+    //        => ValueType.SpecialType == SpecialType.System_String
+    //            ? $"{valueExpression}.Trim()"
+    //            : valueExpression;
 
-        public String InvalidValueExpression => GetInvalidValueExpression("value");
+    //    public String InvalidValueExpression => GetInvalidValueExpression("value");
 
-        public String IsDefaultExpression => ValueType.SpecialType switch
-        {
-            SpecialType.System_Int32 => "Value == 0",
-            SpecialType.System_Int64 => "Value == 0",
-            SpecialType.System_String => "Value == string.Empty",
-            _ => "Value == global::System.Guid.Empty",
-        };
+    //    public String IsDefaultExpression => ValueType.SpecialType switch
+    //    {
+    //        SpecialType.System_Int32 => "Value == 0",
+    //        SpecialType.System_Int64 => "Value == 0",
+    //        SpecialType.System_String => "Value == global::System.String.Empty",
+    //        _ => "Value == global::System.Guid.Empty",
+    //    };
 
-        public String ToStringExpression => ValueType.SpecialType == SpecialType.System_String ? "Value" : "Value.ToString()";
+    //    public String ToStringExpression => ValueType.SpecialType == SpecialType.System_String ? "Value" : "Value.ToString()";
 
-        public String StoredValueExpression => GetStoredValueExpression("value");
+    //    public String StoredValueExpression => GetStoredValueExpression("value");
 
-        public String ValidationErrorMessage => ValueType.SpecialType switch
-        {
-            SpecialType.System_Int32 => $"{TypeSymbol.Name} cannot be zero.",
-            SpecialType.System_Int64 => $"{TypeSymbol.Name} cannot be zero.",
-            SpecialType.System_String => $"{TypeSymbol.Name} cannot be null, empty, or whitespace.",
-            _ => $"{TypeSymbol.Name} cannot be empty.",
-        };
-    }
+    //    public String ValidationErrorMessage => ValueType.SpecialType switch
+    //    {
+    //        SpecialType.System_Int32 => $"{TypeSymbol.Name} cannot be zero.",
+    //        SpecialType.System_Int64 => $"{TypeSymbol.Name} cannot be zero.",
+    //        SpecialType.System_String => $"{TypeSymbol.Name} cannot be null, empty, or whitespace.",
+    //        _ => $"{TypeSymbol.Name} cannot be empty.",
+    //    };
+    //}
 
-    private enum StrongIdBackingKindOption
-    {
-        Value = 0,
-        Reference = 1,
-    }
+    //private enum StrongIdBackingKindOption
+    //{
+    //    Value = 0,
+    //    Reference = 1,
+    //}
 }

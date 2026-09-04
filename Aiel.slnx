@@ -198,8 +198,8 @@
     <Project Path="src/Aiel.Results.Analyzers/Aiel.Results.Analyzers.csproj" />
     <Project Path="src/Aiel.Results.Generators/Aiel.Results.Generators.csproj" />
     <Project Path="src/Aiel.Results/Aiel.Results.csproj" />
-    <Project Path="src/Aiel.Roslyn/Aiel.Roslyn.shproj" Id="7cd6e1f8-b53f-4c4c-9699-8b2d3e34d8e5" />
     <Project Path="src/Aiel.Security/Aiel.Security.csproj" />
+    <Project Path="src/Aiel.SharedCode/Aiel.SharedCode.csproj" />
     <Project Path="src/Aiel.StrongIds.Analyzers/Aiel.StrongIds.Analyzers.csproj" Id="48a671e5-f2f8-43f9-8390-414b1ef8d9e6" />
     <Project Path="src/Aiel.StrongIds.AspNetCore/Aiel.StrongIds.AspNetCore.csproj" />
     <Project Path="src/Aiel.StrongIds.EntityFrameworkCore/Aiel.StrongIds.EntityFrameworkCore.csproj" />

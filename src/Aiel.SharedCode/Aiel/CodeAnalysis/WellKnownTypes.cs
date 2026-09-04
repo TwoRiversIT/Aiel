@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Internal;
+namespace Aiel.CodeAnalysis;
 
 /// <summary>
 /// Centralizes fully-qualified type / member names for fixed framework

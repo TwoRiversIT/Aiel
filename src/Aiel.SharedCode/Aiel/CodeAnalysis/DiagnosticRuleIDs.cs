@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Internal;
+namespace Aiel.CodeAnalysis;
 
 // IMPORTANT: All diagnostic descriptor IDs must start with the canonical "AIEL" prefix.
 // Never use any other prefix (e.g. TRAF, TRSG, TRMD). See GitHub issue #7.

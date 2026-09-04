@@ -20,21 +20,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
-namespace Aiel.Gps.HP.Generators.Internal;
+namespace Aiel.StrongIds.Generators;
 
-public static class DiagnosticDescriptors
+public static class Consts
 {
-    /// <summary>
-    /// AIEL00019 is raised when the generator finds no structs annotated with [NmeaMessage].
-    /// </summary>
-    public static readonly DiagnosticDescriptor NoNmeaMessageTypesDiscovered = new(
-        id: DiagnosticRuleIDs.AIEL00019_NoNmeaMessageTypesDiscoveredId,
-        title: "No NMEA message types discovered",
-        messageFormat: "NmeaMessageUnionGenerator found no structs annotated with [NmeaMessage]. The required NmeaMessage union cannot be emitted without at least one decorated struct.",
-        category: "GPS",
-        DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
+    public const String BackingPropertyName = "Value";
+    public const String BackingKindPropertyName = "BackingKind";
+    public const String AllowDefaultPropertyName = "AllowDefault";
+    public const String GenerateTryFromPropertyName = "GenerateTryFrom";
+    public const String GenerateTryParsePropertyName = "GenerateTryParse";
+    public const String StrongIdAttributeMetadataName = "Aiel.StrongIds.StrongIdAttribute`1";
+    public const Int32 ReferenceBackingKindValue = 1;
+    public const String IdParameterName = "id";
+    public const String ValueParameterName = "value";
+    public const String ParsedParameterName = "parsed";
+    public const Int32 Spaces = 4;
+
+    public static readonly SymbolDisplayFormat TypeNameFormat = new(
+        globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,
+        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
 }

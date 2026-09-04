@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -38,8 +38,8 @@
 
     <ItemGroup>
         <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticMetadata.cs" Pack="false" Path="\Aiel\Internal\DiagnosticMetadata.cs" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticRuleIDs.cs" Pack="false" Path="\Aiel\Internal\DiagnosticRuleIDs.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\DiagnosticMetadata.cs" Pack="false" Path="\Aiel\CodeAnalysis\DiagnosticMetadata.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\DiagnosticRuleIDs.cs" Pack="false" Path="\Aiel\CodeAnalysis\DiagnosticRuleIDs.cs" />
     </ItemGroup>
 
     <ItemGroup>

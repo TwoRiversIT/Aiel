@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -40,10 +40,10 @@
 
     <ItemGroup>
         <None Include="$(OutputPath)$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticMetadata.cs" Pack="false" Path="\Aiel\Internal\DiagnosticMetadata.cs" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\DiagnosticRuleIDs.cs" Pack="false" Path="\Aiel\Internal\DiagnosticRuleIDs.cs" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\GeneratorConsts.cs" Pack="false" Path="\Aiel\Internal\GeneratorConsts.cs" />
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\WellKnownTypes.cs" Pack="false" Path="\Aiel\Internal\WellKnownTypes.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\DiagnosticMetadata.cs" Pack="false" Path="\Aiel\CodeAnalysis\DiagnosticMetadata.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\DiagnosticRuleIDs.cs" Pack="false" Path="\Aiel\CodeAnalysis\DiagnosticRuleIDs.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\GeneratorConsts.cs" Pack="false" Path="\Aiel\CodeAnalysis\GeneratorConsts.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\WellKnownTypes.cs" Pack="false" Path="\Aiel\CodeAnalysis\WellKnownTypes.cs" />
     </ItemGroup>
 
     <ItemGroup>

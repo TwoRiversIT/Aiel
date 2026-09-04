@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Internal;
+namespace Aiel.CodeAnalysis;
 
 /// <summary>
 /// Constants shared between the runtime library and code generators.

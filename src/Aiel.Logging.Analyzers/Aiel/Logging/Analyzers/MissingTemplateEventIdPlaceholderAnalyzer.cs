@@ -28,7 +28,7 @@
 // enum type — the placeholder is fixed regardless of configuration.
 // -----------------------------------------------------------------------
 
-using Aiel.Internal;
+using Aiel.CodeAnalysis;
 using Aiel.Logging.Configuration;
 using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;

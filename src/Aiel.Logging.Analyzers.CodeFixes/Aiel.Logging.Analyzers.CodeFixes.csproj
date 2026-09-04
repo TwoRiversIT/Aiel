@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
 
@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="..\Aiel.SharedCode\Aiel\Internal\WellKnownTypes.cs" Pack="false" Path="\Aiel\Internal\WellKnownTypes.cs" />
+        <Compile Include="..\Aiel.SharedCode\Aiel\CodeAnalysis\WellKnownTypes.cs" Pack="false" Path="\Aiel\CodeAnalysis\WellKnownTypes.cs" />
     </ItemGroup>
 
     <!-- BEGIN: Analyzer specific settings -->

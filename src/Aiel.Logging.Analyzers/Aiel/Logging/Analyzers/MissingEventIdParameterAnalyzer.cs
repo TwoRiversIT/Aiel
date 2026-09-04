@@ -30,7 +30,7 @@
 // teams using a custom enum (e.g. AcmeEventIds) get the same enforcement.
 // -----------------------------------------------------------------------
 
-using Aiel.Internal;
+using Aiel.CodeAnalysis;
 using Aiel.Logging.Configuration;
 using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;

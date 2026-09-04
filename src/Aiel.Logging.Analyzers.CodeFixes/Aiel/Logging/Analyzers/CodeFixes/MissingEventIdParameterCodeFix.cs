@@ -28,7 +28,7 @@
 // The configured type name is read from Diagnostic.Properties.
 // -----------------------------------------------------------------------
 
-using Aiel.Internal;
+using Aiel.CodeAnalysis;
 using Aiel.Logging.Configuration;
 using Aiel.Logging.Internal;
 using Microsoft.CodeAnalysis;

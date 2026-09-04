@@ -20,21 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.CodeAnalysis;
-using Microsoft.CodeAnalysis;
+namespace Aiel.CodeAnalysis;
 
-namespace Aiel.Gps.HP.Generators.Internal;
-
-public static class DiagnosticDescriptors
+/// <summary>
+/// Provides metadata for diagnostics used in Aiel analyzers, including common categories and help link base.
+/// </summary>
+public static class DiagnosticMetadata
 {
     /// <summary>
-    /// AIEL00019 is raised when the generator finds no structs annotated with [NmeaMessage].
+    /// Gets the base URL for help links related to Aiel analyzers.
     /// </summary>
-    public static readonly DiagnosticDescriptor NoNmeaMessageTypesDiscovered = new(
-        id: DiagnosticRuleIDs.AIEL00019_NoNmeaMessageTypesDiscoveredId,
-        title: "No NMEA message types discovered",
-        messageFormat: "NmeaMessageUnionGenerator found no structs annotated with [NmeaMessage]. The required NmeaMessage union cannot be emitted without at least one decorated struct.",
-        category: "GPS",
-        DiagnosticSeverity.Error,
-        isEnabledByDefault: true);
+    public const String HelpBaseUrl = "https://docs.aiel.ca/analyzers/";
+
+    /// <summary>
+    /// Gets the logging category used for Aiel analyzers.
+    /// </summary>
+    public const String LoggingCategory = "AielLogging";
+
+    /// <summary>
+    /// Gets the category used for diagnostics related to strong identifiers in Aiel analyzers.
+    /// </summary>
+    public const String StrongIdCategory = "AielStrongId";
+
+    /// <summary>
+    /// Gets the category used for diagnostics related to usage in Aiel analyzers.
+    /// </summary>
+    public const String UsageCategory = "AielUsage";
 }

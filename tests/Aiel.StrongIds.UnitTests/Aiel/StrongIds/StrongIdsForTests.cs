@@ -25,8 +25,23 @@ namespace Aiel.StrongIds;
 [StrongId<Guid>]
 public readonly partial record struct GuidAllowDefaultFalseId;
 
+[StrongId<Int16>(AllowDefault = false)]
+public readonly partial record struct Int16AllowDefaultFalseId;
+
+[StrongId<UInt16>(AllowDefault = true)]
+public readonly partial record struct UInt16AllowDefaultTrueId;
+
 [StrongId<Int32>(AllowDefault = true)]
 public readonly partial record struct Int32AllowDefaultTrueId;
+
+[StrongId<UInt32>(AllowDefault = false)]
+public readonly partial record struct UInt32AllowDefaultFalseId;
+
+[StrongId<Int64>(AllowDefault = true)]
+public readonly partial record struct Int64AllowDefaultTrueId;
+
+[StrongId<UInt64>(AllowDefault = true)]
+public readonly partial record struct UInt64AllowDefaultTrueId;
 
 [StrongId<String>]
 public readonly partial record struct StringAllowDefaultFalseId;

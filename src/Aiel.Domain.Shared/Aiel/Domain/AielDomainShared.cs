@@ -27,6 +27,5 @@ namespace Aiel.Domain;
 /// <summary>
 /// AielDomainShared is the dependency configurator for the Aiel.Domain.Shared library.
 /// </summary>
-[DependsOn(typeof(AielFrameworkAbstractions))]
 [DependsOn(typeof(AielDomainAbstractions))]
 public sealed class AielDomainShared : AielDependencyConfigurator;

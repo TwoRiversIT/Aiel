@@ -20,9 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using FluentValidation.Validators;
 
-namespace Aiel.Actions.Queries;
+namespace Aiel.StrongIds.Validators;
 
-[DependsOn(typeof(AielActionsAbstractions))]
-public class AielActionsQueriesFluentValidation : AielDependencyConfigurator;
+/// <summary>
+/// Defines a FluentValidation validator for <see cref="IStrongId"/> properties. Validation will fail if the value is not a valid email.
+/// </summary>
+/// <typeparam name="TProperty"></typeparam>
+public class StrongIdPropertyValidator<T, TProperty>()
+    : PropertyValidator<T, TProperty>
+    where TProperty : IStrongId
+{
+    /// <inheritdoc/>
+    public override String Name => nameof(StrongIdPropertyValidator<,>);
+
+    /// <inheritdoc/>
+    public override Boolean IsValid(ValidationContext<T> context, TProperty value) => !value.IsDefault;
+}

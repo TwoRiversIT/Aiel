@@ -22,7 +22,10 @@
 
 using Aiel.Framework;
 
-namespace Aiel.Actions.Queries;
+namespace Aiel.StrongIds;
 
-[DependsOn(typeof(AielActionsAbstractions))]
-public class AielActionsQueriesFluentValidation : AielDependencyConfigurator;
+/// <summary>
+/// Ensures that the Aiel.StrongIds participates in the dependency graph.
+/// </summary>
+[DependsOn(typeof(AielStrongIds))]
+public sealed class AielStrongIdsFluentValidation : AielDependencyConfigurator;

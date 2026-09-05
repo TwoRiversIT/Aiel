@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <RootNamespace />
+        <AssemblyName>Aiel.StrongIds.FluentValidation</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
@@ -13,13 +14,13 @@
     <ItemGroup>
         <Using Include="FluentValidation" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="12.1.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Actions.Abstractions\Aiel.Actions.Abstractions.csproj" />
+      <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
     </ItemGroup>
 
 </Project>

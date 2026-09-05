@@ -20,9 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using Aiel.StrongIds;
+using Aiel.StrongIds.Validators;
 
-namespace Aiel.Actions.Queries;
+namespace FluentValidation;
 
-[DependsOn(typeof(AielActionsAbstractions))]
-public class AielActionsQueriesFluentValidation : AielDependencyConfigurator;
+/// <summary>
+/// Defines extension methods for FluentValidation rule builders to add <see cref="NotDefault"/> validation.
+/// </summary>
+public static partial class StrongIdValidatorExtensions
+{
+    /// <summary>
+    /// Defines a validator on the current rule builder for <see cref="IStrongId"/> properties. Validation will fail if <see cref="IStrongId.IsDefault"/> is true.
+    /// </summary>
+    public static IRuleBuilderOptions<T, TProperty> NotDefault<T, TProperty>(this IRuleBuilder<T, TProperty> ruleBuilder)
+        where TProperty : IStrongId
+        => ruleBuilder.SetValidator(new StrongIdPropertyValidator<T, TProperty>());
+}

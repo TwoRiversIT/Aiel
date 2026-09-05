@@ -30,9 +30,7 @@ public interface IAuditable;
 /// <summary>
 /// Declares the standard audit metadata required on persisted entities.
 /// </summary>
-public interface IAudited : ICreated, IUpdated
-{
-}
+public interface IAudited : ICreated, IUpdated;
 
 /// <summary>
 /// Declares the standard audit metadata required on persisted entities,
@@ -42,9 +40,7 @@ public interface IAudited : ICreated, IUpdated
 /// Persistence and unit-of-work infrastructure are responsible for setting
 /// these values.
 /// </remarks>
-public interface ISetAudited : IAudited, ISetCreated, ISetUpdated
-{
-}
+public interface ISetAudited : IAudited, ISetCreated, ISetUpdated;
 
 /// <summary>
 /// Indicates who and when an entity was created.

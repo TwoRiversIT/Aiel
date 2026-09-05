@@ -30,7 +30,7 @@ namespace Aiel.Application;
 /// <summary>
 /// Represents the application contracts module of the Aiel framework, which depends on the domain, emailing abstractions, and results modules.
 /// </summary>
-[DependsOn(typeof(AielDomain))]
+[DependsOn(typeof(AielDomainShared))]
 [DependsOn(typeof(AielEmailingAbstractions))]
 [DependsOn(typeof(AielResults))]
 public sealed class AielApplicationContracts : AielDependencyConfigurator;

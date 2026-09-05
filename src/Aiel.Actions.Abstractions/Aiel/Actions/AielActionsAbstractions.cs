@@ -20,9 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
+using Aiel.Results;
+
 namespace Aiel.Actions;
 
-public interface IUnitOfWork
-{
-    Task<Int32> SaveChangesAsync(CancellationToken cancellationToken = default);
-}
+/// <summary>
+/// AielActions is the dependency configurator for the Aiel.Actions library.
+/// </summary>
+[DependsOn(typeof(AielResultsAbstractions))]
+public sealed class AielActionsAbstractions : AielDependencyConfigurator;

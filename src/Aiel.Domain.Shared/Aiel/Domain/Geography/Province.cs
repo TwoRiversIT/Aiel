@@ -107,7 +107,7 @@ public readonly struct Province : IRegion, IEquatable<Province>, IComparable<Pro
     public Int32 CompareTo(Province other)
     {
         // Compare by Code first, then by Name if Codes are equal
-        Int32 codeComparison = String.Compare(Code, other.Code, StringComparison.OrdinalIgnoreCase);
+        var codeComparison = String.Compare(Code, other.Code, StringComparison.OrdinalIgnoreCase);
         return codeComparison != 0 ? codeComparison : String.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
     }
 

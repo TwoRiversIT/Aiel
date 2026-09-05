@@ -103,7 +103,7 @@ public class MailMessageBuilderTests
             .WithTextBody("Hello")
             .Build();
 
-        message.AlternateViews.Should().HaveCount(1);
+        message.AlternateViews.Should().ContainSingle();
         message.AlternateViews[0].ContentType.MediaType.Should().Be(MediaTypeNames.Text.Plain);
     }
 
@@ -279,7 +279,7 @@ public class MailMessageBuilderTests
         Action action = () => builder.WithSubject(subject!);
 
         action.Should().Throw<ArgumentException>()
-            .WithParameterName("subject");
+            .WithParameterName(nameof(subject));
     }
 
     [Theory]
@@ -293,7 +293,7 @@ public class MailMessageBuilderTests
         Action action = () => builder.Append(markdown!);
 
         action.Should().Throw<ArgumentException>()
-            .WithParameterName("markdown");
+            .WithParameterName(nameof(markdown));
     }
 
     [Theory]

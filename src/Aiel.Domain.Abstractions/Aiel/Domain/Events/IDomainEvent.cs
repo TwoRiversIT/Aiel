@@ -22,11 +22,26 @@
 
 namespace Aiel.Domain.Events;
 
+/// <summary>
+/// Represents a domain event in the system. A domain event is a significant
+/// occurrence or change in the state of the domain that is of interest to
+/// the business or application. It encapsulates information about the event,
+/// including its unique identifier, the time it occurred, and its type.
+/// </summary>
 public interface IDomainEvent
 {
+    /// <summary>
+    /// Gets the unique identifier of the domain event.
+    /// </summary>
     Guid EventId { get; }
 
+    /// <summary>
+    /// Gets the timestamp when the domain event occurred, preferably in UTC.
+    /// </summary>
     DateTimeOffset OccurredOn { get; }
 
+    /// <summary>
+    /// Gets the type of the domain event.
+    /// </summary>
     String EventType { get; }
 }

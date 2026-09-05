@@ -22,11 +22,35 @@
 
 namespace Aiel.Domain.Specifications;
 
+/// <summary>
+/// Provides extension methods for combining and manipulating entity specifications.
+/// </summary>
 public static class EntitySpecificationExtensions
 {
+    /// <summary>
+    /// Combines two entity specifications using a logical AND operation.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity to which the specifications apply.</typeparam>
+    /// <param name="left">The left specification.</param>
+    /// <param name="right">The right specification.</param>
+    /// <returns>A new specification that represents the logical AND of the two specifications.</returns>
     public static EntitySpecification<T> And<T>(this EntitySpecification<T> left, EntitySpecification<T> right) => left & right;
 
+    /// <summary>
+    /// Combines two entity specifications using a logical OR operation.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity to which the specifications apply.</typeparam>
+    /// <param name="left">The left specification.</param>
+    /// <param name="right">The right specification.</param>
+    /// <returns>A new specification that represents the logical OR of the two specifications.</returns>
     public static EntitySpecification<T> Or<T>(this EntitySpecification<T> left, EntitySpecification<T> right) => left | right;
 
+    /// <summary>
+    /// Negates an entity specification using a logical NOT operation.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity to which the specification applies.</typeparam>
+    /// <param name="_">The specification to negate.</param>
+    /// <param name="right">The specification to negate.</param>
+    /// <returns>A new specification that represents the logical NOT of the specification.</returns>
     public static EntitySpecification<T> Not<T>(this EntitySpecification<T> _, EntitySpecification<T> right) => !right;
 }

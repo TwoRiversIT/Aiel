@@ -31,15 +31,45 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// </remarks>
 public sealed class AuthorizationGrantRecord
 {
-    public Guid Id { get; set; }
+    /// <summary>
+    /// Gets or sets the unique identifier for the permission grant record.
+    /// </summary>
+    public Guid Id { get; set; } // ToDo: Consider using a IStrongId.
+    /// <summary>
+    /// Gets or sets the stable identifier for the permission grant record.
+    /// </summary>
     public String StableId { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the name of the permission.
+    /// </summary>
     public String PermissionName { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the type of the scope.
+    /// </summary>
     public String ScopeType { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the key of the scope.
+    /// </summary>
     public String ScopeKey { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the type of the subject.
+    /// </summary>
     public String SubjectType { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the key of the subject.
+    /// </summary>
     public String SubjectKey { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the decision of the permission grant.
+    /// </summary>
     public Int32 Decision { get; set; }
+    /// <summary>
+    /// Gets or sets the date and time when the permission was granted.
+    /// </summary>
     public DateTimeOffset GrantedAt { get; set; }
 
+    /// <summary>
+    /// Gets or sets the associated permission catalog record.
+    /// </summary>
     public PermissionCatalogRecord Catalog { get; set; } = default!;
 }

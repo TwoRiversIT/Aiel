@@ -24,6 +24,9 @@ using Aiel.Framework;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
+/// <summary>
+/// Represents the authorization entity framework core PostgreSQL module of
+/// the Aiel Framework, which depends on the authorization entity framework core module.
+/// </summary>
 [DependsOn(typeof(AielAuthorizationEntityFrameworkCore))]
 public sealed class AielAuthorizationEntityFrameworkCorePostgreSql : AielDependencyConfigurator;
-

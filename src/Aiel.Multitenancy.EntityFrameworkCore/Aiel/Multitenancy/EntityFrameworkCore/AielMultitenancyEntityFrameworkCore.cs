@@ -25,6 +25,10 @@ using Aiel.MultiTenancy;
 
 namespace Aiel.Multitenancy.EntityFrameworkCore;
 
+/// <summary>
+/// Represents the multitenancy entity framework core module of the Aiel
+/// Framework, which depends on the multitenancy module.
+/// </summary>
 [DependsOn(typeof(AielMultiTenancy))]
 public class AielMultitenancyEntityFrameworkCore : AielDependencyConfigurator
 {

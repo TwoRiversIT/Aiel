@@ -4,6 +4,8 @@
     <PropertyGroup>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
+
+        <IsToolingProject Condition="$(MSBuildProjectName.EndsWith('.Analyzers')) or $(MSBuildProjectName.EndsWith('.CodeFixes')) or $(MSBuildProjectName.EndsWith('.Generators'))">true</IsToolingProject>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -18,9 +20,13 @@
         <None Include="$(MSBuildThisFileDirectory)/../logo.png" Pack="true" PackagePath="/" />
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(IsPackable)' == 'true'">
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
     <!-- Include XML documentation file in NuGet packages -->
-    <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(GenerateDocumentationFile)' == 'true'">
-        <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="\" />
+    <ItemGroup Condition="'$(IsPackable)' == 'true' and '$(GenerateDocumentationFile)' == 'true' and '$(IsToolingProject)' == 'false'">
+        <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="/" />
     </ItemGroup>
 
     <!-- Finalize NuGet package description with Git commit link.

@@ -35,10 +35,25 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 public sealed class AuthorizationDbContext(DbContextOptions<AuthorizationDbContext> options)
     : DbContext(options)
 {
+    /// <summary>
+    /// Gets the permission catalog records.
+    /// </summary>
     public DbSet<PermissionCatalogRecord> Catalog => Set<PermissionCatalogRecord>();
+
+    /// <summary>
+    /// Gets the authorization grant records.
+    /// </summary>
     public DbSet<AuthorizationGrantRecord> Grants => Set<AuthorizationGrantRecord>();
+
+    /// <summary>
+    /// Gets the permission manifest snapshot records.
+    /// </summary>
     public DbSet<PermissionManifestSnapshotRecord> Snapshots => Set<PermissionManifestSnapshotRecord>();
 
+    /// <summary>
+    /// Configures the EF Core model for the authorization database context, including table names, keys, properties, and relationships.
+    /// </summary>
+    /// <param name="modelBuilder"></param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

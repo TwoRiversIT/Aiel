@@ -22,8 +22,22 @@
 
 namespace Aiel.Actions;
 
+/// <summary>
+/// Base class for execution contexts, providing common functionality for managing execution context properties and identifiers.
+/// </summary>
 public class ExecutionContextBase : IExecutionContext
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExecutionContextBase"/> class with the specified parameters.
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <param name="operationId"></param>
+    /// <param name="correlationId"></param>
+    /// <param name="timestamp"></param>
+    /// <param name="causationId"></param>
+    /// <param name="clientInstanceId"></param>
+    /// <param name="properties"></param>
+    /// <exception cref="ArgumentException"></exception>
     protected ExecutionContextBase(
         IActor actor,
         Guid operationId,
@@ -70,6 +84,13 @@ public class ExecutionContextBase : IExecutionContext
     /// <inheritdoc />
     public IDictionary<String, Object?> Properties { get; }
 
+    /// <summary>
+    /// Ensures that the provided <see cref="Guid"/> value is not empty. If the value is empty, an <see cref="ArgumentException"/> is thrown.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="paramName"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     protected static Guid EnsureNotEmpty(Guid value, String paramName)
     {
         return value == Guid.Empty

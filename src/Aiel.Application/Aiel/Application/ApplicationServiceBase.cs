@@ -22,4 +22,11 @@
 
 namespace Aiel.Application;
 
+/// <summary>
+/// Represents a base class for application services based on the Aiel
+/// framework, providing a foundation for implementing application service
+/// functionality and allowing source generators to identify and generate
+/// REST endpoints for derived services.
+/// </summary>
+// ToDo: This is a little thin... 
 public abstract class ApplicationServiceBase : IApplicationService;

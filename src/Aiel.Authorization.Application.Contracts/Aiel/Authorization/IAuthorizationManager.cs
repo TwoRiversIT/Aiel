@@ -27,13 +27,6 @@ namespace Aiel.Authorization;
 /// <summary>
 /// Application service for creating, revoking, and querying permission grants.
 /// </summary>
-/// <remarks>
-/// <para>
-/// The manager coordinates with <see cref="IAuthorizationGrantStore"/> for persistence and
-/// <see cref="IAuthorizationDefinitionRegistry"/> for validation without exposing domain entities
-/// or raw store records to callers.
-/// </para>
-/// </remarks>
 public interface IAuthorizationManager
 {
     /// <summary>

@@ -24,5 +24,9 @@ using Aiel.Framework;
 
 namespace Aiel.Domain;
 
+/// <summary>
+/// Represents the Aiel Domain module, which provides domain-related
+/// functionality within the Aiel framework.
+/// </summary>
 [DependsOn(typeof(AielDomainShared))]
 public sealed class AielDomain : AielDependencyConfigurator;

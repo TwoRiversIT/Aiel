@@ -24,9 +24,20 @@ using Aiel.Results;
 
 namespace Aiel.Actions.Commands;
 
+/// <summary>
+/// Defines a contract for handling command objects asynchronously.
+/// </summary>
+/// <typeparam name="TCommand">The type of the command to handle.</typeparam>
 public interface ICommandHandler<in TCommand>
     where TCommand : ICommand
 {
+    /// <summary>
+    /// Handles the specified command asynchronously and returns a result indicating the success or failure of the operation.
+    /// </summary>
+    /// <param name="command">The command instance to handle.</param>
+    /// <param name="context">The execution context.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A <see cref="Result"/> indicating the success or failure of the operation.</returns>
     Task<Result> HandleAsync(
         TCommand command,
         IExecutionContext context,

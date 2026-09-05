@@ -22,24 +22,44 @@
 
 namespace Aiel.Actions.Queries;
 
+/// <summary>
+/// Represents a field by which query results can be sorted, including the field name and sort direction.
+/// </summary>
 public readonly struct SortField
 {
+    /// <summary>
+    /// Represents an invalid sort field name, used to indicate that a sort field is not valid or has not been set.
+    /// </summary>
     public const String InvalidName = "!INVALID!";
 
+    /// <summary>
+    /// Represents an empty sort field, used to indicate that no sorting is applied.
+    /// </summary>
     public static readonly SortField Empty = new(InvalidName, SortDirection.None);
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SortField"/> struct with default values.
+    /// </summary>
     public SortField()
     {
         Name = InvalidName;
         Direction = SortDirection.None;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SortField"/> struct with the specified name and direction.
+    /// </summary>
+    /// <param name="name">The name of the sort field.</param>
+    /// <param name="direction">The direction in which to sort.</param>
     public SortField([DisallowNull] String name, SortDirection direction = SortDirection.Ascending)
     {
         Name = name;
         Direction = direction;
     }
 
+    /// <summary>
+    /// Gets the name of the sort field.
+    /// </summary>
     public String Name
     {
         get;
@@ -48,6 +68,9 @@ public readonly struct SortField
             : value;
     }
 
+    /// <summary>
+    /// Gets the direction in which to sort.
+    /// </summary>
     public SortDirection Direction
     {
         get;

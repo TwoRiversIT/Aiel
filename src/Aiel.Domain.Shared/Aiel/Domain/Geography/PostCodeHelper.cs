@@ -25,6 +25,9 @@ using System.Text.RegularExpressions;
 
 namespace Aiel.Domain.Geography;
 
+/// <summary>
+/// Provides helper methods for validating and formatting Canadian Postal Codes and American Zip Codes.
+/// </summary>
 public static partial class PostCodeHelper
 {
     private static readonly String[] InvalidCases = ["00000", "11111", "33333", "66666", "77777", "88888", "99999"];
@@ -60,6 +63,11 @@ public static partial class PostCodeHelper
     public static Boolean IsValidPostalCode(this String value)
         => !String.IsNullOrWhiteSpace(value) && PostalCode.IsMatch(value);
 
+    /// <summary>
+    /// Returns <b>true</b> if <i>code</i> is a valid partial Canadian Postal Code; otherwise <b>false</b>.
+    /// </summary>
+    /// <param name="code">the string to validate</param>
+    /// <returns><b>true</b> if <i>code</i> is a valid partial Canadian Postal Code; otherwise <b>false</b>.</returns>
     public static Boolean IsValidPartialPostalCode(String code)
     {
         if (String.IsNullOrEmpty(code) || Char.IsDigit(code[0]))
@@ -80,6 +88,11 @@ public static partial class PostCodeHelper
         return false;
     }
 
+    /// <summary>
+    /// Returns <b>true</b> if <i>code</i> is a valid Forward Sortation Area (FSA) code; otherwise <b>false</b>.
+    /// </summary>
+    /// <param name="code">the string to validate</param>
+    /// <returns><b>true</b> if <i>code</i> is a valid Forward Sortation Area (FSA) code; otherwise <b>false</b>.</returns>
     public static Boolean IsValidFsaCode(String code)
         => !String.IsNullOrWhiteSpace(code) && FsaCode.IsMatch(code);
 
@@ -91,6 +104,11 @@ public static partial class PostCodeHelper
     public static Boolean IsValidZipCode(this String code)
         => !String.IsNullOrWhiteSpace(code) && ZipCode.IsMatch(code) && !IsInvalidCase(code);
 
+    /// <summary>
+    /// Returns <b>true</b> if <i>code</i> is a valid partial American Zip Code; otherwise <b>false</b>.
+    /// </summary>
+    /// <param name="code">the string to validate</param>
+    /// <returns><b>true</b> if <i>code</i> is a valid partial American Zip Code; otherwise <b>false</b>.</returns>
     public static Boolean IsValidPartialZipCode(String code)
     {
         if (String.IsNullOrWhiteSpace(code) || !Char.IsDigit(code[0]))
@@ -114,9 +132,19 @@ public static partial class PostCodeHelper
     private static Boolean IsInvalidCase(String code)
         => InvalidCases.Any(c => c == code);
 
+    /// <summary>
+    /// Returns <b>true</b> if <i>code</i> is a valid SCF code; otherwise <b>false</b>.
+    /// </summary>
+    /// <param name="code">the string to validate</param>
+    /// <returns><b>true</b> if <i>code</i> is a valid SCF code; otherwise <b>false</b>.</returns>
     public static Boolean IsValidScfCode(String code)
         => !String.IsNullOrWhiteSpace(code) && ScfCode.IsMatch(code);
 
+    /// <summary>
+    /// Formats Canadian Postal Codes and American Zip Codes. If the input is not a valid Canadian Postal Code or American Zip Code, it is returned unmodified.
+    /// </summary>
+    /// <param name="code">the string to format</param>
+    /// <returns>the formatted Canadian Postal Code or American Zip Code, or the original string if it is not a valid code</returns>
     public static String FormatCodeSlow(String code)
     {
         if (String.IsNullOrWhiteSpace(code))
@@ -242,6 +270,12 @@ public static partial class PostCodeHelper
         return code;
     }
 
+    /// <summary>
+    /// Formats Canadian Postal Codes and American Zip Codes. If the input is not a valid Canadian Postal Code or American Zip Code, it is returned unmodified.
+    /// </summary>
+    /// <param name="code">the string to format</param>
+    /// <param name="formatted">the formatted Canadian Postal Code or American Zip Code, or the original string if it is not a valid code</param>
+    /// <returns><b>true</b> if the input was a valid Canadian Postal Code or American Zip Code; otherwise <b>false</b>.</returns>
     public static Boolean TryFormatCode(String code, out String? formatted)
     {
         formatted = String.Empty;

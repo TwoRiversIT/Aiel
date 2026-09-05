@@ -25,6 +25,10 @@ using Aiel.Results;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
+/// <summary>
+/// Represents the authorization entity framework core module of the Aiel
+/// framework, which depends on the authorization domain and results modules.
+/// </summary>
 [DependsOn(typeof(AielAuthorizationDomain))]
 [DependsOn(typeof(AielResults))]
 public sealed class AielAuthorizationEntityFrameworkCore : AielDependencyConfigurator;

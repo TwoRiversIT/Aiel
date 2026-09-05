@@ -22,4 +22,9 @@
 
 namespace Aiel.Application;
 
+/// <summary>
+/// Represents a marker interface for application services based on the Aiel
+/// framework allowing source generators to identify and generate REST
+/// endpoints for these services.
+/// </summary>
 public interface IApplicationService;

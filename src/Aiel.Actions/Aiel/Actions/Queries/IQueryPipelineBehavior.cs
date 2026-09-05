@@ -40,8 +40,8 @@ public delegate Task<Result<TResult>> QueryPipelineHandlerDelegate<TResult>(
 /// </summary>
 /// <remarks>
 /// Behaviors are executed in registration order: the first behavior registered is the outermost
-/// wrapper and runs first.  A behavior MUST NOT also implement
-/// <see cref="Commands.ICommandPipelineBehavior{TCommand}"/>.
+/// wrapper and runs first. A behavior MUST NOT also implement
+/// ICommandPipelineBehavior{TCommand}.
 /// <para>
 /// Register behaviors with open-generic DI to apply them to every query type:
 /// <code>

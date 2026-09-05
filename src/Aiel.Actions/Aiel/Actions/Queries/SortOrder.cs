@@ -22,22 +22,46 @@
 
 namespace Aiel.Actions.Queries;
 
+/// <summary>
+/// Represents the order in which to sort query results.
+/// </summary>
 public sealed record SortOrder
 {
+    /// <summary>
+    /// Represents a sort order with no fields specified.
+    /// </summary>
     public static SortOrder None { get; } = new() { Fields = [] };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SortOrder"/> record with default values.
+    /// </summary>
     public SortOrder() : this([]) { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SortOrder"/> record with the specified sort fields.
+    /// </summary>
+    /// <param name="fields"></param>
     public SortOrder(IEnumerable<SortField> fields)
     {
         ArgumentNullException.ThrowIfNull(fields);
         Fields = fields.ToArray();
     }
 
+    /// <summary>
+    /// Gets the list of sort fields that define the order in which to sort query results.
+    /// </summary>
     public IReadOnlyList<SortField> Fields { get; init; } = [];
 
+    /// <summary>
+    /// Gets a value indicating whether the <see cref="SortOrder"/> has any sort fields specified.
+    /// </summary>
     public Boolean HasValues => Fields.Count > 0;
 
+    /// <summary>
+    /// Creates a new instance of the <see cref="SortOrder"/> record from the specified sort fields.
+    /// </summary>
+    /// <param name="fields"></param>
+    /// <returns></returns>
     public static SortOrder From(params SortField[] fields)
         => fields is null ? None : new(fields);
 }

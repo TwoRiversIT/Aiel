@@ -24,5 +24,10 @@ using Aiel.Framework;
 
 namespace Aiel.Results;
 
+/// <summary>
+/// AielResults is the dependency configurator for the Aiel.Results library,
+/// which provides abstractions and implementations for handling results in
+/// a structured manner.
+/// </summary>
 [DependsOn(typeof(AielResultsAbstractions))]
 public sealed class AielResults : AielDependencyConfigurator;

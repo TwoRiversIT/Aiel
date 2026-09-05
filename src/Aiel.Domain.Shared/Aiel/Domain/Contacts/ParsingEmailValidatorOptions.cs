@@ -22,8 +22,18 @@
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Options for parsing and validating email addresses.
+/// </summary>
 public class ParsingEmailValidatorOptions
 {
+    /// <summary>
+    /// Gets or sets a value indicating whether top-level domains are allowed.
+    /// </summary>
     public Boolean AllowTopLevelDomains { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether international email addresses are allowed.
+    /// </summary>
     public Boolean AllowInternational { get; set; }
 }

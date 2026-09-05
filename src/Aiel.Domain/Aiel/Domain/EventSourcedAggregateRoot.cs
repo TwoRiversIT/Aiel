@@ -26,26 +26,46 @@ using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
+/// <summary>
+/// Represents an aggregate root that is event-sourced, meaning its state is derived from a sequence of domain events.
+/// </summary>
+/// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
 public abstract class EventSourcedAggregateRoot<TKey> : AggregateRoot<TKey>, IRehydrateFromHistory
     where TKey : notnull, IStrongId
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EventSourcedAggregateRoot{TKey}"/> class with the specified identifier.
+    /// </summary>
+    /// <param name="id">The identifier of the aggregate root.</param>
     protected EventSourcedAggregateRoot(TKey id)
         : base(id)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EventSourcedAggregateRoot{TKey}"/> class.
+    /// </summary>
     protected EventSourcedAggregateRoot()
     {
     }
 
+    /// <summary>
+    /// Applies the specified domain event to the aggregate root, updating its state accordingly.
+    /// </summary>
+    /// <param name="domainEvent"></param>
     protected abstract void Apply(IDomainEvent domainEvent);
 
+    /// <summary>
+    /// Raises the specified domain event, applying it to the aggregate root and incrementing the version.
+    /// </summary>
+    /// <param name="domainEvent"></param>
     protected override void OnRaiseEvent(IDomainEvent domainEvent)
     {
         Apply(domainEvent);
         Version++;
     }
 
+    /// <inheritdoc/>
     void IRehydrateFromHistory.RehydrateFromHistory(IEnumerable<IDomainEvent> history)
     {
         ArgumentNullException.ThrowIfNull(history);

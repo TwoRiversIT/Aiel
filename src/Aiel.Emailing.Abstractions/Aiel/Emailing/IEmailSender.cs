@@ -29,6 +29,21 @@ namespace Aiel.Emailing;
 /// </summary>
 public interface IEmailSender
 {
-    Task SendEmailAsync(String email, String subject, String htmlMessage, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Sends an email message asynchronously.
+    /// </summary>
+    /// <param name="email">The recipient's email address.</param>
+    /// <param name="subject">The subject of the email.</param>
+    /// <param name="htmlBody">The HTML content of the email.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    Task SendEmailAsync(String email, String subject, String htmlBody, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Sends an email message asynchronously.
+    /// </summary>
+    /// <param name="message">The email message to send.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     Task SendEmailAsync(MailMessage message, CancellationToken cancellationToken = default);
 }

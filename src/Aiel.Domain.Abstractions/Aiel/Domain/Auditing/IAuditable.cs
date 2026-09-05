@@ -56,7 +56,15 @@ public interface ISetAudited : IAudited, ISetCreated, ISetUpdated
 /// </remarks>
 public interface ICreated : IAuditable
 {
+    /// <summary>
+    /// Gets the timestamp when the entity was created. While not required,
+    /// it is strongly recommended that this value be set to UTC time.
+    /// </summary>
     DateTimeOffset CreatedAt { get; }
+
+    /// <summary>
+    /// Gets the identifier of the user who created the entity.
+    /// </summary>
     String CreatedBy { get; }
 }
 
@@ -70,6 +78,11 @@ public interface ICreated : IAuditable
 /// </remarks>
 public interface ISetCreated : ICreated
 {
+    /// <summary>
+    /// Sets the created audit metadata on the entity.
+    /// </summary>
+    /// <param name="createdBy">The identifier of the user who created the entity.</param>
+    /// <param name="createdAt">The timestamp when the entity was created. Preferably in UTC.</param>
     void SetCreated(String createdBy, DateTimeOffset createdAt);
 }
 
@@ -83,7 +96,15 @@ public interface ISetCreated : ICreated
 /// </remarks>
 public interface IUpdated : IAuditable
 {
+    /// <summary>
+    /// Gets the timestamp when the entity was last updated. While not required,
+    /// it is strongly recommended that this value be set to UTC time.
+    /// </summary>
     DateTimeOffset UpdatedAt { get; }
+
+    /// <summary>
+    /// Gets the identifier of the user who last updated the entity.
+    /// </summary>
     String UpdatedBy { get; }
 }
 
@@ -97,6 +118,11 @@ public interface IUpdated : IAuditable
 /// </remarks>
 public interface ISetUpdated : IUpdated
 {
+    /// <summary>
+    /// Sets the updated audit metadata on the entity.
+    /// </summary>
+    /// <param name="updatedBy">The identifier of the user who updated the entity.</param>
+    /// <param name="updatedAt">The timestamp when the entity was updated. Preferably in UTC.</param>
     void SetUpdated(String updatedBy, DateTimeOffset updatedAt);
 }
 
@@ -110,7 +136,15 @@ public interface ISetUpdated : IUpdated
 /// </remarks>
 public interface IDeleted : IAuditable
 {
+    /// <summary>
+    /// Gets the timestamp when the entity was soft deleted. While not required,
+    /// it is strongly recommended that this value be set to UTC time.
+    /// </summary>
     DateTimeOffset? DeletedAt { get; }
+
+    /// <summary>
+    /// Gets the identifier of the user who soft deleted the entity.
+    /// </summary>
     String? DeletedBy { get; }
 }
 
@@ -124,9 +158,17 @@ public interface IDeleted : IAuditable
 /// </remarks>
 public interface ISetDeleted : IDeleted
 {
+    /// <summary>
+    /// Sets the deleted audit metadata on the entity.
+    /// </summary>
+    /// <param name="deletedBy">The identifier of the user who deleted the entity.</param>
+    /// <param name="deletedAt">The timestamp when the entity was deleted. Preferably in UTC.</param>
     void SetDeleted(String deletedBy, DateTimeOffset deletedAt);
 }
 
+/// <summary>
+/// Provides extension methods for entities that implement the ISetCreated, ISetUpdated, and ISetDeleted interfaces, allowing for convenient setting of audit metadata.
+/// </summary>
 public static class AuditableExtensions
 {
     /// <summary>

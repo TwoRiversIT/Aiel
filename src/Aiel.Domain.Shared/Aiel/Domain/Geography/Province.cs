@@ -24,14 +24,22 @@ using System.Diagnostics;
 
 namespace Aiel.Domain.Geography;
 
+/// <summary>
+/// Represents a Canadian province with its name and code.
+/// </summary>
 [DebuggerDisplay("{Code}")]
 public readonly struct Province : IRegion, IEquatable<Province>, IComparable<Province>
 {
+    /// <summary>
+    /// Gets an empty <see cref="Province"/> instance with empty name and code.
+    /// </summary>
     public static readonly Province Empty = new();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Province"/> struct with empty name and code.
+    /// </summary>
     public Province()
     {
-        // Private constructor for Empty instance
     }
 
     internal Province(String code, String name) : this()
@@ -40,21 +48,62 @@ public readonly struct Province : IRegion, IEquatable<Province>, IComparable<Pro
         Code = code.Trim().ToUpperInvariant();
     }
 
+    /// <summary>
+    /// Gets the code of the province (e.g., "ON" for Ontario).
+    /// </summary>
     public String Code { get; } = String.Empty;
+
+    /// <summary>
+    /// Gets the name of the province (e.g., "Ontario").
+    /// </summary>
     public String Name { get; } = String.Empty;
 
+    /// <summary>
+    /// Returns a string representation of the province, which is its code.
+    /// </summary>
+    /// <returns>The code of the province.</returns>
     public override String ToString() => Code;
 
     // IEquatable<Province> implementation
+    /// <summary>
+    /// Determines whether the specified <see cref="Province"/> is equal to the current <see cref="Province"/>.
+    /// </summary>
+    /// <param name="other">The province to compare with the current province.</param>
+    /// <returns><c>true</c> if the specified province is equal to the current province; otherwise, <c>false</c>.</returns>
     public Boolean Equals(Province other)
         => String.Equals(Code, other.Code, StringComparison.OrdinalIgnoreCase)
         && String.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Determines whether the specified object is equal to the current <see cref="Province"/>.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current province.</param>
+    /// <returns><c>true</c> if the specified object is equal to the current province; otherwise, <c>false</c>.</returns>
     public override Boolean Equals(Object? obj) => obj is Province other && Equals(other);
 
+    /// <inheritdoc/>
     public override Int32 GetHashCode() => HashCode.Combine(Code.ToUpperInvariant(), Name.ToUpperInvariant());
 
     // IComparable<Province> implementation
+    /// <summary>
+    /// Compares the current <see cref="Province"/> with another <see cref="Province"/> and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other province.
+    /// </summary>
+    /// <param name="other">The province to compare with the current province.</param>
+    /// <returns>
+    /// A value that indicates the relative order of the provinces being compared.
+    /// The return value has these meanings:
+    /// <list type="bullet">
+    /// <item>
+    /// <description>Less than zero: This instance precedes <paramref name="other"/> in the sort order.</description>
+    /// </item>
+    /// <item>
+    /// <description>Zero: This instance occurs in the same position in the sort order as <paramref name="other"/>.</description>
+    /// </item>
+    /// <item>
+    /// <description>Greater than zero: This instance follows <paramref name="other"/> in the sort order.</description>
+    /// </item>
+    /// </list>
+    /// </returns>
     public Int32 CompareTo(Province other)
     {
         // Compare by Code first, then by Name if Codes are equal
@@ -63,18 +112,25 @@ public readonly struct Province : IRegion, IEquatable<Province>, IComparable<Pro
     }
 
     // Equality operators
+    /// <inheritdoc/>
     public static Boolean operator ==(Province left, Province right) => left.Equals(right);
 
+    /// <inheritdoc/>
     public static Boolean operator !=(Province left, Province right) => !(left == right);
 
     // Comparison operators
+    /// <inheritdoc/>
     public static Boolean operator <(Province left, Province right) => left.CompareTo(right) < 0;
 
+    /// <inheritdoc/>
     public static Boolean operator >(Province left, Province right) => left.CompareTo(right) > 0;
 
+    /// <inheritdoc/>
     public static Boolean operator <=(Province left, Province right) => left.CompareTo(right) <= 0;
 
+    /// <inheritdoc/>
     public static Boolean operator >=(Province left, Province right) => left.CompareTo(right) >= 0;
 
+    /// <inheritdoc/>
     public static implicit operator String(Province province) => province.ToString();
 }

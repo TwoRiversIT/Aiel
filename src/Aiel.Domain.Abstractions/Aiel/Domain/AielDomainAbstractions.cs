@@ -26,6 +26,9 @@ using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
+/// <summary>
+/// AielDomainAbstractions is the dependency configurator for the Aiel.Domain.Abstractions library.
+/// </summary>
 [DependsOn(typeof(AielActions))]
 [DependsOn(typeof(AielStrongIds))]
 public sealed class AielDomainAbstractions : AielDependencyConfigurator;

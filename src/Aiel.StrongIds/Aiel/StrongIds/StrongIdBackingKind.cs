@@ -22,8 +22,19 @@
 
 namespace Aiel.StrongIds;
 
+/// <summary>
+/// Specifies the kind of backing store for a strongly-typed identifier. This
+/// exists to support StrongId tooling and is not intended for general use.
+/// </summary>
 public enum StrongIdBackingKind
 {
+    /// <summary>
+    /// Indicates that the strongly-typed identifier is backed by a value type.
+    /// </summary>
     Value,
-    Reference,
+
+    /// <summary>
+    /// Indicates that the strongly-typed identifier is backed by a reference type.
+    /// </summary>
+    Reference
 }

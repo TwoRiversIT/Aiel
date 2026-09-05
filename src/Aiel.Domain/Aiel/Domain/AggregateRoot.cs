@@ -26,22 +26,42 @@ using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
+/// <summary>
+/// Represents the base class for aggregate roots in the domain-driven design
+/// context. An aggregate root is an entity that serves as the entry point
+/// for a cluster of related entities and ensures the consistency of changes
+/// within that cluster. This class provides functionality for managing
+/// domain events associated with the aggregate root.
+/// </summary>
+/// <typeparam name="TKey">a strongly typed identifier for the aggregate root.</typeparam>
 public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
     where TKey : notnull, IStrongId
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 
+    /// <inheritdoc/>
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AggregateRoot{TKey}"/> class with the specified identifier.
+    /// </summary>
+    /// <param name="id"></param>
     protected AggregateRoot(TKey id)
         : base(id)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AggregateRoot{TKey}"/> class.
+    /// </summary>
     protected AggregateRoot()
     {
     }
 
+    /// <summary>
+    /// Raises a domain event and adds it to the list of domain events associated with the aggregate root.
+    /// </summary>
+    /// <param name="domainEvent"></param>
     protected void RaiseEvent(IDomainEvent domainEvent)
     {
         ArgumentNullException.ThrowIfNull(domainEvent);
@@ -50,9 +70,16 @@ public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
         _domainEvents.Add(domainEvent);
     }
 
+    /// <summary>
+    /// Called when a domain event is raised. This method can be overridden in derived classes to perform additional actions when a domain event is raised.
+    /// </summary>
+    /// <param name="domainEvent">The domain event that was raised.</param>
     protected virtual void OnRaiseEvent(IDomainEvent domainEvent)
     {
     }
 
+    /// <summary>
+    /// Clears all domain events from the aggregate root.
+    /// </summary>
     public void ClearDomainEvents() => _domainEvents.Clear();
 }

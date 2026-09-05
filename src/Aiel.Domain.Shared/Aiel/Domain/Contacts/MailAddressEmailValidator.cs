@@ -24,8 +24,12 @@ using System.Net.Mail;
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Defines an implementation of <see cref="IEmailValidator"/> that uses <see cref="MailAddress"/> to validate email addresses.
+/// </summary>
 public class MailAddressEmailValidator : IEmailValidator
 {
+    /// <inheritdoc/>
     public Boolean IsValid(String? email)
     {
         if (String.IsNullOrWhiteSpace(email))
@@ -38,12 +42,32 @@ public class MailAddressEmailValidator : IEmailValidator
             _ = new MailAddress(email);
             return true;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }
     }
 
+    /// <inheritdoc/>
+    public Boolean IsValid(Email? email)
+    {
+        if (email is null || String.IsNullOrWhiteSpace(email))
+        {
+            return false;
+        }
+
+        try
+        {
+            _ = new MailAddress(email);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <inheritdoc/>
     public Boolean IsValid(EmailAddress? emailAddress)
     {
         if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
@@ -56,7 +80,7 @@ public class MailAddressEmailValidator : IEmailValidator
             _ = new MailAddress(emailAddress.Email, emailAddress.Name);
             return true;
         }
-        catch (Exception)
+        catch
         {
             return false;
         }

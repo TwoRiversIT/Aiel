@@ -22,13 +22,30 @@
 
 namespace Aiel.Domain;
 
+/// <summary>
+/// Represents a base class for DDD value objects, which are immutable and compared based on their values rather than their references.
+/// </summary>
 public abstract class ValueObject : IEquatable<ValueObject>
 {
+    /// <summary>
+    /// Gets the components of the value object that are used to determine equality.
+    /// </summary>
+    /// <returns>An enumerable of the components that determine equality.</returns>
     protected abstract IEnumerable<Object?> GetEqualityComponents();
 
+    /// <summary>
+    /// Determines whether the specified object is equal to the current value object.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current value object.</param>
+    /// <returns>true if the specified object is equal to the current value object; otherwise, false.</returns>
     public sealed override Boolean Equals(Object? obj)
         => obj is ValueObject other && Equals(other);
 
+    /// <summary>
+    /// Determines whether the specified value object is equal to the current value object.
+    /// </summary>
+    /// <param name="other">The value object to compare with the current value object.</param>
+    /// <returns>true if the specified value object is equal to the current value object; otherwise, false.</returns>
     public Boolean Equals(ValueObject? other)
     {
         if (ReferenceEquals(this, other))
@@ -45,6 +62,7 @@ public abstract class ValueObject : IEquatable<ValueObject>
             .SequenceEqual(other.GetEqualityComponents());
     }
 
+    /// <inheritdoc/>
     public sealed override Int32 GetHashCode()
     {
         var hash = new HashCode();
@@ -57,9 +75,11 @@ public abstract class ValueObject : IEquatable<ValueObject>
         return hash.ToHashCode();
     }
 
+    /// <inheritdoc/>
     public static Boolean operator ==(ValueObject? left, ValueObject? right)
         => Equals(left, right);
 
+    /// <inheritdoc/>
     public static Boolean operator !=(ValueObject? left, ValueObject? right)
         => !Equals(left, right);
 }

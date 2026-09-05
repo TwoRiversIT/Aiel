@@ -22,10 +22,31 @@
 
 namespace Aiel.Domain.Geography;
 
-public interface IPostCode { String Code { get; } }
+/// <summary>
+/// Represents a Canadian Postal Code or a US ZIP code in a geographic context.
+/// </summary>
+public interface IPostCode
+{
 
+    /// <summary>
+    /// Gets the human-readable postal code or ZIP code.
+    /// </summary>
+    String Code { get; }
+}
+
+/// <summary>
+/// Represents an empty or uninitialized postal code. This can be used as a
+/// default value when no valid postal code is available.
+/// </summary>
 public sealed record PostCode() : IPostCode
 {
+    /// <summary>
+    /// Gets a singleton instance of an empty postal code. This can be used to represent
+    /// </summary>
     public static readonly PostCode Empty = new();
+
+    /// <summary>
+    /// Gets the human-readable postal code or ZIP code. For the empty postal code, this will always return an empty string.
+    /// </summary>
     public String Code => String.Empty;
 }

@@ -27,10 +27,19 @@ using System.Reflection;
 
 namespace Aiel.StrongIds;
 
+/// <summary>
+/// Provides extension methods for registering strong ID type converters in ASP.NET Core MVC.
+/// </summary>
 public static class StrongIdMvcBindingExtensions
 {
     private static readonly ConcurrentDictionary<Type, Byte> RegisteredStrongIdConverters = new();
 
+    /// <summary>
+    /// Registers strong ID type converters for all types implementing <see cref="IStrongId{T}"/> found in the specified assemblies.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the type converters to.</param>
+    /// <param name="assemblies">The assemblies to scan for strong ID types.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddStrongIdTypeConverters(this IServiceCollection services, params Assembly[] assemblies)
     {
         ArgumentNullException.ThrowIfNull(services);
@@ -60,6 +69,12 @@ public static class StrongIdMvcBindingExtensions
         return services;
     }
 
+    /// <summary>
+    /// Registers strong ID type converters for all types implementing <see cref="IStrongId{T}"/> found in the assembly containing the specified marker type.
+    /// </summary>
+    /// <typeparam name="TMarker">A type contained in the assembly to scan for strong ID types.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the type converters to.</param>
+    /// <returns>The updated <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddStrongIdTypeConvertersFromAssemblyContaining<TMarker>(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);

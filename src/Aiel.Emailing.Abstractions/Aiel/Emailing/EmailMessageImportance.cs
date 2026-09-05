@@ -22,9 +22,14 @@
 
 namespace Aiel.Emailing;
 
-[Flags]
+/// <summary>
+/// Specifies the importance level of an email message.
+/// </summary>
 public enum EmailMessageImportance
 {
+    /// <summary>
+    /// A sentinal value indicating that no specific importance level is assigned to the message.
+    /// </summary>
     None = 0,
 
     /// <summary>

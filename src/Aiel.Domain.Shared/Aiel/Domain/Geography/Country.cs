@@ -22,7 +22,15 @@
 
 namespace Aiel.Domain.Geography;
 
+/// <summary>
+/// Represents a country with its name and code.
+/// </summary>
+/// <param name="Name">The name of the country.</param>
+/// <param name="Code">The code of the country.</param>
 public sealed record Country(String Name, String Code)
 {
+    /// <summary>
+    /// Gets an empty <see cref="Country"/> instance with empty name and code.
+    /// </summary>
     public static readonly Country Empty = new(String.Empty, String.Empty);
 }

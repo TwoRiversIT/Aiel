@@ -23,7 +23,7 @@
 namespace Aiel.Authorization;
 
 /// <summary>
-/// A domain-neutral summary of a persisted permission grant returned by <see cref="IAuthorizationGrantStore"/>.
+/// A domain-neutral summary of a persisted permission grant.
 /// </summary>
 /// <remarks>
 /// This DTO intentionally omits domain entity internals. Callers receive only the information

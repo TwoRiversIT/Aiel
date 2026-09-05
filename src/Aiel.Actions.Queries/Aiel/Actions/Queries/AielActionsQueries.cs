@@ -26,10 +26,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Actions.Queries;
 
+/// <summary>
+/// AielActionsQueries is the dependency configurator for the Aiel.Actions.Queries library.
+/// </summary>
 [DependsOn(typeof(AielActions))]
 [DependsOn(typeof(AielResultsAbstractions))]
 public sealed class AielActionsQueries : AielDependencyConfigurator
 {
+    /// <inheritdoc />
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.TryAddScoped<IQueryDispatcher, DefaultQueryDispatcher>();

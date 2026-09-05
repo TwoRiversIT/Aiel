@@ -27,9 +27,19 @@ namespace Aiel.Actions.Queries;
 /// </summary>
 public record Page
 {
+    /// <summary>
+    /// Gets the default page number, which is 1.
+    /// </summary>
     public const Int32 DefaultPageNumber = 1;
+
+    /// <summary>
+    /// Gets the default page size, which is 20.
+    /// </summary>
     public const Int32 DefaultPageSize = 20;
 
+    /// <summary>
+    /// Gets a default page instance with the default page number and size.
+    /// </summary>
     public static readonly Page Default = new()
     {
         Number = DefaultPageNumber,
@@ -37,6 +47,9 @@ public record Page
         Total = 0
     };
 
+    /// <summary>
+    /// Gets a page instance that includes all records.
+    /// </summary>
     public static readonly Page All = new()
     {
         Number = DefaultPageNumber,
@@ -44,6 +57,13 @@ public record Page
         Total = 0
     };
 
+    /// <summary>
+    /// Creates a new page instance with the specified page number, page size, and total records.
+    /// </summary>
+    /// <param name="pageNumber">The page number.</param>
+    /// <param name="pageSize">The page size.</param>
+    /// <param name="totalRecords">The total number of records.</param>
+    /// <returns>A new <see cref="Page"/> instance.</returns>
     public static Page Create(Int32 pageNumber, Int32 pageSize, Int32 totalRecords = 0)
     {
         return new Page
@@ -54,6 +74,13 @@ public record Page
         };
     }
 
+    /// <summary>
+    /// Creates a new page instance with the specified skip, take, and total records. The skip and take values are used to calculate the page number and size.
+    /// </summary>
+    /// <param name="skip"></param>
+    /// <param name="take"></param>
+    /// <param name="totalRecords"></param>
+    /// <returns></returns>
     public static Page SkipTake(Int32 skip, Int32 take, Int32 totalRecords = 0)
     {
         return new Page
@@ -64,6 +91,11 @@ public record Page
         };
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the total count of records should be included in the query result.
+    /// When set to <see langword="true"/>, the query handler is expected to calculate and return the total number
+    /// of records available for the query, which can be used to determine the total number of pages.
+    /// </summary>
     public Boolean IncludeTotalCount { get; init; }
 
     /// <summary>

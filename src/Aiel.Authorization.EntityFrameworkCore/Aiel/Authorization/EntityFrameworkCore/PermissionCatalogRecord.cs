@@ -31,11 +31,32 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// </remarks>
 public sealed class PermissionCatalogRecord
 {
+    /// <summary>
+    /// Gets or sets the stable identifier for the permission catalog entry.
+    /// </summary>
     public String StableId { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the name of the permission associated with the catalog entry.
+    /// </summary>
     public String PermissionName { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the type of scope associated with the permission catalog entry.
+    /// </summary>
     public String ScopeType { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the lifecycle state of the permission catalog entry.
+    /// </summary>
     public Int32 Lifecycle { get; set; }
 
+    /// <summary>
+    /// Gets or sets the list of authorization grants associated with the permission catalog entry.
+    /// </summary>
     public List<AuthorizationGrantRecord> Grants { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the list of permission manifest snapshots associated with the permission catalog entry.
+    /// </summary>
     public List<PermissionManifestSnapshotRecord> Snapshots { get; set; } = [];
 }

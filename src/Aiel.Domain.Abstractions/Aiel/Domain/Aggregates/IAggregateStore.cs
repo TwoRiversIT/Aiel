@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain.Aggregates;
@@ -30,7 +31,7 @@ namespace Aiel.Domain.Aggregates;
 /// <remarks>
 /// Implementations are responsible for loading and persisting aggregate state.
 /// Saving changes (committing the unit of work) is a separate concern handled by
-/// <see cref="Aiel.Commands.IUnitOfWork"/> and is intentionally not part of this interface.
+/// <see cref="IUnitOfWork"/> and is intentionally not part of this interface.
 /// </remarks>
 /// <typeparam name="TAggregate">The aggregate root type.</typeparam>
 /// <typeparam name="TId">The strong-ID type that identifies the aggregate.</typeparam>

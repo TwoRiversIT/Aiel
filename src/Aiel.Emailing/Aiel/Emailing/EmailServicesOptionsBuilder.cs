@@ -26,17 +26,41 @@ using System.Reflection;
 
 namespace Aiel.Emailing;
 
+/// <summary>
+/// Builder class for configuring email services options in the Aiel framework.
+/// This class allows you to specify assemblies containing email templates and
+/// configure email-related options.
+/// </summary>
+/// <param name="services">The service collection to add email services to.</param>
+/// <param name="configuration">The configuration to bind email options from.</param>
 public class EmailServicesOptionsBuilder(IServiceCollection services, IConfiguration configuration)
 {
     private readonly HashSet<Assembly> _assemblyList = [];
 
+    /// <summary>
+    /// Gets the service collection to which email services will be added.
+    /// </summary>
     public IServiceCollection Services { get; } = services ?? throw new ArgumentNullException(nameof(services));
-    public IConfiguration Configuration { get; set; } = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    /// <summary>
+    /// Gets the configuration to bind email options from.
+    /// </summary>
+    public IConfiguration Configuration { get; } = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
+    /// <summary>
+    /// Gets the assemblies containing email templates.
+    /// </summary>
     public Assembly[] TemplateAssemblies => [.. _assemblyList];
 
-    public EmailOptions Options { get; set; } = new EmailOptions();
+    /// <summary>
+    /// Gets the email options.
+    /// </summary>
+    public EmailOptions Options { get; } = new EmailOptions();
 
+    /// <summary>
+    /// Includes email templates from the specified assemblies.
+    /// </summary>
+    /// <param name="assemblies">The assemblies containing email templates.</param>
+    /// <returns>The current <see cref="EmailServicesOptionsBuilder"/> instance.</returns>
     public EmailServicesOptionsBuilder IncludeTemplatesFrom(params Assembly[] assemblies)
     {
         foreach (var a in assemblies)
@@ -47,6 +71,11 @@ public class EmailServicesOptionsBuilder(IServiceCollection services, IConfigura
         return this;
     }
 
+    /// <summary>
+    /// Includes email templates from the assembly containing the specified type.
+    /// </summary>
+    /// <typeparam name="T">The type whose containing assembly will be included.</typeparam>
+    /// <returns>The current <see cref="EmailServicesOptionsBuilder"/> instance.</returns>
     public EmailServicesOptionsBuilder IncludeTemplatesFromAssemblyContaining<T>()
     {
         _assemblyList.Add(typeof(T).Assembly);

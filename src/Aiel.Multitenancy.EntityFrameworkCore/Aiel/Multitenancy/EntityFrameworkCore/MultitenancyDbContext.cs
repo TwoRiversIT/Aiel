@@ -39,20 +39,37 @@ public class MultitenancyDbContext : AielDbContext
     private readonly ITenantResolver? _tenantResolver;
     private Task<TenantResolution>? _tenantResolutionTask;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultitenancyDbContext"/> class.
+    /// </summary>
     protected MultitenancyDbContext()
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultitenancyDbContext"/> class with the specified options.
+    /// </summary>
+    /// <param name="options"></param>
     protected MultitenancyDbContext(DbContextOptions options)
         : base(options)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultitenancyDbContext"/> class with the specified options and execution context.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="executionContext"></param>
     protected MultitenancyDbContext(DbContextOptions options, IExecutionContext executionContext)
         : base(options, executionContext)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultitenancyDbContext"/> class with the specified options and current tenant.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="currentTenant"></param>
     protected MultitenancyDbContext(DbContextOptions options, CurrentTenant currentTenant)
         : base(options)
     {
@@ -60,6 +77,12 @@ public class MultitenancyDbContext : AielDbContext
         SetTenantResolution(new TenantResolution.Resolved(currentTenant));
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultitenancyDbContext"/> class with the specified options, current tenant, and execution context.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="currentTenant"></param>
+    /// <param name="executionContext"></param>
     protected MultitenancyDbContext(DbContextOptions options, CurrentTenant currentTenant, IExecutionContext executionContext)
         : base(options, executionContext)
     {
@@ -68,6 +91,12 @@ public class MultitenancyDbContext : AielDbContext
         SetTenantResolution(new TenantResolution.Resolved(currentTenant));
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultitenancyDbContext"/> class with the specified options and tenant resolver.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="tenantResolver"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     protected MultitenancyDbContext(DbContextOptions options, ITenantResolver tenantResolver)
         : base(options)
     {
@@ -75,6 +104,13 @@ public class MultitenancyDbContext : AielDbContext
         _tenantResolutionTask = LoadTenantResolutionAsync(CancellationToken.None);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultitenancyDbContext"/> class with the specified options, tenant resolver, and execution context.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="tenantResolver"></param>
+    /// <param name="executionContext"></param>
+    /// <exception cref="ArgumentNullException"></exception>
     protected MultitenancyDbContext(DbContextOptions options, ITenantResolver tenantResolver, IExecutionContext executionContext)
         : base(options, executionContext)
     {
@@ -82,6 +118,9 @@ public class MultitenancyDbContext : AielDbContext
         _tenantResolutionTask = LoadTenantResolutionAsync(CancellationToken.None);
     }
 
+    /// <summary>
+    /// Gets the current tenant resolution, which indicates whether a tenant has been resolved and provides access to the current tenant information if available.
+    /// </summary>
     protected TenantResolution CurrentTenantResolution { get; private set; } = new TenantResolution.Missing();
 
     [UnconditionalSuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Referenced by ModelBuilderExtensions static construction")]
@@ -94,6 +133,7 @@ public class MultitenancyDbContext : AielDbContext
             ? resolved.CurrentTenant.TenantId.Value
             : Guid.Empty;
 
+    /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
@@ -102,6 +142,7 @@ public class MultitenancyDbContext : AielDbContext
         modelBuilder.ApplyMultiTenantQueryFilters(this);
     }
 
+    /// <inheritdoc/>
     public override async Task<Int32> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var tenantResolution = await EnsureTenantResolutionAsync(cancellationToken);
@@ -123,6 +164,10 @@ public class MultitenancyDbContext : AielDbContext
         return rowsAffected;
     }
 
+    /// <summary>
+    /// Sets the current tenant resolution.
+    /// </summary>
+    /// <param name="tenantResolution">The tenant resolution to set.</param>
     protected void SetTenantResolution(TenantResolution tenantResolution)
     {
         ArgumentNullException.ThrowIfNull(tenantResolution);
@@ -131,6 +176,11 @@ public class MultitenancyDbContext : AielDbContext
         _tenantResolutionTask = Task.FromResult(tenantResolution);
     }
 
+    /// <summary>
+    /// Ensures that the tenant resolution is available, either by returning the existing resolution or by resolving it using the tenant resolver if necessary.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token to observe.</param>
+    /// <returns>The tenant resolution.</returns>
     protected virtual async ValueTask<TenantResolution> EnsureTenantResolutionAsync(CancellationToken cancellationToken)
     {
         if (_tenantResolutionTask is not null)

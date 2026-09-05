@@ -24,8 +24,12 @@ using System.Text.RegularExpressions;
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Defines an implementation of <see cref="IEmailValidator"/> that uses a strict regular expression to validate email addresses.
+/// </summary>
 public partial class StrictEmailValidator : IEmailValidator
 {
+    /// <inheritdoc/>
     public Boolean IsValid(String? email)
     {
         if (String.IsNullOrWhiteSpace(email) || email.Length is < 3 or >= 255)
@@ -36,6 +40,18 @@ public partial class StrictEmailValidator : IEmailValidator
         return Strict().IsMatch(email);
     }
 
+    /// <inheritdoc/>
+    public Boolean IsValid(Email? email)
+    {
+        if (email is null)
+        {
+            return false;
+        }
+
+        return IsValid(email.ToString());
+    }
+
+    /// <inheritdoc/>
     public Boolean IsValid(EmailAddress? emailAddress)
     {
         if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))

@@ -24,8 +24,23 @@ using System.Linq.Expressions;
 
 namespace Aiel.Domain.Specifications;
 
+/// <summary>
+/// Defines a specification that can be used to determine if an object
+/// satisfies certain criteria.
+/// </summary>
+/// <typeparam name="T">The type of the object to evaluate.</typeparam>
 public interface ISpecification<T>
 {
+    /// <summary>
+    /// Determines whether the specified object satisfies the criteria defined by the specification.
+    /// </summary>
+    /// <param name="obj">The object to evaluate.</param>
+    /// <returns><c>true</c> if the object satisfies the criteria; otherwise, <c>false</c>.</returns>
     Boolean IsSatisfiedBy(T obj) => ToExpression().Compile().Invoke(obj);
+
+    /// <summary>
+    /// Converts the specification to a LINQ expression.
+    /// </summary>
+    /// <returns>An expression that represents the specification.</returns>
     public abstract Expression<Func<T, Boolean>> ToExpression();
 }

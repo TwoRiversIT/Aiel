@@ -26,8 +26,17 @@ using System.Text.Json.Serialization;
 
 namespace Aiel.StrongIds;
 
+/// <summary>
+/// Provides extension methods for configuring System.Text.Json to support serialization and deserialization of strongly-typed identifiers (Strong IDs).
+/// </summary>
 public static class StrongIdsSystemTextJson
 {
+    /// <summary>
+    /// Configures the provided <see cref="JsonSerializerOptions"/> instance to support serialization and deserialization of strongly-typed identifiers (Strong IDs).
+    /// </summary>
+    /// <param name="jsonSerializerOptions">The <see cref="JsonSerializerOptions"/> instance to configure.</param>
+    /// <returns>The configured <see cref="JsonSerializerOptions"/> instance.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the provided <see cref="JsonSerializerOptions"/> instance is read-only.</exception>
     public static JsonSerializerOptions ConfigureForStrongIds(this JsonSerializerOptions jsonSerializerOptions)
     {
         ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
@@ -46,8 +55,16 @@ public static class StrongIdsSystemTextJson
     }
 }
 
+/// <summary>
+/// A factory for creating JSON converters that support serialization and deserialization of strongly-typed identifiers (Strong IDs).
+/// </summary>
 public sealed class StrongIdJsonConverterFactory : JsonConverterFactory
 {
+    /// <summary>
+    /// Determines whether the specified type can be converted by this factory. This method checks if the type implements the <see cref="IStrongId{TValue}"/> interface.
+    /// </summary>
+    /// <param name="typeToConvert">The type to check for conversion support.</param>
+    /// <returns><c>true</c> if the type can be converted; otherwise, <c>false</c>.</returns>
     public override Boolean CanConvert(Type typeToConvert)
     {
         ArgumentNullException.ThrowIfNull(typeToConvert);
@@ -55,6 +72,13 @@ public sealed class StrongIdJsonConverterFactory : JsonConverterFactory
         return TryGetStrongIdType(typeToConvert, out _, out _);
     }
 
+    /// <summary>
+    /// Creates a JSON converter for the specified type. This method creates a converter for types that implement the <see cref="IStrongId{TValue}"/> interface, including nullable types.
+    /// </summary>
+    /// <param name="typeToConvert">The type to create a converter for.</param>
+    /// <param name="options">The <see cref="JsonSerializerOptions"/> to use.</param>
+    /// <returns>A <see cref="JsonConverter"/> for the specified type.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the specified type is not a supported Strong ID.</exception>
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         ArgumentNullException.ThrowIfNull(typeToConvert);

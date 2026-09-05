@@ -28,8 +28,18 @@ using System.Reflection;
 
 namespace Aiel.StrongIds;
 
+/// <summary>
+/// Provides extension methods for configuring strong ID properties in Entity Framework Core.
+/// </summary>
 public static class StrongIdPropertyBuilderExtensions
 {
+    /// <summary>
+    /// Configures a property to use a strong ID conversion for the specified strong ID type and underlying value type.
+    /// </summary>
+    /// <typeparam name="TStrongId">The strong ID type.</typeparam>
+    /// <typeparam name="TValue">The underlying value type.</typeparam>
+    /// <param name="propertyBuilder">The property builder to configure.</param>
+    /// <returns>The configured property builder.</returns>
     public static PropertyBuilder<TStrongId> HasStrongIdConversion<TStrongId, TValue>(this PropertyBuilder<TStrongId> propertyBuilder)
         where TStrongId : notnull, IStrongId<TValue>
     {
@@ -44,6 +54,13 @@ public static class StrongIdPropertyBuilderExtensions
         return propertyBuilder;
     }
 
+    /// <summary>
+    /// Configures a property to use a strong ID conversion for the specified nullable strong ID type and underlying value type.
+    /// </summary>
+    /// <typeparam name="TStrongId">The nullable strong ID type.</typeparam>
+    /// <typeparam name="TValue">The underlying value type.</typeparam>
+    /// <param name="propertyBuilder">The property builder to configure.</param>
+    /// <returns>The configured property builder.</returns>
     public static PropertyBuilder<TStrongId?> HasStrongIdConversion<TStrongId, TValue>(this PropertyBuilder<TStrongId?> propertyBuilder)
         where TStrongId : struct, IStrongId<TValue>
         where TValue : struct

@@ -31,11 +31,29 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// </remarks>
 public sealed class PermissionManifestSnapshotRecord
 {
+    /// <summary>
+    /// Gets or sets the unique identifier for the permission manifest snapshot record.
+    /// </summary>
     public Guid Id { get; set; }
+    /// <summary>
+    /// Gets or sets the stable identifier for the permission manifest snapshot record, which remains constant across permission renames.
+    /// </summary>
     public String StableId { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the previous permission name at the time of a rename migration.
+    /// </summary>
     public String PreviousPermissionName { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the new permission name after a rename migration.
+    /// </summary>
     public String NewPermissionName { get; set; } = String.Empty;
+    /// <summary>
+    /// Gets or sets the timestamp when the permission manifest snapshot record was created, indicating when the migration occurred.
+    /// </summary>
     public DateTimeOffset MigratedAt { get; set; }
 
+    /// <summary>
+    /// Gets or sets the associated permission catalog record for the permission manifest snapshot, establishing a relationship between the snapshot and the catalog.
+    /// </summary>
     public PermissionCatalogRecord Catalog { get; set; } = default!;
 }

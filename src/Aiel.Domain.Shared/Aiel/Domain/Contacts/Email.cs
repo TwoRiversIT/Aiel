@@ -30,13 +30,24 @@ using System.Xml.Serialization;
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Represents an email address with validation and comparison capabilities.
+/// </summary>
 [JsonConverter(typeof(EmailAddressJsonConverter))]
 [TypeConverter(typeof(EmailAddressTypeConverter))]
 public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
 {
+    /// <summary>
+    /// Gets a singleton instance of an empty email address. This can be used to represent an uninitialized or default email address.
+    /// </summary>
     public static readonly Email Empty = new();
     private String _email = String.Empty;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Email"/> class with the specified email address.
+    /// </summary>
+    /// <param name="email">The email address to initialize the instance with.</param>
+    /// <exception cref="ArgumentException">Thrown when the provided email is not valid.</exception>
     public Email(String email)
     {
         if (!String.IsNullOrWhiteSpace(email))
@@ -53,8 +64,18 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
 
     private Email() { _email = String.Empty; }
 
+    /// <summary>
+    /// Returns the string representation of the email address.
+    /// </summary>
+    /// <returns></returns>
     public override String ToString() => _email;
 
+    /// <summary>
+    /// Parses the specified string into an <see cref="Email"/> instance. If the string is not a valid email address, an <see cref="ArgumentException"/> is thrown.
+    /// </summary>
+    /// <param name="email">The string representation of the email address to parse.</param>
+    /// <returns>The parsed <see cref="Email"/> instance.</returns>
+    /// <exception cref="ArgumentException">Thrown when the provided string is not a valid email address.</exception>
     public static Email Parse(String? email)
     {
         if (TryParse(email, out var result))
@@ -65,6 +86,12 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
         throw new ArgumentException($"The string '{email}' is not a valid email.", nameof(email));
     }
 
+    /// <summary>
+    /// Attempts to parse the specified string into an <see cref="Email"/> instance. Returns true if the parsing was successful; otherwise, false.
+    /// </summary>
+    /// <param name="value">The string representation of the email address to parse.</param>
+    /// <param name="email">When this method returns, contains the parsed <see cref="Email"/> instance if the parsing was successful; otherwise, <see cref="Email.Empty"/>.</param>
+    /// <returns><c>true</c> if the parsing was successful; otherwise, <c>false</c>.</returns>
     public static Boolean TryParse(String? value, out Email email)
     {
         email = Empty;
@@ -79,20 +106,42 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
         }
     }
 
+    /// <summary>
+    /// Defines an implicit conversion from <see cref="Email"/> to <see cref="String"/>. This allows an <see cref="Email"/> instance to be used wherever a string is expected, automatically converting it to its string representation.
+    /// </summary>
+    /// <param name="email">The <see cref="Email"/> instance to convert to a string.</param>
     public static implicit operator String(Email email) => email.ToString();
 
+    /// <summary>
+    /// Defines an implicit conversion from <see cref="String"/> to <see cref="Email"/>. This allows a string to be used wherever an <see cref="Email"/> instance is expected, automatically converting it to an <see cref="Email"/> instance.
+    /// </summary>
+    /// <param name="email">The string representation of the email address to convert to an <see cref="Email"/> instance.</param>
     public static implicit operator Email(String? email) => email is null ? Empty : Parse(email);
 
+    /// <inheritdoc />
     public static Boolean operator <(Email left, Email right) => left.CompareTo(right) < 0;
 
+    /// <inheritdoc />
     public static Boolean operator <=(Email left, Email right) => left.CompareTo(right) <= 0;
 
+    /// <inheritdoc />
     public static Boolean operator >(Email left, Email right) => left.CompareTo(right) > 0;
 
+    /// <inheritdoc />
     public static Boolean operator >=(Email left, Email right) => left.CompareTo(right) >= 0;
 
+    /// <summary>
+    /// Compares the current <see cref="Email"/> instance with another <see cref="Email"/> instance and returns an integer that indicates their relative order. The comparison is case-insensitive and based on the string representations of the email addresses.
+    /// </summary>
+    /// <param name="other">The other <see cref="Email"/> instance to compare with the current instance.</param>
+    /// <returns>A signed integer that indicates the relative order of the instances being compared. Less than zero if the current instance is less than <paramref name="other"/>, zero if they are equal, and greater than zero if the current instance is greater than <paramref name="other"/>.</returns>
     public Int32 CompareTo(Email? other) => String.Compare(ToString(), other?.ToString(), StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Determines whether the current <see cref="Email"/> instance is equal to another <see cref="Email"/> instance. The comparison is case-insensitive and based on the string representations of the email addresses.
+    /// </summary>
+    /// <param name="other">The other <see cref="Email"/> instance to compare with the current instance.</param>
+    /// <returns><c>true</c> if the current instance is equal to the <paramref name="other"/> instance; otherwise, <c>false</c>.</returns>
     public Boolean Equals(Email? other)
     {
         if (other is null)
@@ -159,15 +208,23 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
         }
     }
 
+    /// <summary>
+    /// Determines whether the specified object is equal to the current <see cref="Email"/> instance. The comparison is case-insensitive and based on the string representations of the email addresses.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current <see cref="Email"/> instance.</param>
+    /// <returns><c>true</c> if the specified object is equal to the current <see cref="Email"/> instance; otherwise, <c>false</c>.</returns>
     public override Boolean Equals(Object? obj) => obj switch
     {
         Email email => Equals(email),
         _ => false
     };
 
+    /// <inheritdoc />
     public override Int32 GetHashCode() => _email?.GetHashCode() ?? 0;
 
+    /// <inheritdoc />
     public static Boolean operator ==(Email left, Email right) => left.Equals(right);
 
+    /// <inheritdoc />
     public static Boolean operator !=(Email left, Email right) => !(left == right);
 }

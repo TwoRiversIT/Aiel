@@ -25,31 +25,47 @@ using FluentValidation.Validators;
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Defines a FluentValidation validator for <see cref="Email"/> properties. Validation will fail if the value is not a valid email.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class EmailPropertyValidator<T>()
     : PropertyValidator<T, Email>
 {
+    /// <inheritdoc/>
     public override String Name => "EmailValidator";
 
+    /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, Email value)
         => EmailValidator.IsValid(value);
 }
 
+/// <summary>
+/// Defines a FluentValidation validator for nullable <see cref="Email"/> properties. Validation will fail if the value is not null and not a valid email.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class NullableEmailPropertyValidator<T>
     : PropertyValidator<T, Email?>
 {
+    /// <inheritdoc/>
     public override String Name => "NullableEmailValidator";
 
+    /// <inheritdoc/>
     protected override String GetDefaultMessageTemplate(String errorCode) => "Required";
 
+    /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, Email? value)
         // Null is not invalid
         => value is null || EmailValidator.IsValid(value);
 }
 
+/// <summary>
+/// Defines extension methods for FluentValidation rule builders to add <see cref="Email"/> validation.
+/// </summary>
 public static partial class EmailValidatorExtensions
 {
     /// <summary>
-    /// Defines a validator on the current rule builder for <see cref="Email?"/> properties. Validation will fail if the value is not null and not a valid Member Number.
+    /// Defines a validator on the current rule builder for nullable <see cref="Contacts.Email"/> properties. Validation will fail if the value is not null and not a valid email.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <param name="ruleBuilder"></param>

@@ -22,13 +22,13 @@
 
 namespace Aiel.Framework
 {
-    // <inherit />
+    /// <inheritdoc />
     public abstract class AielDependencyConfigurator : IConfigurator
     {
-        // <inherit />
+        /// <inheritdoc />
         public virtual ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 
-        // <inherit />
+        /// <inheritdoc />
         public virtual ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
     }
 }

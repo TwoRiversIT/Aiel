@@ -48,12 +48,12 @@ public interface IAggregateRoot
 /// Represents the root of an aggregate in Domain-Driven Design (DDD) with
 /// a strongly typed identifier. An
 /// </summary>
-/// <typeparam name="TId"></typeparam>
-public interface IAggregateRoot<TId> : IAggregateRoot
-    where TId : notnull, IStrongId
+/// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
+public interface IAggregateRoot<TKey> : IAggregateRoot
+    where TKey : notnull, IStrongId
 {
     /// <summary>
     /// Gets the unique identifier of the aggregate root.
     /// </summary>
-    TId Id { get; }
+    TKey Id { get; }
 }

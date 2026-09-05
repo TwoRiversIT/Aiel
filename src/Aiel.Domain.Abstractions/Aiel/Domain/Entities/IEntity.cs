@@ -20,12 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using Aiel.StrongIds;
 
-namespace Aiel.Domain;
+namespace Aiel.Domain.Entities;
 
 /// <summary>
-/// AielDomainShared is the dependency configurator for the Aiel.Domain.Shared library.
+/// Represents an entity with a strongly-typed identifier.
 /// </summary>
-[DependsOn(typeof(AielDomainAbstractions))]
-public sealed class AielDomainShared : AielDependencyConfigurator;
+public interface IEntity
+{
+    /// <summary>
+    /// Gets the unique identifier of the entity.
+    /// </summary>
+    IStrongId Id { get; }
+}
+
+/// <summary>
+/// Represents an entity with a strongly-typed identifier of type <typeparamref name="TKey"/>.
+/// </summary>
+/// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
+public interface IEntity<TKey> : IEntity
+    where TKey : notnull, IStrongId
+{
+    /// <summary>
+    /// Gets the unique identifier of the entity.
+    /// </summary>
+    new TKey Id { get; }
+}

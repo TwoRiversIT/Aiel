@@ -16,13 +16,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
-        <ProjectReference Include="..\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
+        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Aiel.Application.Contracts\Aiel.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Aiel.MultiTenancy\Aiel.MultiTenancy.csproj" />
         <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
-        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

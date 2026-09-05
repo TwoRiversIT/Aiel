@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -13,7 +13,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Domain\Aiel.Domain.csproj" />
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.Domain.Shared\Aiel.Domain.Shared.csproj" />
         <ProjectReference Include="..\Aiel.Emailing.Abstractions\Aiel.Emailing.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Results\Aiel.Results.csproj" />
     </ItemGroup>

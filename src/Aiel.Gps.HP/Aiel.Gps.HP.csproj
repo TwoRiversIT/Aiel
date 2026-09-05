@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -19,7 +19,7 @@
 
     <!-- Reference the source generator project as an analyzer to ensure it is used during compilation of this project. -->
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Aiel.Gps.HP.Generators\Aiel.Gps.HP.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" PrivateAssets="all" />
+        <ProjectReference Include="..\..\src\Aiel.Gps.HP.Generators\Aiel.Gps.HP.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

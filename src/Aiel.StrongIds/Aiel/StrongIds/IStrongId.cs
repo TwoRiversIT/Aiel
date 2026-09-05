@@ -36,7 +36,7 @@ public interface IStrongId
 /// <summary>
 /// Represents a strongly-typed identifier with a specific value type as the backing store.
 /// </summary>
-/// <typeparam name="TValue">The type of the value.</typeparam>
+/// <typeparam name="TValue">The type of the value. Supported types are Int16, Int32, Int64, UInt16, UInt32, UInt64, Guid, and String.</typeparam>
 public interface IStrongId<TValue> : IStrongId
 {
     /// <summary>

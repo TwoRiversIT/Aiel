@@ -12,15 +12,6 @@
         <GitVersionBaseDirectory>$(MSBuildThisFileDirectory)</GitVersionBaseDirectory>
     </PropertyGroup>
 
-    <!-- NBGV package reference
-    <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.91">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
-    -->
-
     <ItemGroup Condition="'$(IsTestProject)' == 'true'">
         <Using Include="AwesomeAssertions" />
         <Using Include="Moq" />

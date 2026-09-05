@@ -22,6 +22,10 @@
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Defines a comparer for <see cref="Email"/> objects that can compare based on local part first or domain part first.
+/// </summary>
+/// <param name="mode"></param>
 public class EmailComparer(EmailComparerMode mode = EmailComparerMode.LocalDomain) : IComparer<Email>
 {
     private static readonly String[] EmptyParts = [String.Empty, String.Empty];
@@ -30,6 +34,7 @@ public class EmailComparer(EmailComparerMode mode = EmailComparerMode.LocalDomai
 
     private record struct Parts(Int32 Local, Int32 Domain);
 
+    /// <inheritdoc/>
     public Int32 Compare(Email? x, Email? y)
     {
         if (x is null)

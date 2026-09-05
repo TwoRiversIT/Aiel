@@ -27,6 +27,9 @@ using System.Reflection;
 
 namespace Aiel.Multitenancy.EntityFrameworkCore;
 
+/// <summary>
+/// Provides extension methods for applying multi-tenant query filters to the Entity Framework Core model builder.
+/// </summary>
 public static class MultitenancyModelBuilderExtensions
 {
     private const BindingFlags InstanceNonPublic = BindingFlags.Instance | BindingFlags.NonPublic;
@@ -38,6 +41,11 @@ public static class MultitenancyModelBuilderExtensions
         typeof(MultitenancyDbContext).GetProperty("ResolvedTenantIdValue", InstanceNonPublic)
         ?? throw new InvalidOperationException("MultitenancyDbContext must expose ResolvedTenantIdValue.");
 
+    /// <summary>
+    /// Applies multi-tenant query filters to all entities implementing the IMultiTenant interface in the provided model builder.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder to apply the query filters to.</param>
+    /// <param name="dbContext">The multi-tenancy DbContext instance.</param>
     public static void ApplyMultiTenantQueryFilters(this ModelBuilder modelBuilder, MultitenancyDbContext dbContext)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);

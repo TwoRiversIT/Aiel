@@ -24,5 +24,8 @@ using Aiel.Framework;
 
 namespace Aiel.Authorization;
 
+/// <summary>
+/// AielAuthorization is the dependency configurator for the Aiel.Authorization library,
+/// </summary>
 [DependsOn(typeof(AielAuthorizationAbstractions))]
 public sealed class AielAuthorization : AielDependencyConfigurator;

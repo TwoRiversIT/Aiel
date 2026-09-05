@@ -27,6 +27,9 @@ using Aiel.Results;
 
 namespace Aiel.Application;
 
+/// <summary>
+/// Represents the application contracts module of the Aiel framework, which depends on the domain, emailing abstractions, and results modules.
+/// </summary>
 [DependsOn(typeof(AielDomain))]
 [DependsOn(typeof(AielEmailingAbstractions))]
 [DependsOn(typeof(AielResults))]

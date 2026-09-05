@@ -24,8 +24,20 @@ using Aiel.Results;
 
 namespace Aiel.Actions.Queries;
 
+/// <summary>
+/// Dispatches queries to their corresponding handlers.
+/// </summary>
 public interface IQueryDispatcher
 {
+    /// <summary>
+    /// Dispatches a query to its corresponding handler and returns the result.
+    /// </summary>
+    /// <typeparam name="TQuery"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="query"></param>
+    /// <param name="context"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     Task<Result<TResult>> DispatchAsync<TQuery, TResult>(
         TQuery query,
         IExecutionContext context,

@@ -35,6 +35,14 @@ namespace Aiel.Actions.Commands;
 /// </remarks>
 public interface ICommandDispatcher
 {
+    /// <summary>
+    /// Dispatches a command to its corresponding handler asynchronously and returns a result indicating the success or failure of the operation.
+    /// </summary>
+    /// <typeparam name="TCommand">The type of the command to dispatch.</typeparam>
+    /// <param name="command">The command instance to dispatch.</param>
+    /// <param name="context">The execution context.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A <see cref="Result"/> indicating the success or failure of the operation.</returns>
     Task<Result> DispatchAsync<TCommand>(
         TCommand command,
         IExecutionContext context,

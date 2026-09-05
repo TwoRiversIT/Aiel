@@ -22,9 +22,15 @@
 
 namespace Aiel.Emailing;
 
+/// <summary>
+/// Specifies the priority level of an email message.
+/// </summary>
 [Flags]
 public enum EmailMessagePriority
 {
+    /// <summary>
+    /// A sentinal value indicating that no specific priority level is assigned to the message.
+    /// </summary>
     None = 0,
 
     /// <summary>

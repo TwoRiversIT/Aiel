@@ -31,14 +31,29 @@ namespace Aiel.Actions.Queries;
 public abstract record QueryMultiple<TDto> : IQueryMultiple<TDto>
     where TDto : notnull
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with default sorting and paging.
+    /// </summary>
     protected QueryMultiple() { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with the specified sorting and paging.
+    /// </summary>
+    /// <param name="sortRequest">The sort order for the query results.</param>
+    /// <param name="pageRequest">The pagination information for the query results.</param>
     protected QueryMultiple(SortOrder? sortRequest = null, Page? pageRequest = null)
     {
         Sort = sortRequest ?? SortOrder.None;
         Page = pageRequest ?? Page.Default;
     }
 
+    /// <summary>
+    /// Gets or sets the sorting order for the query results. Defaults to <see cref="SortOrder.None"/>.
+    /// </summary>
     public SortOrder Sort { get; set; } = SortOrder.None;
+
+    /// <summary>
+    /// Gets or sets the pagination information for the query results. Defaults to <see cref="Page.Default"/>.
+    /// </summary>
     public Page Page { get; set; } = Page.Default;
 }

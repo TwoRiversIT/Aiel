@@ -25,9 +25,13 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Actions.Commands;
 
+/// <summary>
+/// AielActionsCommands is the dependency configurator for the Aiel.Actions.Commands library.
+/// </summary>
 [DependsOn(typeof(AielActions))]
 public sealed class AielActionsCommands : AielDependencyConfigurator
 {
+    /// <inheritdoc />
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
 

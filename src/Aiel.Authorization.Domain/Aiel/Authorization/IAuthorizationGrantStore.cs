@@ -27,10 +27,6 @@ namespace Aiel.Authorization;
 /// <summary>
 /// Provides raw persistence operations for permission grants.
 /// </summary>
-/// <remarks>
-/// This is an infrastructure-facing port. Business logic belongs in <see cref="IAuthorizationManager"/>,
-/// not here. Implementations live in the Infrastructure layer.
-/// </remarks>
 public interface IAuthorizationGrantStore
 {
     /// <summary>

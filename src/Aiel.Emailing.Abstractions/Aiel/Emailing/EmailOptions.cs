@@ -25,29 +25,88 @@ using Microsoft.Extensions.Options;
 
 namespace Aiel.Emailing;
 
+/// <summary>
+/// Represents the configuration options for email functionality.
+/// </summary>
 public class EmailOptions
 {
+    /// <summary>
+    /// Gets the name of the configuration section for email options.
+    /// </summary>
     public static readonly String SectionName = nameof(EmailOptions);
 
+    /// <summary>
+    /// Gets or sets the SMTP server address.
+    /// </summary>
     public String SmtpServer { get; set; } = "127.0.0.1";
+
+    /// <summary>
+    /// Gets or sets the SMTP server port.
+    /// </summary>
     public Int32 SmtpPort { get; set; } = 25;
+
+    /// <summary>
+    /// Gets or sets the username for SMTP authentication.
+    /// </summary>
     public String Username { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the password for SMTP authentication.
+    /// </summary>
     public String Password { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the display name for the sender.
+    /// </summary>
     public String FromName { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Gets or sets the email address of the sender.
+    /// </summary>
     public String FromAddress { get; set; } = String.Empty;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the email functionality is in test mode.
+    /// </summary>
     public Boolean TestMode { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the email address to use for testing when TestMode is enabled.
+    /// </summary>
     public String? TestAddress { get; set; }
+
+    /// <summary>
+    /// Gets or sets the display name to use for testing when TestMode is enabled.
+    /// </summary>
     public String? TestName { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether to use STARTTLS for secure email communication.
+    /// </summary>
     public Boolean UseStartTls { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use SSL for secure email communication.
+    /// </summary>
     public Boolean UseSSL { get; set; }
 }
 
+/// <summary>
+/// Validates the <see cref="EmailOptions"/> configuration options.
+/// </summary>
 public class EmailOptionsValidator : IValidateOptions<EmailOptions>
 {
+    /// <summary>
+    /// Gets the list of validation errors encountered during the validation process.
+    /// </summary>
     protected readonly List<String> Errors = [];
 
+    /// <summary>
+    /// Validates the specified <see cref="EmailOptions"/> instance.
+    /// </summary>
+    /// <param name="name">The name of the options instance being validated.</param>
+    /// <param name="options">The <see cref="EmailOptions"/> instance to validate.</param>
+    /// <returns>A <see cref="ValidateOptionsResult"/> indicating the result of the validation.</returns>
     public virtual ValidateOptionsResult Validate(String? name, EmailOptions options)
     {
         var key = String.IsNullOrWhiteSpace(name) ? nameof(EmailOptions) : name;

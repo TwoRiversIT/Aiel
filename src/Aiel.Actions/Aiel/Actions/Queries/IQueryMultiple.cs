@@ -22,11 +22,25 @@
 
 namespace Aiel.Actions.Queries;
 
+/// <summary>
+/// Defines a query that supports multiple results, sorting, and pagination.
+/// </summary>
 public interface IQueryMultiple
 {
+    /// <summary>
+    /// Gets the sorting order for the query results.
+    /// </summary>
     SortOrder Sort { get; }
+
+    /// <summary>
+    /// Gets the pagination information for the query results.
+    /// </summary>
     Page Page { get; }
 }
 
+/// <summary>
+/// Defines a query that supports multiple results, sorting, and pagination, returning a collection of <typeparamref name="TDto"/>.
+/// </summary>
+/// <typeparam name="TDto"></typeparam>
 public interface IQueryMultiple<TDto> : IQueryMultiple, IQuery<IReadOnlyCollection<TDto>>
     where TDto : notnull;

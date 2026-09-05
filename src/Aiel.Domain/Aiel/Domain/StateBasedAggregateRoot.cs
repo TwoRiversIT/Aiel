@@ -24,14 +24,25 @@ using Aiel.StrongIds;
 
 namespace Aiel.Domain;
 
+/// <summary>
+/// Represents an aggregate root that is based on state rather than events, meaning its state is directly managed and not derived from a sequence of domain events.
+/// </summary>
+/// <typeparam name="TKey">The type of the strong identifier for the aggregate root.</typeparam>
 public abstract class StateBasedAggregateRoot<TKey> : AggregateRoot<TKey>
     where TKey : notnull, IStrongId
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StateBasedAggregateRoot{TKey}"/> class with the specified identifier.
+    /// </summary>
+    /// <param name="id"></param>
     protected StateBasedAggregateRoot(TKey id)
         : base(id)
     {
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StateBasedAggregateRoot{TKey}"/> class.
+    /// </summary>
     protected StateBasedAggregateRoot()
     {
     }

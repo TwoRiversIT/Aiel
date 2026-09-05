@@ -22,9 +22,23 @@
 
 namespace Aiel.Actions.Queries;
 
+/// <summary>
+/// Specifies the direction in which to sort query results.
+/// </summary>
 public enum SortDirection
 {
+    /// <summary>
+    /// No sorting is applied.
+    /// </summary>
     None = 0,
+
+    /// <summary>
+    /// Sort the results in ascending order.
+    /// </summary>
     Ascending = 1,
+
+    /// <summary>
+    /// Sort the results in descending order.
+    /// </summary>
     Descending = 2
 }

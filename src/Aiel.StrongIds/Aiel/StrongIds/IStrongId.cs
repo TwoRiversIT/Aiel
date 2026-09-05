@@ -22,18 +22,42 @@
 
 namespace Aiel.StrongIds;
 
+/// <summary>
+/// Represents a strongly-typed identifier.
+/// </summary>
 public interface IStrongId
 {
+    /// <summary>
+    /// Gets a value indicating whether the identifier is the default value.
+    /// </summary>
     Boolean IsDefault { get; }
 }
 
+/// <summary>
+/// Represents a strongly-typed identifier with a specific value type as the backing store.
+/// </summary>
+/// <typeparam name="TValue">The type of the value.</typeparam>
 public interface IStrongId<TValue> : IStrongId
 {
+    /// <summary>
+    /// Gets the value of the strongly-typed identifier.
+    /// </summary>
     TValue Value { get; }
 }
 
+/// <summary>
+/// Provides extension methods for working with strongly-typed identifiers.
+/// </summary>
 public static class StrongIdExtensions
 {
+    /// <summary>
+    /// Throws an ArgumentException if the specified strongly-typed identifier is the default value.
+    /// </summary>
+    /// <typeparam name="T">The type of the strongly-typed identifier.</typeparam>
+    /// <param name="value">The strongly-typed identifier to check.</param>
+    /// <param name="parameterName">The name of the parameter.</param>
+    /// <returns>The strongly-typed identifier if it is not the default value.</returns>
+    /// <exception cref="ArgumentException"></exception>
     public static T ThrowIfDefault<T>(this T value, String parameterName)
         where T : IStrongId
     {
@@ -45,6 +69,14 @@ public static class StrongIdExtensions
         return value;
     }
 
+    /// <summary>
+    /// Throws an ArgumentException if the specified nullable strongly-typed identifier is the default value. Does not throw an exception for null values.
+    /// </summary>
+    /// <typeparam name="T">The type of the strongly-typed identifier.</typeparam>
+    /// <param name="value">The nullable strongly-typed identifier to check.</param>
+    /// <param name="parameterName">The name of the parameter.</param>
+    /// <returns>The nullable strongly-typed identifier if it is not the default value.</returns>
+    /// <exception cref="ArgumentException"></exception>
     public static T? ThrowIfDefault<T>(this T? value, String parameterName)
         where T : struct, IStrongId
     {

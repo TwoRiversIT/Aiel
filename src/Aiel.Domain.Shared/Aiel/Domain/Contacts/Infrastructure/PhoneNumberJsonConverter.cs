@@ -25,8 +25,18 @@ using System.Text.Json.Serialization;
 
 namespace Aiel.Domain.Contacts.Infrastructure;
 
+/// <summary>
+/// Defines a JSON converter for <see cref="PhoneNumber"/> instances, allowing them to be serialized and deserialized as JSON strings.
+/// </summary>
 public sealed class PhoneNumberJsonConverter : JsonConverter<PhoneNumber>
 {
+    /// <summary>
+    /// Reads and converts the JSON representation of a <see cref="PhoneNumber"/> object.
+    /// </summary>
+    /// <param name="reader">The <see cref="Utf8JsonReader"/> to read from.</param>
+    /// <param name="typeToConvert">The type of the object to convert.</param>
+    /// <param name="options">The serialization options to use.</param>
+    /// <returns>The converted <see cref="PhoneNumber"/> object.</returns>
     public override PhoneNumber? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -43,6 +53,12 @@ public sealed class PhoneNumberJsonConverter : JsonConverter<PhoneNumber>
         return PhoneNumber.Parse(value);
     }
 
+    /// <summary>
+    /// Writes a <see cref="PhoneNumber"/> object as a JSON string.
+    /// </summary>
+    /// <param name="writer">The <see cref="Utf8JsonWriter"/> to write to.</param>
+    /// <param name="value">The <see cref="PhoneNumber"/> value to write.</param>
+    /// <param name="options">The serialization options to use.</param>
     public override void Write(Utf8JsonWriter writer, PhoneNumber value, JsonSerializerOptions options)
     {
         writer.WriteStringValue(value.E164);

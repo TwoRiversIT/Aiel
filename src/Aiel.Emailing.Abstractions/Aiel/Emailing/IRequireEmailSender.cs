@@ -22,7 +22,14 @@
 
 namespace Aiel.Emailing;
 
+/// <summary>
+/// Defines a contract for classes that require an email sender to be set. Implementing classes can receive an instance of <see cref="IEmailSender"/> through the <see cref="SetSender"/> method, allowing them to send emails using the provided sender.
+/// </summary>
 public interface IRequireEmailSender
 {
+    /// <summary>
+    /// Sets the email sender to be used by the implementing class.
+    /// </summary>
+    /// <param name="sender">The email sender instance to set.</param>
     void SetSender(IEmailSender sender);
 }

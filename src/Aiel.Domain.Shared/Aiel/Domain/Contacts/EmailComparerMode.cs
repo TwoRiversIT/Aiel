@@ -22,8 +22,18 @@
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Defines the mode for comparing <see cref="Email"/> objects, either by local part first or domain part first.
+/// </summary>
 public enum EmailComparerMode
 {
+    /// <summary>
+    /// Compares by local part first, then domain part.
+    /// </summary>
     LocalDomain,
+
+    /// <summary>
+    /// Compares by domain part first, then local part.
+    /// </summary>
     DomainLocal
 }

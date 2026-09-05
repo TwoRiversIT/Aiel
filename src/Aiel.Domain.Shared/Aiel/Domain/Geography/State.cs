@@ -22,4 +22,10 @@
 
 namespace Aiel.Domain.Geography;
 
+/// <summary>
+/// Represents a US State with its name, code, and associated country.
+/// </summary>
+/// <param name="Name">The name of the state.</param>
+/// <param name="Code">The code of the state.</param>
+/// <param name="Country">The country to which the state belongs.</param>
 public sealed record State(String Name, String Code, Country Country) : IRegion;

@@ -40,9 +40,6 @@
         <PackageId>$(AssemblyName)</PackageId>
         <ErrorReport>send</ErrorReport>
 
-        <GenerateDocumentationFile>false</GenerateDocumentationFile>
-        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-
         <DebugType>portable</DebugType>
         <DebugSymbols>true</DebugSymbols>
 
@@ -88,10 +85,5 @@
         </PackageReference>
         <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets='All' />
     </ItemGroup>
-
-    <PropertyGroup Condition="'$(IsTestProject)' == 'false'">
-        <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-        <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
-    </PropertyGroup>
 
 </Project>

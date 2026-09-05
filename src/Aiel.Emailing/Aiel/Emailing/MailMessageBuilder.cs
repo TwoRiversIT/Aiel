@@ -30,6 +30,14 @@ using System.Text;
 
 namespace Aiel.Emailing;
 
+/// <summary>
+/// A builder class for constructing email messages with support for Markdown,
+/// HTML, and plain text content. This class allows you to set the sender,
+/// recipients, subject, body content, and attachments for an email message.
+/// It also provides validation to ensure that the constructed message is
+/// valid before sending.
+/// </summary>
+/// <param name="markdownRenderer">The markdown renderer used to convert markdown content to HTML.</param>
 public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     : IDisposable, IAsyncDisposable
 {
@@ -41,12 +49,29 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     private Boolean _built;
     private Boolean _disposed;
 
+    /// <summary>
+    /// Gets a value indicating whether the email message has any attachments.
+    /// </summary>
     public Boolean HasAttachments => _message.Attachments.Count > 0;
+    /// <summary>
+    /// Gets the subject of the email message.
+    /// </summary>
     public String Subject => _message.Subject ?? String.Empty;
 
+    /// <summary>
+    /// Sets the sender of the email message using the specified name and email address.
+    /// </summary>
+    /// <param name="name">The name of the sender.</param>
+    /// <param name="email">The email address of the sender.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder SendFrom(String name, Email email)
         => SendFrom(new EmailAddress(name, email));
 
+    /// <summary>
+    /// Sets the sender of the email message using the specified <see cref="EmailAddress"/>.
+    /// </summary>
+    /// <param name="emailAddress">The email address of the sender.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder SendFrom(EmailAddress emailAddress)
     {
         EnsureNotDisposedOrBuilt();
@@ -56,9 +81,20 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return this;
     }
 
+    /// <summary>
+    /// Sets the reply-to address of the email message using the specified name and email address.
+    /// </summary>
+    /// <param name="name">The name of the reply-to address.</param>
+    /// <param name="email">The email address of the reply-to address.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder ReplyTo(String name, Email email)
         => ReplyTo(new EmailAddress(name, email));
 
+    /// <summary>
+    /// Sets the reply-to address of the email message using the specified <see cref="EmailAddress"/>.
+    /// </summary>
+    /// <param name="emailAddress">The email address of the reply-to address.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder ReplyTo(EmailAddress emailAddress)
     {
         EnsureNotDisposedOrBuilt();
@@ -68,12 +104,28 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return this;
     }
 
+    /// <summary>
+    /// Sets the recipient of the email message using the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="principal">The claims principal representing the recipient.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder To(ClaimsPrincipal principal)
         => To(new EmailAddress(principal.FullName(), principal.Email()));
 
+    /// <summary>
+    /// Sets the recipient of the email message using the specified name and email address.
+    /// </summary>
+    /// <param name="name">The name of the recipient.</param>
+    /// <param name="email">The email address of the recipient.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder To(String name, Email email)
         => To(new EmailAddress(name, email));
 
+    /// <summary>
+    /// Sets the recipient of the email message using the specified <see cref="EmailAddress"/>.
+    /// </summary>
+    /// <param name="emailAddress">The email address of the recipient.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder To(EmailAddress emailAddress)
     {
         EnsureNotDisposedOrBuilt();
@@ -83,9 +135,20 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return this;
     }
 
+    /// <summary>
+    /// Sets the CC (carbon copy) recipient of the email message using the specified name and email address.
+    /// </summary>
+    /// <param name="name">The name of the CC recipient.</param>
+    /// <param name="email">The email address of the CC recipient.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder CC(String name, Email email)
         => CC(new EmailAddress(name, email));
 
+    /// <summary>
+    /// Sets the CC (carbon copy) recipient of the email message using the specified <see cref="EmailAddress"/>.
+    /// </summary>
+    /// <param name="emailAddress">The email address of the CC recipient.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder CC(EmailAddress emailAddress)
     {
         EnsureNotDisposedOrBuilt();
@@ -94,9 +157,20 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return this;
     }
 
+    /// <summary>
+    /// Sets the BCC (blind carbon copy) recipient of the email message using the specified name and email address.
+    /// </summary>
+    /// <param name="name">The name of the BCC recipient.</param>
+    /// <param name="email">The email address of the BCC recipient.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder BCC(String name, Email email)
         => BCC(new EmailAddress(name, email));
 
+    /// <summary>
+    /// Sets the BCC (blind carbon copy) recipient of the email message using the specified <see cref="EmailAddress"/>.
+    /// </summary>
+    /// <param name="emailAddress">The email address of the BCC recipient.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder BCC(EmailAddress emailAddress)
     {
         EnsureNotDisposedOrBuilt();
@@ -105,6 +179,11 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return this;
     }
 
+    /// <summary>
+    /// Sets the subject of the email message.
+    /// </summary>
+    /// <param name="subject">The subject of the email message.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder WithSubject(String subject)
     {
         if (String.IsNullOrWhiteSpace(subject))
@@ -119,6 +198,11 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return this;
     }
 
+    /// <summary>
+    /// Sets the priority of the email message.
+    /// </summary>
+    /// <param name="priority">The priority of the email message.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder WithPriority(MailPriority priority)
     {
         EnsureNotDisposedOrBuilt();
@@ -231,6 +315,14 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return this;
     }
 
+    /// <summary>
+    /// Adds an attachment to the email message with the specified name, file stream, and MIME type.
+    /// </summary>
+    /// <param name="name">The name of the attachment.</param>
+    /// <param name="file">The file stream of the attachment.</param>
+    /// <param name="mimeType">The MIME type of the attachment.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
+    /// <exception cref="ArgumentException">Thrown if the name or MIME type is null or whitespace, or if the file stream is not readable or empty.</exception>
     public MailMessageBuilder AddAttachment(String name, Stream file, String mimeType)
     {
         EnsureNotDisposedOrBuilt();
@@ -252,6 +344,12 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         return AddAttachment(new Attachment(file, name, mimeType));
     }
 
+    /// <summary>
+    /// Adds an attachment to the email message using the specified <see cref="Attachment"/> object.
+    /// </summary>
+    /// <param name="attachment">The attachment to be added to the email message.</param>
+    /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="attachment"/> is null.</exception>
     public MailMessageBuilder AddAttachment(Attachment attachment)
     {
         EnsureNotDisposedOrBuilt();
@@ -335,7 +433,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// </summary>
     /// <exception cref="InvalidOperationException">if the current state is invalid</exception>
     /// <remarks>
-    /// This is called automatically by the <see cref="Build"/> method.
+    /// This is called automatically by the <see cref="Build"/> method but can also be called manually to validate the current state.
     /// </remarks>
     public void Validate()
     {
@@ -379,12 +477,17 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         && !String.IsNullOrWhiteSpace(_message.Subject)
         && !String.IsNullOrWhiteSpace(Body());
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
     }
 
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="MailMessageBuilder"/> and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
     protected virtual void Dispose(Boolean disposing)
     {
         if (disposing && !_disposed)
@@ -402,6 +505,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         // Dispose unmanaged resources, if any.
     }
 
+    /// <inheritdoc/>
     [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "This calls Dispose() which takes care of the rest.")]
     public virtual ValueTask DisposeAsync()
     {

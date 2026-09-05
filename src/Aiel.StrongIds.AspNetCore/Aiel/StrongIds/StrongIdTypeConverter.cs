@@ -26,17 +26,41 @@ using System.Reflection;
 
 namespace Aiel.StrongIds;
 
+/// <summary>
+/// Provides a type converter for strong ID types that implement <see cref="IStrongId{TValue}"/>.
+/// </summary>
+/// <typeparam name="TStrongId"></typeparam>
+/// <typeparam name="TValue"></typeparam>
 public sealed class StrongIdTypeConverter<TStrongId, TValue> : TypeConverter
     where TStrongId : IStrongId<TValue>
 {
     private static readonly MethodInfo TryParseMethod = ResolveTryParseMethod();
 
+    /// <summary>
+    /// Determines whether this converter can convert an object of the given type to the strong ID type.
+    /// </summary>
+    /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
+    /// <param name="sourceType">The type to convert from.</param>
+    /// <returns>True if the conversion is possible; otherwise, false.</returns>
     public override Boolean CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
         => sourceType == typeof(String) || base.CanConvertFrom(context, sourceType);
 
+    /// <summary>
+    /// Determines whether this converter can convert the strong ID type to the given destination type.
+    /// </summary>
+    /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
+    /// <param name="destinationType">The type to convert the strong ID to.</param>
+    /// <returns>True if the conversion is possible; otherwise, false.</returns>
     public override Boolean CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
         => destinationType == typeof(String) || base.CanConvertTo(context, destinationType);
 
+    /// <summary>
+    /// Converts the specified value to the strong ID type.
+    /// </summary>
+    /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
+    /// <param name="culture">The <see cref="CultureInfo"/> to use as the current culture.</param>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>The converted strong ID value.</returns>
     public override Object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, Object value)
     {
         if (value is String stringValue)
@@ -55,6 +79,14 @@ public sealed class StrongIdTypeConverter<TStrongId, TValue> : TypeConverter
         return base.ConvertFrom(context, culture, value)!;
     }
 
+    /// <summary>
+    /// Converts the strong ID value to the specified destination type.
+    /// </summary>
+    /// <param name="context">An <see cref="ITypeDescriptorContext"/> that provides a format context.</param>
+    /// <param name="culture">The <see cref="CultureInfo"/> to use as the current culture.</param>
+    /// <param name="value">The value to convert.</param>
+    /// <param name="destinationType">The type to convert the strong ID to.</param>
+    /// <returns>The converted value.</returns>
     public override Object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, Object? value, Type destinationType)
     {
         if (destinationType == typeof(String) && value is TStrongId strongId)

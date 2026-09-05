@@ -22,10 +22,26 @@
 
 namespace Aiel.Domain.Geography;
 
+/// <summary>
+/// Represents a Canadian postal code, consisting of a Forward Sortation Area (FSA) and a Local Delivery Unit (LDU).
+/// </summary>
+/// <param name="FSA">The Forward Sortation Area of the postal code.</param>
+/// <param name="LDU">The Local Delivery Unit of the postal code.</param>
 public sealed record PostalCode(String FSA, String LDU) : IPostCode
 {
+    /// <summary>
+    /// Gets an empty <see cref="PostalCode"/> instance with empty FSA and LDU.
+    /// </summary>
     public static readonly PostalCode Empty = new(String.Empty, String.Empty);
+
+    /// <summary>
+    /// Gets the full postal code as a string in the format "FSA LDU".
+    /// </summary>
     public String Code => $"{FSA} {LDU}";
 
+    /// <summary>
+    /// Returns a string representation of the postal code in the format "FSA LDU".
+    /// </summary>
+    /// <returns>The full postal code as a string.</returns>
     public override String ToString() => Code;
 }

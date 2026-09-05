@@ -22,11 +22,44 @@
 
 namespace Aiel.Domain.Geography;
 
-public interface IRegion { String Name { get; } String Code { get; } }
+/// <summary>
+/// Represents a geographical region with a name and code. Usually a US State
+/// or a Canadian Province. This interface defines the contract for any region
+/// implementation, allowing for consistent access to region information
+/// across different parts of the application.
+/// </summary>
+public interface IRegion
+{
+    /// <summary>
+    /// Gets the name of the region.
+    /// </summary>
+    String Name { get; }
 
+    /// <summary>
+    /// Gets the code of the region.
+    /// </summary>
+    String Code { get; }
+}
+
+/// <summary>
+/// Represents an empty or uninitialized region. This can be used as a
+/// default value when no valid region is available.
+/// </summary>
 public sealed record Region() : IRegion
 {
+    /// <summary>
+    /// Gets a singleton instance of an empty region. This can be used to represent
+    /// a default value when no valid region is available.
+    /// </summary>
     public static readonly Region Empty = new();
+
+    /// <summary>
+    /// Gets the name of the region. For the empty region, this will always return an empty string.
+    /// </summary>
     public String Name => String.Empty;
+
+    /// <summary>
+    /// Gets the code of the region. For the empty region, this will always return an empty string.
+    /// </summary>
     public String Code => String.Empty;
 }

@@ -22,13 +22,39 @@
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Defines the gender of a contact. Even though this is a flags enum, only
+/// one gender should be assigned to a contact.
+/// </summary>
+/// <remarks>
+/// This flags enum is generally used for filtering and searching contacts
+/// by gender, not for assigning multiple genders to a single contact. For a single contact, only one gender should be assigned.
+/// </remarks>
 [Flags]
 public enum Gender
 {
+    /// <summary>
+    /// The default value indicating that no gender has been specified. This value should not be used for filtering or searching contacts.
+    /// </summary>
     None = 0,
+    /// <summary>
+    /// Indicates that the gender is male.
+    /// </summary>
     Male = 1,
+    /// <summary>
+    /// Indicates that the gender is female.
+    /// </summary>
     Female = 1 << 1,
+    /// <summary>
+    /// Indicates that the gender is non-binary.
+    /// </summary>
     NonBinary = 1 << 2,
+    /// <summary>
+    /// Indicates that the gender is other.
+    /// </summary>
     Other = 1 << 3,
+    /// <summary>
+    /// Indicates that the gender is prefer not to say.
+    /// </summary>
     PreferNotToSay = 1 << 4,
 }

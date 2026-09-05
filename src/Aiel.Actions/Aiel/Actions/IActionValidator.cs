@@ -29,8 +29,8 @@ namespace Aiel.Actions;
 /// </summary>
 /// <typeparam name="TAction">The action payload type.</typeparam>
 /// <remarks>
-/// Implement this interface per action type. The <see cref="IActionGate{TAction}"/> calls this
-/// before <see cref="IActionAuthorizationChecker{TAction}"/>; a validation failure short-circuits the gate.
+/// Implement this interface per action type. The Aiel.Authorization.IActionGate{TAction} calls this
+/// before IActionAuthorizationChecker{TAction}; a validation failure short-circuits the gate.
 /// </remarks>
 public interface IActionValidator<TAction>
     where TAction : IAction
@@ -41,8 +41,8 @@ public interface IActionValidator<TAction>
     /// <param name="context">The action execution context holding the payload and actor.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
     /// <returns>
-    /// <see cref="Result.Success()"/> when the action is valid;
-    /// a failed <see cref="Result"/> carrying a <see cref="AuthorizationValidationError"/> otherwise.
+    /// <see cref="Result.Success()"/> when the action is valid; /// otherwise a failed
+    /// <see cref="Result"/> with a AuthorizationValidationError.
     /// </returns>
     Task<Result> ValidateAsync(IActionExecutionContext<TAction> context, CancellationToken cancellationToken = default);
 }

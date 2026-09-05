@@ -24,7 +24,14 @@ using Aiel.Domain.Events;
 
 namespace Aiel.EventSourcing;
 
+/// <summary>
+/// Defines a contract for rehydrating an aggregate root from a history of domain events.
+/// </summary>
 public interface IRehydrateFromHistory
 {
+    /// <summary>
+    /// Rehydrates the aggregate root from the given history of domain events.
+    /// </summary>
+    /// <param name="history">The history of domain events.</param>
     void RehydrateFromHistory(IEnumerable<IDomainEvent> history);
 }

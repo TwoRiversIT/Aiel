@@ -26,6 +26,9 @@ using Aiel.StrongIds;
 
 namespace Aiel.Authorization;
 
+/// <summary>
+/// AielAuthorizationDomainShared is the dependency configurator for the Aiel.Authorization.Domain.Shared library,
+/// </summary>
 [DependsOn(typeof(AielResultsAbstractions))]
 [DependsOn(typeof(AielStrongIds))]
 public sealed class AielAuthorizationDomainShared : AielDependencyConfigurator;

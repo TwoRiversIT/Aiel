@@ -24,10 +24,22 @@ using Aiel.Results;
 
 namespace Aiel.Actions.Queries;
 
+/// <summary>
+/// Defines a handler for processing queries of type <typeparamref name="TQuery"/> and returning results of type <typeparamref name="TResult"/>.
+/// </summary>
+/// <typeparam name="TQuery"></typeparam>
+/// <typeparam name="TResult"></typeparam>
 public interface IQueryHandler<in TQuery, TResult>
     where TQuery : IQuery<TResult>
     where TResult : notnull
 {
+    /// <summary>
+    /// Handles the specified query and returns a result.
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="context"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     Task<Result<TResult>> HandleAsync(
         TQuery query,
         IExecutionContext context,

@@ -43,6 +43,9 @@ public class ParsingEmailValidator(IOptions<ParsingEmailValidatorOptions> option
     private const Char Dot = '.';
     private const Char At = '@';
 
+    /// <summary>
+    /// Gets the options for the parsing email validator.
+    /// </summary>
     protected ParsingEmailValidatorOptions Options { get; } = optionsAccessor.Value;
 
     [DebuggerStepThrough]
@@ -202,6 +205,18 @@ public class ParsingEmailValidator(IOptions<ParsingEmailValidatorOptions> option
             || result is UriHostNameType.IPv4;
     }
 
+    /// <inheritdoc/>
+    public Boolean IsValid(Email? email)
+    {
+        if (email is null || String.IsNullOrWhiteSpace(email))
+        {
+            return false;
+        }
+
+        return IsValid(email.ToString());
+    }
+
+    /// <inheritdoc/>
     public Boolean IsValid(EmailAddress? emailAddress)
     {
         if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))

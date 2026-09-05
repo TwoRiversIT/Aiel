@@ -24,18 +24,35 @@ using System.Linq.Expressions;
 
 namespace Aiel.Domain.Specifications;
 
+/// <summary>
+/// Represents an abstract specification that can be used to define business rules and criteria.
+/// </summary>
+/// <typeparam name="T">The type of the entity to which the specification applies.</typeparam>
 public abstract class AbstractSpecification<T> : ISpecification<T>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AbstractSpecification{T}"/> class.
+    /// </summary>
     protected AbstractSpecification() { }
 
+    /// <inheritdoc/>
     public virtual Boolean IsSatisfiedBy(T entity)
         => ToExpression().Compile().Invoke(entity);
 
+    /// <inheritdoc/>
     public abstract Expression<Func<T, Boolean>> ToExpression();
 
+    /// <inheritdoc/>
     public static implicit operator Expression<Func<T, Boolean>>(AbstractSpecification<T> specification)
         => specification.ToExpression();
 
+    /// <summary>
+    /// Combines two specifications using a specified combiner function.
+    /// </summary>
+    /// <param name="left">The left specification.</param>
+    /// <param name="right">The right specification.</param>
+    /// <param name="combiner">The function used to combine the results of the two specifications.</param>
+    /// <returns>A new specification that represents the combination of the two specifications.</returns>
     protected static AbstractSpecification<T> CombineSpecification(AbstractSpecification<T> left, AbstractSpecification<T> right, Func<Boolean, Boolean, Boolean> combiner)
     {
         ArgumentNullException.ThrowIfNull(left);
@@ -45,21 +62,30 @@ public abstract class AbstractSpecification<T> : ISpecification<T>
         return new ConstructedSpecification(entity => combiner(left.IsSatisfiedBy(entity), right.IsSatisfiedBy(entity)));
     }
 
+    /// <inheritdoc/>
     public override String ToString() => GetType().Name;
 
+    /// <inheritdoc/>
     public static AbstractSpecification<T> operator &(AbstractSpecification<T> left, AbstractSpecification<T> right)
         => CombineSpecification(left, right, (leftResult, rightResult) => leftResult && rightResult);
 
+    /// <inheritdoc/>
     public static AbstractSpecification<T> operator |(AbstractSpecification<T> left, AbstractSpecification<T> right)
         => CombineSpecification(left, right, (leftResult, rightResult) => leftResult || rightResult);
 
+    /// <inheritdoc/>
     public static AbstractSpecification<T> operator !(AbstractSpecification<T> spec)
         => new ConstructedSpecification(entity => !spec.IsSatisfiedBy(entity));
 
+    /// <summary>
+    /// Represents a constructed specification that is created from a given expression.
+    /// </summary>
+    /// <param name="expression">The expression used to create the specification.</param>
     protected class ConstructedSpecification(Expression<Func<T, Boolean>> expression) : AbstractSpecification<T>()
     {
         private readonly Expression<Func<T, Boolean>> _expression = expression;
 
+        /// <inheritdoc/>
         public override Expression<Func<T, Boolean>> ToExpression() => _expression;
     }
 }

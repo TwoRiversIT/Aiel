@@ -29,11 +29,16 @@ using Microsoft.Extensions.Options;
 
 namespace Aiel.Emailing;
 
+/// <summary>
+/// Represents the emailing module of the Aiel framework, which depends on
+/// the shared domain, security, and emailing abstractions modules.
+/// </summary>
 [DependsOn(typeof(AielDomainShared))]
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielEmailingAbstractions))]
 public sealed class AielEmailing : AielDependencyConfigurator
 {
+    /// <inheritdoc/>
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.TryAddSingleton<IValidateOptions<EmailOptions>, EmailOptionsValidator>();

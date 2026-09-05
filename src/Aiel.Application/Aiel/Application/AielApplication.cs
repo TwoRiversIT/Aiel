@@ -26,6 +26,10 @@ using Aiel.Results;
 
 namespace Aiel.Application;
 
+/// <summary>
+/// Represents the application module of the Aiel framework, which depends on
+/// the application contracts, domain, and results modules.
+/// </summary>
 [DependsOn(typeof(AielApplicationContracts))]
 [DependsOn(typeof(AielDomain))]
 [DependsOn(typeof(AielResults))]

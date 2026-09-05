@@ -25,8 +25,18 @@ using System.Text.Json;
 
 namespace Aiel.Results;
 
+/// <summary>
+/// Provides extension methods for <see cref="HttpClient"/> to send requests and receive results as <see cref="Result"/> or <see cref="Result{TValue}"/>.
+/// </summary>
 public static class ResultHttpClientExtensions
 {
+    /// <summary>
+    /// Sends a GET request to the specified URI and returns the result.
+    /// </summary>
+    /// <param name="client">The HTTP client to send the request.</param>
+    /// <param name="requestUri">The URI of the request.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous operation, containing the result.</returns>
     public static async Task<Result> GetResultAsync(this HttpClient client, String requestUri, CancellationToken cancellationToken = default)
     {
         try

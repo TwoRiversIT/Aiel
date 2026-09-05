@@ -25,28 +25,44 @@ using FluentValidation.Validators;
 
 namespace Aiel.Domain.Contacts;
 
+/// <summary>
+/// Defines a FluentValidation validator for <see cref="EmailAddress"/> properties. Validation will fail if the value is not a valid email address.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class EmailAddressPropertyValidator<T>()
     : PropertyValidator<T, EmailAddress>
 {
+    /// <inheritdoc/>
     public override String Name => "EmailAddressValidator";
 
+    /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, EmailAddress value)
         => EmailValidator.IsValid(value);
 }
 
+/// <summary>
+/// Defines a FluentValidation validator for nullable <see cref="EmailAddress"/> properties. Validation will fail if the value is not null and not a valid email address.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class NullableEmailAddressPropertyValidator<T>
     : PropertyValidator<T, EmailAddress?>
 {
+    /// <inheritdoc/>
     public override String Name => "NullableEmailAddressValidator";
 
+    /// <inheritdoc/>
     protected override String GetDefaultMessageTemplate(String errorCode) => "Required";
 
+    /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, EmailAddress? value)
         // Null is not invalid
         => value is null || EmailValidator.IsValid(value);
 }
 
-public static partial class EmailAddressValidatorExtensions
+/// <summary>
+/// Defines extension methods for FluentValidation rule builders to add <see cref="EmailAddress"/> validation.
+/// </summary>
+public static class EmailAddressValidatorExtensions
 {
     /// <summary>
     /// Defines a validator on the current rule builder for <see cref="EmailAddress"/> properties. Validation will fail if the value is not null and not a valid Member Number.

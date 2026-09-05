@@ -26,6 +26,9 @@ using Aiel.Results;
 
 namespace Aiel.Authorization;
 
+/// <summary>
+/// Represents the authorization domain module of the Aiel framework, which depends on the shared authorization domain, domain, and results modules.
+/// </summary>
 [DependsOn(typeof(AielAuthorizationDomainShared))]
 [DependsOn(typeof(AielDomain))]
 [DependsOn(typeof(AielResults))]

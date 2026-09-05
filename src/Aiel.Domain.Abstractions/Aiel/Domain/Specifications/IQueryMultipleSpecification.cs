@@ -24,8 +24,16 @@ using Aiel.Actions.Queries;
 
 namespace Aiel.Domain.Specifications;
 
+/// <summary>
+/// Defines a specification that is intended to return multiple entities of
+/// type <typeparamref name="T"/>.
+/// </summary>
+/// <typeparam name="T">The type of the entities to query.</typeparam>
 public interface IQueryMultipleSpecification<T> : IQueryMultiple<T>
     where T : notnull
 {
+    /// <summary>
+    /// Gets the filtering specification to apply when querying the entities.
+    /// </summary>
     ISpecification<T> Specification { get; }
 }

@@ -25,31 +25,47 @@ using FluentValidation.Validators;
 
 namespace Aiel.Domain.Geography;
 
+/// <summary>
+/// Defines a FluentValidation property validator for <see cref="PostalCode"/> properties. Validation will fail if the value is not a valid postal code.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class PostalCodePropertyValidator<T>()
     : PropertyValidator<T, PostalCode>
 {
+    /// <inheritdoc/>
     public override String Name => "PostalCodeValidator";
 
+    /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, PostalCode value)
         => value.IsValidPostalCode();
 }
 
+/// <summary>
+/// Defines a FluentValidation property validator for nullable <see cref="PostalCode"/> properties. Validation will fail if the value is not null and not a valid postal code.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class NullablePostalCodePropertyValidator<T>
     : PropertyValidator<T, PostalCode?>
 {
+    /// <inheritdoc/>
     public override String Name => "NullablePostalCodeValidator";
 
+    /// <inheritdoc/>
     protected override String GetDefaultMessageTemplate(String errorCode) => "Required";
 
+    /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, PostalCode? value)
         // Null is not invalid
         => value is null || value.IsValidPostalCode();
 }
 
+/// <summary>
+/// Defines extension methods for FluentValidation rule builders to add postal code validation rules.
+/// </summary>
 public static partial class PostalCodeValidatorExtensions
 {
     /// <summary>
-    /// Defines a validator on the current rule builder for <see cref="PostalCode?"/> properties. Validation will fail if the value is not null and not a valid Member Number.
+    /// Defines a validator on the current rule builder for nullable <see cref="PostalCode"/> properties. Validation will fail if the value is not null and not a valid postal code.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <param name="ruleBuilder"></param>
@@ -58,18 +74,28 @@ public static partial class PostalCodeValidatorExtensions
         => ruleBuilder.SetValidator(new NullablePostalCodePropertyValidator<TRequest>());
 }
 
+/// <summary>
+/// Defines a FluentValidation property validator for <see cref="String"/> properties that represent Canadian postal codes. Validation will fail if the string is not a valid Canadian postal code.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class CanadianPostalCodePropertyValidator<T> : PropertyValidator<T, String>
 {
+    /// <inheritdoc/>
     public override String Name => "Canadian Postal Code Validator";
 
+    /// <inheritdoc/>
     protected override String GetDefaultMessageTemplate(String errorCode)
         => "Please enter a valid Canadian Postal Code in the format of 'H0H 0H0'.";
 
+    /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, String value)
         // Null is not invalid
         => value?.IsValidPostalCode() != false;
 }
 
+/// <summary>
+/// Defines extension methods for FluentValidation rule builders to add Canadian postal code validation rules.
+/// </summary>
 public static class CanadianPostalCodePropertyValidatorExtensions
 {
     /// <summary>

@@ -24,13 +24,29 @@ using Riok.Mapperly.Abstractions;
 
 namespace Aiel.Authorization;
 
+/// <summary>
+/// Represents a static class that provides mapping methods for
+/// authorization-related objects, specifically for mapping between
+/// <see cref="AuthorizationGrant"/> and <see cref="AuthorizationGrantDto"/>.
+/// </summary>
 [Mapper]
 public static partial class AuthorizationMapper
 {
+    /// <summary>
+    /// Maps an <see cref="AuthorizationGrant"/> to an <see cref="AuthorizationGrantDto"/>.
+    /// </summary>
+    /// <param name="grant">The authorization grant to map.</param>
+    /// <returns>The mapped authorization grant DTO.</returns>
     [MapProperty(nameof(AuthorizationGrant.Id), nameof(AuthorizationGrantDto.GrantId))]
     [MapperIgnoreSource(nameof(AuthorizationGrant.PermissionStableId))]
     [MapperIgnoreSource(nameof(AuthorizationGrant.DomainEvents))]
     [MapperIgnoreSource(nameof(AuthorizationGrant.Version))]
     public static partial AuthorizationGrantDto ToDto(this AuthorizationGrant grant);
+
+    /// <summary>
+    /// Maps a collection of <see cref="AuthorizationGrant"/> objects to a read-only list of <see cref="AuthorizationGrantDto"/> objects.
+    /// </summary>
+    /// <param name="grants"></param>
+    /// <returns></returns>
     public static partial IReadOnlyList<AuthorizationGrantDto> ToDto(this IEnumerable<AuthorizationGrant> grants);
 }

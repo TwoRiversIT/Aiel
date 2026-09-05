@@ -22,9 +22,21 @@
 
 namespace Aiel.Domain.Geography;
 
+/// <summary>
+/// Represents a US ZIP code with an optional 4-digit extension (ZIP+4).
+/// </summary>
+/// <param name="Zip">The 5-digit ZIP code.</param>
+/// <param name="PlusFour">The optional 4-digit ZIP+4 extension.</param>
 public sealed record ZipCode(Int32 Zip, Int32 PlusFour = 0) : IPostCode
 {
+    /// <summary>
+    /// Gets the full ZIP code as a string in the format "ZIP" or "ZIP-PlusFour" if the PlusFour is greater than 0.
+    /// </summary>
     public String Code => PlusFour > 0 ? $"{Zip}-{PlusFour:D4}" : Zip.ToString();
 
+    /// <summary>
+    /// Returns a string representation of the ZIP code in the format "ZIP" or "ZIP-PlusFour" if the PlusFour is greater than 0.
+    /// </summary>
+    /// <returns>The string representation of the ZIP code.</returns>
     public override String ToString() => Code;
 }

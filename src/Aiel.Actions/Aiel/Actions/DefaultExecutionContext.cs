@@ -24,7 +24,7 @@ namespace Aiel.Actions;
 
 /// <summary>
 /// The default implementation of <see cref="IExecutionContext"/>.
-/// Identity properties are set once at construction; the <see cref="Properties"/> dictionary is
+/// Identity properties are set once at construction; the <see cref="ExecutionContextBase.Properties"/> dictionary is
 /// openly mutable for the lifetime of the context.
 /// </summary>
 public sealed class DefaultExecutionContext(
@@ -40,8 +40,8 @@ public sealed class DefaultExecutionContext(
 
     /// <summary>
     /// Creates a child execution context that inherits the correlation chain from <paramref name="parent"/>.
-    /// The child receives a new <see cref="OperationId"/>; the parent’s <see cref="OperationId"/> becomes
-    /// the child’s <see cref="CausationId"/>.
+    /// The child receives a new <see cref="ExecutionContextBase.OperationId"/>; the parent’s <see cref="ExecutionContextBase.OperationId"/> becomes
+    /// the child’s <see cref="ExecutionContextBase.CausationId"/>.
     /// </summary>
     /// <param name="parent">The parent context from which causation information is derived.</param>
     public static IExecutionContext CreateChild(IExecutionContext parent)
@@ -74,11 +74,13 @@ public sealed class DefaultExecutionContext(
     /// <summary>
     /// Creates a root execution context, optionally anchoring it to an existing correlation or client instance.
     /// </summary>
+    /// <param name="actor"></param>
     /// <param name="correlationId">
     /// The correlation ID for the request chain.  When <see langword="null"/>, a new ID is generated
-    /// and used as both the <see cref="OperationId"/> and the <see cref="CorrelationId"/>.
+    /// and used as both the <see cref="ExecutionContextBase.OperationId"/> and the <see cref="ExecutionContextBase.CorrelationId"/>.
     /// </param>
     /// <param name="clientInstanceId">An optional identifier for the originating client instance.</param>
+    /// <param name="timestamp"></param>
     public static DefaultExecutionContext CreateRoot(
         IActor actor,
         Guid? correlationId = null,

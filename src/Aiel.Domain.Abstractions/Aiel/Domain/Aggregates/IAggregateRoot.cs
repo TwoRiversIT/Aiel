@@ -25,15 +25,35 @@ using Aiel.StrongIds;
 
 namespace Aiel.Domain.Aggregates;
 
+/// <summary>
+/// Represents the root of an aggregate in Domain-Driven Design (DDD). An
+/// aggregate root is responsible for maintaining the consistency of the
+/// aggregate and managing its lifecycle. It can raise domain events to
+/// notify other parts of the system about changes within the aggregate.
+/// </summary>
 public interface IAggregateRoot
 {
+    /// <summary>
+    /// Gets the list of domain events that have been raised by the aggregate root.
+    /// </summary>
     IReadOnlyList<IDomainEvent> DomainEvents { get; }
 
+    /// <summary>
+    /// Clears all domain events that have been raised by the aggregate root.
+    /// </summary>
     void ClearDomainEvents();
 }
 
+/// <summary>
+/// Represents the root of an aggregate in Domain-Driven Design (DDD) with
+/// a strongly typed identifier. An
+/// </summary>
+/// <typeparam name="TId"></typeparam>
 public interface IAggregateRoot<TId> : IAggregateRoot
     where TId : notnull, IStrongId
 {
+    /// <summary>
+    /// Gets the unique identifier of the aggregate root.
+    /// </summary>
     TId Id { get; }
 }

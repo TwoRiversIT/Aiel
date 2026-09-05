@@ -32,6 +32,7 @@ namespace Aiel.MultiTenancy;
 [DependsOn(typeof(AielMultiTenancyAbstractions))]
 public sealed class AielMultiTenancy : AielDependencyConfigurator
 {
+    /// <inheritdoc />
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         context.Services.TryAddSingleton<ICurrentTenantAccessor, CurrentTenantAccessor>();

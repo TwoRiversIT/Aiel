@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.StrongIds.Generators</AssemblyName>
         <TargetFramework>netstandard2.0</TargetFramework>
         <IsGenerator>true</IsGenerator>
         <IsPackable>true</IsPackable>

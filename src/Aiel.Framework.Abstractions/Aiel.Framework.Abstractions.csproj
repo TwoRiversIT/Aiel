@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Framework.Abstractions</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <!--
         Intentionally disabling Implicit Usings to support Aiel.Framework.UnitTests.Stubs

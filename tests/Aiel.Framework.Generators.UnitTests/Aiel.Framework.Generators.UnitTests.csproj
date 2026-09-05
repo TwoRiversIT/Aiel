@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Framework.Generators.UnitTests</AssemblyName>
         <TargetFrameworks>net10.0</TargetFrameworks>
         <IsToolingTests>true</IsToolingTests>
     </PropertyGroup>

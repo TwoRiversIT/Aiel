@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Gps.HP.Generators.UnitTests</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <NoWarn>$(NoWarn);NU1603</NoWarn>
     </PropertyGroup>

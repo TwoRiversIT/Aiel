@@ -157,7 +157,7 @@ public class DispatcherTests
     }
 
     [Fact]
-    [SuppressMessage("AielUsage", "AIEL00005:Multiple mediator dispatch calls in a single method", Justification = "<Pending>")]
+    [UnconditionalSuppressMessage("AielUsage", "AIEL00005:Multiple mediator dispatch calls in a single method", Justification = "<Pending>")]
     public async Task ExecuteAsync_creates_a_new_scope_for_each_dispatch()
     {
         var cancellationToken = TestContext.Current.CancellationToken;

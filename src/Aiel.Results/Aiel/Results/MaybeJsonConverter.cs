@@ -28,17 +28,6 @@ namespace Aiel.Results;
 /// <summary>
 /// Provides a custom JSON converter for <see cref="Maybe{T}"/> using System.Text.Json.
 /// </summary>
-/// <remarks>
-/// <para>
-/// <see cref="Maybe{T}.Some(T)"/> is written as the bare underlying value and <see cref="Maybe{T}.None"/> is
-/// written as <see langword="null"/>. The wrapper does not appear in the JSON, so API contracts stay clean
-/// for consumers that have no notion of <see cref="Maybe{T}"/>.
-/// </para>
-/// <para>
-/// The absence of a wrapper on the wire does not weaken the guarantee: it is the type system, not the JSON,
-/// that forces callers to handle the empty case.
-/// </para>
-/// </remarks>
 /// <typeparam name="T">The type of the value that may be present.</typeparam>
 public sealed class MaybeJsonConverter<T> : JsonConverter<Maybe<T>>
     where T : notnull

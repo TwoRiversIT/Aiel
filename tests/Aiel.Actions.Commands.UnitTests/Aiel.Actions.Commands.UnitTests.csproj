@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -11,8 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" />
+        <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
+        <ProjectReference Include="..\..\src\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        -->
+        <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>

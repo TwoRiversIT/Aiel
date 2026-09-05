@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -36,8 +36,11 @@
     not themselves packed as dependencies.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
-        <ProjectReference Include="..\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
+        <ProjectReference Include="..\Aiel.Authorization.Analyzers\Aiel.Authorization.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        -->
+        <ProjectReference Include="..\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
@@ -45,7 +48,6 @@
         <ProjectReference Include="..\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
-        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
     </ItemGroup>
 
 </Project>

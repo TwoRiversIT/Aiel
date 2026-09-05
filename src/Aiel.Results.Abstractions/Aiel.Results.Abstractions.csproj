@@ -30,7 +30,9 @@
     not themselves packed as dependencies.
     -->
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
+        <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        -->
         <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
 

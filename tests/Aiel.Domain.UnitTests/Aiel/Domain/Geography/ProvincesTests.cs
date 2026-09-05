@@ -39,7 +39,7 @@ public class ProvincesTests
         var allProvinces = Provinces.All.ToList();
 
         // Assert
-        allProvinces.Count.Should().Be(expectedProvinces.Length);
+        allProvinces.Should().HaveCount(expectedProvinces.Length);
         expectedProvinces.Should().AllSatisfy(province => allProvinces.Should().Contain(province));
     }
 

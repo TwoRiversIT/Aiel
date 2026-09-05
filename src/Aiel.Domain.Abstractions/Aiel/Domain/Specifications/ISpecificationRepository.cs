@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions.Queries;
+using Aiel.Results;
 
 namespace Aiel.Domain.Specifications;
 

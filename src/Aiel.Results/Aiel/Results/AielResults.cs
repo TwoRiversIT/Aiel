@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
 using Aiel.Framework;
 
 namespace Aiel.Results;
@@ -29,5 +30,6 @@ namespace Aiel.Results;
 /// which provides abstractions and implementations for handling results in
 /// a structured manner.
 /// </summary>
+[DependsOn(typeof(AielActionsAbstractions))]
 [DependsOn(typeof(AielResultsAbstractions))]
 public sealed class AielResults : AielDependencyConfigurator;

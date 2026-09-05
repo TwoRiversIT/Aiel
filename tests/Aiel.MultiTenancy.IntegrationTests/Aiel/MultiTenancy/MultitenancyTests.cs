@@ -102,5 +102,4 @@ public class MultitenancyTests
 
         public String Name { get; set; } = String.Empty;
     }
-
 }

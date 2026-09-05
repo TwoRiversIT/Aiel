@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Actions</AssemblyName>
+        <AssemblyName>Aiel.Actions.Abstractions</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>true</IsPackable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -13,12 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.11" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Aiel.Actions.Abstractions\Aiel.Actions.Abstractions.csproj" />
-      <ProjectReference Include="..\Aiel.Utilities\Aiel.Utilities.csproj" />
+        <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

@@ -30,7 +30,4 @@ namespace Aiel.Multitenancy.EntityFrameworkCore;
 /// Framework, which depends on the multitenancy module.
 /// </summary>
 [DependsOn(typeof(AielMultiTenancy))]
-public class AielMultitenancyEntityFrameworkCore : AielDependencyConfigurator
-{
-
-}
+public class AielMultitenancyEntityFrameworkCore : AielDependencyConfigurator;

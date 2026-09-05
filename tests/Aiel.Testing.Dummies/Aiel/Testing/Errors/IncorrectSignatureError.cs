@@ -30,7 +30,7 @@ namespace Aiel.Testing.Errors;
 // not generate the derived error class because it has an incorrect signature,
 // but we want to include this class in the unit tests to verify that the code
 // analyzer correctly identifies and reports the error.
-[SuppressMessage("AielUsage", "AIEL00002:Types derived from Error must have a constructor that accepts a single string parameter", Justification = "<Pending>")]
+[UnconditionalSuppressMessage("AielUsage", "AIEL00002:Types derived from Error must have a constructor that accepts a single string parameter", Justification = "<Pending>")]
 public sealed class IncorrectSignatureError : Error
 {
     // This is a workaround to allow the code to compile so that the unit

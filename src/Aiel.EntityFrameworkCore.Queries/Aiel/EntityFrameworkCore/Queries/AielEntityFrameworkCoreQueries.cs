@@ -29,7 +29,4 @@ namespace Aiel.EntityFrameworkCore.Queries;
 [DependsOn(typeof(AielActionsQueries))]
 [DependsOn(typeof(AielDomainAbstractions))]
 [DependsOn(typeof(AielEntityFrameworkCore))]
-public sealed class AielEntityFrameworkCoreQueries : AielDependencyConfigurator
-{
-
-}
+public sealed class AielEntityFrameworkCoreQueries : AielDependencyConfigurator;

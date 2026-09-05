@@ -56,7 +56,7 @@ public class NullablePostalCodePropertyValidator<T>
     /// <inheritdoc/>
     public override Boolean IsValid(ValidationContext<T> context, PostalCode? value)
         // Null is not invalid
-        => value is null || value.IsValidPostalCode();
+        => value?.IsValidPostalCode() != false;
 }
 
 /// <summary>

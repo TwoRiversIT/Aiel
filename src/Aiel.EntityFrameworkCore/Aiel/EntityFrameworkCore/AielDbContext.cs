@@ -119,6 +119,7 @@ public class AielDbContext : DbContext, IUnitOfWork
                     {
                         modified.AuditUpdate(auditIdentity, timestamp);
                     }
+
                     break;
 
                 case EntityState.Deleted:

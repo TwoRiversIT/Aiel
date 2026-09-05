@@ -22,7 +22,7 @@
 
 using System.Data;
 
-namespace Aiel.DataAccess;
+namespace Aiel.EntityFrameworkCore;
 
 /// <summary>
 /// Provides methods to create database connection instances.

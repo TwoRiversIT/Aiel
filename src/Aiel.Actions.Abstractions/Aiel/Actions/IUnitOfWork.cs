@@ -20,12 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.MultiTenancy;
+namespace Aiel.Actions;
 
-namespace Aiel.EntityFrameworkCore;
-
-internal class TestHelper
+/// <summary>
+/// Defines a contract for a unit of work that can be used to manage transactions and persist changes to a data store.
+/// </summary>
+public interface IUnitOfWork
 {
-    public static CurrentTenant BuildTenant(TenantId? id = null, String? name = null, String? hostHint = null)
-        => new DefaultCurrentTenant(id ?? TenantId.From(Guid.NewGuid()), name ?? "Tenant", hostHint ?? "tenant.example.com");
+    /// <summary>
+    /// Commits all changes made in the current unit of work to the underlying data store.
+    /// </summary>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>The number of state entries written to the underlying database.</returns>
+    Task<Int32> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

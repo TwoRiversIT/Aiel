@@ -131,6 +131,7 @@
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />
     <File Path="src/Directory.Build.targets" />
+    <Project Path="src/Aiel.Actions.Abstractions/Aiel.Actions.Abstractions.csproj" Id="81129a84-5f66-4c36-90e5-072c7610b698" />
     <Project Path="src/Aiel.Actions.Commands/Aiel.Actions.Commands.csproj" />
     <Project Path="src/Aiel.Actions.Queries.FluentValidation/Aiel.Actions.Queries.FluentValidation.csproj" Id="832f88eb-4edc-424d-b119-335ed8823b63" />
     <Project Path="src/Aiel.Actions.Queries/Aiel.Actions.Queries.csproj" />

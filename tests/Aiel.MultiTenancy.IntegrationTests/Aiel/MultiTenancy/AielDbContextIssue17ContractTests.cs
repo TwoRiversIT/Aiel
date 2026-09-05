@@ -21,12 +21,11 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Multitenancy.EntityFrameworkCore;
-using Aiel.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Aiel.EntityFrameworkCore;
+namespace Aiel.MultiTenancy;
 
 public sealed class AielDbContextIssue17ContractTests
 {

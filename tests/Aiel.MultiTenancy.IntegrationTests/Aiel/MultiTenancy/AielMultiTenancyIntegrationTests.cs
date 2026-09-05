@@ -23,7 +23,7 @@
 using Aiel.Framework;
 using Aiel.Multitenancy.EntityFrameworkCore;
 
-namespace Aiel.MultiTenancy.IntegrationTests.Aiel.MultiTenancy;
+namespace Aiel.MultiTenancy;
 
 [DependsOn(typeof(AielMultiTenancyUnitTests))]
 [DependsOn(typeof(AielMultitenancyEntityFrameworkCore))]

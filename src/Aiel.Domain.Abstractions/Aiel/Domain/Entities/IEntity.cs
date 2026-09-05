@@ -20,40 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Events;
 using Aiel.StrongIds;
 
-namespace Aiel.Domain.Aggregates;
+namespace Aiel.Domain.Entities;
 
 /// <summary>
-/// Represents the root of an aggregate in Domain-Driven Design (DDD). An
-/// aggregate root is responsible for maintaining the consistency of the
-/// aggregate and managing its lifecycle. It can raise domain events to
-/// notify other parts of the system about changes within the aggregate.
+/// Represents an entity with a strongly-typed identifier.
 /// </summary>
-public interface IAggregateRoot
+public interface IEntity
 {
     /// <summary>
-    /// Gets the list of domain events that have been raised by the aggregate root.
+    /// Gets the unique identifier of the entity.
     /// </summary>
-    IReadOnlyList<IDomainEvent> DomainEvents { get; }
-
-    /// <summary>
-    /// Clears all domain events that have been raised by the aggregate root.
-    /// </summary>
-    void ClearDomainEvents();
+    IStrongId Id { get; }
 }
 
 /// <summary>
-/// Represents the root of an aggregate in Domain-Driven Design (DDD) with
-/// a strongly typed identifier. An
+/// Represents an entity with a strongly-typed identifier of type <typeparamref name="TKey"/>.
 /// </summary>
 /// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
-public interface IAggregateRoot<TKey> : IAggregateRoot
+public interface IEntity<TKey> : IEntity
     where TKey : notnull, IStrongId
 {
     /// <summary>
-    /// Gets the unique identifier of the aggregate root.
+    /// Gets the unique identifier of the entity.
     /// </summary>
-    TKey Id { get; }
+    new TKey Id { get; }
 }

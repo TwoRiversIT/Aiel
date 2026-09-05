@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.DataAccess</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

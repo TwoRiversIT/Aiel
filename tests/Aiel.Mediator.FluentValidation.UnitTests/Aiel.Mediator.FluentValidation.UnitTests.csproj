@@ -3,7 +3,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Mediator.FluentValidation.UnitTests</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 

@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Authorization.AspNetCore.IntegrationTests.WebApplication</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <StartupObject>Aiel.Authorization.AspNetCore.Program</StartupObject>

@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Results.IntegrationTests.WebApplication</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <StartupObject>Aiel.Results.IntegrationTests.Program</StartupObject>

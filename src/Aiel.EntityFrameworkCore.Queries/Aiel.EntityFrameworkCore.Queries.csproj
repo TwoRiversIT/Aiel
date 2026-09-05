@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.EntityFrameworkCore.Queries</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

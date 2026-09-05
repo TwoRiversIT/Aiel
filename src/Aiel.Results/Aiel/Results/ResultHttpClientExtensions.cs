@@ -79,14 +79,15 @@ public static class ResultHttpClientExtensions
     /// <typeparam name="TDto">The type of the expected result.</typeparam>
     /// <param name="client">The HTTP client to send the request.</param>
     /// <param name="requestUri">The URI of the request.</param>
+    /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized result.</returns>
-    public static async Task<QueryMultipleResult<TDto>> QueryMultipleResultAsync<TDto>(this HttpClient client, String requestUri, CancellationToken cancellationToken = default)
+    public static async Task<QueryMultipleResult<TDto>> QueryMultipleAsync<TDto>(this HttpClient client, String requestUri, Object? content = null, CancellationToken cancellationToken = default)
         where TDto : notnull
     {
         try
         {
-            var response = await client.GetAsync(requestUri, cancellationToken);
+            var response = await client.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
             await using var utf8Json = await response.Content.ReadAsStreamAsync(cancellationToken);
             var result = await JsonSerializer.DeserializeAsync<QueryMultipleResult<TDto>>(utf8Json, Results.JSO, cancellationToken);
             return result ?? (QueryMultipleResult<TDto>)await ErrorAsync(response);
@@ -109,7 +110,7 @@ public static class ResultHttpClientExtensions
     public static async Task<Result> PostAndGetResultAsync(
         this HttpClient httpClient,
         String requestUri,
-        Object content,
+        Object? content = null,
         CancellationToken cancellationToken = default)
     {
         try
@@ -136,7 +137,7 @@ public static class ResultHttpClientExtensions
     public static async Task<Result<TDto>> PostAndGetResultAsync<TDto>(
         this HttpClient httpClient,
         String requestUri,
-        Object content,
+        Object? content = null,
         CancellationToken cancellationToken = default)
         where TDto : notnull
     {
@@ -163,7 +164,7 @@ public static class ResultHttpClientExtensions
     public static async Task<Result> PutAndGetResultAsync(
         this HttpClient httpClient,
         String requestUri,
-        Object content,
+        Object? content = null,
         CancellationToken cancellationToken = default)
     {
         try
@@ -190,7 +191,7 @@ public static class ResultHttpClientExtensions
     public static async Task<Result<TDto>> PutAndGetResultAsync<TDto>(
         this HttpClient httpClient,
         String requestUri,
-        Object content,
+        Object? content = null,
         CancellationToken cancellationToken = default)
         where TDto : notnull
     {
@@ -217,7 +218,7 @@ public static class ResultHttpClientExtensions
     public static async Task<Result> PatchAndGetResultAsync(
         this HttpClient httpClient,
         String requestUri,
-        Object content,
+        Object? content = null,
         CancellationToken cancellationToken = default)
     {
         try
@@ -244,7 +245,7 @@ public static class ResultHttpClientExtensions
     public static async Task<Result<TDto>> PatchAndGetResultAsync<TDto>(
         this HttpClient httpClient,
         String requestUri,
-        Object content,
+        Object? content = null,
         CancellationToken cancellationToken = default)
         where TDto : notnull
     {

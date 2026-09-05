@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Authorization.Generators.UnitTests</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>
         <IsToolingTests>true</IsToolingTests>
         <NoWarn>$(NoWarn);NU1603</NoWarn>

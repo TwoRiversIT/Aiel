@@ -204,6 +204,7 @@
     <Project Path="src/Aiel.StrongIds.Analyzers/Aiel.StrongIds.Analyzers.csproj" Id="48a671e5-f2f8-43f9-8390-414b1ef8d9e6" />
     <Project Path="src/Aiel.StrongIds.AspNetCore/Aiel.StrongIds.AspNetCore.csproj" />
     <Project Path="src/Aiel.StrongIds.EntityFrameworkCore/Aiel.StrongIds.EntityFrameworkCore.csproj" />
+    <Project Path="src/Aiel.StrongIds.FluentValidation/Aiel.StrongIds.FluentValidation.csproj" Id="eac041c8-e7f2-4051-98d0-9ea3ad7ab90c" />
     <Project Path="src/Aiel.StrongIds.Generators/Aiel.StrongIds.Generators.csproj" />
     <Project Path="src/Aiel.StrongIds/Aiel.StrongIds.csproj" />
     <Project Path="src/Aiel.Testing.CodeAnalysis/Aiel.Testing.CodeAnalysis.csproj" />

@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Gps.Benchmarks</AssemblyName>
         <TargetFrameworks>net10.0</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <SignAssembly>false</SignAssembly>

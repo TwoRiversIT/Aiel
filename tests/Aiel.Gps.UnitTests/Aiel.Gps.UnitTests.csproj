@@ -2,7 +2,6 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <AssemblyName>Aiel.Gps.UnitTests</AssemblyName>
         <TargetFramework>net10.0</TargetFramework>        
     </PropertyGroup>
 

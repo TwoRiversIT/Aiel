@@ -98,10 +98,10 @@ public static class DiagnosticDescriptors
     public static readonly DiagnosticDescriptor StrongIdBackingTypeUnsupported = new(
         id: DiagnosticRuleIDs.AIEL00018_BackingTypeUnsupportedId,
         title: "Unsupported strong ID backing type",
-        messageFormat: "Strong ID type '{0}' uses unsupported backing type '{1}'; supported backing types are Guid, Int32, Int64, and String",
+        messageFormat: "Strong ID type '{0}' uses unsupported backing type '{1}'; supported backing types are Guid, Int16, UInt16, Int32, UInt32, Int64, UInt64, and String",
         category: DiagnosticMetadata.StrongIdCategory,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "The Strong ID generator currently supports Guid, Int32, Int64, and String backing types.",
+        description: "The Strong ID generator currently supports Guid, Int16, UInt16, Int32, UInt32, Int64, UInt64, and String backing types.",
         customTags: []);
 }

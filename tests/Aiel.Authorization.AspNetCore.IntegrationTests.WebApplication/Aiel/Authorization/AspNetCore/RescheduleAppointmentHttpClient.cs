@@ -45,7 +45,7 @@ internal sealed class RescheduleAppointmentHttpClient(HttpClient httpClient) : I
             EndsAtUtc = action.EndsAtUtc
         };
 
-        return _httpClient.PostAndReturnResultAsync(
+        return _httpClient.PostAndGetResultAsync(
             RescheduleAppointmentEndpoint.RoutePattern,
             request,
             cancellationToken);

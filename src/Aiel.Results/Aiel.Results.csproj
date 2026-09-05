@@ -25,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Aiel.Actions.Abstractions\Aiel.Actions.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Results.Abstractions\Aiel.Results.Abstractions.csproj" />
     </ItemGroup>
 

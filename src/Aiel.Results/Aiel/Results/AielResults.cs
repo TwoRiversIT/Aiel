@@ -29,5 +29,6 @@ namespace Aiel.Results;
 /// which provides abstractions and implementations for handling results in
 /// a structured manner.
 /// </summary>
+[DependsOn(typeof(AielActionsAbstractions))]
 [DependsOn(typeof(AielResultsAbstractions))]
 public sealed class AielResults : AielDependencyConfigurator;

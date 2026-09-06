@@ -179,7 +179,6 @@
     </Project>
     <Project Path="src/Aiel.Gps/Aiel.Gps.csproj" />
     <Project Path="src/Aiel.IdGeneration/Aiel.IdGeneration.csproj" />
-    <Project Path="src/Aiel.InternetTypes/Aiel.InternetTypes.csproj" />
     <Project Path="src/Aiel.Logging.Abstractions/Aiel.Logging.Abstractions.csproj" Id="ca555f2c-db83-4588-ab6e-ddac875d4f06" />
     <Project Path="src/Aiel.Logging.Analyzers.CodeFixes/Aiel.Logging.Analyzers.CodeFixes.csproj" />
     <Project Path="src/Aiel.Logging.Analyzers/Aiel.Logging.Analyzers.csproj" />
@@ -260,7 +259,6 @@
     <Project Path="tests/Aiel.Gps.IntegrationTests/Aiel.Gps.IntegrationTests.csproj" />
     <Project Path="tests/Aiel.Gps.UnitTests/Aiel.Gps.UnitTests.csproj" />
     <Project Path="tests/Aiel.IdGeneration.UnitTests/Aiel.IdGeneration.UnitTests.csproj" />
-    <Project Path="tests/Aiel.InternetTypes.UnitTests/Aiel.InternetTypes.UnitTests.csproj" />
     <Project Path="tests/Aiel.Logging.Analyzers.UnitTests/Aiel.Logging.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.Analyzers.UnitTests/Aiel.Mediator.Analyzers.UnitTests.csproj" />
     <Project Path="tests/Aiel.Mediator.FluentValidation.UnitTests/Aiel.Mediator.FluentValidation.UnitTests.csproj" Id="251bae64-707b-4a2d-a2e7-28a2da62aacd" />

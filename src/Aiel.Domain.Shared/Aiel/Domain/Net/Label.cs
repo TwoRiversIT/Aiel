@@ -22,11 +22,18 @@
 
 namespace Aiel.Domain.Net;
 
+/// <summary>
+/// Represents a single label in a domain name, which is a part of the domain name separated by dots. For example, in "www.example.com", "www", "example", and "com" are labels.
+/// </summary>
 [SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "Domain Names are effectively strings so CompareTo() or StringComparer is preferred over <, >, <=, >=.")]
 public class Label : IEquatable<Label>, IComparable<Label>
 {
     private readonly String _label;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Label"/> class with the specified label string.
+    /// </summary>
+    /// <param name="label">The label string.</param>
     [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
     public Label(String label)
     {
@@ -35,28 +42,46 @@ public class Label : IEquatable<Label>, IComparable<Label>
         _label = label;
     }
 
+    /// <inheritdoc />
     public override Int32 GetHashCode()
         => _label?.GetHashCode() ?? 0;
 
+    /// <inheritdoc />
     public override String ToString() => _label;
 
+    /// <inheritdoc />
     public Int32 CompareTo(Label? other)
         => String.Compare(_label, other?._label, StringComparison.InvariantCultureIgnoreCase);
 
+    /// <inheritdoc />
     public Boolean Equals(Label? other)
         => ReferenceEquals(this, other) || _label.Equals(other?._label, StringComparison.InvariantCultureIgnoreCase);
 
+    /// <inheritdoc />
     public override Boolean Equals(Object? other)
-        => other is not null && (ReferenceEquals(this, other) || (other is Label domainName && Equals(domainName)));
+        => other is not null && (ReferenceEquals(this, other) || (other is Label label && Equals(label)));
 
-    public static implicit operator Label(String domainName) => new(domainName);
+    /// <summary>
+    /// Defines an implicit conversion from a <see cref="String"/> to a <see cref="Label"/>. This allows you to assign a string directly to a Label variable, and it will automatically create a new Label instance.
+    /// </summary>
+    /// <param name="label">The string to convert.</param>
+    public static implicit operator Label(String label) => new(label);
 
-    public static Label FromString(String domainName) => new(domainName);
+    /// <summary>
+    /// Creates a new <see cref="Label"/> instance from the specified string.
+    /// </summary>
+    /// <param name="label">The string to convert.</param>
+    /// <returns>A <see cref="Label"/> instance.</returns>
+    public static Label FromString(String label) => new(label);
 
-    public static implicit operator String(Label domainName) => domainName._label;
+    /// <summary>
+    /// Defines an implicit conversion from a <see cref="Label"/> to a <see cref="String"/>.
+    /// </summary>
+    /// <param name="label">The <see cref="Label"/> to convert.</param>
+    /// <returns>The string representation of the <see cref="Label"/>.</returns>
+    public static implicit operator String(Label label) => label._label;
 
-    public static String FromDomainName(Label domainName) => domainName._label;
-
+    /// <inheritdoc />
     public static Boolean operator ==(Label a, Label b)
     {
         // If both are null, or both are same instance, return true.
@@ -75,6 +100,7 @@ public class Label : IEquatable<Label>, IComparable<Label>
         return a._label == b._label;
     }
 
+    /// <inheritdoc />
     public static Boolean operator !=(Label a, Label b) => !(a == b);
 
     private static void ThrowIfInvalid(String label)

@@ -27,7 +27,7 @@ public sealed class SerialTests
     [Fact]
     public void Must_be_creatable_from_UInt32()
     {
-        var s = Serial.NewSerial(1900998877u);
+        var s = Serial.From(1900998877u);
 
         s.Should().Be(1900998877);
     }
@@ -35,15 +35,15 @@ public sealed class SerialTests
     [Fact]
     public void Must_be_creatable_from_DateTime()
     {
-        var s = Serial.NewSerial(DateTimeOffset.UnixEpoch);
+        var s = Serial.From(DateTimeOffset.UnixEpoch);
         s.Should().Be(1970010100);
     }
 
     [Fact]
     public void Must_implement_comparison_operators_correctly()
     {
-        var a = Serial.NewSerial(1900112200);
-        var b = Serial.NewSerial(1900112200);
+        var a = Serial.From(1900112200);
+        var b = Serial.From(1900112200);
 
         (a == b).Should().BeTrue();
         (b == a).Should().BeTrue();
@@ -63,7 +63,7 @@ public sealed class SerialTests
         (a < b).Should().BeFalse();
         (b < a).Should().BeFalse();
 
-        b = Serial.NewSerial(1900112201);
+        b = Serial.From(1900112201);
 
         (a == b).Should().BeFalse();
         (b == a).Should().BeFalse();
@@ -84,8 +84,8 @@ public sealed class SerialTests
         (b < a).Should().BeFalse();
 
         // Day
-        var c = Serial.NewSerial(1970010100);
-        var d = Serial.NewSerial(1970010200);
+        var c = Serial.From(1970010100);
+        var d = Serial.From(1970010200);
 
         (c == d).Should().BeFalse();
         (d == c).Should().BeFalse();
@@ -103,8 +103,8 @@ public sealed class SerialTests
         (d < c).Should().BeFalse();
 
         // Month
-        var e = Serial.NewSerial(1970010100);
-        var f = Serial.NewSerial(1970020100);
+        var e = Serial.From(1970010100);
+        var f = Serial.From(1970020100);
 
         (e == f).Should().BeFalse();
         (f == e).Should().BeFalse();
@@ -122,8 +122,8 @@ public sealed class SerialTests
         (f < e).Should().BeFalse();
 
         // Year
-        var g = Serial.NewSerial(1970010100);
-        var h = Serial.NewSerial(1971010100);
+        var g = Serial.From(1970010100);
+        var h = Serial.From(1971010100);
 
         (g == h).Should().BeFalse();
         (h == g).Should().BeFalse();
@@ -141,8 +141,8 @@ public sealed class SerialTests
         (h < g).Should().BeFalse();
 
         // Complex
-        var i = Serial.NewSerial(1970123199);
-        var j = Serial.NewSerial(1971010100);
+        var i = Serial.From(1970123199);
+        var j = Serial.From(1971010100);
 
         (i == j).Should().BeFalse();
         (j == i).Should().BeFalse();
@@ -163,16 +163,16 @@ public sealed class SerialTests
     [Fact]
     public void Must_output_Human_Readable_strings()
     {
-        var s = Serial.NewSerial(DateTimeOffset.UnixEpoch);
-        s.ToFormattedString().Should().Be("1970-01-01-00");
+        var s = Serial.From(DateTimeOffset.UnixEpoch);
+        s.ToString().Should().Be("1970-01-01-00");
         s = s.Increment(DateTimeOffset.UnixEpoch);
-        s.ToFormattedString().Should().Be("1970-01-01-01");
+        s.ToString().Should().Be("1970-01-01-01");
     }
 
     [Fact]
     public void Must_increment_when_current_Date_is_less_than_the_Serial_date()
     {
-        var s = Serial.NewSerial(1974101600u);
+        var s = Serial.From(1974101600u);
 
         s = s.Increment(DateTimeOffset.UnixEpoch);
         s.Should().Be(1974101601u);
@@ -185,7 +185,7 @@ public sealed class SerialTests
     [Fact]
     public void Must_increment_when_current_Date_is_equal_the_Serial_date()
     {
-        var s = Serial.NewSerial(DateTimeOffset.UnixEpoch);
+        var s = Serial.From(DateTimeOffset.UnixEpoch);
 
         s = s.Increment(DateTimeOffset.UnixEpoch);
         s.Should().Be(1970010101u);
@@ -198,7 +198,7 @@ public sealed class SerialTests
     [Fact]
     public void Must_increment_when_current_Date_is_greater_than_the_Serial_date()
     {
-        var s = Serial.NewSerial(DateTimeOffset.UnixEpoch);
+        var s = Serial.From(DateTimeOffset.UnixEpoch);
 
         s = s.Increment(DateTimeOffset.UnixEpoch.AddDays(1));
         s.Should().Be(1970010200u);
@@ -213,7 +213,7 @@ public sealed class SerialTests
     [Fact]
     public void Must_handle_overflow_of_the_sequence()
     {
-        var s = Serial.NewSerial(1974101699);
+        var s = Serial.From(1974101699);
 
         s = s.Increment(DateTimeOffset.UnixEpoch);
 
@@ -223,7 +223,7 @@ public sealed class SerialTests
     [Fact]
     public void Must_handle_ridiculous_overflow()
     {
-        var s = Serial.NewSerial(2018093000);
+        var s = Serial.From(2018093000);
 
         // Make it overflow
         var last = s;
@@ -260,13 +260,13 @@ public sealed class SerialTests
         c.Should().Be(2013031602);
 
         var e = Record.Exception(() => Serial.Parse(""));
-        e.Should().BeOfType<ArgumentNullException>();
+        e.Should().BeOfType<ArgumentException>();
     }
 
     [Fact]
     public void Must_roll_over_correctly_at_the_end_of_the_month()
     {
-        var s = Serial.NewSerial(2000013199);
+        var s = Serial.From(2000013199);
 
         s = s.Increment(new DateTimeOffset(2000, 1, 31, 0, 0, 0, TimeSpan.Zero));
         s.Should().Be(2000020100);
@@ -275,7 +275,7 @@ public sealed class SerialTests
     [Fact]
     public void Must_roll_over_correctly_at_end_the_end_of_the_year()
     {
-        var s = Serial.NewSerial(1999123199);
+        var s = Serial.From(1999123199);
 
         s = s.Increment(DateTime.UnixEpoch);
         s.Should().Be(2000010100);

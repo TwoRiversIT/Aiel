@@ -20,31 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions.Queries;
-using Aiel.Domain.Specifications;
-using Microsoft.EntityFrameworkCore;
+using Aiel.Domain.Contacts;
+using Aiel.StrongIds;
 
-namespace Aiel.Domain.Queries;
+namespace Aiel.Testing.Models;
 
-public static class QueryMultipleSpecificationExtensions
+public record TypicalRecord(TypicalId Id, String Name, Int32 Age, Email Email, Guid ConcurrencyKey, Boolean IsActive, DateTimeOffset CreatedAt)
 {
-    public static async Task<MultipleResult<TEntity>> ToQueryMultipleResultAsync<TEntity>(this IQueryable<TEntity> queryable, IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        where TEntity : notnull
+    public static TypicalRecord Create(String name)
     {
-        ArgumentNullException.ThrowIfNull(queryable);
-        ArgumentNullException.ThrowIfNull(specification);
-
-        var predicate = specification.Specification.ToExpression();
-
-        var totalCount = await queryable
-            .Where(predicate)
-            .CountAsync(predicate, cancellationToken);
-
-        var matchingEntities = await queryable
-            .ApplyPagingAndSorting(specification)
-            .Where(predicate)
-            .ToListAsync(cancellationToken);
-
-        return new MultipleResult<TEntity>(matchingEntities, specification, totalCount);
+        return new TypicalRecord(TypicalId.From(Guid.NewGuid()), name, 18, "typical.record@example.com", Guid.NewGuid(), true, DateTimeOffset.UtcNow);
     }
 }
+
+[StrongId<Guid>(AllowDefault = true)]
+public readonly partial record struct TypicalId;

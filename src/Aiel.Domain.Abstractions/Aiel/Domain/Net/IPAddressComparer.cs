@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Internet;
+namespace Aiel.Domain.Net;
 
 /// <summary>
 /// Compares IPv4 addresses represented as strings by comparing each octet numerically.

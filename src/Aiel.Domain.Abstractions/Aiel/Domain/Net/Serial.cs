@@ -23,7 +23,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Aiel.InternetTypes;
+namespace Aiel.Domain.Net;
 
 public readonly partial struct Serial : IEquatable<Serial>, IComparable<Serial>
 {

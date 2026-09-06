@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Internet;
+namespace Aiel.Domain.Net;
 
 // TODO: Create an IPv6 version of this struct, and a version that can handle both IPv4 and IPv6.
 

@@ -22,7 +22,7 @@
 
 using System.Net;
 
-namespace Aiel.Internet;
+namespace Aiel.Domain.Net;
 
 /// <summary>
 /// Extension methods for IP address operations.

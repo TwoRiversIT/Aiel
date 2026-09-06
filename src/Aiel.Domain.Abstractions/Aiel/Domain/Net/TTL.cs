@@ -22,7 +22,7 @@
 
 using System.Globalization;
 
-namespace Aiel.Internet;
+namespace Aiel.Domain.Net;
 
 public readonly struct TTL : IEquatable<TTL>, IComparable<TTL>, IComparable
 {

@@ -22,7 +22,7 @@
 
 using Aiel.Framework;
 
-namespace Aiel.Internet;
+namespace Aiel.Domain.Net;
 
 [DependsOn(typeof(AielUtilities))]
 public sealed class AielInternetTypes : AielDependencyConfigurator;

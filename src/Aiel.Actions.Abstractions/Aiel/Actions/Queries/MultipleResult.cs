@@ -28,33 +28,33 @@ namespace Aiel.Actions.Queries;
 /// <summary>
 /// Base class for query results that return multiple items with paging information.
 /// </summary>
-public abstract class QueryMultipleResult : Result
+public abstract class MultipleResult : Result
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultipleResult"/> class with an error.
+    /// Initializes a new instance of the <see cref="MultipleResult"/> class with an error.
     /// </summary>
     /// <param name="error">The error that occurred.</param>
-    protected QueryMultipleResult(Error error) : base(false, error) { }
+    protected MultipleResult(Error error) : base(false, error) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultipleResult"/> class with the specified query, count, and total records.
+    /// Initializes a new instance of the <see cref="MultipleResult"/> class with the specified query, count, and total records.
     /// </summary>
     /// <param name="query">The query that produced the results.</param>
     /// <param name="count">The number of records in the current page.</param>
     /// <param name="totalRecords">The total number of records available.</param>
-    protected QueryMultipleResult(IQueryMultiple query, Int32 count, Int32 totalRecords)
+    protected MultipleResult(IQueryMultiple query, Int32 count, Int32 totalRecords)
         : this(query.Page.Number, query.Page.Size, count, totalRecords)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultipleResult"/> class with the specified page number, page size, count, and total records.
+    /// Initializes a new instance of the <see cref="MultipleResult"/> class with the specified page number, page size, count, and total records.
     /// </summary>
     /// <param name="pageNo">The current page number.</param>
     /// <param name="pageSize">The number of records per page.</param>
     /// <param name="count">The number of records in the current page.</param>
     /// <param name="totalRecords">The total number of records available.</param>
-    protected QueryMultipleResult(Int32 pageNo, Int32 pageSize, Int32 count, Int32 totalRecords)
+    protected MultipleResult(Int32 pageNo, Int32 pageSize, Int32 count, Int32 totalRecords)
         : base(true, null!)
     {
         TotalRecords = totalRecords;
@@ -102,69 +102,90 @@ public abstract class QueryMultipleResult : Result
     }
 
     /// <summary>
-    /// Creates a new <see cref="QueryMultipleResult{TDto}"/> instance with the specified records, query, and total records.
+    /// Creates a new <see cref="MultipleResult{TDto}"/> instance with the specified records, query, and total records.
     /// </summary>
     /// <param name="records">The records in the current page.</param>
     /// <param name="query">The query that produced the results.</param>
     /// <param name="totalRecords">The total number of records available.</param>
     /// <typeparam name="TDto">The type of the records.</typeparam>
-    /// <returns>A new <see cref="QueryMultipleResult{TDto}"/> instance.</returns>
-    public static QueryMultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords = 0)
+    /// <returns>A new <see cref="MultipleResult{TDto}"/> instance.</returns>
+    public static MultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords = 0)
         where TDto : notnull
     {
         return Create(records, query.Page.Number, query.Page.Size, totalRecords);
     }
 
     /// <summary>
-    /// Creates a new <see cref="QueryMultipleResult{TDto}"/> instance with the specified records, page number, page size, and total records.
+    /// Creates a new <see cref="MultipleResult{TDto}"/> instance with the specified records, page number, page size, and total records.
     /// </summary>
     /// <typeparam name="TDto">The type of the records.</typeparam>
     /// <param name="records">The records in the current page.</param>
     /// <param name="pageNumber">The current page number.</param>
     /// <param name="pageSize">The number of records per page.</param>
     /// <param name="totalRecords">The total number of records available.</param>
-    /// <returns>A new <see cref="QueryMultipleResult{TDto}"/> instance.</returns>
-    public static QueryMultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNumber = 1, Int32 pageSize = 10, Int32 totalRecords = 0)
+    /// <returns>A new <see cref="MultipleResult{TDto}"/> instance.</returns>
+    public static MultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNumber = 1, Int32 pageSize = 10, Int32 totalRecords = 0)
         where TDto : notnull
     {
-        return new QueryMultipleResult<TDto>(records, pageNumber, pageSize, totalRecords);
+        return new MultipleResult<TDto>(records, pageNumber, pageSize, totalRecords);
     }
+
+    /// <summary>
+    /// Creates a successful <see cref="MultipleResult{TDto}"/> instance with the specified records, page number, page size, and total records.
+    /// </summary>
+    /// <param name="records">The records in the current page.</param>
+    /// <param name="pageNumber">The current page number.</param>
+    /// <param name="pageSize">The number of records per page.</param>
+    /// <param name="totalRecords">The total number of records available.</param>
+    /// <returns>A successful <see cref="MultipleResult{TDto}"/> instance.</returns>
+    public static MultipleResult<TDto> Success<TDto>(IReadOnlyList<TDto> records, Int32 pageNumber = 1, Int32 pageSize = 10, Int32 totalRecords = 0)
+        where TDto : notnull
+        => new(records, pageNumber, pageSize, totalRecords);
+
+    /// <summary>
+    /// Creates a failed <see cref="MultipleResult{TDto}"/> instance with the specified error.
+    /// </summary>
+    /// <param name="error">The error to associate with the failed result.</param>
+    /// <returns>A failed <see cref="MultipleResult{TDto}"/> instance.</returns>
+    public static MultipleResult<TDto> Failure<TDto>(Error error)
+        where TDto : notnull
+        => error;
 }
 
 /// <summary>
 /// Represents the result of a query that returns multiple items of type <typeparamref name="TDto"/> with paging information.
 /// </summary>
 /// <typeparam name="TDto">The type of the records.</typeparam>
-public sealed class QueryMultipleResult<TDto> : QueryMultipleResult
+public sealed class MultipleResult<TDto> : MultipleResult
     where TDto : notnull
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultipleResult{TDto}"/> class with the specified records, page number, page size, and total records.
+    /// Initializes a new instance of the <see cref="MultipleResult{TDto}"/> class with the specified records, page number, page size, and total records.
     /// </summary>
     /// <param name="records">The records in the current page.</param>
     /// <param name="pageNumber">The current page number.</param>
     /// <param name="pageSize">The number of records per page.</param>
     /// <param name="totalRecords">The total number of records available.</param>
     [JsonConstructor]
-    public QueryMultipleResult(IReadOnlyList<TDto> records, Int32 pageNumber, Int32 pageSize, Int32 totalRecords)
+    public MultipleResult(IReadOnlyList<TDto> records, Int32 pageNumber, Int32 pageSize, Int32 totalRecords)
         : base(pageNumber, pageSize, records.Count, totalRecords)
     {
         Records = records ?? [];
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultipleResult{TDto}"/> class with the specified records, query, and total records.
+    /// Initializes a new instance of the <see cref="MultipleResult{TDto}"/> class with the specified records, query, and total records.
     /// </summary>
     /// <param name="records"></param>
     /// <param name="query"></param>
     /// <param name="totalRecords"></param>
-    public QueryMultipleResult(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords)
+    public MultipleResult(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords)
         : this(records, query.Page.Number, query.Page.Size, totalRecords)
     {
         Records = records ?? [];
     }
 
-    private QueryMultipleResult(Error error) : base(error) { }
+    private MultipleResult(Error error) : base(error) { }
 
     /// <summary>
     /// Gets the records in the current page. If there are no records, this will be an empty list.
@@ -172,8 +193,45 @@ public sealed class QueryMultipleResult<TDto> : QueryMultipleResult
     public IReadOnlyList<TDto> Records { get; init; } = [];
 
     /// <summary>
-    /// Defines an implicit conversion from an <see cref="Error"/> to a <see cref="QueryMultipleResult{TDto}"/>. This allows for easy creation of error results from error instances.
+    /// Attempts to retrieve the records from the result. If the result is successful, it outputs the records; otherwise, it outputs an empty list.
+    /// </summary>
+    /// <param name="records">When this method returns, contains the records if the result is successful; otherwise, an empty list.</param>
+    /// <returns><c>true</c> if the result is successful; otherwise, <c>false</c>.</returns>
+    public Boolean TryGetValue([NotNullWhen(true)] out IReadOnlyList<TDto> records)
+    {
+        records = IsSuccess ? Records : [];
+        return IsSuccess;
+    }
+
+    /// <summary>
+    /// Defines an implicit conversion from an <see cref="Error"/> to a <see cref="MultipleResult{TDto}"/>. This allows for easy creation of error results from error instances.
     /// </summary>
     /// <param name="error">The error to convert.</param>
-    public static implicit operator QueryMultipleResult<TDto>(Error error) => new(error);
+    public static implicit operator MultipleResult<TDto>(Error error) => new(error);
+}
+
+/// <summary>
+/// Provides extension methods for working with <see cref="MultipleResult{TDto}"/> instances.
+/// </summary>
+public static class MultipleResultExtensions
+{
+    /// <summary>
+    /// Attempts to retrieve the records from a <see cref="MultipleResult{TDto}"/> instance. If the result is successful, it outputs the records and returns true; otherwise, it outputs an empty list and returns false.
+    /// </summary>
+    /// <typeparam name="TDto">The type of the records.</typeparam>
+    /// <param name="result">The <see cref="MultipleResult{TDto}"/> instance to retrieve records from.</param>
+    /// <param name="records">When this method returns, contains the records if the result is successful; otherwise, an empty list.</param>
+    /// <returns><c>true</c> if the result is successful; otherwise, <c>false</c>.</returns>
+    public static Boolean TryGetRecords<TDto>(this MultipleResult result, out IReadOnlyList<TDto> records)
+        where TDto : notnull
+    {
+        if (result is MultipleResult<TDto> multiple && multiple.Records.Count > 0)
+        {
+            records = multiple.Records;
+            return true;
+        }
+
+        records = [];
+        return false;
+    }
 }

@@ -78,6 +78,6 @@ public interface ISpecificationRepository<TEntity> : IDisposable
     /// <param name="specification">The specification to filter the entities.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A result containing the entities that satisfy the specification.</returns>
-    Task<QueryMultipleResult<TEntity>> QueryAsync(IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default);
+    Task<MultipleResult<TEntity>> QueryAsync(IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default);
     //Task<Int32> QueryAsync(Expression<Func<TEntity, Boolean>> predicate, CancellationToken cancellationToken = default);
 }

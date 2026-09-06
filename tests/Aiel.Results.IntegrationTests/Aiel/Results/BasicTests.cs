@@ -43,7 +43,7 @@ public class BasicTests(WebApplicationFactory<Program> factory)
         // Act
         var json = await client.GetStringAsync("/success", TestContext.Current.CancellationToken);
 
-        var result = JsonSerializer.Deserialize<Result<IntrinsicTypes>>(json, options);
+        var result = JsonSerializer.Deserialize<Result<TypicalClass>>(json, options);
 
         // Assert
         result.Should().NotBeNull();
@@ -59,7 +59,7 @@ public class BasicTests(WebApplicationFactory<Program> factory)
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync<IntrinsicTypes>("/failure", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync<TypicalClass>("/failure", TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();
@@ -75,7 +75,7 @@ public class BasicTests(WebApplicationFactory<Program> factory)
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync<IReadOnlyList<IntrinsicTypes>>("/collection/success", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync<IReadOnlyList<TypicalClass>>("/collection/success", TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();
@@ -101,7 +101,7 @@ public class BasicTests(WebApplicationFactory<Program> factory)
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync<IReadOnlyList<IntrinsicTypes>>("/collection/failure", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync<IReadOnlyList<TypicalClass>>("/collection/failure", TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();

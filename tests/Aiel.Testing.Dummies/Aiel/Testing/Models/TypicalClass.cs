@@ -25,7 +25,7 @@ namespace Aiel.Testing.Models;
 /// <summary>
 /// A simple class containing all of the intrinsic types to test serialization and deserialization of all of the intrinsic types.
 /// </summary>
-public class IntrinsicTypes
+public class TypicalClass
 {
     public String StringValue { get; set; } = "A simple string value";
     public Int32 IntValue { get; set; } = 42;

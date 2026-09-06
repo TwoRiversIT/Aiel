@@ -21,14 +21,16 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results;
+using Aiel.Testing.Errors;
+using Aiel.Testing.Models;
 using System.Text.Json;
 
 namespace Aiel.Actions.Queries;
 
-public class QueryMultipleResultTests
+public class MultipleResultTests
 {
     [Fact]
-    public void QueryMultipleResult_Constructor_SetsProperties()
+    public void MultipleResult_Constructor_SetsProperties()
     {
         // Arrange
         var results = new List<Int32>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -38,7 +40,7 @@ public class QueryMultipleResultTests
         var currentPage = 1;
 
         // Act
-        var result = new QueryMultipleResult<Int32>(results, currentPage, pageSize, totalCount);
+        var result = new MultipleResult<Int32>(results, currentPage, pageSize, totalCount);
 
         // Assert
         result.TotalRecords.Should().Be(totalCount);
@@ -48,7 +50,7 @@ public class QueryMultipleResultTests
     }
 
     [Fact]
-    public void QueryMultipleResult_Create_SetsProperties_Returns_Result()
+    public void MultipleResult_Create_SetsProperties_Returns_Result()
     {
         // Arrange
         var results = new List<Int32>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -58,11 +60,11 @@ public class QueryMultipleResultTests
         var currentPage = 1;
 
         // Act
-        var result = QueryMultipleResult.Create(results, currentPage, pageSize, totalCount);
+        var result = MultipleResult.Create(results, currentPage, pageSize, totalCount);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<QueryMultipleResult<Int32>>();
+        result.Should().BeOfType<MultipleResult<Int32>>();
         result.IsSuccess.Should().BeTrue();
         result.Records.Should().NotBeNull();
         result.TotalRecords.Should().Be(totalCount);
@@ -73,7 +75,7 @@ public class QueryMultipleResultTests
     }
 
     [Fact]
-    public void QueryMultipleResult_Can_Be_Serialized_And_Deserialized()
+    public void MultipleResult_Can_Be_Serialized_And_Deserialized()
     {
         // Arrange
         var results = new List<Int32>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -81,11 +83,11 @@ public class QueryMultipleResultTests
         var pageCount = 2;
         var pageSize = 6;
         var currentPage = 1;
-        var queryMultipleResult = new QueryMultipleResult<Int32>(results, currentPage, pageSize, totalCount);
+        var multipleResult = new MultipleResult<Int32>(results, currentPage, pageSize, totalCount);
 
         // Act
-        var serialized = JsonSerializer.Serialize(queryMultipleResult);
-        var deserialized = JsonSerializer.Deserialize<QueryMultipleResult<Int32>>(serialized);
+        var serialized = JsonSerializer.Serialize(multipleResult);
+        var deserialized = JsonSerializer.Deserialize<MultipleResult<Int32>>(serialized);
 
         // Assert
         deserialized.Should().NotBeNull();
@@ -96,14 +98,57 @@ public class QueryMultipleResultTests
     }
 
     [Fact]
-    public void QueryMultipleResultOfT_Can_Be_Assigned_Error()
+    public void MultipleResultOfT_Can_Be_Assigned_Error()
     {
         // Act
-        QueryMultipleResult<Int32> result = new ApiError("An error occurred while processing the query.");
+        MultipleResult<Int32> result = new ApiError("An error occurred while processing the query.");
 
         // Assert
         result.Should().NotBeNull();
         result.Error.Should().BeOfType<ApiError>();
         result.IsSuccess.Should().BeFalse();
+    }
+
+    [Fact]
+    public void MultipleResultOfT_TryGetRecords_Should_ReturnFalseAndDefault_When_IsFailed()
+    {
+        // Arrange
+        var result = MultipleResult.Failure<TypicalRecord>(new SimpleError("Not found"));
+
+        // Act
+        var got = result.TryGetRecords(out IReadOnlyList<TypicalRecord> records);
+
+        // Assert
+        got.Should().BeFalse();
+        records.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void MultipleResultOfT_TryGetRecords_Should_ReturnFalse_When_ResultIsNotResultOfT()
+    {
+        // Arrange
+        var result = MultipleResult.Success([1, 2, 3, 4]);
+
+        // Act
+        var got = result.TryGetRecords<TypicalRecord>(out var value);
+
+        // Assert
+        got.Should().BeFalse();
+        value.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void MultipleResultOfT_TryGetRecords_Should_ReturnTrue_When_ResultIsResultOfT_IsSuccess()
+    {
+        // Arrange
+        var john = TypicalRecord.Create("John");
+        var result = MultipleResult.Success([john]);
+
+        // Act
+        var got = result.TryGetRecords<TypicalRecord>(out var records);
+
+        // Assert
+        got.Should().BeTrue();
+        records.Should().Contain(john);
     }
 }

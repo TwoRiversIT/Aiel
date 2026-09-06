@@ -57,7 +57,6 @@ public static class ResultExtensions
         if (result is Result<T> tResult)
         {
             return tResult.TryGetValue(out value);
-
         }
 
         value = default!;

@@ -38,7 +38,7 @@ public class QueryMultipleResultTests
         var currentPage = 1;
 
         // Act
-        var result = new QueryMultipleResult<Int32>(results, currentPage, pageSize, totalCount);
+        var result = new MultipleResult<Int32>(results, currentPage, pageSize, totalCount);
 
         // Assert
         result.TotalRecords.Should().Be(totalCount);
@@ -58,11 +58,11 @@ public class QueryMultipleResultTests
         var currentPage = 1;
 
         // Act
-        var result = QueryMultipleResult.Create(results, currentPage, pageSize, totalCount);
+        var result = MultipleResult.Create(results, currentPage, pageSize, totalCount);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<QueryMultipleResult<Int32>>();
+        result.Should().BeOfType<MultipleResult<Int32>>();
         result.IsSuccess.Should().BeTrue();
         result.Records.Should().NotBeNull();
         result.TotalRecords.Should().Be(totalCount);
@@ -81,11 +81,11 @@ public class QueryMultipleResultTests
         var pageCount = 2;
         var pageSize = 6;
         var currentPage = 1;
-        var queryMultipleResult = new QueryMultipleResult<Int32>(results, currentPage, pageSize, totalCount);
+        var queryMultipleResult = new MultipleResult<Int32>(results, currentPage, pageSize, totalCount);
 
         // Act
         var serialized = JsonSerializer.Serialize(queryMultipleResult);
-        var deserialized = JsonSerializer.Deserialize<QueryMultipleResult<Int32>>(serialized);
+        var deserialized = JsonSerializer.Deserialize<MultipleResult<Int32>>(serialized);
 
         // Assert
         deserialized.Should().NotBeNull();
@@ -99,7 +99,7 @@ public class QueryMultipleResultTests
     public void QueryMultipleResultOfT_Can_Be_Assigned_Error()
     {
         // Act
-        QueryMultipleResult<Int32> result = new ApiError("An error occurred while processing the query.");
+        MultipleResult<Int32> result = new ApiError("An error occurred while processing the query.");
 
         // Assert
         result.Should().NotBeNull();

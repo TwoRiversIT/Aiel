@@ -28,7 +28,7 @@ namespace Aiel.Domain.Queries;
 
 public static class QueryMultipleSpecificationExtensions
 {
-    public static async Task<QueryMultipleResult<TEntity>> ToQueryMultipleResultAsync<TEntity>(this IQueryable<TEntity> queryable, IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    public static async Task<MultipleResult<TEntity>> ToQueryMultipleResultAsync<TEntity>(this IQueryable<TEntity> queryable, IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default)
         where TEntity : notnull
     {
         ArgumentNullException.ThrowIfNull(queryable);
@@ -45,6 +45,6 @@ public static class QueryMultipleSpecificationExtensions
             .Where(predicate)
             .ToListAsync(cancellationToken);
 
-        return new QueryMultipleResult<TEntity>(matchingEntities, specification, totalCount);
+        return new MultipleResult<TEntity>(matchingEntities, specification, totalCount);
     }
 }

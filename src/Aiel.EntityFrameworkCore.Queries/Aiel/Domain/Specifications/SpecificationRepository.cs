@@ -44,7 +44,7 @@ public class SpecificationRepository<TEntity, TDbContext>(TDbContext context) : 
     public async Task<Boolean> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
         => await _context.GetQueryable<TEntity>().AnyAsync(specification.ToExpression(), cancellationToken);
 
-    public async Task<QueryMultipleResult<TEntity>> QueryAsync(IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    public async Task<MultipleResult<TEntity>> QueryAsync(IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default)
         => await _context.GetQueryable<TEntity>().ToQueryMultipleResultAsync(specification, cancellationToken);
 
     public async Task<Int32> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)

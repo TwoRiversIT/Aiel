@@ -22,13 +22,29 @@
 
 namespace Aiel.Framework;
 
+/// <summary>
+/// Defines the interface for the Aiel environment, which provides metadata about the host environment and application.
+/// </summary>
 public interface IAielEnvironment
 {
+    /// <summary>
+    /// Gets the name of the current environment (e.g., Development, Production, Staging).
+    /// </summary>
     String EnvironmentName { get; }
 
+    /// <summary>
+    /// Gets the name of the application.
+    /// </summary>
     String ApplicationName { get; }
 
+    /// <summary>
+    /// Gets the version of the application.
+    /// </summary>
     String ApplicationVersion { get; }
+
+    /// <summary>
+    /// Gets the unique identifier for the application instance.
+    /// </summary>
     Guid ApplicationInstance { get; }
 }
 
@@ -44,26 +60,59 @@ public interface IAielEnvironment
 /// </remarks>
 public class AielEnvironment : IAielEnvironment
 {
+    /// <inheritdoc/>
     public required String ApplicationVersion { get; init; }
+    /// <inheritdoc/>
     public required Guid ApplicationInstance { get; init; }
+    /// <inheritdoc/>
     public required String EnvironmentName { get; init; }
+    /// <inheritdoc/>
     public required String ApplicationName { get; init; }
 }
 
+/// <summary>
+/// Provides extension methods for the <see cref="IAielEnvironment"/> interface to facilitate environment checks.
+/// </summary>
 public static class AielEnvironmentExtensions
 {
+    /// <summary>
+    /// Determines whether the current environment matches the specified environment name.
+    /// </summary>
+    /// <param name="environment">The Aiel environment.</param>
+    /// <param name="environmentName">The name of the environment to check.</param>
+    /// <returns><c>true</c> if the current environment matches the specified name; otherwise, <c>false</c>.</returns>
     public static Boolean IsEnvironment(this IAielEnvironment environment, String environmentName)
         => String.Equals(environment.EnvironmentName, environmentName, StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Determines whether the current environment is Development.
+    /// </summary>
+    /// <param name="environment">The Aiel environment.</param>
+    /// <returns><c>true</c> if the current environment is Development; otherwise, <c>false</c>.</returns>
     public static Boolean IsDevelopment(this IAielEnvironment environment)
         => IsEnvironment(environment, "Development");
 
+    /// <summary>
+    /// Determines whether the current environment is Production.
+    /// </summary>
+    /// <param name="environment">The Aiel environment.</param>
+    /// <returns><c>true</c> if the current environment is Production; otherwise, <c>false</c>.</returns>
     public static Boolean IsProduction(this IAielEnvironment environment)
         => IsEnvironment(environment, "Production");
 
+    /// <summary>
+    /// Determines whether the current environment is Staging.
+    /// </summary>
+    /// <param name="environment">The Aiel environment.</param>
+    /// <returns><c>true</c> if the current environment is Staging; otherwise, <c>false</c>.</returns>
     public static Boolean IsStaging(this IAielEnvironment environment)
         => IsEnvironment(environment, "Staging");
 
+    /// <summary>
+    /// Determines whether the current environment is Testing.
+    /// </summary>
+    /// <param name="environment">The Aiel environment.</param>
+    /// <returns><c>true</c> if the current environment is Testing; otherwise, <c>false</c>.</returns>
     public static Boolean IsTesting(this IAielEnvironment environment)
         => IsEnvironment(environment, "Testing");
 }

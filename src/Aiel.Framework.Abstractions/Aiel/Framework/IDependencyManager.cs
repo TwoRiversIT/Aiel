@@ -42,6 +42,7 @@ namespace Aiel.Framework
     	/// Configures all dependencies using the supplied configuration context.
         /// </summary>
     	/// <param name="context">The application configuration context.</param>
+    	/// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
     	/// <returns>A task that represents the asynchronous configuration operation.</returns>
     	ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
 

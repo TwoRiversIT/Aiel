@@ -69,7 +69,7 @@ internal sealed class TenantResolutionMiddleware(RequestDelegate next)
 
         overriddenTenantId = default;
 
-        if (!headers.TryGetValue(AielHeaders.TenantIdHeader, out var headerValues))
+        if (!headers.TryGetValue(AielHeaders.TenantId, out var headerValues))
         {
             return false;
         }

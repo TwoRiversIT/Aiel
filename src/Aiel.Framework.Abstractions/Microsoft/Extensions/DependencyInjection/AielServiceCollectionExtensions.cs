@@ -25,48 +25,51 @@ using Aiel.Framework;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class AielServiceCollectionHelpers
+/// <summary>
+/// Provides extension methods for the <see cref="IServiceCollection"/> interface to facilitate service registration and retrieval in the Aiel framework.
+/// </summary>
+public static class AielServiceCollectionExtensions
 {
     /// <summary>
-    /// <b>Do not use this!</b> It is intended for use in Aiel' internal code to work
-    /// around some of the limitations of the built-in DI container.
+    /// Gets the last concrete instance singleton registered in the collection, throwing an exception if it does not exist.
+    /// </summary>
+    /// <typeparam name="T">The type of the service.</typeparam>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The instance of the service.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the singleton instance is not found.</exception>
+    public static T GetRequiredSingleton<T>(this IServiceCollection services)
+        where T : class
+        => services.GetSingleton<T>()
+            ?? throw new InvalidOperationException("Could not find singleton instance for: " + typeof(T).AssemblyQualifiedName);
+
+    /// <summary>
     /// Gets the last concrete instance singleton registered in the collection, if it exists.
     /// </summary>
     /// <typeparam name="T">The type of the service.</typeparam>
     /// <param name="services">The service collection.</param>
     /// <returns>The instance of the service if found; otherwise, <c>null</c>.</returns>
-    public static T? GetInstance<T>(this IServiceCollection services)
+    public static T? GetSingleton<T>(this IServiceCollection services)
+        where T : class
     {
-        ArgumentNullException.ThrowIfNull(services);
-
-        try
-        {
-            // Walk from the end so we match the container's resolution order
-            for (var i = services.Count - 1; i >= 0; i--)
-            {
-                var descriptor = services[i];
-
-                if (descriptor.ServiceType != typeof(T))
-                {
-                    continue;
-                }
-
-                if (descriptor.ImplementationInstance is T instance)
-                {
-                    return instance;
-                }
-
-                // If it matches the service type but has no instance,
-                // keep searching earlier registrations.
-            }
-        }
-        catch (InvalidOperationException)
-        {
-            // This can happen if the collection is modified while we're enumerating it.
-        }
-
-        return default;
+        return services
+            .FirstOrDefault(d => d.ServiceType == typeof(T))
+            ?.GetInstance<T>();
     }
+
+    /// <summary>
+    /// Normalizes the implementation instance data between keyed and not keyed services.
+    /// </summary>
+    /// <param name="descriptor">
+    /// The <see cref="ServiceDescriptor"/> to normalize.
+    /// </param>
+    /// <returns>
+    /// The appropriate implementation instance from the service descriptor.
+    /// </returns>
+    private static T? GetInstance<T>(this ServiceDescriptor descriptor)
+        where T : class
+        => descriptor.IsKeyedService
+            ? descriptor.KeyedImplementationInstance as T
+            : descriptor.ImplementationInstance as T;
 
     /// <summary>
     /// Registers a callback that is invoked each time a <see cref="ServiceDescriptor"/> is added to

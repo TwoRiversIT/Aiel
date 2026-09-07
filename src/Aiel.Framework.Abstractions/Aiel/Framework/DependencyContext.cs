@@ -24,9 +24,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aiel.Framework
 {
+    /// <summary>
+    /// Represents the context for dependency configuration in the Aiel framework, providing access to the environment and configuration.
+    /// </summary>
+    /// <param name="environment">The Aiel environment.</param>
+    /// <param name="configuration">The configuration.</param>
     public abstract class DependencyContext(IAielEnvironment environment, IConfiguration configuration)
     {
+        /// <summary>
+        /// Gets the Aiel environment, which provides information about the current environment in which the application is running.
+        /// </summary>
         public IAielEnvironment Environment { get; } = environment;
+
+        /// <summary>
+        /// Gets the configuration, which provides access to application settings and configuration values.
+        /// </summary>
         public IConfiguration Configuration { get; } = configuration;
     }
 }

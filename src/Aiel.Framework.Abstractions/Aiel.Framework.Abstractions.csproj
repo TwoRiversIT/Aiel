@@ -9,6 +9,7 @@
         -->
         <ImplicitUsings>disable</ImplicitUsings>
         <IsPackable>true</IsPackable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>

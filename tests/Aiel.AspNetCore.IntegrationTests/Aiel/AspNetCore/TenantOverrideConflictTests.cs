@@ -43,7 +43,7 @@ public sealed class TenantOverrideConflictTests
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(
-            AielHeaders.TenantIdHeader,
+            AielHeaders.TenantId,
             differentTenantId.Value.ToString("D"));
 
         var response = await client.GetAsync("/tenant-required", TestContext.Current.CancellationToken);
@@ -59,7 +59,7 @@ public sealed class TenantOverrideConflictTests
         using var factory = new TenantPipelineWebApplicationFactory(new StubTenantResolver(outcome));
         var client = factory.CreateClient();
         client.DefaultRequestHeaders.Add(
-            AielHeaders.TenantIdHeader,
+            AielHeaders.TenantId,
             resolvedTenantId.Value.ToString("D"));
 
         var response = await client.GetAsync("/tenant-required", TestContext.Current.CancellationToken);

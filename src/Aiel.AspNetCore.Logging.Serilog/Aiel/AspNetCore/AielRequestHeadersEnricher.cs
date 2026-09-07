@@ -45,8 +45,8 @@ public sealed class AielRequestHeadersEnricher(IHttpContextAccessor httpContextA
             return;
         }
 
-        Add(ctx, propertyFactory, logEvent, AielLoggingConsts.Instance, AielHeaders.ClientInstanceHeader);
-        Add(ctx, propertyFactory, logEvent, AielLoggingConsts.Version, AielHeaders.ClientVersionHeader);
+        Add(ctx, propertyFactory, logEvent, AielLoggingConsts.Instance, AielHeaders.ClientInstance);
+        Add(ctx, propertyFactory, logEvent, AielLoggingConsts.Version, AielHeaders.ClientVersion);
         Add(ctx, propertyFactory, logEvent, AielLoggingConsts.UserAgent, UserAgent);
     }
 

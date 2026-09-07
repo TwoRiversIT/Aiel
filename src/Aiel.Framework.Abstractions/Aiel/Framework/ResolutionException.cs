@@ -43,14 +43,26 @@ public class ResolutionException : Exception
     {
     }
 
+    /// <summary>
+    /// Constructs the exception
+    /// </summary>
     public ResolutionException() : base()
     {
     }
 
+    /// <summary>
+    /// Constructs the exception
+    /// </summary>
+    /// <param name="errorDescription">The error description.</param>
     public ResolutionException(String? errorDescription) : base(errorDescription)
     {
     }
 
+    /// <summary>
+    /// Constructs the exception
+    /// </summary>
+    /// <param name="errorDescription">The error description.</param>
+    /// <param name="innerException">The inner exception.</param>
     public ResolutionException(String? errorDescription, Exception? innerException) : base(errorDescription, innerException)
     {
     }

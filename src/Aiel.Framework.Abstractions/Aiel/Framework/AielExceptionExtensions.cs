@@ -25,6 +25,9 @@ using System.Text;
 
 namespace Aiel.Framework;
 
+/// <summary>
+/// Provides extension methods for the <see cref="Exception"/> class to facilitate visiting and formatting exceptions and their inner exceptions.
+/// </summary>
 public static class AielExceptionExtensions
 {
     /// <summary>
@@ -47,6 +50,11 @@ public static class AielExceptionExtensions
         }
     }
 
+    /// <summary>
+    /// Formats the exception and all its inner exceptions into a string representation.
+    /// </summary>
+    /// <param name="ex">The exception to format.</param>
+    /// <returns>A string representation of the exception and its inner exceptions.</returns>
     public static String FormatException(this Exception ex)
     {
         var sb = new StringBuilder();

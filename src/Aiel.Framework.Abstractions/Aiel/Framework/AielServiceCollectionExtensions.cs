@@ -27,20 +27,29 @@ using Microsoft.Extensions.Options;
 
 namespace Aiel.Framework;
 
+/// <summary>
+/// Provides extension methods for the IServiceCollection interface to
+/// facilitate the registration of strongly-typed options with validation in
+/// the Aiel framework.
+/// </summary>
 public static class AielServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds strongly-typed options to the service collection, binds them to a configuration section, and registers a
-    /// validator to ensure the options are valid at application startup.
+    /// Adds strongly-typed options to the service collection, binds them to a
+    /// configuration section, and registers a validator to ensure the options
+    /// are valid at application startup.
     /// </summary>
-    /// <remarks>Validation is performed when the application starts. If the options are invalid, application
-    /// startup will fail. This method is useful for ensuring configuration errors are detected early.</remarks>
+    /// <remarks>
+    /// Validation is performed when the application starts. If the options are
+    /// invalid, application startup will fail.
+    /// </remarks>
     /// <typeparam name="TOptions">The options class type to bind and validate. Must be a reference type.</typeparam>
-    /// <typeparam name="TValidator">The type that implements validation logic for the options. Must implement IValidateOptions<TOptions>.</typeparam>
+    /// <typeparam name="TValidator">The type that implements validation logic for the options. Must implement <see cref="IValidateOptions{TOptions}"/>.</typeparam>
     /// <param name="services">The service collection to which the options and validator are added.</param>
     /// <param name="configuration">The configuration source from which to bind the options.</param>
     /// <param name="sectionName">The name of the configuration section to bind. If null, the name of the options type is used.</param>
     /// <param name="optionsName">The name of the options instance. If null, the default options instance is used.</param>
+    /// <param name="validateOnStart">Indicates whether the options should be validated when the application starts.</param>
     /// <returns>The same IServiceCollection instance, enabling method chaining.</returns>
     public static IServiceCollection AddValidatedOptions<TOptions, TValidator>(
         this IServiceCollection services,

@@ -22,9 +22,23 @@
 
 namespace Aiel.Framework
 {
+    /// <summary>
+    /// Indicates that the decorated class has a dependency on another class,
+    /// specified by the provided type. This attribute can be applied to
+    /// classes to declare their dependencies, which will be used for
+    /// configuration, service registration, and initialization.
+    /// </summary>
+    /// <param name="type">
+    /// The type of the class that the decorated class depends on. It must
+    /// implement <see cref="IConfigurator"/>.
+    /// </param>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class DependsOnAttribute(Type type) : Attribute
     {
+        /// <summary>
+        /// Gets the type of the class that the decorated class depends on.
+        /// The type must implement <see cref="IConfigurator"/>.
+        /// </summary>
         public Type Type { get; } = type ?? throw new ArgumentNullException(nameof(type));
     }
 }

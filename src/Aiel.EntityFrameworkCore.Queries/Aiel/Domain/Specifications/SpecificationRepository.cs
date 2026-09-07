@@ -23,44 +23,34 @@
 using Aiel.Actions.Queries;
 using Aiel.Domain.Queries;
 using Aiel.EntityFrameworkCore;
-using Aiel.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.Domain.Specifications;
 
+/// <inheritdoc cref="ISpecificationRepository{TEntity}"/>
 public class SpecificationRepository<TEntity, TDbContext>(TDbContext context) : ISpecificationRepository<TEntity>
     where TEntity : class
     where TDbContext : DbContext
 {
     private readonly TDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
-    private Boolean _disposed;
 
-    public IAsyncEnumerable<TEntity> FindAsync(ISpecification<TEntity> specification, SortOrder? sort = null, Page? page = null)
+    /// <inheritdoc />
+    public IAsyncEnumerable<TEntity> FindAsync(IEntitySpecification<TEntity> specification, SortOrder? sort = null, Page? page = null)
         => _context.QueryMultiple(sort ?? SortOrder.None, page ?? Page.Default, specification).AsAsyncEnumerable();
 
-    public async Task<TEntity?> GetAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<TEntity?> GetAsync(IEntitySpecification<TEntity> specification, CancellationToken cancellationToken = default)
         => await _context.GetQueryable<TEntity>().SingleOrDefaultAsync(specification.ToExpression(), cancellationToken);
 
-    public async Task<Boolean> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<Boolean> AnyAsync(IEntitySpecification<TEntity> specification, CancellationToken cancellationToken = default)
         => await _context.GetQueryable<TEntity>().AnyAsync(specification.ToExpression(), cancellationToken);
 
+    /// <inheritdoc />
     public async Task<MultipleResult<TEntity>> QueryAsync(IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default)
         => await _context.GetQueryable<TEntity>().ToQueryMultipleResultAsync(specification, cancellationToken);
 
-    public async Task<Int32> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    public async Task<Int32> CountAsync(IEntitySpecification<TEntity> specification, CancellationToken cancellationToken = default)
         => await _context.GetQueryable<TEntity>().CountAsync(specification.ToExpression(), cancellationToken);
-
-    protected virtual void Dispose(Boolean disposing)
-    {
-        if (!_disposed)
-        {
-            _disposed = true;
-        }
-    }
-
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
 }

@@ -25,12 +25,16 @@ using System.Linq.Expressions;
 namespace Aiel.Domain.Specifications;
 
 /// <summary>
-/// Represents a specification that can be used to define business rules and criteria for entities of type <typeparamref name="TEntity"/>.
+/// A specification that is defined using an expression and can be combined
+/// with other specifications using logical operators while remaining safe for
+/// use with Entity Framework Core and other ORMs that translate expressions to
+/// SQL.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity to which the specification applies.</typeparam>
 /// <param name="predicate">The expression that defines the criteria for the specification.</param>
 public class EntitySpecification<TEntity>(Expression<Func<TEntity, Boolean>> predicate)
-    : ExpressionSpecification<TEntity>(predicate), ISpecification<TEntity>
+    : ExpressionSpecification<TEntity>(predicate), IEntitySpecification<TEntity>
+    where TEntity : class
 {
     /// <summary>
     /// Combines two specifications using the specified combiner function (e.g., AND, OR).

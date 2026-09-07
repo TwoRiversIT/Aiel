@@ -20,23 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Collections;
-using System.Linq.Expressions;
-
 namespace Aiel.Domain.Specifications;
 
-internal class ReplaceParameterVisitor : ExpressionVisitor, IEnumerable<KeyValuePair<ParameterExpression, ParameterExpression>>
-{
-    private readonly Dictionary<ParameterExpression, ParameterExpression> _map = [];
-
-    protected override Expression VisitParameter(ParameterExpression node)
-        => _map.TryGetValue(node, out var newValue) ? newValue : node;
-
-    public void Add(ParameterExpression parameterToReplace, ParameterExpression replaceWith)
-        => _map.Add(parameterToReplace, replaceWith);
-
-    public IEnumerator<KeyValuePair<ParameterExpression, ParameterExpression>> GetEnumerator()
-        => _map.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-}
+/// <summary>
+/// Defines a specification that can be used to determine if an entity
+/// satisfies certain criteria.
+/// </summary>
+/// <typeparam name="T">The type of the entity to evaluate.</typeparam>
+public interface IEntitySpecification<T> : ISpecification<T>
+    where T : class;

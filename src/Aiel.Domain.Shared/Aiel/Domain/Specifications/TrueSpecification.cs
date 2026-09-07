@@ -20,31 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions.Queries;
-using Aiel.Domain.Specifications;
-using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
-namespace Aiel.Domain.Queries;
+namespace Aiel.Domain.Specifications;
 
-public static class QueryMultipleSpecificationExtensions
+internal class TrueSpecification<T> : ISpecification<T>
+    where T : class
 {
-    public static async Task<MultipleResult<TEntity>> ToQueryMultipleResultAsync<TEntity>(this IQueryable<TEntity> queryable, IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default)
-        where TEntity : class
+    public Expression<Func<T, Boolean>> ToExpression()
     {
-        ArgumentNullException.ThrowIfNull(queryable);
-        ArgumentNullException.ThrowIfNull(specification);
-
-        var predicate = specification.ToExpression();
-
-        var totalCount = await queryable
-            .Where(predicate)
-            .CountAsync(predicate, cancellationToken);
-
-        var matchingEntities = await queryable
-            .ApplyPagingAndSorting(specification)
-            .Where(predicate)
-            .ToListAsync(cancellationToken);
-
-        return new MultipleResult<TEntity>(matchingEntities, specification, totalCount);
+        return _ => true;
     }
 }

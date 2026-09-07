@@ -34,8 +34,8 @@ public class AielRequestHeadersMiddleware(RequestDelegate next)
     public async Task Invoke(HttpContext context)
     {
         var userAgent = context.Request.Headers.UserAgent.ToString();
-        var clientVersion = context.Request.Headers[AielHeaders.ClientVersionHeader].ToString();
-        var clientInstance = context.Request.Headers[AielHeaders.ClientInstanceHeader].ToString();
+        var clientVersion = context.Request.Headers[AielHeaders.ClientVersion].ToString();
+        var clientInstance = context.Request.Headers[AielHeaders.ClientInstance].ToString();
 
         using (LogContext.PushProperty(AielLoggingConsts.UserAgent, String.IsNullOrWhiteSpace(userAgent) ? null : userAgent, destructureObjects: false))
         using (LogContext.PushProperty(AielLoggingConsts.Version, String.IsNullOrWhiteSpace(clientVersion) ? null : clientVersion, destructureObjects: false))

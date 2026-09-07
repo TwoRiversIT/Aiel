@@ -22,17 +22,40 @@
 
 namespace Aiel.Framework;
 
+/// <summary>
+/// Defines constants for custom HTTP headers used in the Aiel framework to convey metadata about the application, client, and API instances, as well as versioning information.
+/// </summary>
 public static class AielHeaders
 {
-    public const String Prefix = "X-Aiel-";
-    public const String AccountsInstanceHeader = Prefix + "Accounts-Instance";
-    public const String AccountsVersionHeader = Prefix + "Accounts-Version";
-    public const String ApiInstanceHeader = Prefix + "API-Instance";
-    public const String ApiVersionHeader = Prefix + "API-Version";
-    public const String ApplicationName = Prefix + "Application-Name";
-    public const String ApplicationVersion = Prefix + "Application-Version";
-    public const String ClientInstanceHeader = Prefix + "Client-Instance";
-    public const String ClientVersionHeader = Prefix + "Client-Version";
-    public const String CurrentUserHeader = Prefix + "Current-User";
-    public const String TenantIdHeader = Prefix + "Tenant-Id";
+    private const String Prefix = "X-Aiel-";
+
+    /// <summary>
+    /// Gets the name of the HTTP header used to convey the unique identifier of the client instance making the request.
+    /// </summary>
+    public const String ClientInstance = Prefix + "Client-Instance";
+
+    /// <summary>
+    /// Gets the name of the HTTP header used to convey the version of the client application making the request.
+    /// </summary>
+    public const String ClientVersion = Prefix + "Client-Version";
+
+    /// <summary>
+    /// Gets the name of the HTTP header used to convey the unique identifier of the server instance handling the request.
+    /// </summary>
+    public const String ServerInstance = Prefix + "Server-Instance";
+
+    /// <summary>
+    /// Gets the name of the HTTP header used to convey the version of the server application handling the request.
+    /// </summary>
+    public const String ServerVersion = Prefix + "Server-Version";
+
+    /// <summary>
+    /// Gets the name of the HTTP header used to convey the unique identifier of the tenant associated with the request.
+    /// </summary>
+    public const String TenantId = Prefix + "Tenant-Id";
+
+    /// <summary>
+    /// Gets the name of the HTTP header used to convey the unique identifier of the current user making the request.
+    /// </summary>
+    public const String UserId = Prefix + "User-Id";
 }

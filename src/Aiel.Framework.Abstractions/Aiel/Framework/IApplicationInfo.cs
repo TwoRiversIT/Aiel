@@ -22,8 +22,19 @@
 
 namespace Aiel.Framework;
 
+/// <summary>
+/// Represents runtime information about the application, including its name
+/// and version.
+/// </summary>
 public interface IApplicationInfo
 {
+    /// <summary>
+    /// Gets the name of the application.
+    /// </summary>
     String ApplicationName { get; }
+
+    /// <summary>
+    /// Gets the version of the application.
+    /// </summary>
     String ApplicationVersion { get; }
 }

@@ -22,6 +22,7 @@
 
 namespace Aiel;
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 public enum AielEvent
 {
     _None = 9999,
@@ -51,3 +52,4 @@ public enum AielEvent
     Migrations_TenantMigrationCompleted,
     Migrations_TenantMigrationFailed,
 }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

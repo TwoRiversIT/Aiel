@@ -26,9 +26,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Framework
 {
+    /// <summary>
+    /// Represents the context for configuring dependencies in the Aiel framework, providing access to the environment, services, and configuration.
+    /// </summary>
+    /// <param name="environment">The Aiel environment.</param>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configuration.</param>
     public sealed class ConfigurationContext(IAielEnvironment environment, IServiceCollection services, IConfiguration configuration)
         : DependencyContext(environment, configuration)
     {
+        /// <summary>
+        /// Gets the service collection, which is an observable collection that allows for monitoring changes to the registered services.
+        /// </summary>
         public IServiceCollection Services { get; } = new ObservableServiceCollection(services);
     }
 }

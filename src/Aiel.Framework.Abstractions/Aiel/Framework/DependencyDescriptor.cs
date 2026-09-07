@@ -33,6 +33,7 @@ namespace Aiel.Framework
         /// </summary>
     	/// <param name="name">The logical name of the dependency.</param>
     	/// <param name="dependencyType">The <see cref="Type"/> that represents the dependency.</param>
+        /// <param name="instance">The instance of the configurator.</param>
     	/// <param name="dependencies">The dependency types this dependency depends on.</param>
         public DependencyDescriptor(
             String name,
@@ -65,6 +66,9 @@ namespace Aiel.Framework
         /// </summary>
         public Type DependencyType { get; }
 
+        /// <summary>
+        /// Gets the instance of the configurator.
+        /// </summary>
         public IConfigurator Instance { get; internal set; }
 
         /// <summary>
@@ -72,6 +76,10 @@ namespace Aiel.Framework
         /// </summary>
         public IReadOnlyCollection<Type> Dependencies { get; }
 
+        /// <summary>
+        /// Disposes the <see cref="Instance"/> of the dependency descriptor asynchronously.
+        /// </summary>
+        /// <returns>A <see cref="ValueTask"/> that represents the asynchronous dispose operation.</returns>
         protected override async ValueTask DisposeAsyncCore()
         {
             await Instance.SafelyDisposeAsync();

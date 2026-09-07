@@ -26,6 +26,7 @@ using System.Collections;
 
 namespace Aiel.Collections;
 
+#pragma warning disable CS1574 // XML comment has cref attribute that could not be resolved
 /// <summary>
 /// An <see cref="IServiceCollection"/> wrapper that fires registered callbacks whenever a
 /// <see cref="ServiceDescriptor"/> is added to the collection.
@@ -40,11 +41,16 @@ namespace Aiel.Collections;
 /// </remarks>
 /// <param name="inner">The service collection to wrap.</param>
 /// <exception cref="ArgumentNullException">Thrown when <paramref name="inner"/> is <see langword="null"/>.</exception>
+#pragma warning restore CS1574 // XML comment has cref attribute that could not be resolved
 public sealed class ObservableServiceCollection(IServiceCollection inner) : IServiceCollection
 {
     private readonly IServiceCollection _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     private readonly List<Action<ServiceDescriptor>> _callbacks = [];
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservableServiceCollection"/>
+    /// class with an empty <see cref="ServiceCollection"/>.
+    /// </summary>
     public ObservableServiceCollection() : this(new ServiceCollection())
     {
     }
@@ -100,6 +106,11 @@ public sealed class ObservableServiceCollection(IServiceCollection inner) : ISer
     /// <inheritdoc />
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    /// <summary>
+    /// Subscribes to be notified whenever a <see cref="ServiceDescriptor"/> is added to the collection.
+    /// </summary>
+    /// <param name="callback">The callback to invoke when a <see cref="ServiceDescriptor"/> is added.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="callback"/> is <see langword="null"/>.</exception>
     public void Subscribe(Action<ServiceDescriptor> callback)
     {
         ArgumentNullException.ThrowIfNull(callback);

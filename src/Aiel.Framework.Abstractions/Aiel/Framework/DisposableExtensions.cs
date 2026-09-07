@@ -22,13 +22,24 @@
 
 namespace Aiel.Framework;
 
+/// <summary>
+/// Provides extension methods for safely disposing objects that may implement
+/// either <see cref="IDisposable"/> or <see cref="IAsyncDisposable"/>.
+/// </summary>
 public static class DisposableExtensions
 {
     /// <summary>
-    /// Safely disposes an object that may implement either <see cref="IDisposable"/> or
-    /// <see cref="IAsyncDisposable"/>. If the object implements both interfaces, it
-    /// will prefer asynchronous disposal. If the object is null, this method does nothing.
+    /// Safely disposes an object that may implement either
+    /// <see cref="IDisposable"/> or <see cref="IAsyncDisposable"/>. If the
+    /// object implements both interfaces, it will prefer asynchronous
+    /// disposal. If the object is null, this method does nothing.
+    /// NOTE: This method does not call <see cref="GC.SuppressFinalize"/>.
     /// </summary>
+    /// <remarks>
+    /// This method does not call <see cref="GC.SuppressFinalize"/> for the
+    /// simple reason that the compiler will complain if your object is
+    /// disposable and does not call <see cref="GC.SuppressFinalize"/> itself.
+    /// </remarks>
     /// <param name="obj">The object to dispose.</param>
     /// <returns>A task that represents the asynchronous dispose operation.</returns>
     public static async Task SafelyDisposeAsync(this Object? obj)

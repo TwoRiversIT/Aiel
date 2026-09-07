@@ -163,9 +163,18 @@ public class CollectionDecorator<T> : ICollection<T>
 /// </summary>
 public enum CollectionChangeAction
 {
+    /// <summary>
+    /// Indicates that an item is being added to the collection.
+    /// </summary>
     Add,
+    /// <summary>
+    /// Indicates that an item is being removed from the collection.
+    /// </summary>
     Remove,
-    Clear,
+    /// <summary>
+    /// Indicates that the collection is being cleared of all items.
+    /// </summary>
+    Clear
 }
 
 /// <summary>

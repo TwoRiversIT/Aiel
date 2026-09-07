@@ -25,9 +25,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Framework
 {
+    /// <summary>
+    /// Represents the initialization context for the Aiel framework, providing
+    /// access to the service provider, environment, and configuration.
+    /// </summary>
+    /// <param name="serviceProvider">The service provider.</param>
     public class InitializationContext(IServiceProvider serviceProvider)
         : DependencyContext(serviceProvider.GetRequiredService<IAielEnvironment>(), serviceProvider.GetRequiredService<IConfiguration>())
     {
+        /// <summary>
+        /// Gets the service provider, which provides access to registered
+        /// services and allows for resolving dependencies.
+        /// </summary>
         public virtual IServiceProvider Services { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 }

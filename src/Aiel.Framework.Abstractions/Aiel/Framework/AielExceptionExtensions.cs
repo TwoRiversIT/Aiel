@@ -41,7 +41,11 @@ public static class AielExceptionExtensions
     /// </remarks>
     public static void Visit(this Exception ex, Action<Exception> action)
     {
+        ArgumentNullException.ThrowIfNull(ex);
+        ArgumentNullException.ThrowIfNull(action);
+
         action(ex);
+
         var iex = ex.InnerException;
         while (iex != null)
         {
@@ -57,6 +61,8 @@ public static class AielExceptionExtensions
     /// <returns>A string representation of the exception and its inner exceptions.</returns>
     public static String FormatException(this Exception ex)
     {
+        ArgumentNullException.ThrowIfNull(ex);
+
         var sb = new StringBuilder();
         ex.Visit((iex) => sb.AppendLine(CultureInfo.CurrentCulture, $"{iex.GetType().Name}: {iex.Message}"));
         return sb.ToString();

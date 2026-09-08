@@ -54,6 +54,11 @@ public sealed class EventIdsTypeConfig
     /// </summary>
     public static EventIdsTypeConfig FromFullTypeName(String fullTypeName)
     {
+        if (String.IsNullOrWhiteSpace(fullTypeName))
+        {
+            throw new ArgumentException($"'{nameof(fullTypeName)}' cannot be null or whitespace.", nameof(fullTypeName));
+        }
+
         var lastDot = fullTypeName.LastIndexOf('.');
         var shortName = lastDot >= 0
             ? fullTypeName.Substring(lastDot + 1)
@@ -97,6 +102,13 @@ public sealed class EventIdsTypeConfig
     /// type cannot be found (e.g. it is not referenced by the project).
     /// </summary>
     public INamedTypeSymbol? GetTypeSymbol(Compilation compilation)
-        => compilation.GetTypeByMetadataName(FullTypeName)
-        ?? compilation.GetTypeByMetadataName(ShortName);
+    {
+        if (compilation is null)
+        {
+            throw new ArgumentNullException(nameof(compilation));
+        }
+
+        return compilation.GetTypeByMetadataName(FullTypeName)
+            ?? compilation.GetTypeByMetadataName(ShortName);
+    }
 }

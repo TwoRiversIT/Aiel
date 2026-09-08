@@ -37,6 +37,8 @@ public abstract class DatabaseMigratorBase
 
     public async Task TryAsync(Func<CancellationToken, Task> task, Int32 retryCount = 3, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(task);
+
         try
         {
             using var activity = _activitySource.StartActivity("Migrating Database", ActivityKind.Client);

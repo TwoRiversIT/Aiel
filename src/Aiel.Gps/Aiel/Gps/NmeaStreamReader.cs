@@ -69,7 +69,7 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
     /// Set to 0 (default) to disable this check. When enabled, parsing will stop after the specified
     /// number of consecutive lines that cannot be parsed by any registered parser.
     /// </remarks>
-    public Int32 AbortAfterUnparsedLines { get; set; } = 0;
+    public Int32 AbortAfterUnparsedLines { get; set; }
 
     /// <summary>
     /// Gets or sets the behavior when a parse error occurs.
@@ -136,6 +136,8 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
     /// </remarks>
     public async Task<ExitReason> ParseStreamAsync(Stream stream, Action<NmeaMessage> callback, Action<ParseError>? errorCallback, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+
         if (_parsers.Count == 0)
         {
             throw new InvalidOperationException("At least one parser must be registered in this instance before parsing may begin.");
@@ -175,7 +177,6 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
                 BytesReceived += bytesRead;
                 if (bytesRead == 0)
                 {
-                    _logger.LogTrace("FillPipeAsync: Stream Ended");
                     _exitReason = ExitReason.StreamEnded;
                     break;
                 }
@@ -187,7 +188,6 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
                 var result = await writer.FlushAsync(cancellationToken);
                 if (result.IsCompleted)
                 {
-                    _logger.LogTrace("FillPipeAsync: Reader is Completed");
                     break;
                 }
             }
@@ -242,7 +242,6 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
                 // Stop reading if there's no more data coming
                 if (result.IsCompleted)
                 {
-                    _logger.LogTrace("ReadPipeAsync: Writer is Completed");
                     break;
                 }
             }
@@ -253,8 +252,6 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
 
             if (AbortAfterUnparsedLines != 0 && _unparsedSequenceLength >= AbortAfterUnparsedLines)
             {
-                LogParsingLine(_logger, _unparsedSequenceLength, AbortAfterUnparsedLines);
-
                 _exitReason = ExitReason.TooManySequentialUnparsedLines;
                 break;
             }
@@ -263,9 +260,6 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
         // Mark the PipeReader as complete
         await reader.CompleteAsync();
     }
-
-    [LoggerMessage(EventId = 0, Level = LogLevel.Trace, Message = "ReadPipeAsync: Sequntial Unparsed Lines: {UnparsedLines}  Limit: {Limit}")]
-    private static partial void LogParsingLine(ILogger logger, int unparsedLines, int limit);
 
     private Boolean ParseSentence(ReadOnlySequence<Byte> payload, [NotNullWhen(true)] out NmeaMessage? message, out ParseError? error)
     {
@@ -277,14 +271,8 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
 
         foreach (var parser in _parsers)
         {
-            if (CanHandle(payload, parser))
+            if (parser.CanHandle(payload))
             {
-                if (_logger.IsEnabled(LogLevel.Trace))
-                {
-                    _logger.LogTrace("Parsing Line {LineCount} with {ParserName}: {Payload}",
-                        LineCount, parser.GetType().Name, payload.ToString(Encoding.UTF8));
-                }
-
                 try
                 {
                     message = parser.Parse(payload);
@@ -308,29 +296,7 @@ public partial class NmeaStreamReader(ILogger<NmeaStreamReader>? logger = null)
             }
         }
 
-        if (_logger.IsEnabled(LogLevel.Trace))
-        {
-            _logger.LogTrace("No parser found for Line {LineCount}: {Payload}", LineCount, payload.ToString(Encoding.UTF8));
-        }
-
         _unparsedSequenceLength++;
-        return false;
-    }
-
-    private Boolean CanHandle(ReadOnlySequence<Byte> payload, NmeaMessage parser)
-    {
-        try
-        {
-            if (parser.CanHandle(payload))
-            {
-                return true;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCanHandleException(ex, parser.GetType().Name, payload.ToString(Encoding.UTF8));
-        }
-
         return false;
     }
 }

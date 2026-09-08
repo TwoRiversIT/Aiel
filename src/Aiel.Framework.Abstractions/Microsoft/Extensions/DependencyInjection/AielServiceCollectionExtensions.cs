@@ -134,6 +134,8 @@ public static class AielServiceCollectionExtensions
         where TService : class
         where TDecorator : class, TService
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         // Find the existing registration
         var original = services.LastOrDefault(s => s.ServiceType == typeof(TService))
             ?? throw new InvalidOperationException(

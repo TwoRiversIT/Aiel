@@ -109,6 +109,8 @@ public class EmailOptionsValidator : IValidateOptions<EmailOptions>
     /// <returns>A <see cref="ValidateOptionsResult"/> indicating the result of the validation.</returns>
     public virtual ValidateOptionsResult Validate(String? name, EmailOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         var key = String.IsNullOrWhiteSpace(name) ? nameof(EmailOptions) : name;
 
         if (String.IsNullOrWhiteSpace(options.SmtpServer))

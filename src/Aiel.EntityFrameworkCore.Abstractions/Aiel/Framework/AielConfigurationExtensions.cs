@@ -30,10 +30,18 @@ public static class AielConfigurationExtensions
     private const String DefaultConnection = "DefaultConnection";
 
     public static String GetConnectionStringOrDefault(this ConfigurationContext context, String name)
-        => context.Configuration.GetConnectionStringOrDefault(name);
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return context.Configuration.GetConnectionStringOrDefault(name);
+    }
 
     public static String GetConnectionStringOrDefault(this IConfiguration configuration, String name)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
         return configuration.GetConnectionString(name)
             ?? configuration.GetConnectionString(Default)
             ?? configuration.GetConnectionString(DefaultConnection)

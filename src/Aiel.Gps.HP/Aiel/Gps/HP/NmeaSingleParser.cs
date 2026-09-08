@@ -27,6 +27,8 @@ public static class NmeaSingleParser
     public static TMessage Parse<TMessage>(ReadOnlySpan<Byte> sentence, INmeaParser<TMessage> parser)
         where TMessage : struct
     {
+        ArgumentNullException.ThrowIfNull(parser);
+
         var lexer = new Lexer(sentence);
         parser.Parse(ref lexer, out var msg);
         return msg;

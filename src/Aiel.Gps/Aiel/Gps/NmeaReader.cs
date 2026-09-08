@@ -35,7 +35,7 @@ namespace Aiel.Gps;
 /// The reader uses a background task to continuously parse the stream and makes messages available through
 /// an async enumerable interface or individual read operations.
 /// </remarks>
-public sealed class NmeaReader : DisposableBase
+public sealed partial class NmeaReader : DisposableBase
 {
     private readonly BufferBlock<NmeaMessage> _queue;
     private readonly BufferBlock<ParseError> _errorQueue;
@@ -51,7 +51,9 @@ public sealed class NmeaReader : DisposableBase
 #endif
 
     private Task? _task;
+    private Boolean _initialized;
     private CancellationToken _readerCancellationToken;
+    private CancellationTokenSource? _linkedCts;
     private Exception? _parseException;
 
     /// <summary>
@@ -73,15 +75,16 @@ public sealed class NmeaReader : DisposableBase
     {
         ObjectDisposedException.ThrowIf(IsDisposed, this);
 
-        if (_task == null)
+        if (!_initialized)
         {
             lock (_syncroot)
             {
-                if (_task == null)
+                if (!_initialized)
                 {
+                    _initialized = true;
                     _readerCancellationToken = cancellationToken;
 
-                    var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _disposalCts.Token);
+                    _linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _disposalCts.Token);
 
                     _task = Task.Run(async () =>
                     {
@@ -91,9 +94,9 @@ public sealed class NmeaReader : DisposableBase
                                 _stream,
                                 (m) => _queue.Post(m),
                                 (e) => _errorQueue.Post(e),
-                                linkedCts.Token);
+                                _linkedCts.Token);
                         }
-                        catch (OperationCanceledException) when (linkedCts.Token.IsCancellationRequested)
+                        catch (OperationCanceledException) when (_linkedCts.Token.IsCancellationRequested)
                         {
                             // Expected when cancelled
                         }
@@ -106,9 +109,9 @@ public sealed class NmeaReader : DisposableBase
                         {
                             _queue.Complete();
                             _errorQueue.Complete();
-                            linkedCts.Dispose();
+                            _linkedCts.Dispose();
                         }
-                    }, linkedCts.Token);
+                    }, _linkedCts.Token);
                 }
             }
         }
@@ -117,6 +120,9 @@ public sealed class NmeaReader : DisposableBase
             throw new InvalidOperationException("Cannot use different CancellationToken instances across multiple read operations on the same NmeaReader instance.");
         }
     }
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Error, Message = "An error occurred while parsing the NMEA stream.")]
+    private partial void LogParseError(Exception ex);
 
     /// <summary>
     /// Reads NMEA messages from the stream as an asynchronous enumerable sequence.
@@ -270,6 +276,7 @@ public sealed class NmeaReader : DisposableBase
     /// Asynchronously releases managed resources used by the <see cref="NmeaReader"/>.
     /// </summary>
     /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Any exception during disposal should be logged but not rethrown.")]
     protected override async ValueTask DisposeAsyncCore()
     {
         await _disposalCts.CancelAsync();
@@ -286,15 +293,22 @@ public sealed class NmeaReader : DisposableBase
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, "An error occurred during disposal.");
+                LogDisposeError(ex);
             }
 
             _task.Dispose();
             _task = null;
+
+            _linkedCts?.Dispose();
         }
 
         _disposalCts.Dispose();
+
+        await base.DisposeAsyncCore();
     }
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "NmeaReader disposed.")]
+    private partial void LogDisposeError(Exception ex);
 
     /// <summary>
     /// Releases managed resources used by the <see cref="NmeaReader"/>.

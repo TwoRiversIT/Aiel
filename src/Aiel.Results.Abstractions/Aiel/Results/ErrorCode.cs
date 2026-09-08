@@ -57,7 +57,11 @@ public abstract class ErrorCode() : IEquatable<ErrorCode>
     /// </summary>
     /// <param name="errorCode">The error code to convert.</param>
     /// <returns>The name of the error code.</returns>
-    public static implicit operator String(ErrorCode errorCode) => errorCode.Name;
+    public static implicit operator String(ErrorCode errorCode)
+    {
+        ArgumentNullException.ThrowIfNull(errorCode);
+        return errorCode.Name;
+    }
 
     /// <summary>
     /// Determines whether this error code is equal to another based on type and name.

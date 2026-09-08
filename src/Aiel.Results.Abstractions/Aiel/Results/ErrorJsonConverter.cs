@@ -39,6 +39,10 @@ public sealed class ErrorJsonConverter : JsonConverter<Error>
     /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, Error value, JsonSerializerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(value);
+        ArgumentNullException.ThrowIfNull(options);
+
         writer.WriteStartObject();
         writer.WriteString(Discriminator, value.GetType().FullName);
 

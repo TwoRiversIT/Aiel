@@ -82,7 +82,13 @@ public static class AielEnvironmentExtensions
     /// <param name="environmentName">The name of the environment to check.</param>
     /// <returns><c>true</c> if the current environment matches the specified name; otherwise, <c>false</c>.</returns>
     public static Boolean IsEnvironment(this IAielEnvironment environment, String environmentName)
-        => String.Equals(environment.EnvironmentName, environmentName, StringComparison.OrdinalIgnoreCase);
+    {
+        ArgumentNullException.ThrowIfNull(environment);
+
+        var name = String.IsNullOrWhiteSpace(environmentName) ? Production : environmentName;
+
+        return String.Equals(environment.EnvironmentName, name, StringComparison.OrdinalIgnoreCase);
+    }
 
     /// <summary>
     /// Determines whether the current environment is Development.

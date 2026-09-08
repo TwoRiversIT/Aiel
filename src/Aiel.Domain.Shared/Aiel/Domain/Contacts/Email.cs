@@ -110,25 +110,30 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
     /// Defines an implicit conversion from <see cref="Email"/> to <see cref="String"/>. This allows an <see cref="Email"/> instance to be used wherever a string is expected, automatically converting it to its string representation.
     /// </summary>
     /// <param name="email">The <see cref="Email"/> instance to convert to a string.</param>
-    public static implicit operator String(Email email) => email.ToString();
+    public static implicit operator String(Email email)
+    {
+        ArgumentNullException.ThrowIfNull(email);
+        return email.ToString();
+    }
 
     /// <summary>
     /// Defines an implicit conversion from <see cref="String"/> to <see cref="Email"/>. This allows a string to be used wherever an <see cref="Email"/> instance is expected, automatically converting it to an <see cref="Email"/> instance.
     /// </summary>
     /// <param name="email">The string representation of the email address to convert to an <see cref="Email"/> instance.</param>
+    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "We already have Parse and TryParse methods.")]
     public static implicit operator Email(String? email) => email is null ? Empty : Parse(email);
 
     /// <inheritdoc />
-    public static Boolean operator <(Email left, Email right) => left.CompareTo(right) < 0;
+    public static Boolean operator <(Email left, Email right) => left?.CompareTo(right) < 0;
 
     /// <inheritdoc />
-    public static Boolean operator <=(Email left, Email right) => left.CompareTo(right) <= 0;
+    public static Boolean operator <=(Email left, Email right) => left?.CompareTo(right) <= 0;
 
     /// <inheritdoc />
-    public static Boolean operator >(Email left, Email right) => left.CompareTo(right) > 0;
+    public static Boolean operator >(Email left, Email right) => left?.CompareTo(right) > 0;
 
     /// <inheritdoc />
-    public static Boolean operator >=(Email left, Email right) => left.CompareTo(right) >= 0;
+    public static Boolean operator >=(Email left, Email right) => left?.CompareTo(right) >= 0;
 
     /// <summary>
     /// Compares the current <see cref="Email"/> instance with another <see cref="Email"/> instance and returns an integer that indicates their relative order. The comparison is case-insensitive and based on the string representations of the email addresses.

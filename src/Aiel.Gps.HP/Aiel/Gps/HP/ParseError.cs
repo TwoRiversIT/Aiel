@@ -40,9 +40,11 @@ public sealed class ParseError
     /// <param name="exception">The exception that was thrown during parsing.</param>
     public ParseError(Int32 lineNumber, String rawPayload, Type parserType, Exception exception)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(sentence);
+
         LineNumber = lineNumber;
-        RawPayload = rawPayload;
-        ParserType = parserType;
+        ParserType = parserType ?? throw new ArgumentNullException(nameof(parserType));
+        Exception = exception ?? throw new ArgumentNullException(nameof(exception));
         Exception = exception;
         Sentence = rawPayload;
         ErrorMessage = exception.Message;
@@ -55,6 +57,9 @@ public sealed class ParseError
     /// <param name="errorMessage">A description of why the parse failed.</param>
     public ParseError(String sentence, String errorMessage)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(sentence);
+        ArgumentException.ThrowIfNullOrWhiteSpace(errorMessage);
+
         Sentence = sentence;
         ErrorMessage = errorMessage;
         RawPayload = sentence;

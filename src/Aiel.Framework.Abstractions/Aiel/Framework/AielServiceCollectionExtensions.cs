@@ -60,7 +60,10 @@ public static class AielServiceCollectionExtensions
         where TOptions : class
         where TValidator : class, IValidateOptions<TOptions>
     {
-        sectionName ??= typeof(TOptions).Name;
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        var name = sectionName ?? typeof(TOptions).Name;
 
         services.TryAddSingleton<IValidateOptions<TOptions>, TValidator>();
 
@@ -68,7 +71,7 @@ public static class AielServiceCollectionExtensions
             ? services.AddOptionsWithValidateOnStart<TOptions>(optionsName)
             : services.AddOptions<TOptions>(optionsName);
 
-        builder.Bind(configuration.GetSection(sectionName));
+        builder.Bind(configuration.GetSection(name));
 
         return services;
     }

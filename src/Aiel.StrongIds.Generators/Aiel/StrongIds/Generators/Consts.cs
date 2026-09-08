@@ -32,7 +32,7 @@ public static class Consts
     public const String GenerateTryFromPropertyName = "GenerateTryFrom";
     public const String GenerateTryParsePropertyName = "GenerateTryParse";
     public const String StrongIdAttributeMetadataName = "Aiel.StrongIds.StrongIdAttribute`1";
-    public const Int32 ReferenceBackingKindValue = 1;
+    public const Int32 ReferenceBackingKindValue = 2;
     public const String IdParameterName = "id";
     public const String ValueParameterName = "value";
     public const String ParsedParameterName = "parsed";

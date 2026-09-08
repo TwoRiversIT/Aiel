@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Gps;
 
 /// <summary>
@@ -27,6 +29,12 @@ namespace Aiel.Gps;
 /// </summary>
 public enum ParseErrorBehavior
 {
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
     /// <summary>
     /// Skip the failed sentence and continue parsing. The error will be logged and optionally
     /// passed to the error callback if provided.

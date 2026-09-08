@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Domain.Contacts;
 
 /// <summary>
@@ -34,8 +36,9 @@ namespace Aiel.Domain.Contacts;
 public enum Gender
 {
     /// <summary>
-    /// The default value indicating that no gender has been specified. This value should not be used for filtering or searching contacts.
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     None = 0,
     /// <summary>
     /// Indicates that the gender is male.

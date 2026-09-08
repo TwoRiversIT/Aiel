@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Mediator;
 
 /// <summary>
@@ -30,8 +32,18 @@ namespace Aiel.Mediator;
 public enum AielMediatorEventIds
 {
     /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
+    /// <summary>
     /// Indicates that an exception occurred while processing a request in a handler.
     /// </summary>
-    HandlerException = 0,
-    WorkerRunning = 1
+    HandlerException = 11000,
+
+    /// <summary>
+    /// Indicates that a worker has started running.
+    /// </summary>
+    WorkerRunning
 }

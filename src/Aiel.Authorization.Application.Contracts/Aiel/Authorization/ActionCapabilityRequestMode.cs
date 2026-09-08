@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Authorization;
 
 /// <summary>
@@ -28,12 +30,18 @@ namespace Aiel.Authorization;
 public enum ActionCapabilityRequestMode
 {
     /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
+    /// <summary>
     /// Requests every permission available for the supplied scope.
     /// </summary>
-    AllPermissions = 0,
+    AllPermissions = 1,
 
     /// <summary>
     /// Requests only the explicitly selected permissions.
     /// </summary>
-    SelectedPermissions = 1
+    SelectedPermissions = 2
 }

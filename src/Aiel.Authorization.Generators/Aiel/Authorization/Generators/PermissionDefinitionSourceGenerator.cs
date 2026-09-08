@@ -78,7 +78,7 @@ public sealed class PermissionDefinitionSourceGenerator : IIncrementalGenerator
                     description = (String?)namedArg.Value.Value ?? String.Empty;
                     break;
                 case "Lifecycle":
-                    lifecycleValue = (Int32)namedArg.Value.Value!;
+                    lifecycleValue = (Int32)namedArg.Value.Value! - 1;
                     break;
                 case "PreviousNames":
                     previousNames = namedArg.Value.Values

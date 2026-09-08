@@ -91,7 +91,7 @@ public sealed class PermissionDomainSharedSurfaceTests
     [Fact]
     public void PermissionEnums_ExposeTheInitialContractSurface()
     {
-        Enum.GetNames<PermissionLifecycle>().Should().Equal("Active", "Deprecated", "Removed");
-        Enum.GetNames<AuthorizationGrantDecision>().Should().Equal("Granted", "Prohibited");
+        Enum.GetNames<PermissionLifecycle>().Should().Equal("None", "Active", "Deprecated", "Removed");
+        Enum.GetNames<AuthorizationGrantDecision>().Should().Equal("None", "Granted", "Prohibited");
     }
 }

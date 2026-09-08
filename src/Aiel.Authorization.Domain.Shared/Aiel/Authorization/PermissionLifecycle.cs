@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Authorization;
 
 /// <summary>
@@ -28,17 +30,23 @@ namespace Aiel.Authorization;
 public enum PermissionLifecycle
 {
     /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
+    /// <summary>
     /// The permission is active and may be granted.
     /// </summary>
-    Active = 0,
+    Active = 1,
 
     /// <summary>
     /// The permission remains recognized but is scheduled for removal.
     /// </summary>
-    Deprecated = 1,
+    Deprecated = 2,
 
     /// <summary>
     /// The permission has been removed from the active catalog.
     /// </summary>
-    Removed = 2
+    Removed = 3
 }

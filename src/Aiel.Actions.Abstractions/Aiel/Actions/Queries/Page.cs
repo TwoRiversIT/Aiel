@@ -58,6 +58,18 @@ public record Page
     };
 
     /// <summary>
+    /// Gets a page instance that includes the specified number of records.
+    /// </summary>
+    /// <param name="howMany">The number of records to include in the page.</param>
+    /// <returns>A new <see cref="Page"/> instance.</returns>
+    public static Page Some(Int32 howMany) => new()
+    {
+        Number = DefaultPageNumber,
+        Size = howMany,
+        Total = 0
+    };
+
+    /// <summary>
     /// Creates a new page instance with the specified page number, page size, and total records.
     /// </summary>
     /// <param name="pageNumber">The page number.</param>

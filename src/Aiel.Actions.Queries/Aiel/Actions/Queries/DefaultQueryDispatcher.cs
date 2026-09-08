@@ -45,7 +45,7 @@ public sealed class DefaultQueryDispatcher(IServiceProvider serviceProvider) : I
         ArgumentNullException.ThrowIfNull(query);
         ArgumentNullException.ThrowIfNull(context);
 
-        var childContext = DefaultExecutionContext.CreateChild(context);
+        var childContext = context.CreateChild(query);
         var handler = serviceProvider.GetRequiredService<IQueryHandler<TQuery, TResult>>();
         var behaviors = serviceProvider.GetServices<IQueryPipelineBehavior<TQuery, TResult>>().ToList();
 

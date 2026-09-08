@@ -40,7 +40,7 @@ public sealed class ActionExecutionContextTests
         parent.Properties["request-source"] = "api";
         parent.Properties["attempt"] = 3;
 
-        var child = ActionExecutionContext<TestAction>.CreateChild(parent, action);
+        var child = parent.CreateChild(action);
 
         child.Actor.Should().BeSameAs(parent.Actor);
         child.CorrelationId.Should().Be(parent.CorrelationId);
@@ -57,21 +57,11 @@ public sealed class ActionExecutionContextTests
     private sealed class TestActor : IActor;
 
     private sealed class TestExecutionContext(
-        IActor actor,
-        Guid operationId,
-        Guid correlationId,
-        DateTimeOffset timestamp,
-        Guid? causationId,
-        Guid? clientInstanceId) : IExecutionContext
-    {
-        public IActor Actor { get; } = actor;
-        public Guid OperationId { get; } = operationId;
-        public Guid CorrelationId { get; } = correlationId;
-        public DateTimeOffset Timestamp { get; } = timestamp;
-
-        public Guid? CausationId { get; } = causationId;
-        public Guid? ClientInstanceId { get; } = clientInstanceId;
-
-        public IDictionary<String, Object?> Properties { get; } = new Dictionary<String, Object?>();
-    }
+            IActor actor,
+            Guid operationId,
+            Guid correlationId,
+            DateTimeOffset timestamp,
+            Guid? causationId,
+            Guid? clientInstanceId)
+        : ExecutionContextBase(actor, operationId, correlationId, timestamp, causationId, clientInstanceId);
 }

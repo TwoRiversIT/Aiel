@@ -41,7 +41,7 @@ public sealed class DefaultActionGate<TAction>(IServiceProvider serviceProvider)
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(action);
 
-        var actionContext = ActionExecutionContext<TAction>.CreateChild(context, action);
+        var actionContext = context.CreateChild(action);
         var validator = ResolveOptional<IActionValidator<TAction>>();
 
         if (validator is not null)
@@ -49,7 +49,7 @@ public sealed class DefaultActionGate<TAction>(IServiceProvider serviceProvider)
             var validationResult = await validator.ValidateAsync(actionContext, cancellationToken).ConfigureAwait(false);
             if (!validationResult.IsSuccess)
             {
-                return Result<IActionExecutionContext<TAction>>.Failure(validationResult.Error);
+                return Result.Failure<IActionExecutionContext<TAction>>(validationResult.Error);
             }
         }
 
@@ -63,14 +63,13 @@ public sealed class DefaultActionGate<TAction>(IServiceProvider serviceProvider)
                 permissionName = manifest.PermissionName;
             }
 
-            return Result<IActionExecutionContext<TAction>>.Failure(
-                AuthorizationErrors.MissingAuthorizationStory(permissionName));
+            return AuthorizationErrors.MissingAuthorizationStory<TAction>(permissionName);
         }
 
         var permissionResult = await checker.CheckPermissionAsync(actionContext, cancellationToken).ConfigureAwait(false);
         if (!permissionResult.IsSuccess)
         {
-            return Result<IActionExecutionContext<TAction>>.Failure(permissionResult.Error);
+            return Result.Failure<IActionExecutionContext<TAction>>(permissionResult.Error);
         }
 
         return Result<IActionExecutionContext<TAction>>.Success(actionContext);

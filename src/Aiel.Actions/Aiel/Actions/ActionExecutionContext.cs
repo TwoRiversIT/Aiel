@@ -27,41 +27,25 @@ namespace Aiel.Actions;
 /// </summary>
 /// <typeparam name="TAction">The action payload type.</typeparam>
 public sealed class ActionExecutionContext<TAction>(
-    IActor actor,
-    Guid operationId,
-    Guid correlationId,
-    DateTimeOffset timestamp,
-    Guid? causationId,
-    Guid? clientInstanceId,
-    IDictionary<String, Object?> properties,
-    TAction action
-    ) : ExecutionContextBase(actor, operationId, correlationId, timestamp, causationId, clientInstanceId, properties), IActionExecutionContext<TAction>
+        IActor actor,
+        Guid operationId,
+        Guid correlationId,
+        DateTimeOffset timestamp,
+        Guid? causationId,
+        Guid? clientInstanceId,
+        IDictionary<String, Object?> properties,
+        TAction action)
+    : ExecutionContextBase(
+        actor: actor,
+        operationId: operationId,
+        correlationId: correlationId,
+        timestamp: timestamp,
+        causationId: causationId,
+        clientInstanceId: clientInstanceId,
+        properties: properties)
+    , IActionExecutionContext<TAction>
     where TAction : IAction
 {
     /// <inheritdoc />
     public TAction Action { get; } = action ?? throw new ArgumentNullException(nameof(action));
-
-    /// <summary>
-    /// Creates a child action execution context from an existing execution context and action payload.
-    /// </summary>
-    /// <param name="parent">The parent execution context.</param>
-    /// <param name="action">The action payload for the child execution.</param>
-    public static ActionExecutionContext<TAction> CreateChild(IExecutionContext parent, TAction action)
-    {
-        ArgumentNullException.ThrowIfNull(parent);
-        ArgumentNullException.ThrowIfNull(action);
-
-        var actor = parent.Actor
-            ?? throw new ArgumentException("Execution context actor cannot be null.", nameof(parent));
-
-        return new ActionExecutionContext<TAction>(
-            actor: actor,
-            operationId: Guid.NewGuid(),
-            correlationId: EnsureNotEmpty(parent.CorrelationId, nameof(parent.CorrelationId)),
-            timestamp: parent.Timestamp,
-            causationId: EnsureNotEmpty(parent.OperationId, nameof(parent.OperationId)),
-            clientInstanceId: parent.ClientInstanceId,
-            properties: new Dictionary<String, Object?>(parent.Properties),
-            action: action);
-    }
 }

@@ -47,4 +47,24 @@ public interface IExecutionContext
 
     /// <summary>Gets the mutable property bag for this execution.</summary>
     IDictionary<String, Object?> Properties { get; }
+
+    /// <summary>
+    /// Creates a child execution context that inherits the correlation chain from this context.
+    /// The child will have a new <see cref="OperationId"/>; the parent's
+    /// <see cref="OperationId"/> becomes the child's
+    /// <see cref="CausationId"/>.
+    /// </summary>
+    /// <returns>The newly created child execution context.</returns>
+    IExecutionContext CreateChild();
+
+    /// <summary>
+    /// Creates a child execution context that inherits the correlation chain from this context.
+    /// The child will have a new <see cref="OperationId"/>; the parent's
+    /// <see cref="OperationId"/> becomes the child's
+    /// <see cref="CausationId"/>.
+    /// </summary>
+    /// <param name="nextAction">The action payload for the child execution context.</param>
+    /// <returns>The newly created child execution context.</returns>
+    IActionExecutionContext<TAction> CreateChild<TAction>(TAction nextAction)
+        where TAction : IAction;
 }

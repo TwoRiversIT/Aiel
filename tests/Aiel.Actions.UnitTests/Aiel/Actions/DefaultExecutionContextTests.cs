@@ -38,7 +38,7 @@ public sealed class DefaultExecutionContextTests
         var actor = new TestActor();
         var parent = DefaultExecutionContext.CreateRoot(actor);
 
-        var child = DefaultExecutionContext.CreateChild(parent);
+        var child = parent.CreateChild();
 
         child.Actor.Should().BeSameAs(actor);
         child.CorrelationId.Should().Be(parent.CorrelationId);

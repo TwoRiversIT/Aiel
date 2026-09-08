@@ -44,7 +44,7 @@ public sealed class DefaultCommandDispatcher(IServiceProvider serviceProvider) :
         ArgumentNullException.ThrowIfNull(command);
         ArgumentNullException.ThrowIfNull(context);
 
-        var childContext = DefaultExecutionContext.CreateChild(context);
+        var childContext = context.CreateChild();
         var handler = serviceProvider.GetRequiredService<ICommandHandler<TCommand>>();
         var behaviors = serviceProvider.GetServices<ICommandPipelineBehavior<TCommand>>().ToList();
 

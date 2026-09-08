@@ -27,38 +27,36 @@ namespace Aiel.Actions;
 /// Identity properties are set once at construction; the <see cref="ExecutionContextBase.Properties"/> dictionary is
 /// openly mutable for the lifetime of the context.
 /// </summary>
-public sealed class DefaultExecutionContext(
-    IActor actor,
-    Guid operationId,
-    Guid correlationId,
-    DateTimeOffset timestamp,
-    Guid? causationId,
-    Guid? clientInstanceId,
-    IDictionary<String, Object?> properties
-    ) : ExecutionContextBase(actor, operationId, correlationId, timestamp, causationId, clientInstanceId, properties)
+public sealed class DefaultExecutionContext : ExecutionContextBase
 {
+    /// <summary>
+    /// Creates a new execution context with the specified identity properties and an empty <see cref="ExecutionContextBase.Properties"/> dictionary.
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <param name="operationId"></param>
+    /// <param name="correlationId"></param>
+    /// <param name="timestamp"></param>
+    /// <param name="causationId"></param>
+    /// <param name="clientInstanceId"></param>
+    /// <param name="properties"></param>
+    public DefaultExecutionContext(
+        IActor actor,
+        Guid operationId,
+        Guid correlationId,
+        DateTimeOffset timestamp,
+        Guid? causationId,
+        Guid? clientInstanceId,
+        IDictionary<String, Object?> properties)
+    : base(actor, operationId, correlationId, timestamp, causationId, clientInstanceId, properties)
+    {
+    }
 
     /// <summary>
-    /// Creates a child execution context that inherits the correlation chain from <paramref name="parent"/>.
-    /// The child receives a new <see cref="ExecutionContextBase.OperationId"/>; the parent’s <see cref="ExecutionContextBase.OperationId"/> becomes
-    /// the child’s <see cref="ExecutionContextBase.CausationId"/>.
+    /// Creates a new execution context that inherits identity properties from the specified parent context.
     /// </summary>
-    /// <param name="parent">The parent context from which causation information is derived.</param>
-    public static IExecutionContext CreateChild(IExecutionContext parent)
+    /// <param name="parent">The parent execution context from which to inherit identity properties.</param>
+    public DefaultExecutionContext(IExecutionContext parent) : base(parent)
     {
-        ArgumentNullException.ThrowIfNull(parent);
-
-        var actor = parent.Actor
-            ?? throw new ArgumentException("Execution context actor cannot be null.", nameof(parent));
-
-        return new DefaultExecutionContext(
-            actor,
-            operationId: Guid.NewGuid(),
-            correlationId: EnsureNotEmpty(parent.CorrelationId, nameof(parent.CorrelationId)),
-            timestamp: parent.Timestamp,
-            causationId: EnsureNotEmpty(parent.OperationId, nameof(parent.OperationId)),
-            clientInstanceId: parent.ClientInstanceId,
-            properties: new Dictionary<String, Object?>(parent.Properties));
     }
 
     /// <summary>

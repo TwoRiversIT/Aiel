@@ -3,14 +3,19 @@
     <!-- Shared defaults and language settings -->
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
-        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <AnalysisMode>All</AnalysisMode>
+        <!--
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+        -->
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>        
         <NeutralLanguage>en</NeutralLanguage>
 
         <IsAotCompatible>false</IsAotCompatible>
         <IsTrimmable>false</IsTrimmable>
-
-        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
         <!-- NBGV versioning -->
         <NBGV_ThisAssemblyNamespace>$(AssemblyName)</NBGV_ThisAssemblyNamespace>

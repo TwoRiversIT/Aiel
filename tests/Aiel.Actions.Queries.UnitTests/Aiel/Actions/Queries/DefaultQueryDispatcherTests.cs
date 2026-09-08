@@ -157,7 +157,7 @@ public sealed class DefaultQueryDispatcherTests
     {
         public Task<Result<String>> HandleAsync(
             TestQuery query, IExecutionContext context, CancellationToken ct = default)
-            => Task.FromResult(Result<String>.Failure(new TestError("I do not know what I want to eat.")));
+            => Task.FromResult(Result.Failure<String>(new TestError("I do not know what I want to eat.")));
     }
 
     private sealed class ContextCapturingHandler(Action<IExecutionContext> capture)

@@ -30,6 +30,7 @@ namespace Aiel.Domain.Specifications;
 /// </summary>
 /// <typeparam name="T">The type of the object to evaluate.</typeparam>
 public interface ISpecification<T>
+    where T : notnull
 {
     /// <summary>
     /// Determines whether the specified object satisfies the criteria defined by the specification.

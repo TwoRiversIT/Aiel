@@ -25,7 +25,7 @@ namespace Aiel.Actions;
 /// <summary>
 /// Base class for execution contexts, providing common functionality for managing execution context properties and identifiers.
 /// </summary>
-public class ExecutionContextBase : IExecutionContext
+public abstract class ExecutionContextBase : IExecutionContext
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ExecutionContextBase"/> class with the specified parameters.
@@ -45,7 +45,7 @@ public class ExecutionContextBase : IExecutionContext
         DateTimeOffset timestamp,
         Guid? causationId,
         Guid? clientInstanceId,
-        IDictionary<String, Object?> properties)
+        IDictionary<String, Object?>? properties = null)
     {
         ArgumentNullException.ThrowIfNull(actor);
 
@@ -61,6 +61,27 @@ public class ExecutionContextBase : IExecutionContext
         CausationId = causationId == null ? null : EnsureNotEmpty(causationId.Value, nameof(causationId));
 
         Properties = properties ?? new Dictionary<String, Object?>();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExecutionContextBase"/>
+    /// class with values from the <paramref name="parent"/>. The new instance
+    /// has a unique <see cref="OperationId"/>; the parent's
+    /// <see cref="OperationId"/> of this instance becomes the new instance's
+    /// <see cref="CausationId"/>.
+    /// </summary>
+    /// <param name="parent">The parent execution context from which to create the new context.</param>
+    protected ExecutionContextBase(IExecutionContext parent)
+    {
+        ArgumentNullException.ThrowIfNull(parent);
+
+        Actor = parent.Actor;
+        OperationId = Guid.NewGuid();
+        CorrelationId = parent.CorrelationId;
+        Timestamp = parent.Timestamp;
+        CausationId = parent.OperationId;
+        ClientInstanceId = parent.ClientInstanceId;
+        Properties = new Dictionary<String, Object?>(parent.Properties);
     }
 
     /// <inheritdoc />
@@ -97,4 +118,30 @@ public class ExecutionContextBase : IExecutionContext
             ? throw new ArgumentException("Execution context identifiers cannot be empty.", paramName)
             : value;
     }
+
+    /// <summary>
+    /// Creates a child execution context that inherits the correlation chain from this context.
+    /// The child receives a new <see cref="ExecutionContextBase.OperationId"/>; the parent’s
+    /// <see cref="ExecutionContextBase.OperationId"/> becomes the child’s
+    /// <see cref="ExecutionContextBase.CausationId"/>.
+    /// </summary>
+    /// <param name="nextAction">The action payload for the child execution context.</param>
+    public IActionExecutionContext<TAction> CreateChild<TAction>(TAction nextAction)
+        where TAction : IAction
+    {
+        ArgumentNullException.ThrowIfNull(nextAction);
+
+        return new ActionExecutionContext<TAction>(
+            actor: Actor,
+            operationId: Guid.NewGuid(),
+            correlationId: CorrelationId,
+            timestamp: Timestamp,
+            causationId: OperationId, // The causation ID for the child context is the operation ID of the parent context.
+            clientInstanceId: ClientInstanceId,
+            properties: Properties,
+            action: nextAction);
+    }
+
+    /// <inheritdoc />
+    public IExecutionContext CreateChild() => new DefaultExecutionContext(this);
 }

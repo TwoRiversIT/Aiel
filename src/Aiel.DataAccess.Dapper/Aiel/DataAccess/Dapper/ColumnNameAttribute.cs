@@ -42,12 +42,12 @@ namespace Aiel.DataAccess.Dapper;
 /// }
 /// </code>
 /// </example>
-/// <param name="columnName">The name of the database column to map to this property.</param>
+/// <param name="name">The name of the database column to map to this property.</param>
 [AttributeUsage(AttributeTargets.Property)]
-public class ColumnNameAttribute(String columnName) : Attribute
+public sealed class ColumnNameAttribute(String name) : Attribute
 {
     /// <summary>
     /// Gets the database column name that this property maps to.
     /// </summary>
-    public String Name { get; } = columnName;
+    public String Name { get; } = name;
 }

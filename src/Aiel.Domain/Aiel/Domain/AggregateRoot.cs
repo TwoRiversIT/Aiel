@@ -39,13 +39,18 @@ public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 
+    /// <summary>
+    /// Occurs when a domain event is added to the aggregate root.
+    /// </summary>
+    public event EventHandler<DomainEventArgs>? DomainEventAdded;
+
     /// <inheritdoc/>
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AggregateRoot{TKey}"/> class with the specified identifier.
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="id">The unique identifier for the aggregate root.</param>
     protected AggregateRoot(TKey id)
         : base(id)
     {
@@ -59,27 +64,45 @@ public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
     }
 
     /// <summary>
-    /// Raises a domain event and adds it to the list of domain events associated with the aggregate root.
+    /// Adds a domain event to the list of domain events associated with the aggregate root.
     /// </summary>
-    /// <param name="domainEvent"></param>
-    protected void RaiseEvent(IDomainEvent domainEvent)
+    /// <param name="domainEvent">The domain event to add to the list of domain events.</param>
+    protected virtual void AddEvent(IDomainEvent domainEvent)
     {
         ArgumentNullException.ThrowIfNull(domainEvent);
 
-        OnRaiseEvent(domainEvent);
         _domainEvents.Add(domainEvent);
+        OnDomainEventAdded(new DomainEventArgs(domainEvent));
     }
 
     /// <summary>
     /// Called when a domain event is raised. This method can be overridden in derived classes to perform additional actions when a domain event is raised.
     /// </summary>
-    /// <param name="domainEvent">The domain event that was raised.</param>
-    protected virtual void OnRaiseEvent(IDomainEvent domainEvent)
-    {
-    }
+    /// <param name="e">The argument containing the domain event that was added.</param>
+    protected virtual void OnDomainEventAdded(DomainEventArgs e) => DomainEventAdded?.Invoke(this, e);
 
     /// <summary>
     /// Clears all domain events from the aggregate root.
     /// </summary>
     public void ClearDomainEvents() => _domainEvents.Clear();
+}
+
+/// <summary>
+/// Represents the event arguments for a domain event. This class is used to encapsulate the domain event that is raised by an aggregate root.
+/// </summary>
+public class DomainEventArgs : EventArgs
+{
+    /// <summary>
+    /// Gets the domain event associated with the event arguments.
+    /// </summary>
+    public IDomainEvent DomainEvent { get; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainEventArgs"/> class with the specified domain event.
+    /// </summary>
+    /// <param name="domainEvent">The domain event to associate with the event arguments.</param>
+    internal DomainEventArgs(IDomainEvent domainEvent)
+    {
+        DomainEvent = domainEvent;
+    }
 }

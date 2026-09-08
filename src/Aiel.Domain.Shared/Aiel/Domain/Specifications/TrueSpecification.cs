@@ -20,23 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using System.Collections;
 using System.Linq.Expressions;
 
 namespace Aiel.Domain.Specifications;
 
-internal class ReplaceParameterVisitor : ExpressionVisitor, IEnumerable<KeyValuePair<ParameterExpression, ParameterExpression>>
+internal class TrueSpecification<T> : ISpecification<T>
+    where T : class
 {
-    private readonly Dictionary<ParameterExpression, ParameterExpression> _map = [];
-
-    protected override Expression VisitParameter(ParameterExpression node)
-        => _map.TryGetValue(node, out var newValue) ? newValue : node;
-
-    public void Add(ParameterExpression parameterToReplace, ParameterExpression replaceWith)
-        => _map.Add(parameterToReplace, replaceWith);
-
-    public IEnumerator<KeyValuePair<ParameterExpression, ParameterExpression>> GetEnumerator()
-        => _map.GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public Expression<Func<T, Boolean>> ToExpression()
+    {
+        return _ => true;
+    }
 }

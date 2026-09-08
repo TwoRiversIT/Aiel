@@ -20,36 +20,46 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 public enum AielEvent
 {
-    _None = 9999,
-    Actions_CommandDispatched,
-    Actions_CommandFailed,
-    Actions_CommandSucceeded,
-    Actions_QueryDispatched,
-    Actions_QueryFailed,
-    Actions_QuerySucceeded,
-    Background_WorkerRunning,
-    Emailing_Authenticated,
-    Emailing_ConfigurationError,
-    Emailing_Connected,
-    Emailing_MessageSent,
-    Emailing_Sending,
-    Emailing_SendingFailed,
-    Emailing_SendingToServer,
-    Migrations_MigratingDatabase,
-    Migrations_MigrationCompleted,
-    Migrations_MigrationFailed,
-    Migrations_MigrationsCompleted,
-    Migrations_MigrationsFound,
-    Migrations_MigrationsStarting,
-    Migrations_NoMigrationsFound,
-    Migrations_RetryingMigration,
-    Migrations_SkippingTenant,
-    Migrations_TenantMigrationCompleted,
-    Migrations_TenantMigrationFailed,
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    start = 9999,
+    ActionsCommandDispatched,
+    ActionsCommandFailed,
+    ActionsCommandSucceeded,
+    ActionsQueryDispatched,
+    ActionsQueryFailed,
+    ActionsQuerySucceeded,
+    BackgroundWorkerRunning,
+    EmailingAuthenticated,
+    EmailingConfigurationError,
+    EmailingConnected,
+    EmailingMessageSent,
+    EmailingSending,
+    EmailingSendingFailed,
+    EmailingSendingToServer,
+    EmailingTestMode,
+    MigrationsMigratingDatabase,
+    MigrationsMigrationCompleted,
+    MigrationsMigrationFailed,
+    MigrationsMigrationsCompleted,
+    MigrationsMigrationsFound,
+    MigrationsMigrationsStarting,
+    MigrationsNoMigrationsFound,
+    MigrationsRetryingMigration,
+    MigrationsSkippingTenant,
+    MigrationsTenantMigrationCompleted,
+    MigrationsTenantMigrationFailed,
 }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

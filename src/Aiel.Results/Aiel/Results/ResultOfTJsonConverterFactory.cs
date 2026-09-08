@@ -33,6 +33,8 @@ public sealed class ResultOfTJsonConverterFactory : JsonConverterFactory
     /// <inheritdoc/>
     public override Boolean CanConvert(Type typeToConvert)
     {
+        ArgumentNullException.ThrowIfNull(typeToConvert);
+
         return typeToConvert.IsGenericType &&
                typeToConvert.GetGenericTypeDefinition() == typeof(Result<>);
     }
@@ -40,8 +42,13 @@ public sealed class ResultOfTJsonConverterFactory : JsonConverterFactory
     /// <inheritdoc/>
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(typeToConvert);
+
         var valueType = typeToConvert.GetGenericArguments()[0];
+
+        // ToDo: Consider caching the converter instances to improve performance.
         var converterType = typeof(ResultOfTJsonConverter<>).MakeGenericType(valueType);
+
         return (JsonConverter)Activator.CreateInstance(converterType)!;
     }
 }

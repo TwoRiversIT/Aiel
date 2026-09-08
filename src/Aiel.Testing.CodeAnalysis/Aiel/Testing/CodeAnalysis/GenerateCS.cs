@@ -27,10 +27,10 @@ using System.Collections.Immutable;
 
 namespace Aiel.Testing.CodeAnalysis;
 
-public static class GenerateCS<T>
-     where T : IIncrementalGenerator, new()
+public static class GenerateCS
 {
-    public static GeneratorRunResult Generate(String testCode, IReadOnlyCollection<String>? stubs = null, IReadOnlyCollection<String>? ignored = null)
+    public static GeneratorRunResult Generate<T>(String testCode, IReadOnlyCollection<String>? stubs = null, IReadOnlyCollection<String>? ignored = null)
+        where T : IIncrementalGenerator, new()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(testCode);
 

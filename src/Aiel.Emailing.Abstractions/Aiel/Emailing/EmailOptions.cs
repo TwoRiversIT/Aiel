@@ -22,6 +22,7 @@
 
 using Aiel.Domain.Contacts;
 using Microsoft.Extensions.Options;
+using System.Collections.ObjectModel;
 
 namespace Aiel.Emailing;
 
@@ -99,7 +100,7 @@ public class EmailOptionsValidator : IValidateOptions<EmailOptions>
     /// <summary>
     /// Gets the list of validation errors encountered during the validation process.
     /// </summary>
-    protected readonly List<String> Errors = [];
+    protected Collection<String> Errors { get; } = [];
 
     /// <summary>
     /// Validates the specified <see cref="EmailOptions"/> instance.
@@ -109,6 +110,8 @@ public class EmailOptionsValidator : IValidateOptions<EmailOptions>
     /// <returns>A <see cref="ValidateOptionsResult"/> indicating the result of the validation.</returns>
     public virtual ValidateOptionsResult Validate(String? name, EmailOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         var key = String.IsNullOrWhiteSpace(name) ? nameof(EmailOptions) : name;
 
         if (String.IsNullOrWhiteSpace(options.SmtpServer))

@@ -34,74 +34,62 @@ public static class ResultHttpClientExtensions
     /// <summary>
     /// Sends a GET request to the specified URI and returns the result.
     /// </summary>
-    /// <param name="client">The HTTP client to send the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to send the request.</param>
     /// <param name="requestUri">The URI of the request.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing the result.</returns>
-    public static async Task<Result> GetResultAsync(this HttpClient client, String requestUri, CancellationToken cancellationToken = default)
+    public static async Task<Result> GetResultAsync(this HttpClient httpClient, Uri requestUri, CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await client.GetAsync(requestUri, cancellationToken);
-            return await response.AsResultAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.GetAsync(requestUri, cancellationToken);
+        return await response.AsResultAsync(cancellationToken);
     }
 
     /// <summary>
     /// Sends a GET request to the specified URI and returns the deserialized result.
     /// </summary>
     /// <typeparam name="TDto">The type of the expected result.</typeparam>
-    /// <param name="client">The HTTP client to send the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to send the request.</param>
     /// <param name="requestUri">The URI of the request.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized result.</returns>
-    public static async Task<Result<TDto>> GetResultAsync<TDto>(this HttpClient client, String requestUri, CancellationToken cancellationToken = default)
+    public static async Task<Result<TDto>> GetResultAsync<TDto>(this HttpClient httpClient, Uri requestUri, CancellationToken cancellationToken = default)
         where TDto : notnull
     {
-        try
-        {
-            var response = await client.GetAsync(requestUri, cancellationToken);
-            return await response.AsResultAsync<TDto>(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.GetAsync(requestUri, cancellationToken);
+        return await response.AsResultAsync<TDto>(cancellationToken);
     }
 
     /// <summary>
     /// Sends a GET request to the specified URI and returns the deserialized result.
     /// </summary>
     /// <typeparam name="TDto">The type of the expected result.</typeparam>
-    /// <param name="client">The HTTP client to send the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to send the request.</param>
     /// <param name="requestUri">The URI of the request.</param>
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized result.</returns>
-    public static async Task<MultipleResult<TDto>> QueryMultipleAsync<TDto>(this HttpClient client, String requestUri, Object? content = null, CancellationToken cancellationToken = default)
+    public static async Task<MultipleResult<TDto>> QueryMultipleAsync<TDto>(this HttpClient httpClient, Uri requestUri, Object? content = null, CancellationToken cancellationToken = default)
         where TDto : notnull
     {
-        try
-        {
-            var response = await client.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
-            await using var utf8Json = await response.Content.ReadAsStreamAsync(cancellationToken);
-            var result = await JsonSerializer.DeserializeAsync<MultipleResult<TDto>>(utf8Json, Results.JSO, cancellationToken);
-            return result ?? (MultipleResult<TDto>)await ErrorAsync(response);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
+        await using var utf8Json = await response.Content.ReadAsStreamAsync(cancellationToken);
+        var result = await JsonSerializer.DeserializeAsync<MultipleResult<TDto>>(utf8Json, Results.JSO, cancellationToken);
+        return result ?? (MultipleResult<TDto>)await ErrorAsync(response);
     }
 
     /// <summary>
     /// Sends a POST request with JSON content to the specified URI and deserializes the response into a <see cref="Result"/>.
     /// </summary>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
@@ -109,26 +97,22 @@ public static class ResultHttpClientExtensions
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result> PostAndGetResultAsync(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         Object? content = null,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await httpClient.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
-            return await response.AsResultAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
+        return await response.AsResultAsync(cancellationToken);
     }
 
     /// <summary>
     /// Sends a POST request with JSON content to the specified URI and deserializes the response into a <see cref="Result{TValue}"/>.
     /// </summary>
     /// <typeparam name="TDto">The type of value expected in the successful result.</typeparam>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
@@ -136,26 +120,22 @@ public static class ResultHttpClientExtensions
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result<TDto>> PostAndGetResultAsync<TDto>(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         Object? content = null,
         CancellationToken cancellationToken = default)
         where TDto : notnull
     {
-        try
-        {
-            var response = await httpClient.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
-            return await response.AsResultAsync<TDto>(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
+        return await response.AsResultAsync<TDto>(cancellationToken);
     }
 
     /// <summary>
     /// Sends a PUT request with JSON content to the specified URI and deserializes the response into a <see cref="Result"/>.
     /// </summary>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
@@ -163,26 +143,22 @@ public static class ResultHttpClientExtensions
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result> PutAndGetResultAsync(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         Object? content = null,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await httpClient.PutAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
-            return await response.AsResultAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.PutAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
+        return await response.AsResultAsync(cancellationToken);
     }
 
     /// <summary>
     /// Sends a PUT request with JSON content to the specified URI and deserializes the response into a <see cref="Result{TValue}"/>.
     /// </summary>
     /// <typeparam name="TDto">The type of value expected in the successful result.</typeparam>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
@@ -190,26 +166,22 @@ public static class ResultHttpClientExtensions
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result<TDto>> PutAndGetResultAsync<TDto>(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         Object? content = null,
         CancellationToken cancellationToken = default)
         where TDto : notnull
     {
-        try
-        {
-            var response = await httpClient.PutAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
-            return await response.AsResultAsync<TDto>(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.PutAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
+        return await response.AsResultAsync<TDto>(cancellationToken);
     }
 
     /// <summary>
     /// Sends a PATCH request with JSON content to the specified URI and deserializes the response into a <see cref="Result"/>.
     /// </summary>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
@@ -217,26 +189,22 @@ public static class ResultHttpClientExtensions
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result> PatchAndGetResultAsync(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         Object? content = null,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await httpClient.PatchAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
-            return await response.AsResultAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.PatchAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
+        return await response.AsResultAsync(cancellationToken);
     }
 
     /// <summary>
     /// Sends a PATCH request with JSON content to the specified URI and deserializes the response into a <see cref="Result{TValue}"/>.
     /// </summary>
     /// <typeparam name="TDto">The type of value expected in the successful result.</typeparam>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
@@ -244,70 +212,58 @@ public static class ResultHttpClientExtensions
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result<TDto>> PatchAndGetResultAsync<TDto>(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         Object? content = null,
         CancellationToken cancellationToken = default)
         where TDto : notnull
     {
-        try
-        {
-            var response = await httpClient.PatchAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
-            return await response.AsResultAsync<TDto>(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.PatchAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
+        return await response.AsResultAsync<TDto>(cancellationToken);
     }
 
     /// <summary>
     /// Sends a DELETE request to the specified URI and deserializes the response into a <see cref="Result"/>.
     /// </summary>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result> DeleteAndGetResultAsync(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var response = await httpClient.DeleteAsync(requestUri, cancellationToken);
-            return await response.AsResultAsync(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.DeleteAsync(requestUri, cancellationToken);
+        return await response.AsResultAsync(cancellationToken);
     }
 
     /// <summary>
     /// Sends a DELETE request to the specified URI and deserializes the response into a <see cref="Result{TValue}"/>.
     /// </summary>
     /// <typeparam name="TDto">The type of value expected in the successful result.</typeparam>
-    /// <param name="httpClient">The HTTP client to use for the request.</param>
+    /// <param name="httpClient">The HTTP httpClient to use for the request.</param>
     /// <param name="requestUri">The URI the request is sent to.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the asynchronous operation.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains a Result object with the
     /// deserialized value if successful; otherwise, a failure result containing error information.</returns>
     public static async Task<Result<TDto>> DeleteAndGetResultAsync<TDto>(
         this HttpClient httpClient,
-        String requestUri,
+        Uri requestUri,
         CancellationToken cancellationToken = default)
         where TDto : notnull
     {
-        try
-        {
-            var response = await httpClient.DeleteAsync(requestUri, cancellationToken);
-            return await response.AsResultAsync<TDto>(cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            return ApiError.FromException(ex);
-        }
+        ArgumentNullException.ThrowIfNull(httpClient);
+        ArgumentNullException.ThrowIfNull(requestUri);
+
+        var response = await httpClient.DeleteAsync(requestUri, cancellationToken);
+        return await response.AsResultAsync<TDto>(cancellationToken);
     }
 
     /// <summary>
@@ -316,8 +272,12 @@ public static class ResultHttpClientExtensions
     /// <param name="response">The HTTP response to deserialize.</param>
     /// <param name="cancellationToken">A cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized <see cref="Result"/>.</returns>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+        Justification = "The entire point of all these methods is to return a Result instead of throwing an exception.")]
     public static async Task<Result> AsResultAsync(this HttpResponseMessage response, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(response);
+
         try
         {
             await using var utf8Json = await response.Content.ReadAsStreamAsync(cancellationToken);
@@ -337,9 +297,13 @@ public static class ResultHttpClientExtensions
     /// <param name="response">The HTTP response to deserialize.</param>
     /// <param name="cancellationToken">A cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized result.</returns>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+        Justification = "The entire point of all these methods is to return a Result instead of throwing an exception.")]
     public static async Task<Result<TDto>> AsResultAsync<TDto>(this HttpResponseMessage response, CancellationToken cancellationToken = default)
         where TDto : notnull
     {
+        ArgumentNullException.ThrowIfNull(response);
+
         try
         {
             await using var utf8Json = await response.Content.ReadAsStreamAsync(cancellationToken);

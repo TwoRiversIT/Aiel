@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Microsoft.CodeAnalysis;
+using System.ComponentModel;
 using static Aiel.StrongIds.Generators.Consts;
 
 namespace Aiel.StrongIds.Generators;
@@ -115,6 +116,12 @@ public sealed class StrongIdModel(
 
 public enum StrongIdBackingKindOption
 {
-    Value = 0,
-    Reference = 1,
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
+    Value = 1,
+    Reference = 2,
 }

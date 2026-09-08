@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Text.Json.Serialization;
+
 namespace Aiel.Results;
 
 /// <summary>
@@ -34,7 +36,7 @@ public static class Maybe
     /// <returns>A <see cref="Maybe{T}"/> instance representing no value.</returns>
     public static Maybe<T> None<T>()
         where T : notnull
-    => Maybe<T>.None;
+    => default;
 
     /// <summary>
     /// Returns a <see cref="Maybe{T}"/> instance representing a value.
@@ -44,17 +46,17 @@ public static class Maybe
     /// <returns>A <see cref="Maybe{T}"/> instance representing the specified value.</returns>
     public static Maybe<T> Some<T>(T value)
         where T : notnull
-        => Maybe<T>.Some(value);
+        => new(value);
 
     /// <summary>
     /// Returns a <see cref="Maybe{T}"/> instance representing a value that may be <see langword="null"/>.
     /// </summary>
     /// <typeparam name="T">The type of the value that may be present.</typeparam>
     /// <param name="value">The value to wrap.</param>
-    /// <returns>A <see cref="Maybe{T}"/> instance representing the specified value, or <see cref="None"/> if the value is <see langword="null"/>.</returns>
-    public static Maybe<T> FromNullable<T>(T? value)
+    /// <returns>A <see cref="Maybe{T}"/> instance representing the specified value, or <see langword="default"/> if the value is <see langword="null"/>.</returns>
+    public static Maybe<T> From<T>(T? value)
         where T : notnull
-        => value is null ? Maybe<T>.None : Maybe<T>.Some(value);
+        => value is null ? default : new(value);
 }
 
 /// <summary>
@@ -67,12 +69,12 @@ public static class Maybe
 /// <c>Result&lt;Maybe&lt;T&gt;&gt;</c> so that absence stays in the value and failure stays in the error:
 /// </para>
 /// <list type="bullet">
-/// <item><description>Success carrying <see cref="Some(T)"/> — the operation worked and found a value.</description></item>
-/// <item><description>Success carrying <see cref="None"/> — the operation worked and there is legitimately no value.</description></item>
+/// <item><description>Success carrying <see cref="Maybe.Some{T}"/> — the operation worked and found a value.</description></item>
+/// <item><description>Success carrying <see cref="Maybe.None{T}"/> — the operation worked and there is legitimately no value.</description></item>
 /// <item><description>Failure — the operation did not work.</description></item>
 /// </list>
 /// <para>
-/// The default value of <see cref="Maybe{T}"/> is <see cref="None"/>, so an uninitialized or
+/// The default value of <see cref="Maybe{T}"/> is <see langword="default"/>, so an uninitialized or
 /// default-constructed instance always fails closed rather than exposing <see langword="default"/>
 /// as though it were a real answer.
 /// </para>
@@ -88,12 +90,19 @@ public readonly record struct Maybe<T>
     /// </summary>
     /// <param name="value">The value to hold. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
-    private Maybe(T value)
+    internal Maybe(T value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
         _value = value;
         HasValue = true;
+    }
+
+    [JsonConstructor]
+    private Maybe(T value, Boolean hasValue)
+    {
+        _value = value;
+        HasValue = hasValue;
     }
 
     /// <summary>
@@ -151,33 +160,11 @@ public readonly record struct Maybe<T>
     public override String ToString() => HasValue ? $"Some({_value})" : "None";
 
     /// <summary>
-    /// Gets a <see cref="Maybe{T}"/> that holds no value.
-    /// </summary>
-    public static Maybe<T> None => default;
-
-    /// <summary>
-    /// Creates a <see cref="Maybe{T}"/> holding the specified value.
-    /// </summary>
-    /// <param name="value">The value to hold. Must not be <see langword="null"/>.</param>
-    /// <returns>A <see cref="Maybe{T}"/> holding <paramref name="value"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
-    internal static Maybe<T> Some(T value) => new(value);
-
-    /// <summary>
-    /// Creates a <see cref="Maybe{T}"/> from a value that may be <see langword="null"/>.
-    /// </summary>
-    /// <remarks>
-    /// This is the adapter for boundaries that still produce <see langword="null"/>, such as
-    /// <c>FirstOrDefaultAsync</c> on a data-access query.
-    /// </remarks>
-    /// <param name="value">The value to convert. May be <see langword="null"/>.</param>
-    /// <returns><see cref="None"/> when <paramref name="value"/> is <see langword="null"/>; otherwise <see cref="Some(T)"/>.</returns>
-    internal static Maybe<T> FromNullable(T? value) => value is null ? None : Some(value);
-
-    /// <summary>
     /// Implicit conversion from a value to a <see cref="Maybe{T}"/> holding that value.
     /// </summary>
     /// <param name="value">The value to convert. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
-    public static implicit operator Maybe<T>(T value) => Some(value);
+    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
+        Justification = "Following the CA2225 guideline causes CA1000: Do not declare static members on generic types")]
+    public static implicit operator Maybe<T>(T value) => Maybe.From(value);
 }

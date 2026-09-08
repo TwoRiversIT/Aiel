@@ -21,11 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Testing.CodeAnalysis;
-using Driver = Aiel.Testing.CodeAnalysis.GenerateCS<Aiel.Results.Generators.PolymorphismHookGenerator>;
 
 namespace Aiel.Results;
 
-public class PolymorphismHookGeneratorTests
+public class PolymorphismHookGeneratorTests : SourceGeneratorTestBase<Generators.PolymorphismHookGenerator>
 {
     // Not implementing the other variations of this test because the PolymorphismHookGenerator uses the
     // same IsCandidate(SyntaxNode node) method as the ErrorClassGenerator, which already has tests for
@@ -41,7 +40,7 @@ public class PolymorphismHookGeneratorTests
             internal sealed partial class CustomError : Error;
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.GeneratedSources.Should().ContainSingle();
@@ -134,6 +133,6 @@ public class PolymorphismHookGeneratorTests
 
     private static GeneratorRunResult Generate(String testCode)
     {
-        return Driver.Generate(testCode);
+        return Generate(testCode);
     }
 }

@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Gps.HP.Sentences;
 
 /// <summary>
@@ -27,6 +29,12 @@ namespace Aiel.Gps.HP.Sentences;
 /// </summary>
 public enum FixType : Int32
 {
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
     /// <summary>No fix available.</summary>
     NoFix = 1,
 

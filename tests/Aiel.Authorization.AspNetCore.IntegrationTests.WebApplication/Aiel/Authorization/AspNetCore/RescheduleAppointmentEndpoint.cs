@@ -27,12 +27,13 @@ namespace Aiel.Authorization.AspNetCore;
 
 public static class RescheduleAppointmentEndpoint
 {
-    public const String RoutePattern = "/appointments/reschedule";
+    public const String Pattern = "/appointments/reschedule";
+    public static readonly Uri Route = new(Pattern, UriKind.Relative);
 
     public static RouteHandlerBuilder MapRescheduleAppointment(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
-        return endpoints.MapPost(RoutePattern, HandleAsync);
+        return endpoints.MapPost(Pattern, HandleAsync);
     }
 
     private static async Task<IResult> HandleAsync(

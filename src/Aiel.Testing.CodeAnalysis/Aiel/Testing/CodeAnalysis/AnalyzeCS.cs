@@ -27,14 +27,14 @@ using System.Collections.Immutable;
 
 namespace Aiel.Testing.CodeAnalysis;
 
-public static class AnalyzeCS<T>
-     where T : DiagnosticAnalyzer, new()
+public static class AnalyzeCS
 {
-    public static async Task<ImmutableArray<Diagnostic>> AnalyzeAsync(String testCode, params String[] stubs)
+    public static async Task<ImmutableArray<Diagnostic>> AnalyzeAsync<T>(String testCode, params String[] stubs)
+        where T : DiagnosticAnalyzer, new()
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(testCode);
 
-        var trees = stubs.Length > 0
+        var trees = stubs?.Length > 0
             ? stubs.Select(s => CSharpSyntaxTree.ParseText(s)).Append(CSharpSyntaxTree.ParseText(testCode)).ToList()
             : [CSharpSyntaxTree.ParseText(testCode)];
 
@@ -56,6 +56,9 @@ public static class AnalyzeCS<T>
             references,
             new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-        return await compilation.WithAnalyzers([new T()]).GetAnalyzerDiagnosticsAsync();
+        return await compilation
+            .WithAnalyzers([new T()])
+            .GetAnalyzerDiagnosticsAsync()
+            .ConfigureAwait(false);
     }
 }

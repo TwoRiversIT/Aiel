@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Collections.ObjectModel;
+
 namespace Aiel.Framework;
 
 public class DependencyNode(Type type, Int32 depth, IConfigurator instance)
@@ -27,5 +29,5 @@ public class DependencyNode(Type type, Int32 depth, IConfigurator instance)
     public Type Type { get; } = type;
     public Int32 Depth { get; } = depth;
     public IConfigurator Instance { get; } = instance ?? throw new ArgumentNullException(nameof(instance));
-    public List<DependencyNode> Dependencies { get; } = [];
+    public Collection<DependencyNode> Dependencies { get; } = [];
 }

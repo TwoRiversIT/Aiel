@@ -36,6 +36,8 @@ namespace Aiel.Gps.HP.Sentences;
 /// </para>
 /// </remarks>
 [NmeaMessage("GPGGA")]
+[SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "<Pending>")]
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
 public struct GGA
 {
     /// <summary>UTC time when the position fix was taken (HHMMSS.SSS format).</summary>

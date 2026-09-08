@@ -111,18 +111,20 @@ public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutpu
     [Fact]
     public async Task Query()
     {
-        var query = new ListPeople() { Specification = new EntitySpecification<Person>(_ => true) };
+        var query = new ListPeople();
         var result = await SUT.QueryAsync(query, CancellationToken);
 
         result.Records.Should().HaveCount(4);
         result.Records.Should().BeInAscendingOrder(p => p.LastName);
     }
 
-    private record ListPeople()
-        : QueryMultipleSpecification<Person>(
-            specification: new EntitySpecification<Person>(_ => true),
-            sortRequest: new SortOrder([new SortField(nameof(Person.LastName)), new SortField(nameof(Person.FirstName))]),
-            pageRequest: Page.Default)
+    private class ListPeople
+        : QueryMultipleSpecification<Person>
     {
+        public ListPeople() : base()
+        {
+            Sort = new SortOrder([new SortField(nameof(Person.LastName)), new SortField(nameof(Person.FirstName))]);
+            Page = Page.Default;
+        }
     }
 }

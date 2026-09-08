@@ -36,14 +36,14 @@ public class MaybeTests
         // Assert
         maybe.HasValue.Should().BeFalse();
         maybe.IsNone.Should().BeTrue();
-        maybe.Should().Be(Maybe<TestRecord>.None);
+        maybe.Should().Be(Maybe.None<TestRecord>());
     }
 
     [Fact]
     public void None_Should_NotHaveValue()
     {
         // Act
-        var maybe = Maybe<TestRecord>.None;
+        var maybe = Maybe.None<TestRecord>();
 
         // Assert
         maybe.HasValue.Should().BeFalse();
@@ -108,7 +108,7 @@ public class MaybeTests
     public void TryGetValue_Should_ReturnFalse_When_None()
     {
         // Arrange
-        var maybe = Maybe<TestRecord>.None;
+        var maybe = Maybe.None<TestRecord>();
 
         // Act
         var got = maybe.TryGetValue(out var value);
@@ -156,7 +156,7 @@ public class MaybeTests
     public void FromNullable_Should_ReturnNone_When_Null()
     {
         // Act
-        var maybe = Maybe.FromNullable<TestRecord>(null);
+        var maybe = Maybe.From<TestRecord>(null);
 
         // Assert
         maybe.IsNone.Should().BeTrue();
@@ -169,7 +169,7 @@ public class MaybeTests
         var record = new TestRecord(42, "Bart Simpson", "bart@thesimpsons.com");
 
         // Act
-        var maybe = Maybe.FromNullable(record);
+        var maybe = Maybe.From(record);
 
         // Assert
         maybe.HasValue.Should().BeTrue();

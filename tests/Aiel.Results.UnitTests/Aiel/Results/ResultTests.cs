@@ -76,7 +76,7 @@ public class ResultTests
     public void ResultOfT_Success_Should_ThrowArgumentNullException_When_ValueIsNull()
     {
         // Act
-        Action act = () => Result<TestRecord>.Success(null!);
+        Action act = () => Result.Success<TestRecord>(null!);
 
         // Assert
         act.Should().Throw<ArgumentNullException>(
@@ -88,7 +88,7 @@ public class ResultTests
     {
         // Arrange
         var error = new SimpleError("Not found");
-        var result = Result<TestRecord>.Failure(error);
+        Result<TestRecord> result = error;
 
         // Act
         Action act = () => _ = result.Value;
@@ -118,7 +118,7 @@ public class ResultTests
     public void ResultOfT_TryGetValue_Should_ReturnFalseAndDefault_When_IsFailed()
     {
         // Arrange
-        var result = Result<TestRecord>.Failure(new SimpleError("Not found"));
+        Result<TestRecord> result = new SimpleError("Not found");
 
         // Act
         var got = result.TryGetValue(out var value);
@@ -160,10 +160,10 @@ public class ResultTests
     public void Result_TryGetValue_Should_ReturnFalse_When_ResultIsResultOfT_IsFailed()
     {
         // Arrange
-        Result result = Result<Int32>.Failure(new SimpleError("Not found"));
+        var result = Result.Failure<Int32>(new SimpleError("Not found"));
 
         // Act
-        var got = result.TryGetValue(out Int32 value);
+        var got = result.TryGetValue(out var value);
 
         // Assert
         got.Should().BeFalse();
@@ -178,7 +178,7 @@ public class ResultTests
     public void ResultOfT_Success_Should_SetValue_When_ValueEqualsDefault()
     {
         // Act
-        var result = Result<Int32>.Success(default);
+        var result = Result.Success<Int32>(default);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -258,5 +258,45 @@ public class ResultTests
         singleResult.Value.Should().Be(42);
         collectionResult.IsSuccess.Should().BeTrue();
         collectionResult.Value.Should().BeEquivalentTo([42]);
+    }
+
+    [Fact]
+    public void Result_AsMaybe_Returns_Success_When_ValueIsNotNull()
+    {
+        // Act
+        var result = Result.AsMaybe("Value");
+
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeOfType<Maybe<String>>();
+    }
+
+    [Fact]
+    public void Result_MaybeGetValue_Returns_False_When_ResultIsFailure()
+    {
+        // Arrange
+        Result<Maybe<String>> result = new SimpleError("Some error");
+
+        // Act
+        var got = result.MaybeGetValue(out var value);
+
+        // Assert
+        result.Error.IsErrorType<SimpleError>().Should().BeTrue();
+        got.Should().BeFalse();
+        value.Should().BeNull();
+    }
+
+    [Fact]
+    public void Result_MaybeGetValue_Returns_True_When_ValueIsNotNull()
+    {
+        // Arrange
+        var result = Result.AsMaybe("Value");
+
+        // Act
+        var got = result.MaybeGetValue(out var value);
+
+        // Assert
+        got.Should().BeTrue();
+        value.Should().Be("Value");
     }
 }

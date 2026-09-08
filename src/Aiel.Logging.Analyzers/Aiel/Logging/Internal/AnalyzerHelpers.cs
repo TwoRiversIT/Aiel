@@ -32,6 +32,7 @@
 using Aiel.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Globalization;
 
 namespace Aiel.Logging.Internal;
 
@@ -45,6 +46,16 @@ public static class AnalyzerHelpers
     /// </summary>
     public static Boolean IsILogger(ITypeSymbol type, Compilation compilation)
     {
+        if (type is null)
+        {
+            throw new ArgumentNullException(nameof(type));
+        }
+
+        if (compilation is null)
+        {
+            throw new ArgumentNullException(nameof(compilation));
+        }
+
         var ilogger = compilation.GetTypeByMetadataName(WellKnownTypes.ILogger);
         var iloggerT = compilation.GetTypeByMetadataName(WellKnownTypes.ILoggerOfT);
         if (ilogger is null && iloggerT is null)
@@ -68,6 +79,16 @@ public static class AnalyzerHelpers
     /// <summary>Returns <see langword="true"/> when <c>[LoggerMessage]</c> is present on <paramref name="symbol"/>.</summary>
     public static Boolean HasLoggerMessageAttribute(ISymbol symbol, Compilation compilation)
     {
+        if (symbol is null)
+        {
+            throw new ArgumentNullException(nameof(symbol));
+        }
+
+        if (compilation is null)
+        {
+            throw new ArgumentNullException(nameof(compilation));
+        }
+
         var attrType = compilation.GetTypeByMetadataName(WellKnownTypes.LoggerMessageAttr);
         if (attrType is null)
         {
@@ -84,6 +105,16 @@ public static class AnalyzerHelpers
     /// </summary>
     public static AttributeData? GetLoggerMessageAttribute(ISymbol symbol, Compilation compilation)
     {
+        if (symbol is null)
+        {
+            throw new ArgumentNullException(nameof(symbol));
+        }
+
+        if (compilation is null)
+        {
+            throw new ArgumentNullException(nameof(compilation));
+        }
+
         var attrType = compilation.GetTypeByMetadataName(WellKnownTypes.LoggerMessageAttr);
         if (attrType is null)
         {
@@ -102,6 +133,16 @@ public static class AnalyzerHelpers
     /// </summary>
     public static TypedConstant? GetNamedArgument(AttributeData attrData, String argName)
     {
+        if (attrData is null)
+        {
+            throw new ArgumentNullException(nameof(attrData));
+        }
+
+        if (String.IsNullOrWhiteSpace(argName))
+        {
+            throw new ArgumentException($"'{nameof(argName)}' cannot be null, empty, or whitespace.", nameof(argName));
+        }
+
         foreach (var kvp in attrData.NamedArguments)
         {
             if (String.Equals(kvp.Key, argName, StringComparison.OrdinalIgnoreCase))
@@ -148,9 +189,19 @@ public static class AnalyzerHelpers
     /// </summary>
     public static String? TryResolveMemberName(Int32 eventIdValue, INamedTypeSymbol eventIdsType)
     {
+        if (eventIdValue <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(eventIdValue), eventIdValue, $"'{nameof(eventIdValue)}' cannot be negative or zero");
+        }
+
+        if (eventIdsType is null)
+        {
+            throw new ArgumentNullException(nameof(eventIdsType));
+        }
+
         foreach (var member in eventIdsType.GetMembers().OfType<IFieldSymbol>())
         {
-            if (member.HasConstantValue && Convert.ToInt32(member.ConstantValue) == eventIdValue)
+            if (member.HasConstantValue && Convert.ToInt32(member.ConstantValue, CultureInfo.InvariantCulture) == eventIdValue)
             {
                 return member.Name;
             }
@@ -171,6 +222,21 @@ public static class AnalyzerHelpers
         SemanticModel model,
         EventIdsTypeConfig config)
     {
+        if (expr is null)
+        {
+            throw new ArgumentNullException(nameof(expr));
+        }
+
+        if (model is null)
+        {
+            throw new ArgumentNullException(nameof(model));
+        }
+
+        if (config is null)
+        {
+            throw new ArgumentNullException(nameof(config));
+        }
+
         if (expr is not CastExpressionSyntax cast)
         {
             return false;

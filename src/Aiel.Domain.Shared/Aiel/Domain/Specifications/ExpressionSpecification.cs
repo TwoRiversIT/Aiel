@@ -25,11 +25,21 @@ using System.Linq.Expressions;
 namespace Aiel.Domain.Specifications;
 
 /// <summary>
-/// Represents a specification that is defined using an expression.
+/// A specification that is defined using an expression and can be combined
+/// with other specifications using logical operators. Not suitable for use
+/// with Entity Framework Core or other ORMs that translate expressions to
+/// SQL.
 /// </summary>
 /// <typeparam name="T">The type of the entity to which the specification applies.</typeparam>
-public class ExpressionSpecification<T> : AbstractSpecification<T>
+public class ExpressionSpecification<T>
+    : AbstractSpecification<T>
+    where T : notnull
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ExpressionSpecification{T}"/> class.
+    /// </summary>
+    protected ExpressionSpecification() { }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ExpressionSpecification{T}"/> class with the specified expression.
     /// </summary>
@@ -38,11 +48,6 @@ public class ExpressionSpecification<T> : AbstractSpecification<T>
     {
         PredicateExpression = expression ?? throw new ArgumentNullException(nameof(expression));
     }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ExpressionSpecification{T}"/> class.
-    /// </summary>
-    protected ExpressionSpecification() { }
 
     /// <summary>
     /// Gets the expression that defines the specification.

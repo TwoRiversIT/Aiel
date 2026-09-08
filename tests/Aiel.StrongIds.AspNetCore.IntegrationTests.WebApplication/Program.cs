@@ -43,7 +43,7 @@ public class Program
 
 public sealed record StrongIdBindingResponse(OrderId Id, CustomerId? CustomerId);
 
-[StrongId<Guid>(GenerateTryFrom = true)]
+[StrongId<Guid>]
 public readonly partial record struct OrderId;
 
 [StrongId<Guid>]

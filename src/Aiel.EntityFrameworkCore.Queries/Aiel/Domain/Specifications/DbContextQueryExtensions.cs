@@ -30,8 +30,24 @@ namespace Aiel.Domain.Specifications;
 
 public static class DbContextQueryExtensions
 {
+    public static IQueryable<TEntity> Query<TEntity>(this DbContext dbContext, IEntitySpecification<TEntity> specification)
+        where TEntity : class
+    {
+        ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(specification);
+        return dbContext.GetQueryable<TEntity>().Where(specification.ToExpression());
+    }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, ISpecification<TEntity> specification)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultipleSpecification<TEntity> specification)
+        where TEntity : class
+    {
+        ArgumentNullException.ThrowIfNull(dbContext);
+        ArgumentNullException.ThrowIfNull(specification);
+
+        return QueryMultipleInt(dbContext, specification.Sort, specification.Page, specification.ToExpression());
+    }
+
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, IEntitySpecification<TEntity> specification)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
@@ -41,7 +57,7 @@ public static class DbContextQueryExtensions
         return QueryMultipleInt(dbContext, request.Sort, request.Page, specification.ToExpression());
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder sort, Page page, ISpecification<TEntity> specification)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder sort, Page page, IEntitySpecification<TEntity> specification)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);

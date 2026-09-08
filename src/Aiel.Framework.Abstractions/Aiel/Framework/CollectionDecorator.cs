@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Framework;
 
 /// <summary>
@@ -163,6 +165,12 @@ public class CollectionDecorator<T> : ICollection<T>
 /// </summary>
 public enum CollectionChangeAction
 {
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
     /// <summary>
     /// Indicates that an item is being added to the collection.
     /// </summary>

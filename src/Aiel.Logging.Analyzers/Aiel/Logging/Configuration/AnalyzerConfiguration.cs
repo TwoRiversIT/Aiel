@@ -109,6 +109,11 @@ public static class AnalyzerConfiguration
     /// </param>
     public static EventIdsTypeConfig Resolve(AnalyzerOptions options)
     {
+        if (options is null)
+        {
+            throw new ArgumentNullException(nameof(options));
+        }
+
         var optionsProvider = options.AnalyzerConfigOptionsProvider;
         var globalOptions = optionsProvider.GlobalOptions;
 
@@ -149,11 +154,17 @@ public static class AnalyzerConfiguration
     /// as the <c>properties</c> argument of
     /// <see cref="Diagnostic.Create(DiagnosticDescriptor,Location,ImmutableDictionary{String,String?},Object[])"/>.
     /// </summary>
-    public static ImmutableDictionary<String, String?> BuildDiagnosticProperties(
-        EventIdsTypeConfig config)
-        => ImmutableDictionary<String, String?>.Empty
+    public static ImmutableDictionary<String, String?> BuildDiagnosticProperties(EventIdsTypeConfig config)
+    {
+        if (config is null)
+        {
+            throw new ArgumentNullException(nameof(config));
+        }
+
+        return ImmutableDictionary<String, String?>.Empty
             .Add(DiagPropFullTypeName, config.FullTypeName)
             .Add(DiagPropShortName, config.ShortName);
+    }
 
     /// <summary>
     /// Reads the EventIds type config back from the property bag of a
@@ -167,6 +178,11 @@ public static class AnalyzerConfiguration
     /// </remarks>
     public static EventIdsTypeConfig ReadFromDiagnostic(Diagnostic diagnostic)
     {
+        if (diagnostic is null)
+        {
+            throw new ArgumentNullException(nameof(diagnostic));
+        }
+
         if (diagnostic.Properties.TryGetValue(DiagPropFullTypeName, out var fullName) &&
             !String.IsNullOrWhiteSpace(fullName))
         {

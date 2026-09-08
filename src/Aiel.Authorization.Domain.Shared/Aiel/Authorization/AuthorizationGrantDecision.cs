@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Authorization;
 
 /// <summary>
@@ -34,6 +36,12 @@ namespace Aiel.Authorization;
 /// </remarks>
 public enum AuthorizationGrantDecision
 {
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
     /// <summary>
     /// The permission is granted for the matching subject and scope.
     /// </summary>

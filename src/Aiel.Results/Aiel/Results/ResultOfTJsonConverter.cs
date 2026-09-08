@@ -59,7 +59,7 @@ public sealed class ResultOfTJsonConverter<T> : JsonConverter<Result<T>>
 
         return isSuccess
             ? Result<T>.Success(value!)
-            : Result<T>.Failure(error ?? throw new JsonException("Error property is required for failure result"));
+            : Result.Failure<T>(error ?? throw new JsonException("Error property is required for failure result"));
     }
 
     /// <inheritdoc/>

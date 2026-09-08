@@ -20,16 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Authorization;
+namespace Aiel.Domain.Specifications;
 
-internal static class AuthorizationApplicationErrorMessages
-{
-    internal const String MissingAuthorizationStoryFormat =
-        "No authorization story is registered for authorization '{0}'. Register a definition in IAuthorizationDefinitionRegistry.";
-
-    internal const String AuthorizationDeniedFormat =
-        "The actor does not have the required '{0}' authorization for the requested scope.";
-
-    internal const String AuthorizationValidationFormat =
-        "Action validation failed for authorization '{0}': {1}";
-}
+/// <summary>
+/// Defines a specification that can be used to determine if an entity
+/// satisfies certain criteria.
+/// </summary>
+/// <typeparam name="T">The type of the entity to evaluate.</typeparam>
+public interface IEntitySpecification<T> : ISpecification<T>
+    where T : class;

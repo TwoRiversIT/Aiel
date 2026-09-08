@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results;
+using System.ComponentModel;
 
 namespace Aiel.Testing.Errors;
 
@@ -35,6 +36,12 @@ public sealed partial class TransactionError : Error
 
 public enum TransactionFailureReason
 {
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
     InsufficientFunds,
     CardExpired,
     InvalidCardNumber,

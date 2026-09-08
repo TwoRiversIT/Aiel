@@ -57,7 +57,11 @@ public abstract class ErrorCode() : IEquatable<ErrorCode>
     /// </summary>
     /// <param name="errorCode">The error code to convert.</param>
     /// <returns>The name of the error code.</returns>
-    public static implicit operator String(ErrorCode errorCode) => errorCode.Name;
+    public static implicit operator String(ErrorCode errorCode)
+    {
+        ArgumentNullException.ThrowIfNull(errorCode);
+        return errorCode.Name;
+    }
 
     /// <summary>
     /// Determines whether this error code is equal to another based on type and name.
@@ -78,5 +82,5 @@ public abstract class ErrorCode() : IEquatable<ErrorCode>
     /// Returns the hash code for this error code based on its type and name.
     /// </summary>
     /// <returns>The hash code.</returns>
-    public override Int32 GetHashCode() => Name.GetHashCode();
+    public override Int32 GetHashCode() => Name.GetHashCode(StringComparison.Ordinal);
 }

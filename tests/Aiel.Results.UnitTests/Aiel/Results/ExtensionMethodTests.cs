@@ -30,7 +30,7 @@ public class ExtensionMethodTests
     public void WhenNone_MaybeGetValue_ShouldReturn_False()
     {
         // Arrange
-        var maybe = Maybe.FromNullable((SimpleError)null!);
+        var maybe = Maybe.From((SimpleError)null!);
         Result<Maybe<SimpleError>> result = maybe;
 
         // Act
@@ -44,7 +44,7 @@ public class ExtensionMethodTests
     public void WhenSome_MaybeGetValue_ShouldReturn_True()
     {
         // Arrange
-        var maybe = Maybe.FromNullable(new SimpleError("Error"));
+        var maybe = Maybe.From(new SimpleError("Error"));
         Result<Maybe<SimpleError>> result = maybe;
 
         // Act

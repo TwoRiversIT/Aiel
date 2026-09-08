@@ -29,6 +29,7 @@ namespace Aiel.Domain.Specifications;
 /// </summary>
 /// <typeparam name="T">The type of the entity to which the specification applies.</typeparam>
 public abstract class AbstractSpecification<T> : ISpecification<T>
+    where T : notnull
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AbstractSpecification{T}"/> class.

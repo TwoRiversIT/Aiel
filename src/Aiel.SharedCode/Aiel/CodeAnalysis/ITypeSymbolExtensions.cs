@@ -28,6 +28,11 @@ public static class ITypeSymbolExtensions
 {
     public static Boolean IsSupportedBackingType(this ITypeSymbol valueType)
     {
+        if (valueType is null)
+        {
+            throw new ArgumentNullException(nameof(valueType));
+        }
+
         return valueType.SpecialType == SpecialType.System_Int16
             || valueType.SpecialType == SpecialType.System_UInt16
             || valueType.SpecialType == SpecialType.System_Int32
@@ -39,9 +44,7 @@ public static class ITypeSymbolExtensions
     }
 
     public static String ToDisplayString(this ITypeSymbol typeSymbol)
-    {
-        return typeSymbol.ToDisplayString(TypeNameFormat);
-    }
+        => typeSymbol?.ToDisplayString(TypeNameFormat) ?? throw new ArgumentNullException(nameof(typeSymbol));
 
     public static readonly SymbolDisplayFormat TypeNameFormat = new(
         globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,

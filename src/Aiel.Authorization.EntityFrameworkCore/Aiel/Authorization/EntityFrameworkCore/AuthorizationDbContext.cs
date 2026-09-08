@@ -60,12 +60,12 @@ public sealed class AuthorizationDbContext(DbContextOptions<AuthorizationDbConte
 
         modelBuilder.Entity<PermissionCatalogRecord>(catalog =>
         {
-            catalog.ToTable("permission_catalog");
+            catalog.ToTable("PermissionCatalog");
             catalog.HasKey(r => r.StableId);
-            catalog.Property(r => r.StableId).HasColumnName("stable_id").HasMaxLength(256);
-            catalog.Property(r => r.PermissionName).HasColumnName("permission_name").HasMaxLength(256).IsRequired();
-            catalog.Property(r => r.ScopeType).HasColumnName("scope_type").HasMaxLength(128).IsRequired();
-            catalog.Property(r => r.Lifecycle).HasColumnName("lifecycle").IsRequired();
+            catalog.Property(r => r.StableId).HasColumnName("StableId").HasMaxLength(256);
+            catalog.Property(r => r.PermissionName).HasColumnName("PermissionName").HasMaxLength(256).IsRequired();
+            catalog.Property(r => r.ScopeType).HasColumnName("ScopeType").HasMaxLength(128).IsRequired();
+            catalog.Property(r => r.Lifecycle).HasColumnName("Lifecycle").IsRequired();
 
             catalog.HasMany(r => r.Grants)
                 .WithOne(g => g.Catalog)
@@ -80,17 +80,17 @@ public sealed class AuthorizationDbContext(DbContextOptions<AuthorizationDbConte
 
         modelBuilder.Entity<AuthorizationGrantRecord>(grant =>
         {
-            grant.ToTable("permission_grants");
+            grant.ToTable("AuthorizationGrants");
             grant.HasKey(r => r.Id);
-            grant.Property(r => r.Id).HasColumnName("id");
-            grant.Property(r => r.StableId).HasColumnName("stable_id").HasMaxLength(256).IsRequired();
-            grant.Property(r => r.PermissionName).HasColumnName("permission_name").HasMaxLength(256).IsRequired();
-            grant.Property(r => r.ScopeType).HasColumnName("scope_type").HasMaxLength(128).IsRequired();
-            grant.Property(r => r.ScopeKey).HasColumnName("scope_key").HasMaxLength(512).IsRequired();
-            grant.Property(r => r.SubjectType).HasColumnName("subject_type").HasMaxLength(128).IsRequired();
-            grant.Property(r => r.SubjectKey).HasColumnName("subject_key").HasMaxLength(512).IsRequired();
-            grant.Property(r => r.Decision).HasColumnName("decision").IsRequired();
-            grant.Property(r => r.GrantedAt).HasColumnName("granted_at").IsRequired();
+            grant.Property(r => r.Id).HasColumnName("Id");
+            grant.Property(r => r.StableId).HasColumnName("StableId").HasMaxLength(256).IsRequired();
+            grant.Property(r => r.PermissionName).HasColumnName("PermissionName").HasMaxLength(256).IsRequired();
+            grant.Property(r => r.ScopeType).HasColumnName("ScopeType").HasMaxLength(128).IsRequired();
+            grant.Property(r => r.ScopeKey).HasColumnName("ScopeKey").HasMaxLength(512).IsRequired();
+            grant.Property(r => r.SubjectType).HasColumnName("SubjectType").HasMaxLength(128).IsRequired();
+            grant.Property(r => r.SubjectKey).HasColumnName("SubjectKey").HasMaxLength(512).IsRequired();
+            grant.Property(r => r.Decision).HasColumnName("Decision").IsRequired();
+            grant.Property(r => r.GrantedAt).HasColumnName("GrantedAt").IsRequired();
 
             grant.HasIndex(r => new { r.SubjectType, r.SubjectKey });
             grant.HasIndex(r => new { r.PermissionName, r.ScopeType, r.ScopeKey, r.SubjectType, r.SubjectKey });
@@ -98,13 +98,13 @@ public sealed class AuthorizationDbContext(DbContextOptions<AuthorizationDbConte
 
         modelBuilder.Entity<PermissionManifestSnapshotRecord>(snapshot =>
         {
-            snapshot.ToTable("permission_manifest_snapshots");
+            snapshot.ToTable("PermissionManifestSnapshots");
             snapshot.HasKey(r => r.Id);
-            snapshot.Property(r => r.Id).HasColumnName("id");
-            snapshot.Property(r => r.StableId).HasColumnName("stable_id").HasMaxLength(256).IsRequired();
-            snapshot.Property(r => r.PreviousPermissionName).HasColumnName("previous_permission_name").HasMaxLength(256).IsRequired();
-            snapshot.Property(r => r.NewPermissionName).HasColumnName("new_permission_name").HasMaxLength(256).IsRequired();
-            snapshot.Property(r => r.MigratedAt).HasColumnName("migrated_at").IsRequired();
+            snapshot.Property(r => r.Id).HasColumnName("Id");
+            snapshot.Property(r => r.StableId).HasColumnName("StableId").HasMaxLength(256).IsRequired();
+            snapshot.Property(r => r.PreviousPermissionName).HasColumnName("PreviousPermissionName").HasMaxLength(256).IsRequired();
+            snapshot.Property(r => r.NewPermissionName).HasColumnName("NewPermissionName").HasMaxLength(256).IsRequired();
+            snapshot.Property(r => r.MigratedAt).HasColumnName("MigratedAt").IsRequired();
         });
     }
 }

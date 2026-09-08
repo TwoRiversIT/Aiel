@@ -20,12 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace Aiel.EntityFrameworkCore.Migrations;
 
-public abstract class DatabaseMigratorBase
+public abstract class DatabaseMigratorBase : DisposableBase
 {
     public const String ActivitySourceName = "Migrations";
 
@@ -35,8 +36,12 @@ public abstract class DatabaseMigratorBase
 
     protected abstract ILogger Logger { get; }
 
+    [SuppressMessage("Security", "CA5394:Do not use insecure randomness",
+        Justification = "Selecting a random delay for retrying migrations which is not sensitive.")]
     public async Task TryAsync(Func<CancellationToken, Task> task, Int32 retryCount = 3, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(task);
+
         try
         {
             using var activity = _activitySource.StartActivity("Migrating Database", ActivityKind.Client);
@@ -63,5 +68,11 @@ public abstract class DatabaseMigratorBase
             await TryAsync(task, retryCount, cancellationToken);
         }
     }
-}
 
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        _activitySource?.Dispose();
+
+        await base.DisposeAsyncCore();
+    }
+}

@@ -29,6 +29,11 @@ public class ErrorInfo(String ns, String error, String errorCode, String accessi
 {
     public static ErrorInfo FromSymbol(INamedTypeSymbol symbol)
     {
+        if (symbol is null)
+        {
+            throw new ArgumentNullException(nameof(symbol));
+        }
+
         var accessibility = symbol.DeclaredAccessibility == Microsoft.CodeAnalysis.Accessibility.Public
             ? "public"
             : "internal";

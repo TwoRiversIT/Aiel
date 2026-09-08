@@ -75,6 +75,11 @@ public class AielEnvironment : IAielEnvironment
 /// </summary>
 public static class AielEnvironmentExtensions
 {
+    private const String Production = "Production";
+    private const String Development = "Development";
+    private const String Staging = "Staging";
+    private const String Testing = "Testing";
+
     /// <summary>
     /// Determines whether the current environment matches the specified environment name.
     /// </summary>
@@ -82,7 +87,13 @@ public static class AielEnvironmentExtensions
     /// <param name="environmentName">The name of the environment to check.</param>
     /// <returns><c>true</c> if the current environment matches the specified name; otherwise, <c>false</c>.</returns>
     public static Boolean IsEnvironment(this IAielEnvironment environment, String environmentName)
-        => String.Equals(environment.EnvironmentName, environmentName, StringComparison.OrdinalIgnoreCase);
+    {
+        ArgumentNullException.ThrowIfNull(environment);
+
+        var name = String.IsNullOrWhiteSpace(environmentName) ? Production : environmentName;
+
+        return String.Equals(environment.EnvironmentName, name, StringComparison.OrdinalIgnoreCase);
+    }
 
     /// <summary>
     /// Determines whether the current environment is Development.
@@ -90,7 +101,7 @@ public static class AielEnvironmentExtensions
     /// <param name="environment">The Aiel environment.</param>
     /// <returns><c>true</c> if the current environment is Development; otherwise, <c>false</c>.</returns>
     public static Boolean IsDevelopment(this IAielEnvironment environment)
-        => IsEnvironment(environment, "Development");
+        => IsEnvironment(environment, Development);
 
     /// <summary>
     /// Determines whether the current environment is Production.
@@ -98,7 +109,7 @@ public static class AielEnvironmentExtensions
     /// <param name="environment">The Aiel environment.</param>
     /// <returns><c>true</c> if the current environment is Production; otherwise, <c>false</c>.</returns>
     public static Boolean IsProduction(this IAielEnvironment environment)
-        => IsEnvironment(environment, "Production");
+        => IsEnvironment(environment, Production);
 
     /// <summary>
     /// Determines whether the current environment is Staging.
@@ -106,7 +117,7 @@ public static class AielEnvironmentExtensions
     /// <param name="environment">The Aiel environment.</param>
     /// <returns><c>true</c> if the current environment is Staging; otherwise, <c>false</c>.</returns>
     public static Boolean IsStaging(this IAielEnvironment environment)
-        => IsEnvironment(environment, "Staging");
+        => IsEnvironment(environment, Staging);
 
     /// <summary>
     /// Determines whether the current environment is Testing.
@@ -114,5 +125,5 @@ public static class AielEnvironmentExtensions
     /// <param name="environment">The Aiel environment.</param>
     /// <returns><c>true</c> if the current environment is Testing; otherwise, <c>false</c>.</returns>
     public static Boolean IsTesting(this IAielEnvironment environment)
-        => IsEnvironment(environment, "Testing");
+        => IsEnvironment(environment, Testing);
 }

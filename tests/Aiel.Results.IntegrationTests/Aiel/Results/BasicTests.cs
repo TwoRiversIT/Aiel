@@ -56,10 +56,11 @@ public class BasicTests(WebApplicationFactory<Program> factory)
     public async Task Failure_Result_CanBeDeserialized()
     {
         // Arrange
+        var uri = new Uri("/failure", UriKind.Relative);
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync<TypicalClass>("/failure", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync<TypicalClass>(uri, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();
@@ -72,10 +73,11 @@ public class BasicTests(WebApplicationFactory<Program> factory)
     public async Task Success_Collection_Result_CanBeDeserialized()
     {
         // Arrange
+        var uri = new Uri("/collection/success", UriKind.Relative);
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync<IReadOnlyList<TypicalClass>>("/collection/success", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync<IReadOnlyList<TypicalClass>>(uri, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();
@@ -98,10 +100,11 @@ public class BasicTests(WebApplicationFactory<Program> factory)
     public async Task Failure_Collection_Result_CanBeDeserialized()
     {
         // Arrange
+        var uri = new Uri("/collection/failure", UriKind.Relative);
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync<IReadOnlyList<TypicalClass>>("/collection/failure", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync<IReadOnlyList<TypicalClass>>(uri, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();
@@ -116,10 +119,11 @@ public class BasicTests(WebApplicationFactory<Program> factory)
     public async Task ComplexError_Result_CanBeDeserialized()
     {
         // Arrange
+        var uri = new Uri("/error", UriKind.Relative);
         var client = _factory.CreateClient();
 
         // Act
-        var result = await client.GetResultAsync("/error", TestContext.Current.CancellationToken);
+        var result = await client.GetResultAsync(uri, TestContext.Current.CancellationToken);
 
         // Assert
         result.Should().NotBeNull();

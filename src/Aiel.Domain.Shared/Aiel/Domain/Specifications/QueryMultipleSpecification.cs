@@ -28,13 +28,26 @@ namespace Aiel.Domain.Specifications;
 /// Represents a specification for querying multiple entities of type T.
 /// </summary>
 /// <typeparam name="T">The type of the entities to query.</typeparam>
-public record QueryMultipleSpecification<T> : QueryMultiple<T>, IQueryMultipleSpecification<T>
-    where T : notnull
+public class QueryMultipleSpecification<T> : EntitySpecification<T>, IQueryMultipleSpecification<T>
+    where T : class
 {
+
+    /// <summary>
+    /// Gets or sets the sorting order for the query results. Defaults to <see cref="SortOrder.None"/>.
+    /// </summary>
+    public SortOrder Sort { get; set; } = SortOrder.None;
+
+    /// <summary>
+    /// Gets or sets the pagination information for the query results. Defaults to <see cref="Page.Default"/>.
+    /// </summary>
+    public Page Page { get; set; } = Page.Default;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryMultipleSpecification{T}"/> class.
     /// </summary>
-    protected QueryMultipleSpecification() { }
+    protected QueryMultipleSpecification() : base(_ => true)
+    {
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryMultipleSpecification{T}"/> class with the specified specification, sort order, and page request.
@@ -43,14 +56,10 @@ public record QueryMultipleSpecification<T> : QueryMultiple<T>, IQueryMultipleSp
     /// <param name="sortRequest">The sort order to apply to the query.</param>
     /// <param name="pageRequest">The page request to apply to the query.</param>
     /// <exception cref="ArgumentNullException">Thrown when the specification is null.</exception>
-    public QueryMultipleSpecification(ISpecification<T> specification, SortOrder? sortRequest = null, Page? pageRequest = null)
-        : base(sortRequest ?? SortOrder.None, pageRequest ?? Page.Default)
+    public QueryMultipleSpecification(IEntitySpecification<T> specification, SortOrder? sortRequest = null, Page? pageRequest = null)
+        : base(specification.ToExpression())
     {
-        Specification = specification ?? throw new ArgumentNullException(nameof(specification));
+        Sort = sortRequest ?? SortOrder.None;
+        Page = pageRequest ?? Page.Default;
     }
-
-    /// <summary>
-    /// Gets the specification to apply to the query.
-    /// </summary>
-    public required ISpecification<T> Specification { get; init; }
 }

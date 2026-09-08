@@ -30,6 +30,8 @@ public sealed class AielIdGeneration : AielDependencyConfigurator
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(context);
+
         context.Services.TryAddSingleton<IIdGenerator, TimeBasedIdGenerator>();
 
         return ValueTask.CompletedTask;

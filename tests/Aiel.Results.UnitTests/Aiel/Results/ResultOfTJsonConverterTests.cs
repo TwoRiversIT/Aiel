@@ -44,7 +44,7 @@ public sealed class ResultOfTUnitTestBase(ResultsIntegrationTestFixture fixture,
     [Fact]
     public void ResultOfT_Failure_RoundTrips()
     {
-        var original = Result<Int32>.Failure(new SimpleError("Missing"));
+        var original = Result.Failure<Int32>(new SimpleError("Missing"));
 
         var json = JsonSerializer.Serialize(original, Results.JSO);
         var roundTrip = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);

@@ -260,6 +260,8 @@ public sealed class NmeaBatchReader
     /// <summary>
     /// Tries to parse a sentence using a custom parser from the registry.
     /// </summary>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+        Justification = "Returns false to indicate failure.")]
     private Boolean TryParseCustom(ReadOnlySpan<Byte> sentenceBytes, out Object? message)
     {
         message = null;

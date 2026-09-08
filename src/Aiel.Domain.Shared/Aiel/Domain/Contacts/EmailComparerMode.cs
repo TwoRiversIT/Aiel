@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Domain.Contacts;
 
 /// <summary>
@@ -27,6 +29,12 @@ namespace Aiel.Domain.Contacts;
 /// </summary>
 public enum EmailComparerMode
 {
+    /// <summary>
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    None = 0,
+
     /// <summary>
     /// Compares by local part first, then domain part.
     /// </summary>

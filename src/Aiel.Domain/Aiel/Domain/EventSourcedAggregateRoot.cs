@@ -59,14 +59,14 @@ public abstract class EventSourcedAggregateRoot<TKey> : AggregateRoot<TKey>, IRe
     /// Raises the specified domain event, applying it to the aggregate root and incrementing the version.
     /// </summary>
     /// <param name="domainEvent"></param>
-    protected override void OnRaiseEvent(IDomainEvent domainEvent)
+    protected override void AddEvent(IDomainEvent domainEvent)
     {
         Apply(domainEvent);
         Version++;
     }
 
     /// <inheritdoc/>
-    void IRehydrateFromHistory.RehydrateFromHistory(IEnumerable<IDomainEvent> history)
+    public void RehydrateFromHistory(IEnumerable<IDomainEvent> history)
     {
         ArgumentNullException.ThrowIfNull(history);
 

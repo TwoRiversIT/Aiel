@@ -51,7 +51,7 @@ public class Result
     /// <param name="error">The error associated with the result. Must be <see cref="NoError"/> for successful results.</param>
     /// <exception cref="ArgumentException">Thrown when the success state and error state are inconsistent.</exception>
     [JsonConstructor]
-    protected internal Result(Boolean isSuccess, Error error)
+    protected internal Result(Boolean isSuccess, Error? error)
     {
         if (isSuccess && error is not null)
         {
@@ -71,7 +71,7 @@ public class Result
     /// Creates a successful result.
     /// </summary>
     /// <returns>A successful <see cref="Result"/>.</returns>
-    public static Result Success() => new(isSuccess: true, error: null!);
+    public static Result Success() => new(isSuccess: true, error: null);
 
     /// <summary>
     /// Creates a successful result containing the specified value.
@@ -82,7 +82,7 @@ public class Result
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
     public static Result<T> Success<T>(T value)
         where T : notnull
-        => Result<T>.Success(value);
+        => value is not null ? new Result<T>(isSuccess: true, value) : throw new ArgumentNullException(nameof(value));
 
     /// <summary>
     /// Creates a failed result with the specified error.
@@ -92,9 +92,44 @@ public class Result
     public static Result Failure(Error error) => new(isSuccess: false, error);
 
     /// <summary>
+    /// Creates a failed <see cref="Result{T}"/> with the specified error.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to be wrapped in the result.</typeparam>
+    /// <param name="error">The error for the failed result.</param>
+    /// <returns>A failed <see cref="Result{T}"/>.</returns>
+    public static Result<T> Failure<T>(Error error)
+        where T : notnull
+        => new(error);
+
+    /// <summary>
+    /// Creates a <see cref="Result{T}"/> with a value of <see cref="Maybe{T}"/>.
+    /// If <c><paramref name="value"/> == <see langword="default"/></c> then
+    /// <see cref="Result.IsSuccess"/> will be <see langword="false"/> and have
+    /// <see cref="Result.Error"/> set to <paramref name="error"/>. Otherwise,
+    /// <see cref="Result.IsSuccess"/> will be <see langword="true"/> and the
+    /// result will have <see cref="Result{T}.Value"/> set to a
+    /// <see cref="Maybe{T}"/> containing <paramref name="value"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the value to be wrapped in a <see cref="Maybe{T}"/>.</typeparam>
+    /// <param name="value">The value to include in the result. May be <see langword="null"/>.</param>
+    /// <param name="error">The error for the failed result.</param>
+    /// <returns>
+    /// A <see cref="Result{T}"/> representing the outcome of the operation and
+    /// <see cref="Result{T}.Value"/> as a <see cref="Maybe{T}"/>.
+    /// </returns>
+    public static Result<Maybe<T>> AsMaybe<T>(T? value)
+        where T : notnull
+    {
+        return value is null
+                ? Success(Maybe.None<T>())
+                : Success(Maybe.Some(value));
+    }
+
+    /// <summary>
     /// Implicit conversion from <see cref="Error"/> to <see cref="Result"/>.
     /// </summary>
     /// <param name="error">The error to convert.</param>
+    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Already have Failure(Error)")]
     public static implicit operator Result(Error error) => Failure(error);
 }
 
@@ -140,6 +175,8 @@ public sealed class Result<T> : Result
     /// directly. Call <c>ConfigureForResults()</c> on your <c>JsonSerializerOptions</c> to install it.
     /// </remarks>
     [JsonIgnore]
+    [SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations",
+        Justification = "This is intentional to ensure callers never get a null value when IsSuccess is false.")]
     public T Value => IsSuccess
         ? ValueStorage!
         : throw new ResultException(
@@ -150,44 +187,47 @@ public sealed class Result<T> : Result
     /// Gets a value indicating whether a value is present.
     /// </summary>
     public Boolean HasValue => ValueStorage != null;
+    private static readonly Type MaybeType = typeof(Maybe<>);
 
-    /// <summary>
-    /// Initializes a new successful instance of the <see cref="Result{TValue}"/> class.
-    /// </summary>
-    /// <param name="value">The value of the successful result.</param>
-    private Result(T value) : base(isSuccess: true, error: null!)
+    [JsonConstructor]
+    internal Result(Boolean isSuccess, T value, Error? error = null) : base(isSuccess, error)
     {
-        ValueStorage = value;
+        var type = typeof(T);
+        ValueStorage = type.IsGenericType && type.GetGenericTypeDefinition() == MaybeType
+            ? value
+            : value is not null
+                ? value
+                : throw new ArgumentNullException(nameof(value));
     }
 
     /// <summary>
     /// Initializes a new failed instance of the <see cref="Result{TValue}"/> class.
     /// </summary>
     /// <param name="error">The error of the failed result.</param>
-    private Result(Error error) : base(isSuccess: false, error)
+    internal Result(Error error) : base(isSuccess: false, error)
     {
         ValueStorage = default;
     }
 
-    /// <summary>
-    /// Creates a successful result with the specified value.
-    /// </summary>
-    /// <param name="value">The value of the successful result. Must not be <see langword="null"/>.</param>
-    /// <returns>A successful <see cref="Result{TValue}"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
-    public static Result<T> Success(T value)
-    {
-        ArgumentNullException.ThrowIfNull(value);
+    ///// <summary>
+    ///// Creates a successful result with the specified value.
+    ///// </summary>
+    ///// <param name="value">The value of the successful result. Must not be <see langword="null"/>.</param>
+    ///// <returns>A successful <see cref="Result{TValue}"/>.</returns>
+    ///// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
+    //public static Result<T> Success(T value)
+    //{
+    //    ArgumentNullException.ThrowIfNull(value);
 
-        return new(value);
-    }
+    //    return new(value);
+    //}
 
-    /// <summary>
-    /// Creates a failed result with the specified error.
-    /// </summary>
-    /// <param name="error">The error for the failed result.</param>
-    /// <returns>A failed <see cref="Result{TValue}"/>.</returns>
-    public static new Result<T> Failure(Error error) => new(error);
+    ///// <summary>
+    ///// Creates a failed result with the specified error.
+    ///// </summary>
+    ///// <param name="error">The error for the failed result.</param>
+    ///// <returns>A failed <see cref="Result{TValue}"/>.</returns>
+    //public static new Result<T> Failure(Error error) => new(error);
 
     /// <summary>
     /// Gets the value when the operation succeeded.
@@ -196,13 +236,13 @@ public sealed class Result<T> : Result
     /// When this method returns <see langword="true"/>, contains the value; otherwise <see langword="default" />.
     /// </param>
     /// <returns><see langword="true"/> when the operation succeeded; otherwise <see langword="false"/>.</returns>
-
-    // NOTE: In a previous version the signature was `public Boolean TryGetValue(out T? value)`, but that was a
-    // regression from the original design. The intent is that a successful result always has a non-null value,
-    // so the out parameter should be non-nullable. The `[NotNullWhen(true)]` attribute communicates this to
-    // static analysis tools.
     public Boolean TryGetValue([NotNullWhen(true)] out T value)
     {
+        // NOTE: In a previous version the signature was `public Boolean TryGetValue(out T? value)`, but that was a
+        // regression from the original design. The intent is that a successful result always has a non-null value,
+        // so the out parameter should be non-nullable. The `[NotNullWhen(true)]` attribute communicates this to
+        // static analysis tools.
+
         value = IsSuccess ? ValueStorage! : default!;
         return IsSuccess;
     }
@@ -211,11 +251,15 @@ public sealed class Result<T> : Result
     /// Implicit conversion from a value to a successful <see cref="Result{TValue}"/>.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    public static implicit operator Result<T>(T value) => Success(value);
+    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
+        Justification = "Following the CA2225 guideline causes CA1000: Do not declare static members on generic types")]
+    public static implicit operator Result<T>(T value) => new(isSuccess: true, value);
 
     /// <summary>
     /// Implicit conversion from an <see cref="Error"/> to a failed <see cref="Result{TValue}"/>.
     /// </summary>
     /// <param name="error">The error to convert.</param>
-    public static implicit operator Result<T>(Error error) => Failure(error);
+    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
+        Justification = "Following the CA2225 guideline causes CA1000: Do not declare static members on generic types")]
+    public static implicit operator Result<T>(Error error) => new(error);
 }

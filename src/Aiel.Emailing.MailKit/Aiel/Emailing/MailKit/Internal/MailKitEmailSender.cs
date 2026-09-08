@@ -21,6 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Contacts;
+using Aiel.Framework;
+using Aiel.Results;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
@@ -31,7 +33,7 @@ using MimeKit;
 namespace Aiel.Emailing.MailKit.Internal;
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Is instantiated by DI/IoC.")]
-internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailValidator validator, ILogger<MailKitEmailSender> logger) : IEmailSender
+internal sealed partial class MailKitEmailSender(IOptions<EmailOptions> options, IEmailValidator validator, ILogger<MailKitEmailSender> logger) : IEmailSender
 {
     private readonly MailKitOptions _options = options?.Value as MailKitOptions
         ?? throw new ArgumentNullException(nameof(options));
@@ -51,9 +53,9 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
                 ? SecureSocketOptions.StartTls
                 : SecureSocketOptions.StartTlsWhenAvailable;
 
-    public Task SendEmailAsync(String email, String subject, String htmlMessage, CancellationToken cancellationToken = default)
+    public async Task<Result> SendEmailAsync(String email, String subject, String htmlMessage, CancellationToken cancellationToken = default)
     {
-        var mailMessage = new System.Net.Mail.MailMessage
+        using var mailMessage = new System.Net.Mail.MailMessage
         {
             From = new System.Net.Mail.MailAddress(_options.FromAddress, _options.FromName),
             Subject = subject,
@@ -63,23 +65,29 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
 
         mailMessage.To.Add(new System.Net.Mail.MailAddress(email));
 
-        return SendEmailAsync(mailMessage, cancellationToken);
+        await SendEmailAsync(mailMessage, cancellationToken);
+
+        return Result.Success();
     }
 
-    public async Task SendEmailAsync(System.Net.Mail.MailMessage message, CancellationToken cancellationToken = default)
+    public async Task<Result> SendEmailAsync(System.Net.Mail.MailMessage message, CancellationToken cancellationToken = default)
     {
-        var mimeMessage = message.ToMimeMessage();
+        var result = message.ToMimeMessage();
+        if (!result.TryGetValue(out var mimeMessage))
+        {
+            return result.Error;
+        }
 
         if (_options.TestMode && !AddTestModeRecipients(mimeMessage))
         {
-            return;
+            return EmailNotSentError.TestMode;
         }
         else if (ArchiveEnabled)
         {
             mimeMessage.Bcc.Add(new MailboxAddress(_options.ArchiveBccName, _options.ArchiveBccAddress!));
         }
 
-        await SendAsync(mimeMessage, cancellationToken);
+        return await SendAsync(mimeMessage, cancellationToken);
     }
 
     private Boolean AddTestModeRecipients(MimeMessage mimeMessage)
@@ -98,13 +106,17 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
         }
         else
         {
-            _logger.LogWarning("TestMode is enabled, but TestAddress and/or TestName are invalid. No recipients will be added.");
+            LogWarning();
 
             return false;
         }
     }
 
-    private async Task SendAsync(MimeMessage message, CancellationToken cancellationToken = default)
+    [LoggerMessage(EventId = (Int32)AielEvent.EmailingTestMode, Level = LogLevel.Warning, Message = "[{EventId}] Email sending is in test mode, but the test address or name is not valid. No email will be sent.")]
+    private partial void LogWarning(Int32 eventId = (Int32)AielEvent.EmailingTestMode);
+
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "No way to know which exception types may be thrown by the SMTP client.")]
+    private async Task<Result> SendAsync(MimeMessage message, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(message);
 
@@ -136,13 +148,19 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
                 LogMessageSent(message);
 
                 await smtp.DisconnectAsync(true, cancellationToken);
+
+                return Result.Success();
             }
             catch (Exception ex)
             {
                 _logger.LogSendingFailed(ex, message.From[0].ToString(), message.To[0].ToString(), message.Subject ?? String.Empty);
+                return CreateError(ex, message);
             }
         }
     }
+
+    private static EmailNotSentError CreateError(Exception ex, MimeMessage message)
+        => new(ex.FormatException()) { From = message.From[0].ToString(), To = message.To[0].ToString(), Subject = message.Subject ?? String.Empty };
 
     private void LogMessageSent(MimeMessage message)
     {
@@ -187,21 +205,21 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
 
 internal static partial class MailKitEmailSenderLoggerExtensions
 {
-    [LoggerMessage(EventId = (Int32)AielEvent.Emailing_Sending, Level = LogLevel.Information, Message = "[{EventId}] Attempting to send email {Subject} from {From} to {To} through {SmtpServer}:{SmtpPort} with {SecureSocketOptions}. Attachments: {AttachmentCount}")]
-    internal static partial void LogSending(this ILogger logger, String subject, String from, String to, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 attachmentCount, Int32 eventId = (Int32)AielEvent.Emailing_Sending);
+    [LoggerMessage(EventId = (Int32)AielEvent.EmailingSending, Level = LogLevel.Information, Message = "[{EventId}] Attempting to send email {Subject} from {From} to {To} through {SmtpServer}:{SmtpPort} with {SecureSocketOptions}. Attachments: {AttachmentCount}")]
+    internal static partial void LogSending(this ILogger logger, String subject, String from, String to, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 attachmentCount, Int32 eventId = (Int32)AielEvent.EmailingSending);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Emailing_Connected, Level = LogLevel.Trace, Message = "[{EventId}] Connected to SMTP server {SmtpServer}:{SmtpPort} with SecureSocketOptions {SecureSocketOptions}")]
-    internal static partial void LogConnected(this ILogger logger, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 eventId = (Int32)AielEvent.Emailing_Connected);
+    [LoggerMessage(EventId = (Int32)AielEvent.EmailingConnected, Level = LogLevel.Trace, Message = "[{EventId}] Connected to SMTP server {SmtpServer}:{SmtpPort} with SecureSocketOptions {SecureSocketOptions}")]
+    internal static partial void LogConnected(this ILogger logger, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 eventId = (Int32)AielEvent.EmailingConnected);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Emailing_Authenticated, Level = LogLevel.Trace, Message = "[{EventId}] Authenticated to SMTP server {SmtpServer}:{SmtpPort} with SecureSocketOptions {SecureSocketOptions}")]
-    internal static partial void LogAuthenticated(this ILogger logger, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 eventId = (Int32)AielEvent.Emailing_Authenticated);
+    [LoggerMessage(EventId = (Int32)AielEvent.EmailingAuthenticated, Level = LogLevel.Trace, Message = "[{EventId}] Authenticated to SMTP server {SmtpServer}:{SmtpPort} with SecureSocketOptions {SecureSocketOptions}")]
+    internal static partial void LogAuthenticated(this ILogger logger, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 eventId = (Int32)AielEvent.EmailingAuthenticated);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Emailing_SendingToServer, Level = LogLevel.Trace, Message = "[{EventId}] Sending {Subject} to SMTP server {SmtpServer}:{SmtpPort} with SecureSocketOptions {SecureSocketOptions}")]
-    internal static partial void LogSendingToServer(this ILogger logger, String subject, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 eventId = (Int32)AielEvent.Emailing_SendingToServer);
+    [LoggerMessage(EventId = (Int32)AielEvent.EmailingSendingToServer, Level = LogLevel.Trace, Message = "[{EventId}] Sending {Subject} to SMTP server {SmtpServer}:{SmtpPort} with SecureSocketOptions {SecureSocketOptions}")]
+    internal static partial void LogSendingToServer(this ILogger logger, String subject, String smtpServer, Int32 smtpPort, String secureSocketOptions, Int32 eventId = (Int32)AielEvent.EmailingSendingToServer);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Emailing_MessageSent, Level = LogLevel.Information, Message = "[{EventId}] From: {From} To: {To} Subject: {Subject}")]
-    internal static partial void LogMessageSent(this ILogger logger, String from, String to, String subject, Int32 eventId = (Int32)AielEvent.Emailing_MessageSent);
+    [LoggerMessage(EventId = (Int32)AielEvent.EmailingMessageSent, Level = LogLevel.Information, Message = "[{EventId}] From: {From} To: {To} Subject: {Subject}")]
+    internal static partial void LogMessageSent(this ILogger logger, String from, String to, String subject, Int32 eventId = (Int32)AielEvent.EmailingMessageSent);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Emailing_SendingFailed, Level = LogLevel.Error, Message = "[{EventId}] From: {From} To: {To} Subject: {Subject}")]
-    internal static partial void LogSendingFailed(this ILogger logger, Exception exception, String from, String to, String subject, Int32 eventId = (Int32)AielEvent.Emailing_SendingFailed);
+    [LoggerMessage(EventId = (Int32)AielEvent.EmailingSendingFailed, Level = LogLevel.Error, Message = "[{EventId}] From: {From} To: {To} Subject: {Subject}")]
+    internal static partial void LogSendingFailed(this ILogger logger, Exception exception, String from, String to, String subject, Int32 eventId = (Int32)AielEvent.EmailingSendingFailed);
 }

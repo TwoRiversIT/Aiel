@@ -55,7 +55,7 @@ public abstract class MultipleResult : Result
     /// <param name="count">The number of records in the current page.</param>
     /// <param name="totalRecords">The total number of records available.</param>
     protected MultipleResult(Int32 pageNo, Int32 pageSize, Int32 count, Int32 totalRecords)
-        : base(true, null!)
+        : base(true, null)
     {
         TotalRecords = totalRecords;
         PageNumber = pageNo;

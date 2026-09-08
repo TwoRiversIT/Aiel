@@ -29,6 +29,8 @@ namespace Aiel.Gps.HP.Sentences;
 /// Contains the four pieces of information typically provided for each satellite:
 /// PRN number, elevation, azimuth, and signal-to-noise ratio.
 /// </remarks>
+[SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "<Pending>")]
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
 public struct SatelliteInfo
 {
     /// <summary>

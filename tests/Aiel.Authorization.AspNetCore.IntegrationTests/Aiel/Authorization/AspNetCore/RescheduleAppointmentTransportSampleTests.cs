@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
 using Aiel.Authorization.Testing;
 using Aiel.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +29,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using System.Reflection;
-using Aiel.Actions;
 
 namespace Aiel.Authorization.AspNetCore;
 
@@ -43,7 +43,7 @@ public sealed class RescheduleAppointmentTransportSampleTests
         var request = CreateRequest();
 
         var response = await client.PostAsJsonAsync(
-            RescheduleAppointmentEndpoint.RoutePattern,
+            RescheduleAppointmentEndpoint.Route,
             request,
             TestContext.Current.CancellationToken);
 
@@ -64,7 +64,7 @@ public sealed class RescheduleAppointmentTransportSampleTests
         var endpointDataSource = factory.Services.GetRequiredService<EndpointDataSource>();
         var endpoint = endpointDataSource.Endpoints
             .OfType<RouteEndpoint>()
-            .Single(item => item.RoutePattern.RawText == RescheduleAppointmentEndpoint.RoutePattern);
+            .Single(item => item.RoutePattern.RawText == RescheduleAppointmentEndpoint.Pattern);
         var handlerMethod = typeof(RescheduleAppointmentEndpoint).GetMethod(
             "HandleAsync",
             BindingFlags.NonPublic | BindingFlags.Static);

@@ -20,16 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.ComponentModel;
+
 namespace Aiel.Emailing;
 
 /// <summary>
 /// Specifies the importance level of an email message.
 /// </summary>
+[SuppressMessage("Design", "CA1027:Mark enums with FlagsAttribute", Justification = "<Pending>")]
 public enum EmailMessageImportance
 {
     /// <summary>
-    /// A sentinal value indicating that no specific importance level is assigned to the message.
+    /// Sentinel value indicating to allow detection of an uninitialized field or property.
     /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
     None = 0,
 
     /// <summary>

@@ -46,4 +46,13 @@
         </PackageReference>
     </ItemGroup>
 
+    <!-- Fody weavers -->
+    <ItemGroup>
+        <PackageReference Include="Fody" Version="6.9.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets='All' />
+    </ItemGroup>
+
 </Project>

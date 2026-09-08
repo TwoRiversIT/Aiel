@@ -31,58 +31,13 @@ public class MailAddressEmailValidator : IEmailValidator
 {
     /// <inheritdoc/>
     public Boolean IsValid(String? email)
-    {
-        if (String.IsNullOrWhiteSpace(email))
-        {
-            return false;
-        }
-
-        try
-        {
-            _ = new MailAddress(email);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+        => !String.IsNullOrWhiteSpace(email) && !MailAddress.TryCreate(email, out _);
 
     /// <inheritdoc/>
     public Boolean IsValid(Email? email)
-    {
-        if (email is null || String.IsNullOrWhiteSpace(email))
-        {
-            return false;
-        }
-
-        try
-        {
-            _ = new MailAddress(email);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+        => email is not null && !MailAddress.TryCreate(email, out _);
 
     /// <inheritdoc/>
-    public Boolean IsValid(EmailAddress? emailAddress)
-    {
-        if (emailAddress is null || String.IsNullOrWhiteSpace(emailAddress.Name))
-        {
-            return false;
-        }
-
-        try
-        {
-            _ = new MailAddress(emailAddress.Email, emailAddress.Name);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
+    public Boolean IsValid(EmailAddress? email)
+        => email is not null && !MailAddress.TryCreate(email.Email, email.Name, out _);
 }

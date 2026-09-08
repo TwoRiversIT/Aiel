@@ -35,18 +35,17 @@ public sealed class ParseError
     /// Initializes a new instance of the <see cref="ParseError"/> class.
     /// </summary>
     /// <param name="lineNumber">The line number in the stream where the error occurred.</param>
-    /// <param name="rawPayload">The raw bytes of the sentence that failed to parse.</param>
+    /// <param name="sentence">The raw bytes of the sentence that failed to parse.</param>
     /// <param name="parserType">The type of parser that attempted to parse the sentence.</param>
     /// <param name="exception">The exception that was thrown during parsing.</param>
-    public ParseError(Int32 lineNumber, String rawPayload, Type parserType, Exception exception)
+    public ParseError(Int32 lineNumber, String sentence, Type parserType, Exception exception)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sentence);
 
         LineNumber = lineNumber;
         ParserType = parserType ?? throw new ArgumentNullException(nameof(parserType));
         Exception = exception ?? throw new ArgumentNullException(nameof(exception));
-        Exception = exception;
-        Sentence = rawPayload;
+        Sentence = sentence;
         ErrorMessage = exception.Message;
     }
 
@@ -62,10 +61,8 @@ public sealed class ParseError
 
         Sentence = sentence;
         ErrorMessage = errorMessage;
-        RawPayload = sentence;
         LineNumber = 0;
         ParserType = null;
-        Exception = null;
     }
 
     /// <summary>
@@ -74,19 +71,9 @@ public sealed class ParseError
     public Int32 LineNumber { get; }
 
     /// <summary>
-    /// Gets the raw payload of the sentence that failed to parse.
-    /// </summary>
-    public String RawPayload { get; }
-
-    /// <summary>
     /// Gets the type of parser that attempted to parse the sentence.
     /// </summary>
     public Type? ParserType { get; }
-
-    /// <summary>
-    /// Gets the exception that was thrown during parsing.
-    /// </summary>
-    public Exception? Exception { get; }
 
     /// <summary>
     /// Gets the sentence that failed to parse.
@@ -98,12 +85,17 @@ public sealed class ParseError
     /// </summary>
     public String ErrorMessage { get; }
 
+    /// <summary>
+    /// Gets the exception that was thrown during parsing.
+    /// </summary>
+    public Exception? Exception { get; }
+
     /// <inheritdoc/>
     public override String ToString()
     {
         if (ParserType != null)
         {
-            return $"Line {LineNumber}: {ParserType.Name} failed to parse '{RawPayload}' - {Exception?.Message}";
+            return $"Line {LineNumber}: {ParserType.Name} failed to parse '{Sentence}' - {Exception?.Message}";
         }
 
         return $"Parse error: '{Sentence}' - {ErrorMessage}";

@@ -39,7 +39,7 @@ public sealed class CreateUserCommandHandler : ICommandHandler<CreateUserCommand
         CreateUserCommand command,
         CancellationToken cancellationToken = default)
     {
-        // Mutate state, return Result.Success() or Result.Failure(error)
+        // Mutate state, return Result.Failure.Success() or Result(error)
     }
 }
 
@@ -49,7 +49,7 @@ public sealed class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserDto>
         GetUserQuery query,
         CancellationToken cancellationToken = default)
     {
-        // Read state, return Result.Success(dto) or Result.Failure(error)
+        // Read state, return Result.Failure.Success(dto) or Result(error)
         // Note: implementations must return Result<TDto> for the value to reach the caller
     }
 }
@@ -309,7 +309,7 @@ public async Task ExecuteAsync_WithInvalidCommand_ValidationFails()
 - **Notification handlers are invoked sequentially** Ã¢â‚¬â€ All handlers for a notification run one after another in registration order. If you need parallel execution, you can `Task.WhenAll()` them inside a behavior.
 - **Notification publish awaits all handlers** Ã¢â‚¬â€ Exceptions from notification handlers are logged via `ILogger<NotificationHandlerBase>` at Error level and swallowed; all handlers run to completion regardless of prior failures. `PublishAsync()` completes successfully even if handlers threw. If no handlers are registered for a notification type, `PublishAsync()` returns immediately (no-op).
 - **Handlers are scoped** Ã¢â‚¬â€ Each dispatch creates a new dependency scope and is cleaned up when the dispatch completes. This ensures isolation but prevents long-lived cached state within a handler.
-- **Query handlers must return `Result<TDto>`** Ã¢â‚¬â€ The handler interface declares `ValueTask<Result>` for pipeline uniformity, but implementations must return `Result<TDto>` (e.g., `Result<UserDto>.Success(dto)`) for the value to be available to the caller. If a behavior short-circuits with a plain `Result.Failure()`, it is automatically promoted to `Result<TDto>.Failure()`.
+- **Query handlers must return `Result.Failure<TDto>`** Ã¢â‚¬â€ The handler interface declares `ValueTask<Result>` for pipeline uniformity, but implementations must return `Result<TDto>` (e.g., `Result<UserDto>.Success(dto)`) for the value to be available to the caller. If a behavior short-circuits with a plain `Result.Failure()`, it is automatically promoted to `Result<TDto>()`.
 - **Validation behavior requires FluentValidation** Ã¢â‚¬â€ If you use `ValidationBehavior<>`, you must add `AbstractValidator<TAction>` implementations for any action you want to validate. Behaviors without validators are skipped.
 
 ## License

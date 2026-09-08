@@ -20,11 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Driver = Aiel.Testing.CodeAnalysis.GenerateCS<Aiel.Results.Generators.ErrorClassGenerator>;
+using Aiel.Results.Generators;
 
 namespace Aiel.Results;
 
-public class ErrorClassGeneratorTests
+public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenerator>
 {
     [Fact]
     public async Task Internal_Sealed_Partial_Class_Should_Generate_CustomError()
@@ -41,7 +41,7 @@ public class ErrorClassGeneratorTests
             }            
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.GeneratedSources.Should().ContainSingle();
@@ -69,7 +69,7 @@ public class ErrorClassGeneratorTests
             public sealed partial class CharlieError : Error;
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
@@ -103,7 +103,7 @@ public class ErrorClassGeneratorTests
             public partial class CustomError : Error;
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
@@ -129,7 +129,7 @@ public class ErrorClassGeneratorTests
             public sealed class CustomError : Error;
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
@@ -154,7 +154,7 @@ public class ErrorClassGeneratorTests
             public sealed partial class CustomError : Error;
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
@@ -184,7 +184,7 @@ public class ErrorClassGeneratorTests
             }
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.GeneratorDiagnostics.Should().BeEmpty();
@@ -213,7 +213,7 @@ public class ErrorClassGeneratorTests
             }
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
@@ -242,7 +242,7 @@ public class ErrorClassGeneratorTests
             }
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
@@ -276,7 +276,7 @@ public class ErrorClassGeneratorTests
             }            
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
 
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
@@ -307,7 +307,7 @@ public class ErrorClassGeneratorTests
             }            
             """;
 
-        var result = Driver.Generate(testCode);
+        var result = Generate(testCode);
         result.Should().NotBeNull();
         result.CompilationDiagnostics.Should().BeEmpty();
         result.GeneratorDiagnostics.Should().BeEmpty();

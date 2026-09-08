@@ -35,7 +35,7 @@ namespace Aiel.Domain.Contacts;
 /// </summary>
 [JsonConverter(typeof(EmailAddressJsonConverter))]
 [TypeConverter(typeof(EmailAddressTypeConverter))]
-public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
+public sealed class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
 {
     /// <summary>
     /// Gets a singleton instance of an empty email address. This can be used to represent an uninitialized or default email address.
@@ -92,6 +92,8 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
     /// <param name="value">The string representation of the email address to parse.</param>
     /// <param name="email">When this method returns, contains the parsed <see cref="Email"/> instance if the parsing was successful; otherwise, <see cref="Email.Empty"/>.</param>
     /// <returns><c>true</c> if the parsing was successful; otherwise, <c>false</c>.</returns>
+    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+        Justification = "Returns false to indicate failure.")]
     public static Boolean TryParse(String? value, out Email email)
     {
         email = Empty;
@@ -225,11 +227,11 @@ public class Email : IXmlSerializable, IComparable<Email>, IEquatable<Email>
     };
 
     /// <inheritdoc />
-    public override Int32 GetHashCode() => _email?.GetHashCode() ?? 0;
+    public override Int32 GetHashCode() => _email?.GetHashCode(StringComparison.Ordinal) ?? 0;
 
     /// <inheritdoc />
-    public static Boolean operator ==(Email left, Email right) => left.Equals(right);
+    public static Boolean operator ==(Email left, Email right) => left?.Equals(right) == true;
 
     /// <inheritdoc />
-    public static Boolean operator !=(Email left, Email right) => !(left == right);
+    public static Boolean operator !=(Email left, Email right) => left?.Equals(right) == false;
 }

@@ -29,6 +29,8 @@ namespace Aiel.Gps.HP.Sentences;
 /// This sentence provides fluorometer measurement data including concentration, distance, light levels, and status information.
 /// </remarks>
 [NmeaMessage("GFDTA")]
+[SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "<Pending>")]
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
 public struct GFDTA
 {
     /// <summary>

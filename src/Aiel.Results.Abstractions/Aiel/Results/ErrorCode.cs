@@ -82,5 +82,5 @@ public abstract class ErrorCode() : IEquatable<ErrorCode>
     /// Returns the hash code for this error code based on its type and name.
     /// </summary>
     /// <returns>The hash code.</returns>
-    public override Int32 GetHashCode() => Name.GetHashCode();
+    public override Int32 GetHashCode() => Name.GetHashCode(StringComparison.Ordinal);
 }

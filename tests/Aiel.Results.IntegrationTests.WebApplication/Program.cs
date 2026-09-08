@@ -42,9 +42,9 @@ public class Program
 
         app.MapGet("/success", () => Task.FromResult(Result<TypicalClass>.Success(new TypicalClass())));
 
-        app.MapGet("/failure", () => Task.FromResult(Result<TypicalClass>.Failure(new SimpleError("Missing"))));
+        app.MapGet("/failure", () => Task.FromResult(Result.Failure<TypicalClass>(new SimpleError("Missing"))));
 
-        app.MapGet("/collection/success", () => Task.FromResult(Result<IEnumerable<TypicalClass>>.Success([new TypicalClass(), new TypicalClass() {
+        app.MapGet("/collection/success", () => Task.FromResult(Result.Success<IEnumerable<TypicalClass>>([new TypicalClass(), new TypicalClass() {
             BoolValue = true,
             DateTimeValue = DateTime.UtcNow,
             DecimalValue = 1.23m,
@@ -55,7 +55,7 @@ public class Program
             StringValue = "Hello, World!"
         }])));
 
-        app.MapGet("/collection/failure", () => Task.FromResult(Result<IEnumerable<TypicalClass>>.Failure(new SimpleError("Missing"))));
+        app.MapGet("/collection/failure", () => Task.FromResult(Result.Failure<IEnumerable<TypicalClass>>(new SimpleError("Missing"))));
 
         app.MapGet("/error", () => Task.FromResult(Result.Failure(new TransactionError("Transaction Error") { Reason = TransactionFailureReason.InsufficientFunds, TransactionId = "11111111-1111-1111-1111-111111111111" })));
 

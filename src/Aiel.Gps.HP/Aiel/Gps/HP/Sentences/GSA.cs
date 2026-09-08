@@ -37,6 +37,8 @@ namespace Aiel.Gps.HP.Sentences;
 /// </para>
 /// </remarks>
 [NmeaMessage("GPGSA")]
+[SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "<Pending>")]
+[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
 public struct GSA
 {
     /// <summary>Fix mode selection. 'A' = Automatic (allowed to switch 2D/3D), 'M' = Manual (forced to operate in 2D or 3D).</summary>

@@ -78,7 +78,7 @@ public sealed class PermissionMigrationRunner(
             StableId = operation.StableId.Value,
             PermissionName = operation.PermissionName.Value,
             ScopeType = operation.ScopeType.Value,
-            Lifecycle = (Int32)PermissionLifecycle.Active,
+            Lifecycle = PermissionLifecycle.Active,
         };
 
         dbContext.Catalog.Add(record);
@@ -144,7 +144,7 @@ public sealed class PermissionMigrationRunner(
                 AuthorizationEfCoreErrorMessages.MigrationCatalogEntryNotFound(operation.StableId.Value)));
         }
 
-        catalog.Lifecycle = (Int32)PermissionLifecycle.Deprecated;
+        catalog.Lifecycle = PermissionLifecycle.Deprecated;
 
         return Result.Success();
     }

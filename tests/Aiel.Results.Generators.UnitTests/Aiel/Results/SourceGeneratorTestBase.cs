@@ -20,34 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Actions;
-using Aiel.Results;
+using Microsoft.CodeAnalysis;
+using Driver = Aiel.Testing.CodeAnalysis.GenerateCS;
 
-namespace Aiel.Authorization.AspNetCore;
+namespace Aiel.Results;
 
-internal sealed class RescheduleAppointmentHttpClient(HttpClient httpClient) : IAppointmentApplicationService
+public class SourceGeneratorTestBase<T>
+    where T : IIncrementalGenerator, new()
 {
-    private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-
-    public Task<Result> RescheduleAsync(
-        IExecutionContext context,
-        RescheduleAppointment action,
-        CancellationToken cancellationToken = default)
-    {
-        ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(action);
-
-        var request = new RescheduleAppointmentRequest
-        {
-            AppointmentId = action.AppointmentId,
-            LocationScopeKey = action.LocationScopeKey.Value,
-            StartsAtUtc = action.StartsAtUtc,
-            EndsAtUtc = action.EndsAtUtc
-        };
-
-        return _httpClient.PostAndGetResultAsync(
-            RescheduleAppointmentEndpoint.Route,
-            request,
-            cancellationToken);
-    }
+    protected Testing.CodeAnalysis.GeneratorRunResult Generate(String sourceCode)
+        => Driver.Generate<T>(sourceCode);
 }

@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Authorization.Testing;
-using Aiel.Results;
 using Aiel.Actions;
 using Aiel.Actions.Commands;
+using Aiel.Authorization.Testing;
+using Aiel.Results;
 
 namespace Aiel.Authorization;
 
@@ -88,7 +88,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
         var log = new List<String>();
         var services = CreateSliceServices(
             log,
-            grantDecision: Maybe<AuthorizationGrantDecision>.None,
+            grantDecision: default,
             resourceAuthorizationResult: Result.Success());
         var applicationService = CreateApplicationService(services);
         var command = CreateValidCommand();

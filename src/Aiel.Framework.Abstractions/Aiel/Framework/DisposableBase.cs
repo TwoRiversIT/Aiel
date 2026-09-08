@@ -35,24 +35,12 @@ public abstract class DisposableBase : IAsyncDisposable, IDisposable
     protected Boolean IsDisposed => _isDisposed;
 
     /// <summary>
-    /// Releases all resources used by the test fixture.
+    /// Releases all resources used by the test fixture. Do not override this
+    /// method; override <see cref="Dispose(Boolean)"/> instead.
     /// </summary>
     public void Dispose()
     {
         Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Asynchronously releases all resources used by the test fixture.
-    /// </summary>
-    /// <returns>A task that represents the asynchronous dispose operation.</returns>
-    public async ValueTask DisposeAsync()
-    {
-        await DisposeAsyncCore();
-
-        // Dispose unmanaged resources only; managed already handled by DisposeAsyncCore
-        Dispose(disposing: false);
         GC.SuppressFinalize(this);
     }
 
@@ -74,6 +62,20 @@ public abstract class DisposableBase : IAsyncDisposable, IDisposable
 
             _isDisposed = true;
         }
+    }
+
+    /// <summary>
+    /// Asynchronously releases all resources used by the test fixture. Do not
+    /// override this method; override <see cref="DisposeAsyncCore"/> instead.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsyncCore();
+
+        // Dispose unmanaged resources only; managed already handled by DisposeAsyncCore
+        Dispose(disposing: false);
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>

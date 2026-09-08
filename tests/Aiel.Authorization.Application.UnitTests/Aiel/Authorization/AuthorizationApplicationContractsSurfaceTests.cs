@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
 using Aiel.Results;
 
 namespace Aiel.Authorization;
@@ -101,7 +102,7 @@ public sealed class AuthorizationApplicationContractsSurfaceTests
     public void PermissionErrors_MissingAuthorizationStory_ReturnsCorrectType()
     {
         var permission = PermissionName.From("test.permission");
-        var error = AuthorizationErrors.MissingAuthorizationStory(permission);
+        var error = AuthorizationErrors.MissingAuthorizationStory<IAction>(permission);
         error.Should().BeOfType<MissingAuthorizationStoryError>();
     }
 
@@ -125,7 +126,7 @@ public sealed class AuthorizationApplicationContractsSurfaceTests
     public void PermissionErrors_MissingAuthorizationStory_MessageContainsPermissionName()
     {
         var permission = PermissionName.From("documents.read");
-        var error = AuthorizationErrors.MissingAuthorizationStory(permission);
+        var error = AuthorizationErrors.MissingAuthorizationStory<IAction>(permission);
         error.Description.Should().Contain("documents.read");
     }
 

@@ -20,6 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
+using System.Globalization;
+using System.Text;
+
 namespace Aiel.Authorization;
 
 /// <summary>
@@ -27,13 +31,18 @@ namespace Aiel.Authorization;
 /// </summary>
 public static class AuthorizationErrors
 {
+    private static readonly CompositeFormat Missing = CompositeFormat.Parse("No authorization story is registered for authorization '{0}'. Register a definition in IAuthorizationDefinitionRegistry.");
+    private static readonly CompositeFormat Denied = CompositeFormat.Parse("The actor does not have the required '{0}' authorization for the requested scope.");
+    private static readonly CompositeFormat Validation = CompositeFormat.Parse("Action validation failed for authorization '{0}': {1}");
+
     /// <summary>
     /// Creates a <see cref="MissingAuthorizationStoryError"/> for the given permission name.
     /// </summary>
     /// <param name="permission">The permission name with no registered authorization story.</param>
     /// <returns>A <see cref="MissingAuthorizationStoryError"/> describing the gap.</returns>
-    public static MissingAuthorizationStoryError MissingAuthorizationStory(PermissionName permission)
-        => new(String.Format(AuthorizationApplicationErrorMessages.MissingAuthorizationStoryFormat, permission));
+    public static MissingAuthorizationStoryError MissingAuthorizationStory<TAction>(PermissionName permission)
+        where TAction : IAction
+        => new(String.Format(CultureInfo.CurrentCulture, Missing, permission));
 
     /// <summary>
     /// Creates a <see cref="AuthorizationDeniedError"/> for the given permission name.
@@ -41,7 +50,7 @@ public static class AuthorizationErrors
     /// <param name="permission">The permission name the actor was denied.</param>
     /// <returns>A <see cref="AuthorizationDeniedError"/> describing the denial.</returns>
     public static AuthorizationDeniedError PermissionDenied(PermissionName permission)
-        => new(String.Format(AuthorizationApplicationErrorMessages.AuthorizationDeniedFormat, permission));
+        => new(String.Format(CultureInfo.CurrentCulture, Denied, permission));
 
     /// <summary>
     /// Creates a <see cref="AuthorizationValidationError"/> for the given permission name and reason.
@@ -50,5 +59,5 @@ public static class AuthorizationErrors
     /// <param name="reason">A human-readable description of the validation failure.</param>
     /// <returns>A <see cref="AuthorizationValidationError"/> describing the failure.</returns>
     public static AuthorizationValidationError ValidationFailed(PermissionName permission, String reason)
-        => new(String.Format(AuthorizationApplicationErrorMessages.AuthorizationValidationFormat, permission, reason));
+        => new(String.Format(CultureInfo.CurrentCulture, Validation, permission, reason));
 }

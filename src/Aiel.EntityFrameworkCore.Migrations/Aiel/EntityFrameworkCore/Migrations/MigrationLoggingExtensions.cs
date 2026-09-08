@@ -26,36 +26,36 @@ namespace Aiel.EntityFrameworkCore.Migrations;
 
 public static partial class MigrationLoggingExtensions
 {
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationsFound, Level = LogLevel.Information, Message = "[{EventId}] Migrations Found: {Count}")]
-    public static partial void LogMigrationsFound(this ILogger logger, Int32 count, AielEvent eventId = AielEvent.Migrations_MigrationsFound);
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsMigrationsFound, Level = LogLevel.Information, Message = "[{EventId}] Migrations Found: {Count}")]
+    public static partial void LogMigrationsFound(this ILogger logger, Int32 count, AielEvent eventId = AielEvent.MigrationsMigrationsFound);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigratingDatabase, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsMigratingDatabase, Level = LogLevel.Information, Message = "Applying Migrations: {DatabaseName}")]
     public static partial void LogMigratingDatabase(this ILogger logger, String databaseName);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationFailed, Level = LogLevel.Critical, Message = "Migrating {DatabaseName} failed: {ExceptionType} - {ErrorDescription}")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsMigrationFailed, Level = LogLevel.Critical, Message = "Migrating {DatabaseName} failed: {ExceptionType} - {ErrorDescription}")]
     public static partial void LogMigrationFailed(this ILogger logger, String databaseName, String exceptionType, String errorDescription);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_NoMigrationsFound, Level = LogLevel.Information, Message = "No migrations to apply: {DatabaseName}")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsNoMigrationsFound, Level = LogLevel.Information, Message = "No migrations to apply: {DatabaseName}")]
     public static partial void LogNoMigrationsToApply(this ILogger logger, String databaseName);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationCompleted, Level = LogLevel.Information, Message = "Migration completed in {ElapsedMilliseconds}ms")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsMigrationCompleted, Level = LogLevel.Information, Message = "Migration completed in {ElapsedMilliseconds}ms")]
     public static partial void LogMigrationCompleted(this ILogger logger, long elapsedMilliseconds);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_SkippingTenant, Level = LogLevel.Information, Message = "Skipping {Tenant}: already completed.")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsSkippingTenant, Level = LogLevel.Information, Message = "Skipping {Tenant}: already completed.")]
     public static partial void LogSkippingCompleted(this ILogger logger, String tenant);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_TenantMigrationCompleted, Level = LogLevel.Information, Message = "Migration completed for {Tenant}.")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsTenantMigrationCompleted, Level = LogLevel.Information, Message = "Migration completed for {Tenant}.")]
     public static partial void LogTenantMigrationCompleted(this ILogger logger, String tenant);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_TenantMigrationFailed, Level = LogLevel.Error, Message = "Migration failed for {Tenant}: {ExceptionType} - {ErrorDescription}")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsTenantMigrationFailed, Level = LogLevel.Error, Message = "Migration failed for {Tenant}: {ExceptionType} - {ErrorDescription}")]
     public static partial void LogTenantMigrationFailed(this ILogger logger, String tenant, String exceptionType, String errorDescription);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationsStarting, Level = LogLevel.Information, Message = "Starting migration...")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsMigrationsStarting, Level = LogLevel.Information, Message = "Starting migration...")]
     public static partial void LogStartingMigrations(this ILogger logger);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_MigrationsCompleted, Level = LogLevel.Information, Message = "Completed migrations.")]
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsMigrationsCompleted, Level = LogLevel.Information, Message = "Completed migrations.")]
     public static partial void LogCompletedMigrations(this ILogger logger);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Migrations_RetryingMigration, Level = LogLevel.Warning, Message = "[{EventId}] {ErrorDescription}: The operation will be tried {RetryCount} times more.")]
-    public static partial void LogRetryingMigration(this ILogger logger, String errorDescription, Int32 retryCount, AielEvent eventId = AielEvent.Migrations_RetryingMigration);
+    [LoggerMessage(EventId = (Int32)AielEvent.MigrationsRetryingMigration, Level = LogLevel.Warning, Message = "[{EventId}] {ErrorDescription}: The operation will be tried {RetryCount} times more.")]
+    public static partial void LogRetryingMigration(this ILogger logger, String errorDescription, Int32 retryCount, AielEvent eventId = AielEvent.MigrationsRetryingMigration);
 }

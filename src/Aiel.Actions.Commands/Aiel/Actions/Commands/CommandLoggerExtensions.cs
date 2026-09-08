@@ -29,12 +29,12 @@ namespace Aiel.Commands;
 /// </summary>
 internal static partial class CommandLoggerExtensions
 {
-    [LoggerMessage(EventId = (Int32)AielEvent.Actions_CommandDispatched, Level = LogLevel.Information, Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
-    internal static partial void LogDispatching(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_CommandDispatched);
+    [LoggerMessage(EventId = (Int32)AielEvent.ActionsCommandDispatched, Level = LogLevel.Information, Message = "[{EventId}] Dispatching {InputType} [CorrelationId={CorrelationId}]")]
+    internal static partial void LogDispatching(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.ActionsCommandDispatched);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Actions_CommandSucceeded, Level = LogLevel.Information, Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
-    internal static partial void LogSuccess(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_CommandSucceeded);
+    [LoggerMessage(EventId = (Int32)AielEvent.ActionsCommandSucceeded, Level = LogLevel.Information, Message = "[{EventId}] {InputType} dispatched successfully [CorrelationId={CorrelationId}]")]
+    internal static partial void LogSuccess(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.ActionsCommandSucceeded);
 
-    [LoggerMessage(EventId = (Int32)AielEvent.Actions_CommandFailed, Level = LogLevel.Warning, Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
-    internal static partial void LogFailure(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.Actions_CommandFailed);
+    [LoggerMessage(EventId = (Int32)AielEvent.ActionsCommandFailed, Level = LogLevel.Warning, Message = "[{EventId}] {InputType} dispatch failed [CorrelationId={CorrelationId}]")]
+    internal static partial void LogFailure(this ILogger logger, String inputType, Guid correlationId, AielEvent eventId = AielEvent.ActionsCommandFailed);
 }

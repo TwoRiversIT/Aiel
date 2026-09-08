@@ -697,9 +697,12 @@ public sealed class GetOrderQueryHandler(IReadModelRepository readModels)
         CancellationToken cancellationToken = default)
     {
         var summary = await readModels.GetOrderSummaryAsync(query.OrderId, cancellationToken);
-        return summary is null
-            ? Result<OrderSummary>.Failure(new OrderNotFoundError(query.OrderId))
-            : Result<OrderSummary>.Success(summary);
+        if (summary is null)
+        {
+            return Result.Failure<OrderSummary>(new OrderNotFoundError(query.OrderId));
+        }
+
+        return summary;
     }
 }
 ```

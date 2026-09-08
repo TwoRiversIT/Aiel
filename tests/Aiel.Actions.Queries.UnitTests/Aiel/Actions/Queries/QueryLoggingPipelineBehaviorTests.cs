@@ -90,7 +90,7 @@ public sealed class QueryLoggingPipelineBehaviorTests
         await behavior.HandleAsync(
             new TestQuery(),
             DefaultExecutionContext.CreateRoot(),
-            _ => Task.FromResult(Result<String>.Failure(new TestError("I do not know what I want to eat."))),
+            _ => Task.FromResult(Result.Failure<String>(new TestError("I do not know what I want to eat."))),
             TestContext.Current.CancellationToken);
 
         logger.Entries.Should().HaveCount(2);
@@ -128,7 +128,7 @@ public sealed class QueryLoggingPipelineBehaviorTests
         var result = await behavior.HandleAsync(
             new TestQuery(),
             DefaultExecutionContext.CreateRoot(),
-            _ => Task.FromResult(Result<String>.Failure(new TestError("I do not know what I want to eat."))),
+            _ => Task.FromResult(Result.Failure<String>(new TestError("I do not know what I want to eat."))),
             TestContext.Current.CancellationToken);
 
         result.IsSuccess.Should().BeFalse();

@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Actions;
 using Aiel.Results;
 
 namespace Aiel.Authorization;
@@ -61,8 +62,8 @@ public sealed class DefaultPermissionManager(
         if (!definitionRegistry.TryGet(request.PermissionName, out _))
         {
             return Task.FromResult(
-                Result<AuthorizationGrantId>.Failure(
-                    AuthorizationErrors.MissingAuthorizationStory(request.PermissionName)));
+                Result.Failure<AuthorizationGrantId>(
+                    AuthorizationErrors.MissingAuthorizationStory<IAction>(request.PermissionName)));
         }
 
         return authorizationGrantStore.CreateGrantAsync(

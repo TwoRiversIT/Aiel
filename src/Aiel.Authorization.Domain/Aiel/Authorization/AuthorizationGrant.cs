@@ -190,13 +190,13 @@ public sealed class AuthorizationGrant : StateBasedAggregateRoot<AuthorizationGr
     {
         if (catalogEntry is null)
         {
-            return Result<AuthorizationGrant>.Failure(
+            return Result.Failure<AuthorizationGrant>(
                 new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.CatalogEntryRequired));
         }
 
         if (!catalogEntry.AcceptsNewGrants)
         {
-            return Result<AuthorizationGrant>.Failure(
+            return Result.Failure<AuthorizationGrant>(
                 new InvalidAuthorizationGrantError(AuthorizationDomainErrorMessages.RemovedCatalogEntriesCannotIssueGrants));
         }
 

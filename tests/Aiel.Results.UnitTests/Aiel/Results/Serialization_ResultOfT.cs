@@ -76,7 +76,7 @@ public class Serialization_ResultOfT(ResultsIntegrationTestFixture fixture, ITes
     public void ResultOfMaybeOfT_None_ShouldRoundTrip()
     {
         // Arrange
-        var original = Result.Success(Maybe<String>.None);
+        var original = Result.Success(Maybe.None<String>());
 
         // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);

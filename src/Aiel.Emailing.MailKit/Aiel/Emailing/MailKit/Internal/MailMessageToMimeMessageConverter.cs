@@ -20,15 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
+using Aiel.Results;
 using MimeKit;
 using System.Net.Mail;
 using System.Text;
 
 namespace Aiel.Emailing.MailKit.Internal;
 
+//[SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "No way to know which exception types may be thrown.")]
 public static class MailMessageToMimeMessageConverter
 {
-    public static MimeMessage ToMimeMessage(this MailMessage mail)
+    public static Result<MimeMessage> ToMimeMessage(this MailMessage mail)
     {
         ArgumentNullException.ThrowIfNull(mail);
 
@@ -140,7 +143,7 @@ public static class MailMessageToMimeMessageConverter
                             {
                                 mimeType = ContentType.Parse(lr.ContentType.ToString());
                             }
-                            catch
+                            catch (ParseException)
                             {
                                 mimeType = null;
                             }
@@ -160,56 +163,34 @@ public static class MailMessageToMimeMessageConverter
                 }
             }
         }
-        catch
+        catch (InvalidOperationException ex)
         {
-            // ignore alternate view Errors and continue
+            return new ConversionFailedError(ex.FormatException());
         }
 
         // Attachments
         foreach (var att in mail.Attachments)
         {
-            using (var ms = new MemoryStream())
+            if (att.ContentStream.CanSeek)
             {
-                if (att.ContentStream.CanSeek)
-                {
-                    att.ContentStream.Position = 0;
-                }
+                att.ContentStream.Position = 0;
+            }
 
-                att.ContentStream.CopyTo(ms);
-                var bytes = ms.ToArray();
-                var name = att.Name ?? att.ContentType?.Name ?? Guid.NewGuid().ToString();
+            var name = att.Name ?? att.ContentType?.Name ?? Guid.NewGuid().ToString();
 
-                // Parse content type if available
-                ContentType? mimeType = null;
-                if (att.ContentType != null)
-                {
-                    try
-                    {
-                        mimeType = ContentType.Parse(att.ContentType.ToString());
-                    }
-                    catch
-                    {
-                        mimeType = null;
-                    }
-                }
-
+            // Parse content type if available
+            if (att.ContentType != null && ContentType.TryParse(att.ContentType.ToString(), out var mimeType))
+            {
                 var part = mimeType == null
-                    ? builder.Attachments.Add(name, bytes)
-                    : builder.Attachments.Add(name, bytes, mimeType);
+                    ? builder.Attachments.Add(name, att.ContentStream)
+                    : builder.Attachments.Add(name, att.ContentStream, mimeType);
 
                 // Preserve inline vs attachment disposition
-                try
-                {
-                    var disp = att.ContentDisposition?.DispositionType;
-                    part.ContentDisposition = !String.IsNullOrEmpty(disp)
-                        && disp.Equals(System.Net.Mime.DispositionTypeNames.Inline, StringComparison.OrdinalIgnoreCase)
-                            ? new ContentDisposition(ContentDisposition.Inline)
-                            : new ContentDisposition(ContentDisposition.Attachment);
-                }
-                catch
-                {
-                    // ignore
-                }
+                var disp = att.ContentDisposition?.DispositionType;
+                part.ContentDisposition = !String.IsNullOrEmpty(disp)
+                    && disp.Equals(System.Net.Mime.DispositionTypeNames.Inline, StringComparison.OrdinalIgnoreCase)
+                        ? new ContentDisposition(ContentDisposition.Inline)
+                        : new ContentDisposition(ContentDisposition.Attachment);
             }
         }
 
@@ -254,9 +235,9 @@ public static class MailMessageToMimeMessageConverter
                 mime.Headers.Add(key, mail.Headers[key]!);
             }
         }
-        catch
+        catch (ArgumentException)
         {
-            // ignore header copy Errors
+            // ignore duplicate headers
         }
 
         return mime;

@@ -85,25 +85,25 @@ public sealed class PermissionCatalogEntry : StateBasedAggregateRoot<PermissionS
     {
         if (stableId == default)
         {
-            return Result<PermissionCatalogEntry>.Failure(
+            return Result.Failure<PermissionCatalogEntry>(
                 new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogStableIdRequired));
         }
 
         if (String.IsNullOrEmpty(permissionName.Value))
         {
-            return Result<PermissionCatalogEntry>.Failure(
+            return Result.Failure<PermissionCatalogEntry>(
                 new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogPermissionNameRequired));
         }
 
         if (String.IsNullOrEmpty(scopeType.Value))
         {
-            return Result<PermissionCatalogEntry>.Failure(
+            return Result.Failure<PermissionCatalogEntry>(
                 new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogScopeTypeRequired));
         }
 
         if (!Enum.IsDefined(lifecycle))
         {
-            return Result<PermissionCatalogEntry>.Failure(
+            return Result.Failure<PermissionCatalogEntry>(
                 new InvalidPermissionCatalogEntryError(AuthorizationDomainErrorMessages.CatalogLifecycleRequired));
         }
 

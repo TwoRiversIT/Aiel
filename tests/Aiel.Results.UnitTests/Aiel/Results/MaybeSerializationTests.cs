@@ -45,7 +45,7 @@ public class MaybeSerializationTests(ResultsIntegrationTestFixture fixture, ITes
     public void None_ShouldSerializeAsNull()
     {
         // Act
-        var json = JsonSerializer.Serialize(Maybe<String>.None, Results.JSO);
+        var json = JsonSerializer.Serialize(Maybe.None<String>(), Results.JSO);
 
         // Assert
         json.Should().Be("null");
@@ -70,7 +70,7 @@ public class MaybeSerializationTests(ResultsIntegrationTestFixture fixture, ITes
     public void None_ShouldRoundTrip()
     {
         // Arrange
-        var original = Maybe<TestRecord>.None;
+        var original = Maybe.From<TestRecord>(null!);
 
         // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);
@@ -118,7 +118,7 @@ public class MaybeSerializationTests(ResultsIntegrationTestFixture fixture, ITes
     public void ResultOfMaybe_None_ShouldRoundTripAsSuccess()
     {
         // Arrange
-        var original = Result.Success(Maybe<TestRecord>.None);
+        var original = Result.Success(Maybe.From<TestRecord>(null!));
 
         // Act
         var json = JsonSerializer.Serialize(original, Results.JSO);

@@ -50,7 +50,7 @@ AuthorizationGrantDecision decision,
 
         if (catalogEntry is null)
         {
-            return Result<AuthorizationGrantId>.Failure(
+            return Result.Failure<AuthorizationGrantId>(
                 new PermissionCatalogEntryNotFoundError(
                     AuthorizationEfCoreErrorMessages.CatalogEntryNotFoundForPermissionName(permissionName.Value)));
         }
@@ -73,7 +73,7 @@ AuthorizationGrantDecision decision,
         dbContext.Grants.Add(record);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result<AuthorizationGrantId>.Success(AuthorizationGrantId.From(grantId));
+        return Result.Success(AuthorizationGrantId.From(grantId));
     }
 
     /// <inheritdoc />

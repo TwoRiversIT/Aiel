@@ -21,6 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Contacts;
+using Aiel.Framework;
+using Aiel.Results;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
@@ -31,7 +33,7 @@ using MimeKit;
 namespace Aiel.Emailing.MailKit.Internal;
 
 [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "Is instantiated by DI/IoC.")]
-internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailValidator validator, ILogger<MailKitEmailSender> logger) : IEmailSender
+internal sealed partial class MailKitEmailSender(IOptions<EmailOptions> options, IEmailValidator validator, ILogger<MailKitEmailSender> logger) : IEmailSender
 {
     private readonly MailKitOptions _options = options?.Value as MailKitOptions
         ?? throw new ArgumentNullException(nameof(options));
@@ -51,9 +53,9 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
                 ? SecureSocketOptions.StartTls
                 : SecureSocketOptions.StartTlsWhenAvailable;
 
-    public Task SendEmailAsync(String email, String subject, String htmlMessage, CancellationToken cancellationToken = default)
+    public async Task<Result> SendEmailAsync(String email, String subject, String htmlMessage, CancellationToken cancellationToken = default)
     {
-        var mailMessage = new System.Net.Mail.MailMessage
+        using var mailMessage = new System.Net.Mail.MailMessage
         {
             From = new System.Net.Mail.MailAddress(_options.FromAddress, _options.FromName),
             Subject = subject,
@@ -63,23 +65,29 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
 
         mailMessage.To.Add(new System.Net.Mail.MailAddress(email));
 
-        return SendEmailAsync(mailMessage, cancellationToken);
+        await SendEmailAsync(mailMessage, cancellationToken);
+
+        return Result.Success();
     }
 
-    public async Task SendEmailAsync(System.Net.Mail.MailMessage message, CancellationToken cancellationToken = default)
+    public async Task<Result> SendEmailAsync(System.Net.Mail.MailMessage message, CancellationToken cancellationToken = default)
     {
-        var mimeMessage = message.ToMimeMessage();
+        var result = message.ToMimeMessage();
+        if (!result.TryGetValue(out var mimeMessage))
+        {
+            return result.Error;
+        }
 
         if (_options.TestMode && !AddTestModeRecipients(mimeMessage))
         {
-            return;
+            return EmailNotSentError.TestMode;
         }
         else if (ArchiveEnabled)
         {
             mimeMessage.Bcc.Add(new MailboxAddress(_options.ArchiveBccName, _options.ArchiveBccAddress!));
         }
 
-        await SendAsync(mimeMessage, cancellationToken);
+        return await SendAsync(mimeMessage, cancellationToken);
     }
 
     private Boolean AddTestModeRecipients(MimeMessage mimeMessage)
@@ -106,6 +114,7 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
 
     [LoggerMessage(EventId = (Int32)AielEvent.EmailingTestMode, Level = LogLevel.Warning, Message = "[{EventId}] Email sending is in test mode, but the test address or name is not valid. No email will be sent.")]
     private partial void LogWarning(Int32 eventId = (Int32)AielEvent.EmailingTestMode);
+
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "No way to know which exception types may be thrown by the SMTP client.")]
     private async Task<Result> SendAsync(MimeMessage message, CancellationToken cancellationToken = default)
     {
@@ -139,13 +148,19 @@ internal sealed class MailKitEmailSender(IOptions<EmailOptions> options, IEmailV
                 LogMessageSent(message);
 
                 await smtp.DisconnectAsync(true, cancellationToken);
+
+                return Result.Success();
             }
             catch (Exception ex)
             {
                 _logger.LogSendingFailed(ex, message.From[0].ToString(), message.To[0].ToString(), message.Subject ?? String.Empty);
+                return CreateError(ex, message);
             }
         }
     }
+
+    private static EmailNotSentError CreateError(Exception ex, MimeMessage message)
+        => new(ex.FormatException()) { From = message.From[0].ToString(), To = message.To[0].ToString(), Subject = message.Subject ?? String.Empty };
 
     private void LogMessageSent(MimeMessage message)
     {

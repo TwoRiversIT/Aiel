@@ -34,7 +34,7 @@ public sealed class MaybeJsonConverter<T> : JsonConverter<Maybe<T>>
 {
     /// <summary>
     /// Gets a value indicating that this converter handles <see langword="null"/> tokens itself,
-    /// because <see langword="null"/> is the wire representation of <see cref="Maybe{T}.None"/>.
+    /// because <see langword="null"/> is the wire representation of <see cref="Maybe{T}"/>.
     /// </summary>
     public override Boolean HandleNull => true;
 
@@ -43,17 +43,19 @@ public sealed class MaybeJsonConverter<T> : JsonConverter<Maybe<T>>
     {
         if (reader.TokenType == JsonTokenType.Null)
         {
-            return Maybe<T>.None;
+            return default;
         }
 
         var value = JsonSerializer.Deserialize<T>(ref reader, options);
 
-        return Maybe.FromNullable(value);
+        return Maybe.From(value);
     }
 
     /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, Maybe<T> value, JsonSerializerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(writer);
+
         if (value.TryGetValue(out var inner))
         {
             JsonSerializer.Serialize(writer, inner, options);

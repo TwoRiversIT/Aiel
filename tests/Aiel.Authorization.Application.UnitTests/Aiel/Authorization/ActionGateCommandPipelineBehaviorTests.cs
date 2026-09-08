@@ -139,26 +139,18 @@ public sealed class ActionGateCommandPipelineBehaviorTests
             if (!grantAccess)
             {
                 return Task.FromResult(
-                    Result<IActionExecutionContext<TAction>>.Failure(
+                    Result.Failure<IActionExecutionContext<TAction>>(
                         AuthorizationErrors.PermissionDenied(PermissionName.From("test.denied"))));
             }
 
             IActionExecutionContext<TAction> actionContext = new StubActionContext<TAction>(context, action);
-            return Task.FromResult(Result<IActionExecutionContext<TAction>>.Success(actionContext));
+            return Task.FromResult(Result.Success(actionContext));
         }
     }
 
-    private sealed class StubActionContext<TAction>(IExecutionContext parent, TAction action)
-        : IActionExecutionContext<TAction>
+    private sealed class StubActionContext<TAction>(IExecutionContext parent, TAction action) : ExecutionContextBase(parent), IActionExecutionContext<TAction>
         where TAction : IAction
     {
-        public IActor Actor => parent.Actor;
-        public Guid OperationId => parent.OperationId;
-        public Guid CorrelationId => parent.CorrelationId;
-        public DateTimeOffset Timestamp { get; }
-        public Guid? CausationId => parent.CausationId;
-        public Guid? ClientInstanceId => parent.ClientInstanceId;
-        public IDictionary<String, Object?> Properties => parent.Properties;
-        public TAction Action => action;
+        public TAction Action { get; } = action;
     }
 }

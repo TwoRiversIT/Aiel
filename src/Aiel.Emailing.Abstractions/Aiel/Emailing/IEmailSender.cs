@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Results;
 using System.Net.Mail;
 
 namespace Aiel.Emailing;
@@ -37,7 +38,7 @@ public interface IEmailSender
     /// <param name="htmlBody">The HTML content of the email.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task SendEmailAsync(String email, String subject, String htmlBody, CancellationToken cancellationToken = default);
+    Task<Result> SendEmailAsync(String email, String subject, String htmlBody, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sends an email message asynchronously.
@@ -45,5 +46,5 @@ public interface IEmailSender
     /// <param name="message">The email message to send.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task SendEmailAsync(MailMessage message, CancellationToken cancellationToken = default);
+    Task<Result> SendEmailAsync(MailMessage message, CancellationToken cancellationToken = default);
 }

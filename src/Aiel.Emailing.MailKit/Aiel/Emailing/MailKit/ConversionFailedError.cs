@@ -20,16 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Authorization;
+using Aiel.Results;
 
-internal static class AuthorizationApplicationErrorMessages
-{
-    internal const String MissingAuthorizationStoryFormat =
-        "No authorization story is registered for authorization '{0}'. Register a definition in IAuthorizationDefinitionRegistry.";
+namespace Aiel.Emailing.MailKit;
 
-    internal const String AuthorizationDeniedFormat =
-        "The actor does not have the required '{0}' authorization for the requested scope.";
-
-    internal const String AuthorizationValidationFormat =
-        "Action validation failed for authorization '{0}': {1}";
-}
+public sealed partial class ConversionFailedError : Error;

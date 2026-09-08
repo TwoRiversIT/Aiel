@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Contacts;
+using Aiel.Framework;
 using Aiel.Security;
 using Aiel.UI;
 using System.Net.Mail;
@@ -39,15 +40,14 @@ namespace Aiel.Emailing;
 /// </summary>
 /// <param name="markdownRenderer">The markdown renderer used to convert markdown content to HTML.</param>
 public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
-    : IDisposable, IAsyncDisposable
+    : DisposableBase
 {
     private readonly IMarkdownRenderer _markdownRenderer = markdownRenderer;
-    private readonly StringBuilder _markdown = new();
+    private StringBuilder? _markdown = new();
     private MailMessage _message = new();
     private String? _text;
     private String? _html;
     private Boolean _built;
-    private Boolean _disposed;
 
     /// <summary>
     /// Gets a value indicating whether the email message has any attachments.
@@ -417,7 +417,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
 
     private void EnsureNotDisposedOrBuilt()
     {
-        if (_disposed)
+        if (IsDisposed)
         {
             throw new ObjectDisposedException(nameof(MailMessageBuilder), "Cannot use a disposed MailMessageBuilder.");
         }
@@ -477,46 +477,19 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         && !String.IsNullOrWhiteSpace(_message.Subject)
         && !String.IsNullOrWhiteSpace(Body());
 
-    /// <inheritdoc/>
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
     /// <summary>
     /// Releases the unmanaged resources used by the <see cref="MailMessageBuilder"/> and optionally releases the managed resources.
     /// </summary>
-    /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-    protected virtual void Dispose(Boolean disposing)
+    protected override async ValueTask DisposeAsyncCore()
     {
-        if (disposing && !_disposed)
-        {
-            // Dispose managed resources
-            _built = true;
-            _text = null;
-            _html = null;
-            _markdown.Clear();
-            _message.Dispose();
-            _message = null!;
-            _disposed = true;
-        }
+        _built = true;
+        _text = null;
+        _html = null;
+        _markdown?.Clear();
+        _markdown = null;
+        _message.Dispose();
+        _message = null!;
 
-        // Dispose unmanaged resources, if any.
-    }
-
-    /// <inheritdoc/>
-    [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "This calls Dispose() which takes care of the rest.")]
-    public virtual ValueTask DisposeAsync()
-    {
-        try
-        {
-            Dispose();
-            return ValueTask.CompletedTask;
-        }
-        catch (Exception ex)
-        {
-            return ValueTask.FromException(ex);
-        }
+        await base.DisposeAsyncCore();
     }
 }

@@ -1,16 +1,17 @@
 param(
-    [switch] $NoTests,
-    [switch] $Release,
-    [switch] $DryRun,
-    [switch] $Publish,
-    [switch] $ToolingOnly,
-    [switch] $PreserveArtifacts,
     [string] $ArtifactsBasePath = ".\artifacts",
     [string] $LocalPackagesPath = ".\LocalPackages",
+    [string] $NuGetApiKeyName = "BAGETTER_TOKEN",
+    [string] $NuGetSource = "http://localhost:9000/v3/index.json",
+    [switch] $AllowWarnings,
+    [switch] $Debug,
+    [switch] $DryRun,
+    [switch] $NoTests,
+    [switch] $PreserveArtifacts,
+    [switch] $Publish,
+    [switch] $ToolingOnly
     # [string] $NuGetSource = "https://git.dkw.io/api/packages/tworiversit/nuget/index.json",
     # [string] $NuGetApiKeyName = "GITEA_PERSONAL_ACCESS_TOKEN"
-    [string] $NuGetSource = "http://localhost:9000/v3/index.json",
-    [string] $NuGetApiKeyName = "BAGETTER_TOKEN"
 )
 
 $BuildLogPath = Join-Path $PSScriptRoot "build.log"
@@ -135,9 +136,9 @@ function Get-NormalizedGitPathFromStatusLine {
 $Version = Get-Version
 $InformationalVersion = $Version.AssemblyInformationalVersion
 $PackageVersion = $Version.NuGetPackageVersion
-$Configuration = if ($Release -or $Publish -or $DryRun) { "Release" } else { "Debug" }
+$Configuration = if ($Debug) { "Debug" } else { "Release" }
 $PublicRelease = if ($Publish -or $DryRun) { "/p:PublicRelease=true" } else { $null }
-$TreatWarningsAsErrors = if ($Configuration -eq "Release") { '/p:TreatWarningsAsErrors=true' } else { $null }
+$TreatWarningsAsErrors = if (-not $AllowWarnings) { '/p:TreatWarningsAsErrors=true' } else { $null }
 $ArtifactsPath = if ($DryRun) { Join-Path -Path $ArtifactsBasePath -ChildPath "$($Version.NuGetPackageVersion)-dryrun" }
     else { Join-Path $ArtifactsBasePath $Version.NuGetPackageVersion }
 

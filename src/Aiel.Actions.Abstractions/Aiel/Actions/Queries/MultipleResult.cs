@@ -109,25 +109,10 @@ public abstract class MultipleResult : Result
     /// <param name="totalRecords">The total number of records available.</param>
     /// <typeparam name="TDto">The type of the records.</typeparam>
     /// <returns>A new <see cref="MultipleResult{TDto}"/> instance.</returns>
-    public static MultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords = 0)
+    public static MultipleResult<TDto> Success<TDto>(IReadOnlyList<TDto> records, IQueryMultiple query, Int32 totalRecords = 0)
         where TDto : notnull
     {
-        return Create(records, query.Page.Number, query.Page.Size, totalRecords);
-    }
-
-    /// <summary>
-    /// Creates a new <see cref="MultipleResult{TDto}"/> instance with the specified records, page number, page size, and total records.
-    /// </summary>
-    /// <typeparam name="TDto">The type of the records.</typeparam>
-    /// <param name="records">The records in the current page.</param>
-    /// <param name="pageNumber">The current page number.</param>
-    /// <param name="pageSize">The number of records per page.</param>
-    /// <param name="totalRecords">The total number of records available.</param>
-    /// <returns>A new <see cref="MultipleResult{TDto}"/> instance.</returns>
-    public static MultipleResult<TDto> Create<TDto>(IReadOnlyList<TDto> records, Int32 pageNumber = 1, Int32 pageSize = 10, Int32 totalRecords = 0)
-        where TDto : notnull
-    {
-        return new MultipleResult<TDto>(records, pageNumber, pageSize, totalRecords);
+        return Success(records, query.Page.Number, query.Page.Size, totalRecords);
     }
 
     /// <summary>

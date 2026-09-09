@@ -60,7 +60,7 @@ public class MultipleResultTests
         var currentPage = 1;
 
         // Act
-        var result = MultipleResult.Create(results, currentPage, pageSize, totalCount);
+        var result = MultipleResult.Success(results, currentPage, pageSize, totalCount);
 
         // Assert
         result.Should().NotBeNull();

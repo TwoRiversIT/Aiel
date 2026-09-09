@@ -47,6 +47,13 @@ public record QueryMultiple : IQueryMultiple
     public static IQueryMultiple Some(Int32 howMany) => new QueryMultiple(SortOrder.None, Page.Some(howMany));
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with default sorting and paging.
+    /// </summary>
+    protected QueryMultiple() : this(SortOrder.None, Page.Default)
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="QueryMultiple"/> class with the specified sorting and paging.
     /// </summary>
     /// <param name="sort"></param>
@@ -79,6 +86,13 @@ public record QueryMultiple : IQueryMultiple
 public abstract record QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
     where TDto : notnull
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with default sorting and paging.
+    /// </summary>
+    protected QueryMultiple() : base(SortOrder.None, Page.Default)
+    {
+    }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with the specified sorting and paging.
     /// </summary>

@@ -46,16 +46,17 @@ public class ExpressionSpecification<T>
     /// <param name="expression">The expression that defines the specification.</param>
     public ExpressionSpecification(Expression<Func<T, Boolean>> expression)
     {
-        PredicateExpression = expression ?? throw new ArgumentNullException(nameof(expression));
+        Expression = expression ?? throw new ArgumentNullException(nameof(expression));
     }
 
     /// <summary>
     /// Gets the expression that defines the specification.
     /// </summary>
-    protected Expression<Func<T, Boolean>>? PredicateExpression { get; init; }
+    protected Expression<Func<T, Boolean>>? Expression { get; init; }
 
     /// <inheritdoc/>
-    public override Expression<Func<T, Boolean>> ToExpression() => PredicateExpression ?? throw new InvalidOperationException("The expression has not been set.");
+    public override Expression<Func<T, Boolean>> ToExpression()
+        => Expression ?? throw new InvalidOperationException("The expression has not been set.");
 
     /// <summary>
     /// Combines two specifications using the specified combiner function.

@@ -32,6 +32,16 @@ public readonly partial record struct PersonId;
 
 public sealed class Person : Entity<PersonId>
 {
+    private Person()
+    {
+        Id = PersonId.None;
+        FirstName = String.Empty;
+        LastName = String.Empty;
+        MiddleName = String.Empty;
+        DateOfBirth = DateOnly.MinValue;
+        Gender = Gender.None;
+    }
+
     [JsonConstructor]
     private Person(PersonId id, String firstName, String lastName, String middleName = "", Gender gender = Gender.Other, DateOnly? dateOfBirth = null)
     {
@@ -57,8 +67,10 @@ public sealed class Person : Entity<PersonId>
             .Trim()
             .ToUpperInvariant();
 
-    public static Person Create(PersonId id, String firstName, String lastName, String middleName, DateOnly? dateOfBirth, Gender gender)
-        => new(id, firstName, lastName, middleName, gender, dateOfBirth);
+    public static Person Create(PersonId? id = null, String? firstName = null, String? lastName = null, String? middleName = null, DateOnly? dateOfBirth = null, Gender gender = Gender.NonBinary)
+        => new(id ?? PersonId.From(Guid.NewGuid()), firstName ?? "John", lastName ?? "Doe", middleName ?? "", gender, dateOfBirth ?? DateOnly.FromDateTime(DateTime.Today.AddYears(-20)));
+
+    public static readonly Person Empty = new();
 }
 
 public record PersonDto(PersonId Id, String FirstName, String LastName, String MiddleName, DateOnly DateOfBirth, Gender Gender);

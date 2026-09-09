@@ -119,7 +119,7 @@ public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutpu
     }
 
     private class ListPeople
-        : QueryMultipleSpecification<Person>
+        : QuerySpecification<Person>
     {
         public ListPeople() : base()
         {

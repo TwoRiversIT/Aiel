@@ -31,11 +31,24 @@ namespace Aiel.Domain.Specifications;
 /// SQL.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity to which the specification applies.</typeparam>
-/// <param name="predicate">The expression that defines the criteria for the specification.</param>
-public class EntitySpecification<TEntity>(Expression<Func<TEntity, Boolean>> predicate)
-    : ExpressionSpecification<TEntity>(predicate), IEntitySpecification<TEntity>
+public class EntitySpecification<TEntity>
+    : ExpressionSpecification<TEntity>, IEntitySpecification<TEntity>
     where TEntity : class
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntitySpecification{TEntity}"/> class.
+    /// </summary>
+    protected EntitySpecification() { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EntitySpecification{TEntity}"/> class with the specified expression.
+    /// </summary>
+    /// <param name="expression">The expression that defines the specification.</param>
+    public EntitySpecification(Expression<Func<TEntity, Boolean>> expression)
+    {
+        Expression = expression ?? throw new ArgumentNullException(nameof(expression));
+    }
+
     /// <summary>
     /// Combines two specifications using the specified combiner function (e.g., AND, OR).
     /// </summary>
@@ -47,11 +60,11 @@ public class EntitySpecification<TEntity>(Expression<Func<TEntity, Boolean>> pre
     {
         var leftExpression = left.ToExpression();
         var rightExpression = right.ToExpression();
-        var parameter = Expression.Parameter(typeof(TEntity));
+        var parameter = System.Linq.Expressions.Expression.Parameter(typeof(TEntity));
         var combined = combiner.Invoke(
             new ReplaceParameterVisitor { { leftExpression.Parameters.Single(), parameter } }.Visit(leftExpression.Body),
             new ReplaceParameterVisitor { { rightExpression.Parameters.Single(), parameter } }.Visit(rightExpression.Body));
-        return new ConstructedQuerySpecification(Expression.Lambda<Func<TEntity, Boolean>>(combined, parameter));
+        return new EntitySpecification<TEntity>.ConstructedEntitySpecification(System.Linq.Expressions.Expression.Lambda<Func<TEntity, Boolean>>(combined, parameter));
     }
 
     /// <inheritdoc/>
@@ -59,25 +72,25 @@ public class EntitySpecification<TEntity>(Expression<Func<TEntity, Boolean>> pre
 
     /// <inheritdoc/>
     public static EntitySpecification<TEntity> operator &(EntitySpecification<TEntity> left, EntitySpecification<TEntity> right)
-        => CombineSpecification(left, right, Expression.AndAlso);
+        => EntitySpecification<TEntity>.CombineSpecification(left, right, System.Linq.Expressions.Expression.AndAlso);
 
     /// <inheritdoc/>
     public static EntitySpecification<TEntity> operator |(EntitySpecification<TEntity> left, EntitySpecification<TEntity> right)
-        => CombineSpecification(left, right, Expression.OrElse);
+        => EntitySpecification<TEntity>.CombineSpecification(left, right, System.Linq.Expressions.Expression.OrElse);
 
     /// <inheritdoc/>
     public static EntitySpecification<TEntity> operator !(EntitySpecification<TEntity> spec)
     {
         var predicate = spec.ToExpression();
-        var newExpression = Expression.Lambda<Func<TEntity, Boolean>>(Expression.Not(predicate.Body), predicate.Parameters[0]);
-        return new ConstructedQuerySpecification(newExpression);
+        var newExpression = System.Linq.Expressions.Expression.Lambda<Func<TEntity, Boolean>>(System.Linq.Expressions.Expression.Not(predicate.Body), predicate.Parameters[0]);
+        return new ConstructedEntitySpecification(newExpression);
     }
 
     /// <summary>
     /// Represents a constructed query specification that is created from a given expression.
     /// </summary>
     /// <param name="specificationExpression">The expression used to create the specification.</param>
-    protected class ConstructedQuerySpecification(Expression<Func<TEntity, Boolean>> specificationExpression)
+    protected class ConstructedEntitySpecification(Expression<Func<TEntity, Boolean>> specificationExpression)
         : EntitySpecification<TEntity>(specificationExpression)
     {
     }

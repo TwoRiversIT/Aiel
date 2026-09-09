@@ -20,12 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
-using Aiel.Testing.Models;
-
 namespace Aiel.Domain.Specifications;
 
-public class SpecificationTests
+public class ExpressionSpecificationTests
 {
 
     [Fact]
@@ -46,6 +43,7 @@ public class SpecificationTests
     }
 
     [Theory]
+    [InlineData(-1, false)]
     [InlineData(1, false)]
     [InlineData(5, false)]
     [InlineData(9, false)]
@@ -72,41 +70,5 @@ public class SpecificationTests
         var spec = new ZeroToNine();
 
         spec.IsSatisfiedBy(input).Should().Be(expected);
-    }
-
-    [Fact]
-    public async Task And()
-    {
-        // Arrange
-        var id = PersonId.From(Guid.NewGuid());
-        var person = Person.Create(id, "John", "Doe", "", DateOnly.FromDateTime(DateTime.Today.AddYears(-20)), Gender.Male);
-        var today = DateOnly.FromDateTime(DateTime.Today);
-        var spec = new IsAgeOfMajority(today).And(new HasGender(Gender.Male));
-
-        // Act & Assert
-        spec.IsSatisfiedBy(person).Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task UserIsAgeOfMajority()
-    {
-        var id = PersonId.From(Guid.NewGuid());
-        var person = Person.Create(id, "John", "Doe", "", DateOnly.FromDateTime(DateTime.Today.AddYears(-20)), Gender.Male);
-        var today = DateOnly.FromDateTime(DateTime.Today);
-        var spec = new IsAgeOfMajority(today);
-
-        // Act & Assert
-        spec.IsSatisfiedBy(person).Should().BeTrue();
-    }
-
-    [Fact]
-    public async Task UserHasGender()
-    {
-        var id = PersonId.From(Guid.NewGuid());
-        var person = Person.Create(id, "John", "Doe", "", DateOnly.FromDateTime(DateTime.Today.AddYears(-20)), Gender.Male);
-        var spec = new HasGender(Gender.Female);
-
-        // Act & Assert
-        spec.IsSatisfiedBy(person).Should().BeFalse();
     }
 }

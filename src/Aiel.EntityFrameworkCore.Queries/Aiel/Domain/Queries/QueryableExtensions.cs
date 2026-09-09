@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions.Queries;
+using Aiel.Domain.Specifications;
 using System.Linq.Expressions;
 
 namespace Aiel.Domain.Queries;
@@ -33,6 +34,10 @@ public static class QueryableExtensions
     private const String ThenByDescending = nameof(Queryable.ThenByDescending);
 
     public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, IQueryMultiple query)
+        => source.ApplySorting(query.Sort).ApplyPaging(query.Page);
+
+    public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, IQueryMultipleSpecification<T> query)
+        where T : class
         => source.ApplySorting(query.Sort).ApplyPaging(query.Page);
 
     public static IQueryable<T> ApplyPagingAndSorting<T>(this IQueryable<T> source, Page page, SortOrder sort)

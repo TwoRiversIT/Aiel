@@ -25,6 +25,7 @@ using Aiel.Testing.Models;
 
 namespace Aiel.Domain.Specifications;
 
+// Expression Specifications
 public class NullSpecification : ExpressionSpecification<String>
 {
     public NullSpecification() : base(_ => false) { }
@@ -43,15 +44,57 @@ public sealed class ZeroToNine : ExpressionSpecification<Int32>
 {
     public ZeroToNine() : base()
     {
-        PredicateExpression = n => n >= 0 && n < 10;
+        Expression = n => n >= 0 && n < 10;
     }
+}
+
+// Entity Specifications
+public class NullEntitySpecification : EntitySpecification<Person>
+{
+    public NullEntitySpecification() : base(_ => false) { }
+}
+
+public class HasFirstName(String firstName, StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase)
+    : EntitySpecification<Person>(user => String.Equals(user.FirstName, firstName, stringComparison))
+{
+}
+
+public class HasLastName(String lastName, StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase)
+    : EntitySpecification<Person>(user => String.Equals(user.LastName, lastName, stringComparison))
+{
 }
 
 public class HasGender(Gender gender) : EntitySpecification<Person>(user => (gender & user.Gender) != 0)
 {
 }
 
-public class IsAgeOfMajority(DateOnly date, Int32 age = 18)
-    : EntitySpecification<Person>(user => user.DateOfBirth <= date.AddYears(-age))
+public class IsAgeOfMajority
+    : EntitySpecification<Person>
 {
+    public IsAgeOfMajority() : this(null, null!)
+    {
+    }
+
+    public IsAgeOfMajority(DateOnly? onThisDate = null, Int32? ageOfMajority = 18)
+    {
+        var date = onThisDate ?? DateOnly.FromDateTime(DateTime.Today);
+        if (date == DateOnly.MinValue)
+        {
+            throw new ArgumentOutOfRangeException(nameof(onThisDate), "The date cannot be the minimum value.");
+        }
+
+        var age = ageOfMajority ?? 18;
+        if (age <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ageOfMajority), "Age of majority must be greater than zero.");
+        }
+
+        Expression = user => user.DateOfBirth <= date.AddYears(-age);
+    }
+}
+
+// Query Specifications
+public class NullQuerySpecification : QuerySpecification<Person>
+{
+    public NullQuerySpecification() : base(_ => false) { }
 }

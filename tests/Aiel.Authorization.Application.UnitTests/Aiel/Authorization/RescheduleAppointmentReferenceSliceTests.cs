@@ -186,7 +186,7 @@ public sealed class RescheduleAppointmentReferenceSliceTests
 
     private static SliceServices CreateSliceServices(
         List<String> log,
-        Maybe<AuthorizationGrantDecision> grantDecision,
+        AuthorizationGrantDecision grantDecision,
         Result resourceAuthorizationResult)
     {
         var validator = new RescheduleAppointmentValidator(log);
@@ -354,12 +354,12 @@ internal sealed class RecordingAppointmentRepository(List<String> log) : IAppoin
     }
 }
 
-internal sealed class RecordingPermissionGrantEvaluator(List<String> log, Maybe<AuthorizationGrantDecision> decision)
+internal sealed class RecordingPermissionGrantEvaluator(List<String> log, AuthorizationGrantDecision decision)
     : IAuthorizationGrantEvaluator
 {
     public Int32 CallCount { get; private set; }
 
-    public Task<Result<Maybe<AuthorizationGrantDecision>>> EvaluateAsync(
+    public Task<Result<AuthorizationGrantDecision>> EvaluateAsync(
         PermissionName permissionName,
         AuthorizationScopeTypeName scopeType,
         AuthorizationScopeKey scopeKey,

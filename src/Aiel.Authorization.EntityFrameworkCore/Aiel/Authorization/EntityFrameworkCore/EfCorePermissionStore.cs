@@ -105,7 +105,7 @@ AuthorizationGrantDecision decision,
     {
         var records = await dbContext.Grants
             .Where(r => r.SubjectType == subjectType.Value && r.SubjectKey == subjectKey.Value)
-            .ProjectToEntity()
+            .ProjectToEntityAsync()
             .ToListAsync(cancellationToken);
 
         return records.ToArray();

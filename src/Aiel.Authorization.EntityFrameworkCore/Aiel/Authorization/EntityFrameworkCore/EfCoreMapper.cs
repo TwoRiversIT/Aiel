@@ -57,7 +57,6 @@ internal static partial class EfCoreMapper
         throw new ResultException(result);
     }
 
-    [SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "This is not really an async method.")]
-    public static IAsyncEnumerable<AuthorizationGrant> ProjectToEntity(this IQueryable<AuthorizationGrantRecord> records)
+    public static IAsyncEnumerable<AuthorizationGrant> ProjectToEntityAsync(this IQueryable<AuthorizationGrantRecord> records)
         => records.Select(ToEntity).ToAsyncEnumerable();
 }

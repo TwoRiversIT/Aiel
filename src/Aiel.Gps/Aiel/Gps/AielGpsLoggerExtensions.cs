@@ -29,6 +29,6 @@ public static partial class AielGpsLoggerExtensions
     [LoggerMessage(Level = LogLevel.Error, EventId = GpsEvent.ParsingFailed, Message = "[{EventId}] Line {LineCount} caused {ParserName}.Parse({Payload}) to generate the following exception:")]
     public static partial void LogParseException(this ILogger logger, Exception exception, Int32 lineCount, String parserName, String payload, String eventId = nameof(GpsEvent.ParsingFailed));
 
-    [LoggerMessage(Level = LogLevel.Error, EventId = GpsEvent.CanHandleException, Message = "[{EventId}] {ParserName}.CanHandle({Payload}) generated the following exception:")]
-    public static partial void LogCanHandleException(this ILogger logger, Exception exception, String parserName, String payload, String eventId = nameof(GpsEvent.CanHandleException));
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "NmeaReader disposed.")]
+    public static partial void LogDisposeError(this ILogger logger, Exception ex);
 }

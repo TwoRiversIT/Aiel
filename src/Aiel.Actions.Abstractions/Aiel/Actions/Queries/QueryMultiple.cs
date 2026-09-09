@@ -20,7 +20,55 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Text.Json.Serialization;
+
 namespace Aiel.Actions.Queries;
+
+/// <summary>
+/// Represents a query that retrieves multiple results with sorting and paging information.
+/// </summary>
+public record QueryMultiple : IQueryMultiple
+{
+    /// <summary>
+    /// Gets a query that retrieves all results without any sorting or paging.
+    /// </summary>
+    public static readonly IQueryMultiple All = new QueryMultiple(SortOrder.None, Page.All);
+
+    /// <summary>
+    /// Gets a query that retrieves results with the default paging and no sorting.
+    /// </summary>
+    public static readonly IQueryMultiple Default = new QueryMultiple(SortOrder.None, Page.Default);
+
+    /// <summary>
+    /// Gets a query that retrieves up to the specified number of results without any sorting.
+    /// </summary>
+    /// <param name="howMany">The number of results to retrieve.</param>
+    /// <returns>A new <see cref="IQueryMultiple"/> instance.</returns>
+    public static IQueryMultiple Some(Int32 howMany) => new QueryMultiple(SortOrder.None, Page.Some(howMany));
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QueryMultiple"/> class with the specified sorting and paging.
+    /// </summary>
+    /// <param name="sort"></param>
+    /// <param name="page"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    [JsonConstructor]
+    protected QueryMultiple(SortOrder sort, Page page)
+    {
+        Sort = sort ?? throw new ArgumentNullException(nameof(sort));
+        Page = page ?? throw new ArgumentNullException(nameof(page));
+    }
+
+    /// <summary>
+    /// Gets the sorting order for the query results. Defaults to <see cref="SortOrder.None"/>.
+    /// </summary>
+    public SortOrder Sort { get; set; } = SortOrder.None;
+
+    /// <summary>
+    /// Gets the pagination information for the query results. Defaults to <see cref="Page.Default"/>.
+    /// </summary>
+    public Page Page { get; set; } = Page.Default;
+}
 
 /// <summary>
 /// Base class for queries that return multiple results with sorting and paging.
@@ -28,32 +76,15 @@ namespace Aiel.Actions.Queries;
 /// Page property is set to <see cref="Page.Default"/>. Derived classes can
 /// override these defaults as needed.
 /// </summary>
-public abstract record QueryMultiple<TDto> : IQueryMultiple<TDto>
+public abstract record QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
     where TDto : notnull
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with default sorting and paging.
-    /// </summary>
-    protected QueryMultiple() { }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with the specified sorting and paging.
     /// </summary>
-    /// <param name="sortRequest">The sort order for the query results.</param>
-    /// <param name="pageRequest">The pagination information for the query results.</param>
-    protected QueryMultiple(SortOrder? sortRequest = null, Page? pageRequest = null)
+    /// <param name="sort">The sort order for the query results.</param>
+    /// <param name="page">The pagination information for the query results.</param>
+    protected QueryMultiple(SortOrder sort, Page page) : base(sort, page)
     {
-        Sort = sortRequest ?? SortOrder.None;
-        Page = pageRequest ?? Page.Default;
     }
-
-    /// <summary>
-    /// Gets or sets the sorting order for the query results. Defaults to <see cref="SortOrder.None"/>.
-    /// </summary>
-    public SortOrder Sort { get; set; } = SortOrder.None;
-
-    /// <summary>
-    /// Gets or sets the pagination information for the query results. Defaults to <see cref="Page.Default"/>.
-    /// </summary>
-    public Page Page { get; set; } = Page.Default;
 }

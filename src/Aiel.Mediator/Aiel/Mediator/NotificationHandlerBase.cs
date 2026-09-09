@@ -38,7 +38,7 @@ internal sealed class NotificationHandlerWrapper<TNotification>
     : NotificationHandlerBase
     where TNotification : INotification
 {
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+    [UnconditionalSuppressMessage("Design", "CA1031:Do not catch general exception types",
         Justification = "Every handler must be invoked even if a previous one fails so that a single bad handler does not silently suppress the rest.")]
     public override async ValueTask HandleAsync(
         Object notification,

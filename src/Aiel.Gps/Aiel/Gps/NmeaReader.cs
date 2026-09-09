@@ -276,7 +276,7 @@ public sealed partial class NmeaReader : DisposableBase
     /// Asynchronously releases managed resources used by the <see cref="NmeaReader"/>.
     /// </summary>
     /// <returns>A task that represents the asynchronous dispose operation.</returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Any exception during disposal should be logged but not rethrown.")]
+    [UnconditionalSuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Any exception during disposal should be logged but not rethrown.")]
     protected override async ValueTask DisposeAsyncCore()
     {
         await _disposalCts.CancelAsync();

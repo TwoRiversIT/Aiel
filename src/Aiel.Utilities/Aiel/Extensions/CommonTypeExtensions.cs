@@ -53,7 +53,7 @@ public static class CommonTypeExtensions
     /// </summary>
     /// <param name="type">The type to inspect.</param>
     /// <returns>An enumerable of all constructors in the type and its base types.</returns>
-    [SuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
+    [UnconditionalSuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
         Justification = "Method intentionally uses reflection to discover all constructors. Callers must ensure the type parameter has appropriate DynamicallyAccessedMembers annotations.")]
     public static IEnumerable<ConstructorInfo> GetAllConstructors(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
@@ -76,7 +76,7 @@ public static class CommonTypeExtensions
     /// </summary>
     /// <param name="type">The type to inspect.</param>
     /// <returns>An enumerable of all events in the type and its base types.</returns>
-    [SuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
+    [UnconditionalSuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
         Justification = "Method intentionally uses reflection to discover all events. Callers must ensure the type parameter has appropriate DynamicallyAccessedMembers annotations.")]
     public static IEnumerable<EventInfo> GetAllEvents(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)]
@@ -99,7 +99,7 @@ public static class CommonTypeExtensions
     /// </summary>
     /// <param name="type">The type to inspect.</param>
     /// <returns>An enumerable of all fields in the type and its base types.</returns>
-    [SuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
+    [UnconditionalSuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
         Justification = "Method intentionally uses reflection to discover all fields. Callers must ensure the type parameter has appropriate DynamicallyAccessedMembers annotations.")]
     public static IEnumerable<FieldInfo> GetAllFields(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
@@ -143,7 +143,7 @@ public static class CommonTypeExtensions
     /// </summary>
     /// <param name="type">The type to inspect.</param>
     /// <returns>An enumerable of all methods in the type and its base types.</returns>
-    [SuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
+    [UnconditionalSuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
         Justification = "Method intentionally uses reflection to discover all methods. Callers must ensure the type parameter has appropriate DynamicallyAccessedMembers annotations.")]
     public static IEnumerable<MethodInfo> GetAllMethods(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
@@ -166,7 +166,7 @@ public static class CommonTypeExtensions
     /// </summary>
     /// <param name="type">The type to inspect.</param>
     /// <returns>An enumerable of all nested types in the type and its base types.</returns>
-    [SuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
+    [UnconditionalSuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
         Justification = "Method intentionally uses reflection to discover all nested types. Callers must ensure the type parameter has appropriate DynamicallyAccessedMembers annotations.")]
     public static IEnumerable<TypeInfo> GetAllNestedTypes(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicNestedTypes | DynamicallyAccessedMemberTypes.NonPublicNestedTypes)]
@@ -199,9 +199,9 @@ public static class CommonTypeExtensions
     /// <param name="openGenericType">The open generic type to match.</param>
     /// <param name="predicate">A predicate to filter assemblies.</param>
     /// <returns>An enumerable of types that implement the specified open generic type and match the predicate.</returns>
-    [SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "Method performs intentional runtime type discovery across assemblies using reflection. This is a utility method for scanning loaded assemblies and cannot be statically analyzed by the trimmer.")]
-    [SuppressMessage("Trimming", "IL2075:'this' argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
+    [UnconditionalSuppressMessage("Trimming", "IL2075:'this' argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
         Justification = "Method intentionally performs type discovery on all available types across assemblies. The reflection APIs are used with appropriate runtime safeguards.")]
     public static IEnumerable<Type> GetAllTypesImplementingOpenGenericType(this IEnumerable<Assembly> assemblies, Type openGenericType, Predicate<Assembly> predicate)
     {
@@ -222,7 +222,7 @@ public static class CommonTypeExtensions
     /// <typeparam name="T">The base type to find subtypes of.</typeparam>
     /// <param name="assemblyPrefix">The prefix to filter assemblies by. Defaults to "PDSI".</param>
     /// <returns>An array of types that are assignable to <typeparamref name="T"/>.</returns>
-    [SuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
+    [UnconditionalSuppressMessage("Trimming", "IL2026:Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code",
         Justification = "Method performs intentional runtime assembly scanning to discover subtypes. This is a utility method that cannot be statically analyzed by the trimmer and requires all candidate types to be preserved at runtime.")]
     public static Type[] GetSubTypes<T>(String assemblyPrefix = "PDSI")
     {
@@ -241,7 +241,7 @@ public static class CommonTypeExtensions
     /// </summary>
     /// <param name="type">The type to inspect.</param>
     /// <returns>An enumerable of properties from the type and its base types and interfaces, with duplicates removed.</returns>
-    [SuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
+    [UnconditionalSuppressMessage("Trimming", "IL2072:Target parameter argument does not satisfy 'DynamicallyAccessedMembersAttribute' in call to target method. The return value of the source method does not have matching annotations.",
         Justification = "Method intentionally uses reflection to discover all properties including from interfaces. Callers must ensure the type parameter has appropriate DynamicallyAccessedMembers annotations.")]
     public static IEnumerable<PropertyInfo> GetAllProperties([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties | DynamicallyAccessedMemberTypes.Interfaces)] this Type type)
     {

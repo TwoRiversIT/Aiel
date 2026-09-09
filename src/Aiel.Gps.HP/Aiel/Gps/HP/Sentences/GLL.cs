@@ -27,7 +27,7 @@ namespace Aiel.Gps.HP.Sentences;
 /// </summary>
 [NmeaMessage("GPGLL")]
 [SuppressMessage("Design", "CA1051:Do not declare visible instance fields", Justification = "<Pending>")]
-[SuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
+[UnconditionalSuppressMessage("Performance", "CA1815:Override equals and operator equals on value types", Justification = "<Pending>")]
 public struct GLL
 {
     /// <summary>Latitude in decimal degrees. Positive = North, Negative = South.</summary>

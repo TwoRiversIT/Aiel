@@ -31,6 +31,48 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class AielServiceCollectionExtensions
 {
     /// <summary>
+    /// Replaces all existing registrations of <typeparamref name="TInterface"/> with a new registration of <typeparamref name="TImplementation"/> using the specified <paramref name="serviceLifetime"/>.
+    /// </summary>
+    /// <typeparam name="TInterface">The type of the service interface.</typeparam>
+    /// <typeparam name="TImplementation">The type of the service implementation.</typeparam>
+    /// <param name="services">The service collection.</param>
+    /// <param name="serviceLifetime">The lifetime of the service.</param>
+    /// <returns>The updated service collection.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when the <paramref name="services"/> parameter is <c>null</c>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the <paramref name="serviceLifetime"/> parameter is not a valid <see cref="ServiceLifetime"/> value.</exception>
+    public static IServiceCollection Replace<TInterface, TImplementation>(this IServiceCollection services, ServiceLifetime serviceLifetime)
+        where TInterface : class
+        where TImplementation : class, TInterface
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        foreach (var existing in services.Find<TInterface>())
+        {
+            services.Remove(existing);
+        }
+
+        return serviceLifetime switch
+        {
+            ServiceLifetime.Singleton => services.AddSingleton<TInterface, TImplementation>(),
+            ServiceLifetime.Scoped => services.AddScoped<TInterface, TImplementation>(),
+            ServiceLifetime.Transient => services.AddTransient<TInterface, TImplementation>(),
+            _ => throw new ArgumentOutOfRangeException(nameof(serviceLifetime), serviceLifetime, null)
+        };
+    }
+
+    /// <summary>
+    /// Finds all service descriptors in the collection that match the specified interface type <typeparamref name="TInterface"/>.
+    /// </summary>
+    /// <typeparam name="TInterface">The type of the service interface.</typeparam>
+    /// <param name="services">The service collection.</param>
+    /// <returns>An array of matching <see cref="ServiceDescriptor"/> instances.</returns>
+    public static ServiceDescriptor[] Find<TInterface>(this IServiceCollection services)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        return services.Where(d => d.ServiceType == typeof(TInterface)).ToArray();
+    }
+
+    /// <summary>
     /// Gets the last concrete instance singleton registered in the collection, throwing an exception if it does not exist.
     /// </summary>
     /// <typeparam name="T">The type of the service.</typeparam>

@@ -115,7 +115,7 @@ internal sealed partial class MailKitEmailSender(IOptions<EmailOptions> options,
     [LoggerMessage(EventId = (Int32)AielEvent.EmailingTestMode, Level = LogLevel.Warning, Message = "[{EventId}] Email sending is in test mode, but the test address or name is not valid. No email will be sent.")]
     private partial void LogWarning(Int32 eventId = (Int32)AielEvent.EmailingTestMode);
 
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "No way to know which exception types may be thrown by the SMTP client.")]
+    [UnconditionalSuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "No way to know which exception types may be thrown by the SMTP client.")]
     private async Task<Result> SendAsync(MimeMessage message, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(message);

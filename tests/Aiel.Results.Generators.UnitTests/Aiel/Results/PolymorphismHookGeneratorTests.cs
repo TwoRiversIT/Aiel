@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Testing.CodeAnalysis;
-
 namespace Aiel.Results;
 
 public class PolymorphismHookGeneratorTests : SourceGeneratorTestBase<Generators.PolymorphismHookGenerator>
@@ -129,10 +127,5 @@ public class PolymorphismHookGeneratorTests : SourceGeneratorTestBase<Generators
         // CS1729: 'CustomError' does not contain a constructor that takes 1 arguments,
         // CS0426: The type name 'CustomErrorCode' does not exist in the type 'CustomError'
         // CS8019: Unnecessary using directive.
-    }
-
-    private static GeneratorRunResult Generate(String testCode)
-    {
-        return Generate(testCode);
     }
 }

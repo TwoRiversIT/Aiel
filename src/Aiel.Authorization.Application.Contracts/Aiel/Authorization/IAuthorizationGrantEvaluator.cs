@@ -42,18 +42,8 @@ public interface IAuthorizationGrantEvaluator
     /// <param name="subjectType">The type of subject being evaluated.</param>
     /// <param name="subjectKey">The specific subject key being evaluated.</param>
     /// <param name="cancellationToken">A token to observe for cancellation.</param>
-    /// <returns>
-    /// <para>
-    /// A successful result carrying the effective <see cref="AuthorizationGrantDecision"/> when a matching
-    /// grant exists, or <see cref="Maybe{T}.None"/> when no grant covers the combination. Both are successful
-    /// outcomes: "no grant exists" is an answer, not a failure.
-    /// </para>
-    /// <para>
-    /// A failed result when the grant store could not be consulted. Callers must treat both
-    /// <see cref="Maybe{T}.None"/> and failure as "not granted".
-    /// </para>
-    /// </returns>
-    Task<Result<Maybe<AuthorizationGrantDecision>>> EvaluateAsync(
+    /// <returns>A <see cref="Result{T}"/> containing the effective <see cref="AuthorizationGrantDecision"/>.</returns>
+    Task<Result<AuthorizationGrantDecision>> EvaluateAsync(
         PermissionName permissionName,
         AuthorizationScopeTypeName scopeType,
         AuthorizationScopeKey scopeKey,

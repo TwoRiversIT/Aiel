@@ -147,7 +147,7 @@ public abstract class MultipleResult : Result
     /// </summary>
     /// <param name="error">The error to associate with the failed result.</param>
     /// <returns>A failed <see cref="MultipleResult{TDto}"/> instance.</returns>
-    public static MultipleResult<TDto> Failure<TDto>(Error error)
+    public static new MultipleResult<TDto> Failure<TDto>(Error error)
         where TDto : notnull
         => error;
 }

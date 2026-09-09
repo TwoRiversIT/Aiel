@@ -164,7 +164,7 @@ public readonly record struct Maybe<T>
     /// </summary>
     /// <param name="value">The value to convert. Must not be <see langword="null"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
-    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
+    [UnconditionalSuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
         Justification = "Following the CA2225 guideline causes CA1000: Do not declare static members on generic types")]
     public static implicit operator Maybe<T>(T value) => Maybe.From(value);
 }

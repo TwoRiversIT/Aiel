@@ -28,7 +28,6 @@ using System.Text;
 
 namespace Aiel.Emailing.MailKit.Internal;
 
-//[SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "No way to know which exception types may be thrown.")]
 public static class MailMessageToMimeMessageConverter
 {
     public static Result<MimeMessage> ToMimeMessage(this MailMessage mail)

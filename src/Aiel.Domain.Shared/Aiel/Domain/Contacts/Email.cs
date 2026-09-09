@@ -92,7 +92,7 @@ public sealed class Email : IXmlSerializable, IComparable<Email>, IEquatable<Ema
     /// <param name="value">The string representation of the email address to parse.</param>
     /// <param name="email">When this method returns, contains the parsed <see cref="Email"/> instance if the parsing was successful; otherwise, <see cref="Email.Empty"/>.</param>
     /// <returns><c>true</c> if the parsing was successful; otherwise, <c>false</c>.</returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+    [UnconditionalSuppressMessage("Design", "CA1031:Do not catch general exception types",
         Justification = "Returns false to indicate failure.")]
     public static Boolean TryParse(String? value, out Email email)
     {
@@ -122,7 +122,7 @@ public sealed class Email : IXmlSerializable, IComparable<Email>, IEquatable<Ema
     /// Defines an implicit conversion from <see cref="String"/> to <see cref="Email"/>. This allows a string to be used wherever an <see cref="Email"/> instance is expected, automatically converting it to an <see cref="Email"/> instance.
     /// </summary>
     /// <param name="email">The string representation of the email address to convert to an <see cref="Email"/> instance.</param>
-    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "We already have Parse and TryParse methods.")]
+    [UnconditionalSuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "We already have Parse and TryParse methods.")]
     public static implicit operator Email(String? email) => email is null ? Empty : Parse(email);
 
     /// <inheritdoc />

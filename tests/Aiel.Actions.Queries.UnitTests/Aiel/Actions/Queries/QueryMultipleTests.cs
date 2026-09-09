@@ -40,7 +40,7 @@ public class QueryMultipleTests
         query.UID.Should().NotBeEmpty();
     }
 
-    private record TestQueryMultiple : QueryMultiple<String>
+    private record TestQueryMultiple() : QueryMultiple<String>(SortOrder.None, Page.Default)
     {
         public Int32 Id { get; init; }
         public Guid UID { get; init; }

@@ -272,7 +272,7 @@ public static class ResultHttpClientExtensions
     /// <param name="response">The HTTP response to deserialize.</param>
     /// <param name="cancellationToken">A cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized <see cref="Result"/>.</returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+    [UnconditionalSuppressMessage("Design", "CA1031:Do not catch general exception types",
         Justification = "The entire point of all these methods is to return a Result instead of throwing an exception.")]
     public static async Task<Result> AsResultAsync(this HttpResponseMessage response, CancellationToken cancellationToken = default)
     {
@@ -297,7 +297,7 @@ public static class ResultHttpClientExtensions
     /// <param name="response">The HTTP response to deserialize.</param>
     /// <param name="cancellationToken">A cancellation token to observe.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized result.</returns>
-    [SuppressMessage("Design", "CA1031:Do not catch general exception types",
+    [UnconditionalSuppressMessage("Design", "CA1031:Do not catch general exception types",
         Justification = "The entire point of all these methods is to return a Result instead of throwing an exception.")]
     public static async Task<Result<TDto>> AsResultAsync<TDto>(this HttpResponseMessage response, CancellationToken cancellationToken = default)
         where TDto : notnull

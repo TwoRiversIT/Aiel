@@ -22,6 +22,7 @@
 
 using Aiel.Framework;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks.Dataflow;
 
@@ -41,7 +42,7 @@ public sealed partial class NmeaReader : DisposableBase
     private readonly BufferBlock<ParseError> _errorQueue;
     private readonly NmeaStreamReader _nmeaStreamReader;
     private readonly Stream _stream;
-    private readonly ILogger<NmeaReader>? _logger;
+    private readonly ILogger<NmeaReader> _logger;
     private readonly CancellationTokenSource _disposalCts = new();
 
 #if NET9_0_OR_GREATER
@@ -66,7 +67,7 @@ public sealed partial class NmeaReader : DisposableBase
     {
         _nmeaStreamReader = nmeaStreamReader ?? throw new ArgumentNullException(nameof(nmeaStreamReader));
         _stream = stream ?? throw new ArgumentNullException(nameof(stream));
-        _logger = logger;
+        _logger = logger ?? new NullLogger<NmeaReader>();
         _queue = new BufferBlock<NmeaMessage>(new DataflowBlockOptions { BoundedCapacity = DataflowBlockOptions.Unbounded });
         _errorQueue = new BufferBlock<ParseError>(new DataflowBlockOptions { BoundedCapacity = DataflowBlockOptions.Unbounded });
     }
@@ -120,9 +121,6 @@ public sealed partial class NmeaReader : DisposableBase
             throw new InvalidOperationException("Cannot use different CancellationToken instances across multiple read operations on the same NmeaReader instance.");
         }
     }
-
-    [LoggerMessage(EventId = 1, Level = LogLevel.Error, Message = "An error occurred while parsing the NMEA stream.")]
-    private partial void LogParseError(Exception ex);
 
     /// <summary>
     /// Reads NMEA messages from the stream as an asynchronous enumerable sequence.
@@ -293,7 +291,7 @@ public sealed partial class NmeaReader : DisposableBase
             }
             catch (Exception ex)
             {
-                LogDisposeError(ex);
+                _logger.LogDisposeError(ex);
             }
 
             _task.Dispose();
@@ -306,9 +304,6 @@ public sealed partial class NmeaReader : DisposableBase
 
         await base.DisposeAsyncCore();
     }
-
-    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "NmeaReader disposed.")]
-    private partial void LogDisposeError(Exception ex);
 
     /// <summary>
     /// Releases managed resources used by the <see cref="NmeaReader"/>.

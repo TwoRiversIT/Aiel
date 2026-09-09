@@ -34,7 +34,6 @@ public class Label : IEquatable<Label>, IComparable<Label>
     /// Initializes a new instance of the <see cref="Label"/> class with the specified label string.
     /// </summary>
     /// <param name="label">The label string.</param>
-    [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
     public Label(String label)
     {
         ThrowIfInvalid(label);

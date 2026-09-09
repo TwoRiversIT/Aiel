@@ -27,7 +27,6 @@ namespace Aiel.Emailing;
 /// <summary>
 /// Specifies the importance level of an email message.
 /// </summary>
-[SuppressMessage("Design", "CA1027:Mark enums with FlagsAttribute", Justification = "<Pending>")]
 public enum EmailMessageImportance
 {
     /// <summary>
@@ -49,5 +48,5 @@ public enum EmailMessageImportance
     /// <summary>
     /// The message is of high importance.
     /// </summary>
-    High = 4
+    High = 3
 }

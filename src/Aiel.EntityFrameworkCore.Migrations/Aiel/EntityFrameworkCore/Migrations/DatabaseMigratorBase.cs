@@ -36,7 +36,7 @@ public abstract class DatabaseMigratorBase : DisposableBase
 
     protected abstract ILogger Logger { get; }
 
-    [SuppressMessage("Security", "CA5394:Do not use insecure randomness",
+    [UnconditionalSuppressMessage("Security", "CA5394:Do not use insecure randomness",
         Justification = "Selecting a random delay for retrying migrations which is not sensitive.")]
     public async Task TryAsync(Func<CancellationToken, Task> task, Int32 retryCount = 3, CancellationToken cancellationToken = default)
     {

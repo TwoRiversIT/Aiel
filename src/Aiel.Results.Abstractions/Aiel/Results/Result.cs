@@ -103,16 +103,13 @@ public class Result
 
     /// <summary>
     /// Creates a <see cref="Result{T}"/> with a value of <see cref="Maybe{T}"/>.
-    /// If <c><paramref name="value"/> == <see langword="default"/></c> then
-    /// <see cref="Result.IsSuccess"/> will be <see langword="false"/> and have
-    /// <see cref="Result.Error"/> set to <paramref name="error"/>. Otherwise,
-    /// <see cref="Result.IsSuccess"/> will be <see langword="true"/> and the
+    /// If <c><paramref name="value"/> == <see langword="default"/></c>
+    /// <see cref="Result.IsSuccess"/> will still be <see langword="true"/> and the
     /// result will have <see cref="Result{T}.Value"/> set to a
     /// <see cref="Maybe{T}"/> containing <paramref name="value"/>.
     /// </summary>
     /// <typeparam name="T">The type of the value to be wrapped in a <see cref="Maybe{T}"/>.</typeparam>
     /// <param name="value">The value to include in the result. May be <see langword="null"/>.</param>
-    /// <param name="error">The error for the failed result.</param>
     /// <returns>
     /// A <see cref="Result{T}"/> representing the outcome of the operation and
     /// <see cref="Result{T}.Value"/> as a <see cref="Maybe{T}"/>.
@@ -129,7 +126,7 @@ public class Result
     /// Implicit conversion from <see cref="Error"/> to <see cref="Result"/>.
     /// </summary>
     /// <param name="error">The error to convert.</param>
-    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Already have Failure(Error)")]
+    [UnconditionalSuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Already have Failure(Error)")]
     public static implicit operator Result(Error error) => Failure(error);
 }
 
@@ -175,7 +172,7 @@ public sealed class Result<T> : Result
     /// directly. Call <c>ConfigureForResults()</c> on your <c>JsonSerializerOptions</c> to install it.
     /// </remarks>
     [JsonIgnore]
-    [SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations",
+    [UnconditionalSuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations",
         Justification = "This is intentional to ensure callers never get a null value when IsSuccess is false.")]
     public T Value => IsSuccess
         ? ValueStorage!
@@ -251,7 +248,7 @@ public sealed class Result<T> : Result
     /// Implicit conversion from a value to a successful <see cref="Result{TValue}"/>.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
+    [UnconditionalSuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
         Justification = "Following the CA2225 guideline causes CA1000: Do not declare static members on generic types")]
     public static implicit operator Result<T>(T value) => new(isSuccess: true, value);
 
@@ -259,7 +256,7 @@ public sealed class Result<T> : Result
     /// Implicit conversion from an <see cref="Error"/> to a failed <see cref="Result{TValue}"/>.
     /// </summary>
     /// <param name="error">The error to convert.</param>
-    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
+    [UnconditionalSuppressMessage("Usage", "CA2225:Operator overloads have named alternates",
         Justification = "Following the CA2225 guideline causes CA1000: Do not declare static members on generic types")]
     public static implicit operator Result<T>(Error error) => new(error);
 }

@@ -43,7 +43,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     : DisposableBase
 {
     private readonly IMarkdownRenderer _markdownRenderer = markdownRenderer;
-    private StringBuilder? _markdown = new();
+    private StringBuilder _markdown = new();
     private MailMessage _message = new();
     private String? _text;
     private String? _html;
@@ -485,8 +485,8 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
         _built = true;
         _text = null;
         _html = null;
-        _markdown?.Clear();
-        _markdown = null;
+        _markdown.Clear();
+        _markdown = null!;
         _message.Dispose();
         _message = null!;
 

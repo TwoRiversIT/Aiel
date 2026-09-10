@@ -46,7 +46,7 @@ public sealed class StrongIdModel(
 
     public ITypeSymbol ValueType { get; } = valueType;
 
-    public Boolean AllowDefault { get; } = allowDefault;
+    public Boolean AllowEmpty { get; } = allowDefault;
 
     public StrongIdBackingKindOption BackingKind { get; } = backingKind;
 

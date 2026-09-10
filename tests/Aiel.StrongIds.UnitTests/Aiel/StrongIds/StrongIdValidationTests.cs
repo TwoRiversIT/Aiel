@@ -69,7 +69,7 @@ public class StrongIdValidationTests
         var validator = new StrongIdPropertyValidator<Object, StringAllowDefaultTrueId>();
         var context = new ValidationContext<Object>(new Object());
 
-        validator.IsValid(context, StringAllowDefaultTrueId.None).Should().BeFalse();
+        validator.IsValid(context, StringAllowDefaultTrueId.Empty).Should().BeFalse();
     }
 
     [Fact]

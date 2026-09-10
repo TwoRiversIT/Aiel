@@ -104,7 +104,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine($"//  BackingType: {model.BackingTypeName}");
         builder.AppendLine($"//         Kind: {model.BackingKind}");
         builder.AppendLine($"// DefaultValue: {model.DefaultValue}");
-        builder.AppendLine($"// AllowDefault: {model.AllowDefault}");
+        builder.AppendLine($"// AllowDefault: {model.AllowEmpty}");
         builder.AppendLine($"//      TryFrom: {model.GenerateTryFrom}");
         builder.AppendLine($"//     TryParse: {model.GenerateTryParse}");
         builder.AppendLine(GetTypeDeclaration(model));
@@ -160,16 +160,16 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
     {
         var indent = new String(' ', indentLevel * Spaces);
 
-        if (model.AllowDefault)
+        if (model.AllowEmpty)
         {
             if (String.Equals(model.BackingTypeName, "global::System.String", StringComparison.Ordinal))
             {
                 // String.Empty is considered a default value for string-based strong IDs.
-                builder.AppendLine($"{indent}public static readonly {model.TypeSymbol.Name} None = new(global::System.String.Empty);");
+                builder.AppendLine($"{indent}public static readonly {model.TypeSymbol.Name} Empty = new(global::System.String.Empty);");
             }
             else
             {
-                builder.AppendLine($"{indent}public static readonly {model.TypeSymbol.Name} None = new(default);");
+                builder.AppendLine($"{indent}public static readonly {model.TypeSymbol.Name} Empty = new(default);");
             }
 
             builder.AppendLine();
@@ -180,7 +180,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
     {
         var indent = new String(' ', indentLevel * Spaces);
 
-        if (model.AllowDefault)
+        if (model.AllowEmpty)
         {
             // For string types, we must disallow null
             if (String.Equals(model.BackingTypeName, "global::System.String", StringComparison.Ordinal))
@@ -207,7 +207,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
     {
         var indent = new String(' ', indentLevel * Spaces);
 
-        if (!model.AllowDefault)
+        if (!model.AllowEmpty)
         {
             builder.AppendLine($"{indent}if ({model.InvalidValueExpression(valueParameterName)})");
             builder.AppendLine($"{indent}{{");

@@ -22,7 +22,8 @@
 
 namespace Aiel.Domain.Net;
 
-// TODO: Create an IPv6 version of this struct, and a version that can handle both IPv4 and IPv6.
+// ToDo: Create an IPv6 version of this struct, and a version that can handle both IPv4 and IPv6.
+// ToDo: Consider whether EndPoint should also have a protocol component (e.g., TCP, UDP) to fully represent a network endpoint.
 
 /// <summary>
 /// Represents a network endpoint consisting of an IPv4 address and optional port.

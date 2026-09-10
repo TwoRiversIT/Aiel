@@ -87,6 +87,29 @@ public class TtlTests
     }
 
     [Fact]
+    public void Must_Add_and_Subtract_TTL()
+    {
+        var a = new TTL(1200);
+        var b = new TTL(2400);
+        var c = new TTL(3600);
+
+        (a + b).Should().Be(new TTL(3600));
+        (c - b).Should().Be(new TTL(1200));
+        (b - c).Should().Be(new TTL(0)); // Must not go below zero
+    }
+
+    [Fact]
+    public void Must_Add_and_Subtract_Int()
+    {
+        var a = new TTL(1200);
+        var b = new TTL(2400);
+
+        (a + 2400).Should().Be(new TTL(3600));
+        (b - 2400).Should().Be(new TTL(0));
+        (b - 3600).Should().Be(new TTL(0)); // Must not go below zero
+    }
+
+    [Fact]
     public void Must_implement_comparison_operators()
     {
         var a = new TTL(1200);
@@ -134,11 +157,11 @@ public class TtlTests
     [Fact]
     public void Must_not_allow_negative_values()
     {
-        var a = Record.Exception(() => new TTL(-1));
-        a.Should().BeOfType<ArgumentOutOfRangeException>();
+        var act1 = Record.Exception(() => new TTL(-1));
+        act1.Should().BeOfType<ArgumentOutOfRangeException>();
 
-        var b = Record.Exception(() => { TTL a = -1; });
-        b.Should().BeOfType<ArgumentOutOfRangeException>();
+        var act2 = Record.Exception(() => { TTL a = -1; });
+        act2.Should().BeOfType<ArgumentOutOfRangeException>();
     }
 
     [Fact]

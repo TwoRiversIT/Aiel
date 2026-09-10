@@ -153,21 +153,15 @@ public readonly partial struct Serial : IEquatable<Serial>, IComparable<Serial>
     /// <returns><c>true</c> if the parsing was successful; otherwise, <c>false</c>.</returns>
     public static Boolean TryParse(String candidate, out Serial serial)
     {
+        var normalized = SerialRgx().Replace(candidate ?? String.Empty, String.Empty);
+        if (UInt32.TryParse(normalized, NumberStyles.None, CultureInfo.InvariantCulture, out var value))
+        {
+            serial = From(value);
+            return true;
+        }
+
         serial = default;
-        if (String.IsNullOrWhiteSpace(candidate))
-        {
-            return false;
-        }
-
-        var normalized = SerialRgx().Replace(candidate, String.Empty);
-        if (!UInt32.TryParse(normalized, NumberStyles.None, CultureInfo.InvariantCulture, out var value))
-        {
-            return false;
-        }
-
-        serial = From(value);
-
-        return true;
+        return false;
     }
 
     /// <summary>

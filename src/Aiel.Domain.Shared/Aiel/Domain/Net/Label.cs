@@ -26,7 +26,7 @@ namespace Aiel.Domain.Net;
 /// Represents a single label in a domain name, which is a part of the domain name separated by dots. For example, in "www.example.com", "www", "example", and "com" are labels.
 /// </summary>
 [SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "Domain Names are effectively strings so CompareTo() or StringComparer is preferred over <, >, <=, >=.")]
-public class Label : IEquatable<Label>, IComparable<Label>
+public readonly record struct Label : IComparable<Label>
 {
     private readonly String _label;
 
@@ -48,18 +48,6 @@ public class Label : IEquatable<Label>, IComparable<Label>
     /// <inheritdoc />
     public override String ToString() => _label;
 
-    /// <inheritdoc />
-    public Int32 CompareTo(Label? other)
-        => String.Compare(_label, other?._label, StringComparison.InvariantCultureIgnoreCase);
-
-    /// <inheritdoc />
-    public Boolean Equals(Label? other)
-        => ReferenceEquals(this, other) || _label.Equals(other?._label, StringComparison.InvariantCultureIgnoreCase);
-
-    /// <inheritdoc />
-    public override Boolean Equals(Object? other)
-        => other is not null && (ReferenceEquals(this, other) || (other is Label label && Equals(label)));
-
     /// <summary>
     /// Defines an implicit conversion from a <see cref="String"/> to a <see cref="Label"/>. This allows you to assign a string directly to a Label variable, and it will automatically create a new Label instance.
     /// </summary>
@@ -80,28 +68,6 @@ public class Label : IEquatable<Label>, IComparable<Label>
     /// <returns>The string representation of the <see cref="Label"/>.</returns>
     public static implicit operator String(Label label) => label._label;
 
-    /// <inheritdoc />
-    public static Boolean operator ==(Label a, Label b)
-    {
-        // If both are null, or both are same instance, return true.
-        if (ReferenceEquals(a, b))
-        {
-            return true;
-        }
-
-        // If one is null, but not both, return false.
-        if ((a is null) || (b is null))
-        {
-            return false;
-        }
-
-        // Return true if the fields match:
-        return a._label == b._label;
-    }
-
-    /// <inheritdoc />
-    public static Boolean operator !=(Label a, Label b) => !(a == b);
-
     private static void ThrowIfInvalid(String label)
     {
         ArgumentNullException.ThrowIfNull(label);
@@ -115,5 +81,11 @@ public class Label : IEquatable<Label>, IComparable<Label>
         {
             throw new ArgumentException("Invalid Length: The length of any one label is limited to between 1 and 63 octets.", nameof(label));
         }
+    }
+
+    /// <inheritdoc />
+    public Int32 CompareTo(Label other)
+    {
+        return StringComparer.InvariantCultureIgnoreCase.Compare(_label, other._label);
     }
 }

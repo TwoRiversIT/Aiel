@@ -34,7 +34,7 @@ public sealed class Person : Entity<PersonId>
 {
     private Person()
     {
-        Id = PersonId.None;
+        Id = PersonId.Empty;
         FirstName = String.Empty;
         LastName = String.Empty;
         MiddleName = String.Empty;

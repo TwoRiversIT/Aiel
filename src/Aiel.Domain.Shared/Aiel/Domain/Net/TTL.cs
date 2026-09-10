@@ -35,7 +35,7 @@ namespace Aiel.Domain.Net;
 /// converting TTL values, as well as generating human-readable
 /// representations of the TTL duration.
 /// </remarks>
-public readonly struct TTL : IEquatable<TTL>, IComparable<TTL>, IComparable
+public readonly record struct TTL : IEquatable<TTL>, IComparable<TTL>, IComparable
 {
     private readonly Int32 _ttl;
 
@@ -70,9 +70,6 @@ public readonly struct TTL : IEquatable<TTL>, IComparable<TTL>, IComparable
     public Int32 CompareTo(Object? obj) => (obj is TTL ttl) ? CompareTo(ttl) : 1;
     /// <inheritdoc />
     public Boolean Equals(TTL other) => _ttl == other._ttl;
-
-    /// <inheritdoc />
-    public override Boolean Equals(Object? obj) => obj is TTL ttl && Equals(ttl);
 
     /// <summary>
     /// Returns a human-readable string representation of the TTL value, breaking it down into weeks, days, hours, minutes, and seconds.
@@ -189,9 +186,8 @@ public readonly struct TTL : IEquatable<TTL>, IComparable<TTL>, IComparable
     public static Boolean operator <(TTL a, TTL b) => a._ttl < b._ttl;
     /// <inheritdoc />
     public static Boolean operator >(TTL a, TTL b) => a._ttl > b._ttl;
-
     /// <inheritdoc />
-    public static Boolean operator !=(TTL a, TTL b) => !(a == b);
+    public static TTL operator +(TTL a, TTL b) => new(a._ttl + b._ttl);
     /// <inheritdoc />
-    public static Boolean operator ==(TTL a, TTL b) => a._ttl == b._ttl;
+    public static TTL operator -(TTL a, TTL b) => a < b ? new TTL(0) : new(a._ttl - b._ttl);
 }

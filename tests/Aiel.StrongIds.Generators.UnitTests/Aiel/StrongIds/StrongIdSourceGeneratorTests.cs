@@ -99,7 +99,7 @@ public class StrongIdSourceGeneratorTests
         result.GeneratorDiagnostics.Should().BeEmpty();
         result.CompilationDiagnostics.Should().NotContain(d => d.Severity == DiagnosticSeverity.Error);
         result.GeneratedSources.Should().ContainSingle();
-        result.GeneratedSources[0].SourceText.ToString().Should().Contain("public static readonly OrderId None = new(default);");
+        result.GeneratedSources[0].SourceText.ToString().Should().Contain("public static readonly OrderId Empty = new(default);");
     }
 
     [Fact]
@@ -120,7 +120,7 @@ public class StrongIdSourceGeneratorTests
         result.GeneratorDiagnostics.Should().BeEmpty();
         result.CompilationDiagnostics.Should().NotContain(d => d.Severity == DiagnosticSeverity.Error);
         result.GeneratedSources.Should().ContainSingle();
-        result.GeneratedSources[0].SourceText.ToString().Should().Contain("public static readonly OrderId None = new(global::System.String.Empty);");
+        result.GeneratedSources[0].SourceText.ToString().Should().Contain("public static readonly OrderId Empty = new(global::System.String.Empty);");
     }
 
     [Fact]

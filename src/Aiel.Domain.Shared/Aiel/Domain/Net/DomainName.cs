@@ -31,7 +31,7 @@ namespace Aiel.Domain.Net;
 /// <remarks>
 /// A domain name consists of one or more labels separated by periods (dots), and it must adhere to specific rules regarding length, character usage, and structure.
 /// </remarks>
-public sealed class DomainName
+public readonly record struct DomainName
 {
     // ToDo: Change to a record struct for better performance and value semantics.
     // ToDo: Add support for Internationalized Domain Names (IDNs) using Punycode encoding.
@@ -44,7 +44,10 @@ public sealed class DomainName
 
     private readonly String _domain;
 
-    private DomainName() { _domain = String.Empty; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DomainName" /> class with an empty domain name.
+    /// </summary>
+    public DomainName() { _domain = String.Empty; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainName" /> class with the specified domain name string.
@@ -70,7 +73,7 @@ public sealed class DomainName
 
     /// <inheritdoc />
     public Int32 CompareTo(DomainName other)
-        => other is null ? 1 : String.Compare(_domain, other._domain, StringComparison.InvariantCultureIgnoreCase);
+        => String.Compare(_domain, other._domain, StringComparison.InvariantCultureIgnoreCase);
 
     /// <summary>
     /// Determines whether the specified <see cref="DomainName" /> is equal to the current <see cref="DomainName" />.
@@ -78,11 +81,7 @@ public sealed class DomainName
     /// <param name="other"></param>
     /// <returns></returns>
     public Boolean Equals(DomainName other)
-        => other is not null && _domain.Equals(other._domain, StringComparison.InvariantCultureIgnoreCase);
-
-    /// <inheritdoc />
-    public override Boolean Equals(Object? other)
-        => other is not default(Object) && other is DomainName domainName && Equals(domainName);
+        => _domain.Equals(other._domain, StringComparison.InvariantCultureIgnoreCase);
 
     /// <summary>
     /// Defines an implicit conversion from a <see cref="String" /> to a <see cref="DomainName" />.
@@ -130,28 +129,6 @@ public sealed class DomainName
     /// <param name="domainName">The <see cref="DomainName" /> to convert.</param>
     /// <returns>The string representation of the <see cref="DomainName" />.</returns>
     public static implicit operator String(DomainName domainName) => domainName._domain;
-
-    /// <inheritdoc />
-    public static Boolean operator !=(DomainName a, DomainName b) => !(a == b);
-
-    /// <inheritdoc />
-    public static Boolean operator ==(DomainName a, DomainName b)
-    {
-        // If both are null, or both are same instance, return true.
-        if (ReferenceEquals(a, b))
-        {
-            return true;
-        }
-
-        // If one is null, but not both, return false.
-        if ((a is null) || (b is null))
-        {
-            return false;
-        }
-
-        // Return true if the fields match:
-        return a._domain == b._domain;
-    }
 
     /// <summary>
     /// Determines whether the specified domain name string is valid according to the rules for domain names.

@@ -25,7 +25,7 @@ namespace Aiel.StrongIds;
 /// <summary>
 /// Represents a strongly-typed identifier.
 /// </summary>
-public interface IStrongId
+public interface IStrongId : IComparable
 {
     /// <summary>
     /// Gets a value indicating whether the identifier is the default value.
@@ -34,34 +34,11 @@ public interface IStrongId
 }
 
 /// <summary>
-/// Represents an entity that has a strongly-typed identifier.
-/// </summary>
-public interface IHasStrongId
-{
-    /// <summary>
-    /// Gets the strongly-typed identifier.
-    /// </summary>
-    IStrongId Id { get; }
-}
-
-/// <summary>
-/// Represents an entity that has a strongly-typed identifier with a specific value type as the backing store.
-/// </summary>
-/// <typeparam name="T">The type of the strongly-typed identifier.</typeparam>
-public interface IHasStrongId<T> : IHasStrongId
-    where T : IStrongId
-{
-    /// <summary>
-    /// Gets the strongly-typed identifier with a specific value type as the backing store.
-    /// </summary>
-    new IStrongId<T> Id { get; }
-}
-
-/// <summary>
 /// Represents a strongly-typed identifier with a specific value type as the backing store.
 /// </summary>
 /// <typeparam name="TValue">The type of the value. Supported types are Int16, Int32, Int64, UInt16, UInt32, UInt64, Guid, and String.</typeparam>
-public interface IStrongId<TValue> : IStrongId
+public interface IStrongId<TValue> : IStrongId, IComparable<IStrongId<TValue>>
+    where TValue : notnull
 {
     /// <summary>
     /// Gets the value of the strongly-typed identifier.

@@ -30,7 +30,7 @@ namespace Aiel.Testing.Models;
 [StrongId<Guid>(AllowDefault = true)]
 public readonly partial record struct PersonId;
 
-public sealed class Person : Entity<PersonId>
+public sealed class Person : ClassEntity<PersonId>
 {
     private Person()
     {

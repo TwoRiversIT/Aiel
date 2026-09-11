@@ -21,9 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Testing;
 
 namespace Aiel.StrongIds;
 
 [DependsOn(typeof(AielStrongIds))]
+[DependsOn(typeof(AielTestingDummies))]
 public sealed class AielStrongIdsUnitTests : AielDependencyConfigurator;
-

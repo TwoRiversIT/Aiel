@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Entities;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain;
@@ -29,13 +28,14 @@ namespace Aiel.Domain;
 /// Represents a base class for entities with a strongly-typed identifier and versioning support.
 /// </summary>
 /// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
-public abstract class ClassEntity<TKey> : IEntity<TKey>
+public abstract class ClassEntity<TKey> : IEntity<TKey>, IHasStrongId
     where TKey : notnull, IStrongId
 {
     /// <summary>
     /// Gets the identifier of the entity.
     /// </summary>
     public TKey Id { get; protected init; }
+    IStrongId IHasStrongId.Id => Id;
 
     /// <summary>
     /// Gets the version of the entity.

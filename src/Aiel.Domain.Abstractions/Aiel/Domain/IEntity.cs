@@ -22,18 +22,7 @@
 
 using Aiel.StrongIds;
 
-namespace Aiel.Domain.Entities;
-
-/// <summary>
-/// Represents an entity with a strongly-typed identifier.
-/// </summary>
-public interface IHasId
-{
-    /// <summary>
-    /// Gets the unique identifier of the entity.
-    /// </summary>
-    IStrongId Id { get; }
-}
+namespace Aiel.Domain;
 
 /// <summary>
 /// Represents an entity with a strongly-typed identifier of type <typeparamref name="TKey"/>.

@@ -27,7 +27,7 @@ namespace Aiel.Domain.Entities;
 /// <summary>
 /// Represents an entity with a strongly-typed identifier.
 /// </summary>
-public interface IEntity
+public interface IHasId
 {
     /// <summary>
     /// Gets the unique identifier of the entity.
@@ -39,11 +39,11 @@ public interface IEntity
 /// Represents an entity with a strongly-typed identifier of type <typeparamref name="TKey"/>.
 /// </summary>
 /// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
-public interface IEntity<TKey> : IEntity
+public interface IEntity<TKey>
     where TKey : notnull, IStrongId
 {
     /// <summary>
     /// Gets the unique identifier of the entity.
     /// </summary>
-    new TKey Id { get; }
+    public TKey Id { get; }
 }

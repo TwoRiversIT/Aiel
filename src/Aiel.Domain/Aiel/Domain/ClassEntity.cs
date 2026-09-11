@@ -20,30 +20,48 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Domain.Entities;
 using Aiel.StrongIds;
 
-namespace Aiel.Domain.Entities;
+namespace Aiel.Domain;
 
 /// <summary>
-/// Represents an entity with a strongly-typed identifier.
-/// </summary>
-public interface IEntity
-{
-    /// <summary>
-    /// Gets the unique identifier of the entity.
-    /// </summary>
-    IStrongId Id { get; }
-}
-
-/// <summary>
-/// Represents an entity with a strongly-typed identifier of type <typeparamref name="TKey"/>.
+/// Represents a base class for entities with a strongly-typed identifier and versioning support.
 /// </summary>
 /// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
-public interface IEntity<TKey> : IEntity
+public abstract class ClassEntity<TKey> : IEntity<TKey>
     where TKey : notnull, IStrongId
 {
     /// <summary>
-    /// Gets the unique identifier of the entity.
+    /// Gets the identifier of the entity.
     /// </summary>
-    new TKey Id { get; }
+    public TKey Id { get; protected init; }
+
+    /// <summary>
+    /// Gets the version of the entity.
+    /// </summary>
+    public Int64 Version { get; protected set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ClassEntity{TKey}"/> class with the specified identifier.
+    /// </summary>
+    /// <param name="id">The identifier of the entity.</param>
+    /// <exception cref="ArgumentException">Thrown when the provided identifier is the default value.</exception>
+    protected ClassEntity(TKey id)
+    {
+        if (id.IsDefault)
+        {
+            throw new ArgumentException("Entity ID cannot be the default value.", nameof(id));
+        }
+
+        Id = id;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ClassEntity{TKey}"/> class with the default identifier.
+    /// </summary>
+    protected ClassEntity()
+    {
+        Id = default!;
+    }
 }

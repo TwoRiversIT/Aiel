@@ -33,6 +33,7 @@ namespace Aiel.StrongIds.AspNetCore;
 /// <typeparam name="TValue">The underlying value type of the strong ID.</typeparam>
 public sealed class StrongIdTypeConverter<TStrongId, TValue> : TypeConverter
     where TStrongId : IStrongId<TValue>
+    where TValue : notnull
 {
     private static readonly MethodInfo TryParseMethod = ResolveTryParseMethod();
 

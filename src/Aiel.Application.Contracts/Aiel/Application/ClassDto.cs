@@ -20,11 +20,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Aiel.Testing;
+using Aiel.StrongIds;
 
-namespace Aiel.StrongIds;
+namespace Aiel.Application;
 
-[DependsOn(typeof(AielStrongIds))]
-[DependsOn(typeof(AielTestingDummies))]
-public sealed class AielStrongIdsUnitTests : AielDependencyConfigurator;
+/// <summary>
+/// Base class for data transfer objects that carry a strongly-typed identifier.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This type is a plain reference type: equality and hashing use reference semantics,
+/// and it does not implement <see cref="IComparable"/>, <see cref="IEquatable{T}"/>,
+/// or any domain contract. It exists solely to transfer data.
+/// </para>
+/// <para>
+/// Choose <see cref="ClassDto{TKey}"/> when reference identity is what you want (for example,
+/// mutable view state in a UI, or when instances must be distinguished even if their data
+/// matches). Choose <see cref="RecordDto{TKey}"/> when structural (value) equality,
+/// <c>with</c> expressions, and a generated <c>ToString()</c> are what you want.
+/// </para>
+/// </remarks>
+/// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
+public abstract class ClassDto<TKey>
+    where TKey : notnull, IStrongId
+{
+    /// <summary>
+    /// Gets the identifier of the underlying data.
+    /// </summary>
+    public TKey Id { get; init; } = default!;
+}

@@ -20,11 +20,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
-using Aiel.Testing;
+using Aiel.StrongIds;
 
-namespace Aiel.StrongIds;
+namespace Aiel.Domain.Entities;
 
-[DependsOn(typeof(AielStrongIds))]
-[DependsOn(typeof(AielTestingDummies))]
-public sealed class AielStrongIdsUnitTests : AielDependencyConfigurator;
+/// <summary>
+/// Represents an entity with a strongly-typed identifier.
+/// </summary>
+public interface IHasId
+{
+    /// <summary>
+    /// Gets the unique identifier of the entity.
+    /// </summary>
+    IStrongId Id { get; }
+}
+
+/// <summary>
+/// Represents an entity with a strongly-typed identifier of type <typeparamref name="TKey"/>.
+/// </summary>
+/// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
+public interface IEntity<TKey>
+    where TKey : notnull, IStrongId
+{
+    /// <summary>
+    /// Gets the unique identifier of the entity.
+    /// </summary>
+    public TKey Id { get; }
+}

@@ -20,7 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.StrongIds;
+using Aiel.StrongIds;
+
+namespace Aiel.Testing.StrongIds;
 
 [StrongId<Guid>]
 public readonly partial record struct GuidAllowDefaultFalseId;

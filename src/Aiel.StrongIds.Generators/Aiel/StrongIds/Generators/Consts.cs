@@ -26,6 +26,7 @@ namespace Aiel.StrongIds.Generators;
 
 public static class Consts
 {
+
     public const String BackingPropertyName = "Value";
     public const String BackingKindPropertyName = "BackingKind";
     public const String AllowDefaultPropertyName = "AllowDefault";
@@ -36,7 +37,10 @@ public static class Consts
     public const String IdParameterName = "id";
     public const String ValueParameterName = "value";
     public const String ParsedParameterName = "parsed";
+    public const String FqIStrongId = "global::Aiel.StrongIds.IStrongId";
+
     public const Int32 Spaces = 4;
+    public static String I(Int32 id) => new(' ', id * Spaces);
 
     public static readonly SymbolDisplayFormat TypeNameFormat = new(
         globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Included,

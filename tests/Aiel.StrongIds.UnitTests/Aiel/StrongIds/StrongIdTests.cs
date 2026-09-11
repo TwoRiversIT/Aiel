@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Testing.StrongIds;
+
 namespace Aiel.StrongIds;
 
 [SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "It's freaking unit tests!")]
@@ -130,4 +132,235 @@ public class StrongIdTests
         var id = new Int32AllowDefaultTrueId(0);
         id.IsDefault.Should().BeTrue();
     }
+
+    #region IComparable<T> Tests for Guid-based StrongIds
+
+    [Fact]
+    public void GivenGuidStrongIds_WhenComparingSameValue_ReturnsZero()
+    {
+        var guid = Guid.NewGuid();
+        var id1 = new GuidAllowDefaultFalseId(guid);
+        var id2 = new GuidAllowDefaultFalseId(guid);
+
+        id1.CompareTo(id2).Should().Be(0);
+    }
+
+    [Fact]
+    public void GivenGuidStrongIds_WhenComparingLesserValue_ReturnsNegative()
+    {
+        var guid1 = Guid.NewGuid();
+        var guid2 = Guid.NewGuid();
+
+        // Ensure guid1 is actually less than guid2
+        var lesserGuid = guid1.CompareTo(guid2) < 0 ? guid1 : guid2;
+        var greaterGuid = guid1.CompareTo(guid2) < 0 ? guid2 : guid1;
+
+        var idLesser = new GuidAllowDefaultFalseId(lesserGuid);
+        var idGreater = new GuidAllowDefaultFalseId(greaterGuid);
+
+        idLesser.CompareTo(idGreater).Should().BeNegative();
+    }
+
+    [Fact]
+    public void GivenGuidStrongIds_WhenComparingGreaterValue_ReturnsPositive()
+    {
+        var guid1 = Guid.NewGuid();
+        var guid2 = Guid.NewGuid();
+
+        // Ensure guid1 is actually greater than guid2
+        var lesserGuid = guid1.CompareTo(guid2) < 0 ? guid1 : guid2;
+        var greaterGuid = guid1.CompareTo(guid2) < 0 ? guid2 : guid1;
+
+        var idLesser = new GuidAllowDefaultFalseId(lesserGuid);
+        var idGreater = new GuidAllowDefaultFalseId(greaterGuid);
+
+        idGreater.CompareTo(idLesser).Should().BePositive();
+    }
+
+    [Fact]
+    public void GivenGuidStrongIds_CanBeSorted()
+    {
+        var guid1 = Guid.NewGuid();
+        var guid2 = Guid.NewGuid();
+        var guid3 = Guid.NewGuid();
+
+        var ids = new[]
+        {
+            new GuidAllowDefaultFalseId(guid3),
+            new GuidAllowDefaultFalseId(guid1),
+            new GuidAllowDefaultFalseId(guid2)
+        };
+
+        var sorted = ids.OrderBy(x => x).ToList();
+
+        sorted[0].Value.CompareTo(sorted[1].Value).Should().BeNegative();
+        sorted[1].Value.CompareTo(sorted[2].Value).Should().BeNegative();
+    }
+
+    #endregion
+
+    #region IComparable<T> Tests for Integer-based StrongIds
+
+    [Fact]
+    public void GivenInt32StrongIds_WhenComparingSameValue_ReturnsZero()
+    {
+        var id1 = new Int32AllowDefaultTrueId(42);
+        var id2 = new Int32AllowDefaultTrueId(42);
+
+        id1.CompareTo(id2).Should().Be(0);
+    }
+
+    [Fact]
+    public void GivenInt32StrongIds_WhenComparingLesserValue_ReturnsNegative()
+    {
+        var id1 = new Int32AllowDefaultTrueId(10);
+        var id2 = new Int32AllowDefaultTrueId(20);
+
+        id1.CompareTo(id2).Should().BeNegative();
+    }
+
+    [Fact]
+    public void GivenInt32StrongIds_WhenComparingGreaterValue_ReturnsPositive()
+    {
+        var id1 = new Int32AllowDefaultTrueId(30);
+        var id2 = new Int32AllowDefaultTrueId(15);
+
+        id1.CompareTo(id2).Should().BePositive();
+    }
+
+    [Fact]
+    public void GivenInt32StrongIds_CanBeSorted()
+    {
+        var ids = new[]
+        {
+            new Int32AllowDefaultTrueId(50),
+            new Int32AllowDefaultTrueId(10),
+            new Int32AllowDefaultTrueId(30),
+            new Int32AllowDefaultTrueId(20)
+        };
+
+        var sorted = ids.OrderBy(x => x).ToList();
+
+        sorted[0].Value.Should().Be(10);
+        sorted[1].Value.Should().Be(20);
+        sorted[2].Value.Should().Be(30);
+        sorted[3].Value.Should().Be(50);
+    }
+
+    [Fact]
+    public void GivenInt32StrongIds_WithDefaultValue_CanBeCompared()
+    {
+        var idDefault = new Int32AllowDefaultTrueId(0);
+        var idPositive = new Int32AllowDefaultTrueId(5);
+
+        idDefault.CompareTo(idPositive).Should().BeNegative();
+    }
+
+    [Fact]
+    public void GivenInt64StrongIds_WhenComparingSameValue_ReturnsZero()
+    {
+        var id1 = new Int64AllowDefaultTrueId(9223372036854775800L);
+        var id2 = new Int64AllowDefaultTrueId(9223372036854775800L);
+
+        id1.CompareTo(id2).Should().Be(0);
+    }
+
+    [Fact]
+    public void GivenInt64StrongIds_WhenComparingLesserValue_ReturnsNegative()
+    {
+        var id1 = new Int64AllowDefaultTrueId(100L);
+        var id2 = new Int64AllowDefaultTrueId(200L);
+
+        id1.CompareTo(id2).Should().BeNegative();
+    }
+
+    [Fact]
+    public void GivenInt64StrongIds_WhenComparingGreaterValue_ReturnsPositive()
+    {
+        var id1 = new Int64AllowDefaultTrueId(300L);
+        var id2 = new Int64AllowDefaultTrueId(150L);
+
+        id1.CompareTo(id2).Should().BePositive();
+    }
+
+    #endregion
+
+    #region IComparable<T> Tests for String-based StrongIds
+
+    [Fact]
+    public void GivenStringStrongIds_WhenComparingSameValue_ReturnsZero()
+    {
+        var id1 = new StringAllowDefaultFalseId("test-id");
+        var id2 = new StringAllowDefaultFalseId("test-id");
+
+        id1.CompareTo(id2).Should().Be(0);
+    }
+
+    [Fact]
+    public void GivenStringStrongIds_WhenComparingLesserValue_ReturnsNegative()
+    {
+        var id1 = new StringAllowDefaultFalseId("alpha");
+        var id2 = new StringAllowDefaultFalseId("beta");
+
+        id1.CompareTo(id2).Should().BeNegative();
+    }
+
+    [Fact]
+    public void GivenStringStrongIds_WhenComparingGreaterValue_ReturnsPositive()
+    {
+        var id1 = new StringAllowDefaultFalseId("zebra");
+        var id2 = new StringAllowDefaultFalseId("apple");
+
+        id1.CompareTo(id2).Should().BePositive();
+    }
+
+    [Fact]
+    public void GivenStringStrongIds_CanBeSorted()
+    {
+        var ids = new[]
+        {
+            new StringAllowDefaultFalseId("zebra"),
+            new StringAllowDefaultFalseId("apple"),
+            new StringAllowDefaultFalseId("mango"),
+            new StringAllowDefaultFalseId("banana")
+        };
+
+        var sorted = ids.OrderBy(x => x).ToList();
+
+        sorted[0].Value.Should().Be("apple");
+        sorted[1].Value.Should().Be("banana");
+        sorted[2].Value.Should().Be("mango");
+        sorted[3].Value.Should().Be("zebra");
+    }
+
+    [Fact]
+    public void GivenStringStrongIds_IsCaseSensitiveInComparison()
+    {
+        var id1 = new StringAllowDefaultFalseId("Test");
+        var id2 = new StringAllowDefaultFalseId("test");
+
+        // String comparison is case-sensitive by default (lowercase comes before uppercase)
+        id1.CompareTo(id2).Should().BePositive();
+    }
+
+    [Fact]
+    public void GivenStringAllowDefaultTrueIds_WhenComparingEmptyWithNonEmpty_ReturnsNegative()
+    {
+        var idEmpty = new StringAllowDefaultTrueId(String.Empty);
+        var idNonEmpty = new StringAllowDefaultTrueId("value");
+
+        idEmpty.CompareTo(idNonEmpty).Should().BeNegative();
+    }
+
+    [Fact]
+    public void GivenStringAllowDefaultTrueIds_WhenComparingNullWithNonEmpty_ReturnsNegative()
+    {
+        var idNull = new StringAllowDefaultTrueId(null!);
+        var idNonEmpty = new StringAllowDefaultTrueId("value");
+
+        // null is converted to empty string, so should be less than non-empty
+        idNull.CompareTo(idNonEmpty).Should().BeNegative();
+    }
+
+    #endregion
 }

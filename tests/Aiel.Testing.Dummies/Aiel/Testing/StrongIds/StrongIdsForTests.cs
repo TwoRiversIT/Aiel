@@ -24,14 +24,20 @@ using Aiel.StrongIds;
 
 namespace Aiel.Testing.StrongIds;
 
-[StrongId<Guid>]
+[StrongId<Guid>(AllowDefault = false)]
 public readonly partial record struct GuidAllowDefaultFalseId;
+
+[StrongId<Guid>(AllowDefault = true)]
+public readonly partial record struct GuidAllowDefaultTrueId;
 
 [StrongId<Int16>(AllowDefault = false)]
 public readonly partial record struct Int16AllowDefaultFalseId;
 
 [StrongId<UInt16>(AllowDefault = true)]
 public readonly partial record struct UInt16AllowDefaultTrueId;
+
+[StrongId<Int32>(AllowDefault = false)]
+public readonly partial record struct Int32AllowDefaultFalseId;
 
 [StrongId<Int32>(AllowDefault = true)]
 public readonly partial record struct Int32AllowDefaultTrueId;
@@ -45,7 +51,7 @@ public readonly partial record struct Int64AllowDefaultTrueId;
 [StrongId<UInt64>(AllowDefault = true)]
 public readonly partial record struct UInt64AllowDefaultTrueId;
 
-[StrongId<String>]
+[StrongId<String>(AllowDefault = false)]
 public readonly partial record struct StringAllowDefaultFalseId;
 
 [StrongId<String>(AllowDefault = true)]
@@ -60,3 +66,4 @@ public readonly partial record struct GuidNoTryParseId;
 
 [StrongId<Guid>(GenerateTryFrom = false, GenerateTryParse = false)]
 public readonly partial record struct GuidNoTryFromNoTryParseId;
+

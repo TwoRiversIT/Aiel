@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain;
 using Aiel.Domain.Contacts;
+using Aiel.Domain.Entities;
 using Aiel.StrongIds;
 using System.Text.Json.Serialization;
 

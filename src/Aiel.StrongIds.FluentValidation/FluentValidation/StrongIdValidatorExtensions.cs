@@ -31,7 +31,7 @@ namespace FluentValidation;
 public static partial class StrongIdValidatorExtensions
 {
     /// <summary>
-    /// Defines a validator on the current rule builder for <see cref="IStrongId"/> properties. Validation will fail if <see cref="IStrongId.IsDefault"/> is true.
+    /// Defines a validator on the current rule builder for <see cref="IStrongId"/> properties. Validation will fail if <see cref="IStrongId.HasValue"/> is false.
     /// </summary>
     public static IRuleBuilderOptions<T, TProperty> NotDefault<T, TProperty>(this IRuleBuilder<T, TProperty> ruleBuilder)
         where TProperty : IStrongId

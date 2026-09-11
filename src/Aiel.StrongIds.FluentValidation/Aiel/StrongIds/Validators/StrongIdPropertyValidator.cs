@@ -36,5 +36,5 @@ public class StrongIdPropertyValidator<T, TProperty>()
     public override String Name => nameof(StrongIdPropertyValidator<,>);
 
     /// <inheritdoc/>
-    public override Boolean IsValid(ValidationContext<T> context, TProperty value) => !value.IsDefault;
+    public override Boolean IsValid(ValidationContext<T> context, TProperty value) => value.HasValue;
 }

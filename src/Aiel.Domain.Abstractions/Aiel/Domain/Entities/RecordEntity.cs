@@ -22,7 +22,7 @@
 
 using Aiel.StrongIds;
 
-namespace Aiel.Domain;
+namespace Aiel.Domain.Entities;
 
 /// <summary>
 /// Represents a base record for entities with a strongly-typed identifier and versioning support.
@@ -32,7 +32,7 @@ public abstract record RecordEntity<TKey> : IEntity<TKey>, IHasStrongId
     where TKey : notnull, IStrongId
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecordEntity{TKey}"/> class with the default identifier.
+    /// Initializes a new instance of the <see cref="RecordEntity{TKey}"/> record with the default identifier.
     /// </summary>
     protected RecordEntity()
     {
@@ -40,18 +40,13 @@ public abstract record RecordEntity<TKey> : IEntity<TKey>, IHasStrongId
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecordEntity{TKey}"/> class with the specified identifier.
+    /// Initializes a new instance of the <see cref="RecordEntity{TKey}"/> record with the specified identifier.
     /// </summary>
     /// <param name="id">The identifier of the entity.</param>
     /// <exception cref="ArgumentException">Thrown when the provided identifier is the default value.</exception>
     protected RecordEntity(TKey id)
     {
-        if (id.IsDefault)
-        {
-            throw new ArgumentException("EntityRecord ID cannot be the default value.", nameof(id));
-        }
-
-        Id = id;
+        Id = id.HasValue ? id : throw new ArgumentException("EntityRecord ID cannot be the default value.", nameof(id));
     }
 
     /// <summary>

@@ -21,9 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results;
-using Aiel.StrongIds;
 
-namespace Aiel.Application;
+namespace Aiel.Domain.Errors;
 
 /// <summary>
 /// Represents an error indicating that a specific entity was not found.
@@ -37,7 +36,7 @@ public sealed partial class EntityNotFoundError : Error
     /// <summary>
     /// Gets the identifier of the entity that was not found.
     /// </summary>
-    public IStrongId EntityId { get; init; } = default!;
+    public String EntityId { get; init; } = default!;
 
     /// <summary>
     /// Gets the default description for the error, which includes the entity type and identifier.
@@ -50,7 +49,7 @@ public sealed partial class EntityNotFoundError : Error
     /// <typeparam name="T">The type of the entity that was not found.</typeparam>
     /// <param name="entityId">The identifier of the entity that was not found.</param>
     /// <returns>A new instance of <see cref="EntityNotFoundError"/>.</returns>
-    public static EntityNotFoundError Create<T>(IStrongId entityId) => Create(typeof(T).Name, entityId);
+    public static EntityNotFoundError Create<T>(String entityId) => Create(typeof(T).Name, entityId);
 
     /// <summary>
     /// Creates a new instance of <see cref="EntityNotFoundError"/> for the specified entity type and identifier.
@@ -58,9 +57,33 @@ public sealed partial class EntityNotFoundError : Error
     /// <param name="entityType">The type of the entity that was not found.</param>
     /// <param name="entityId">The identifier of the entity that was not found.</param>
     /// <returns>A new instance of <see cref="EntityNotFoundError"/>.</returns>
-    public static EntityNotFoundError Create(String entityType, IStrongId entityId) => new()
+    public static EntityNotFoundError Create(String entityType, String entityId) => new()
     {
         EntityType = entityType,
         EntityId = entityId
     };
+}
+
+/// <summary>
+/// Provides factory methods for creating instances of various errors.
+/// </summary>
+public static partial class AfError
+{
+    /// <summary>
+    /// Creates a new instance of <see cref="EntityNotFoundError"/> for the specified entity type and identifier.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity that was not found.</typeparam>
+    /// <param name="entityId">The identifier of the entity that was not found.</param>
+    /// <returns>A new instance of <see cref="EntityNotFoundError"/>.</returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static EntityNotFoundError Notfound<T>(Object entityId)
+    {
+        ArgumentNullException.ThrowIfNull(entityId);
+
+        return new EntityNotFoundError
+        {
+            EntityType = typeof(T).Name,
+            EntityId = entityId.ToString() ?? throw new ArgumentNullException(nameof(entityId))
+        };
+    }
 }

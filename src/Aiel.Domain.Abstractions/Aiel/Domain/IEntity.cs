@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.StrongIds;
-
 namespace Aiel.Domain;
 
 /// <summary>
@@ -29,7 +27,7 @@ namespace Aiel.Domain;
 /// </summary>
 /// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
 public interface IEntity<TKey>
-    where TKey : notnull, IStrongId
+    where TKey : notnull
 {
     /// <summary>
     /// Gets the unique identifier of the entity.

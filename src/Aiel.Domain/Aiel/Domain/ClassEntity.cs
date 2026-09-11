@@ -22,7 +22,6 @@
 
 using Aiel.Domain.Entities;
 using Aiel.StrongIds;
-using System.Runtime.CompilerServices;
 
 namespace Aiel.Domain;
 
@@ -30,14 +29,13 @@ namespace Aiel.Domain;
 /// Represents a base class for entities with a strongly-typed identifier and versioning support.
 /// </summary>
 /// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
-public abstract class Entity<TKey> : IEntity<TKey>, IEquatable<Entity<TKey>>
+public abstract class ClassEntity<TKey> : IEntity<TKey>
     where TKey : notnull, IStrongId
 {
     /// <summary>
     /// Gets the identifier of the entity.
     /// </summary>
     public TKey Id { get; protected init; }
-    IStrongId IEntity.Id => Id;
 
     /// <summary>
     /// Gets the version of the entity.
@@ -45,11 +43,11 @@ public abstract class Entity<TKey> : IEntity<TKey>, IEquatable<Entity<TKey>>
     public Int64 Version { get; protected set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Entity{TKey}"/> class with the specified identifier.
+    /// Initializes a new instance of the <see cref="ClassEntity{TKey}"/> class with the specified identifier.
     /// </summary>
     /// <param name="id">The identifier of the entity.</param>
     /// <exception cref="ArgumentException">Thrown when the provided identifier is the default value.</exception>
-    protected Entity(TKey id)
+    protected ClassEntity(TKey id)
     {
         if (id.IsDefault)
         {
@@ -60,62 +58,10 @@ public abstract class Entity<TKey> : IEntity<TKey>, IEquatable<Entity<TKey>>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Entity{TKey}"/> class with the default identifier.
+    /// Initializes a new instance of the <see cref="ClassEntity{TKey}"/> class with the default identifier.
     /// </summary>
-    protected Entity()
+    protected ClassEntity()
     {
         Id = default!;
     }
-
-    /// <summary>
-    /// Determines whether the specified entity is equal to the current entity based on their identifiers and types.
-    /// </summary>
-    /// <param name="other">The entity to compare with the current entity.</param>
-    /// <returns><c>true</c> if the specified entity is equal to the current entity; otherwise, <c>false</c>.</returns>
-    public Boolean Equals(Entity<TKey>? other)
-    {
-        if (ReferenceEquals(this, other))
-        {
-            return true;
-        }
-
-        if (other is null)
-        {
-            return false;
-        }
-
-        if (GetType() != other.GetType())
-        {
-            return false;
-        }
-
-        if (Id.IsDefault || other.Id.IsDefault)
-        {
-            return false;
-        }
-
-        return EqualityComparer<TKey>.Default.Equals(Id, other.Id);
-    }
-
-    /// <summary>
-    /// Determines whether the specified object is equal to the current entity based on their identifiers and types.
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
-    public override Boolean Equals(Object? obj) => Equals(obj as Entity<TKey>);
-
-    /// <inheritdoc/>
-    public override Int32 GetHashCode()
-        => Id.IsDefault
-            ? RuntimeHelpers.GetHashCode(this)
-            : HashCode.Combine(GetType(), Id);
-
-    /// <inheritdoc/>
-    public static Boolean operator ==(Entity<TKey>? left, Entity<TKey>? right)
-        => left is null
-            ? right is null
-            : left.Equals(right);
-
-    /// <inheritdoc/>
-    public static Boolean operator !=(Entity<TKey>? left, Entity<TKey>? right) => !(left == right);
 }

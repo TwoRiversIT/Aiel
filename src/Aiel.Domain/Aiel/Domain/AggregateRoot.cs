@@ -34,7 +34,7 @@ namespace Aiel.Domain;
 /// domain events associated with the aggregate root.
 /// </summary>
 /// <typeparam name="TKey">a strongly typed identifier for the aggregate root.</typeparam>
-public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
+public abstract class AggregateRoot<TKey> : ClassEntity<TKey>, IAggregateRoot
     where TKey : notnull, IStrongId
 {
     private readonly List<IDomainEvent> _domainEvents = [];

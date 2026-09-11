@@ -11,6 +11,16 @@
         <None Include="./README.md" Pack="true" PackagePath="/" />
     </ItemGroup>
 
+    <!-- Reference the analyzer and generator project as an analyzer to ensure it is used during compilation of this project. -->
+    <ItemGroup>
+        <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
+        <ProjectReference Include="..\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        -->
+        <ProjectReference Include="..\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+    </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="12.1.1" />
     </ItemGroup>

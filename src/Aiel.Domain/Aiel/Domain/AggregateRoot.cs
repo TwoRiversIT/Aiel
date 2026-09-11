@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Aggregates;
+using Aiel.Domain.Entities;
 using Aiel.Domain.Events;
 using Aiel.StrongIds;
 

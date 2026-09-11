@@ -52,7 +52,7 @@ public sealed class ActionCapabilitySnapshot(
     /// <summary>
     /// Gets the snapshot version.
     /// </summary>
-    public CapabilitySnapshotVersion Version { get; } = version.IsDefault ? Empty.Version : version;
+    public CapabilitySnapshotVersion Version { get; } = version.HasValue ? version : Empty.Version;
 
     /// <summary>
     /// Gets the permission scope type represented by this snapshot.

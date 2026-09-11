@@ -16,8 +16,4 @@
         <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Aiel\Domain\Entities\" />
-    </ItemGroup>
-
 </Project>

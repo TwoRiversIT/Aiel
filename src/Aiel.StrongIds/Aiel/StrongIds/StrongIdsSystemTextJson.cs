@@ -121,7 +121,7 @@ public sealed class StrongIdJsonConverterFactory : JsonConverterFactory
 
 internal sealed class StrongIdJsonConverter<TStrongId, TValue> : JsonConverter<TStrongId>
     where TStrongId : IStrongId<TValue>
-    where TValue : notnull
+    where TValue : notnull, IComparable<TValue>, IEquatable<TValue>
 {
     private static readonly MethodInfo FromMethod = ResolveFromMethod();
 
@@ -165,7 +165,7 @@ internal sealed class StrongIdJsonConverter<TStrongId, TValue> : JsonConverter<T
 
 internal sealed class NullableStrongIdJsonConverter<TStrongId, TValue> : JsonConverter<TStrongId?>
     where TStrongId : struct, IStrongId<TValue>
-    where TValue : notnull
+    where TValue : notnull, IComparable<TValue>, IEquatable<TValue>
 {
     private static readonly MethodInfo FromMethod = ResolveFromMethod();
 

@@ -56,7 +56,7 @@ public class StrongIdSourceGeneratorTests
         generatedSource.Should().Contain("public static OrderId From(global::System.Guid value) => new(value);");
         generatedSource.Should().Contain("public static global::System.Boolean TryFrom(global::System.Guid value, out OrderId id)");
         generatedSource.Should().Contain("public static global::System.Boolean TryParse(global::System.String? value, global::System.IFormatProvider? provider, out OrderId id)");
-        generatedSource.Should().Contain("public global::System.Boolean IsDefault => Value == global::System.Guid.Empty;");
+        generatedSource.Should().Contain("public global::System.Boolean HasValue => Value != global::System.Guid.Empty;");
         generatedSource.Should().Contain("public override global::System.String ToString() => Value.ToString();");
     }
 
@@ -187,7 +187,7 @@ public class StrongIdSourceGeneratorTests
         generatedSource.Should().Contain("global::System.String.IsNullOrWhiteSpace(value)");
         generatedSource.Should().Contain("throw new global::System.ArgumentException(\"ExternalSystemId cannot be null, empty, or whitespace.\", nameof(value));");
         generatedSource.Should().Contain("Value = value.Trim();");
-        generatedSource.Should().Contain("public global::System.Boolean IsDefault => Value == global::System.String.Empty;");
+        generatedSource.Should().Contain("public global::System.Boolean HasValue => Value != global::System.String.Empty;");
         generatedSource.Should().Contain("public override global::System.String ToString() => Value;");
     }
 

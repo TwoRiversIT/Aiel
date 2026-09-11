@@ -21,7 +21,11 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions.Queries;
+using Aiel.Domain.Errors;
 using Aiel.Domain.Specifications;
+using Aiel.Results;
+using Aiel.StrongIds;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Aiel.Domain.Queries;
@@ -112,5 +116,13 @@ public static class QueryableExtensions
         return condition
             ? query.Where(predicate)
             : query;
+    }
+
+    public static async Task<Result<TEntity>> GetAsync<TEntity, TStrongId>(this IQueryable<TEntity> source, TStrongId id, CancellationToken cancellationToken = default)
+        where TEntity : class, IHasStrongId<TStrongId>
+        where TStrongId : IStrongId, IEquatable<TStrongId>
+    {
+        var item = await source.SingleOrDefaultAsync(t => t.Id.Equals(id), cancellationToken);
+        return item ?? (Result<TEntity>)AfError.Notfound<TEntity>(id);
     }
 }

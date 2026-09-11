@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Entities;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain;
@@ -29,18 +28,16 @@ namespace Aiel.Domain;
 /// Represents a base record for entities with a strongly-typed identifier and versioning support.
 /// </summary>
 /// <typeparam name="TKey">The type of the strongly-typed identifier.</typeparam>
-public abstract record RecordEntity<TKey> : IEntity<TKey>
+public abstract record RecordEntity<TKey> : IEntity<TKey>, IHasStrongId
     where TKey : notnull, IStrongId
 {
     /// <summary>
-    /// Gets the identifier of the entity.
+    /// Initializes a new instance of the <see cref="RecordEntity{TKey}"/> class with the default identifier.
     /// </summary>
-    public TKey Id { get; protected init; }
-
-    /// <summary>
-    /// Gets the version of the entity.
-    /// </summary>
-    public Int64 Version { get; protected set; }
+    protected RecordEntity()
+    {
+        Id = default!;
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RecordEntity{TKey}"/> class with the specified identifier.
@@ -58,10 +55,13 @@ public abstract record RecordEntity<TKey> : IEntity<TKey>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RecordEntity{TKey}"/> class with the default identifier.
+    /// Gets the identifier of the entity.
     /// </summary>
-    protected RecordEntity()
-    {
-        Id = default!;
-    }
+    public TKey Id { get; protected init; }
+    IStrongId IHasStrongId.Id => Id;
+
+    /// <summary>
+    /// Gets the version of the entity.
+    /// </summary>
+    public Int64 Version { get; protected set; }
 }

@@ -34,7 +34,7 @@ public abstract class ClassEntity<TKey> : IEntity<TKey>, IHasStrongId<TKey>
     /// <summary>
     /// Gets the identifier of the entity.
     /// </summary>
-    public TKey Id { get; protected init; }
+    public TKey Id { get; init; }
 
     /// <summary>
     /// Gets the version of the entity.

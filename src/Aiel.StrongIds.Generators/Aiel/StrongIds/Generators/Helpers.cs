@@ -82,16 +82,16 @@ public sealed class StrongIdModel(
 
     public String InvalidValue => InvalidValueExpression(ParsedParameterName);
 
-    public String DefaultExpression(String parameterName) => ValueType.SpecialType switch
+    public String HasValueExpression() => ValueType.SpecialType switch
     {
-        SpecialType.System_Int16 => $"{parameterName} == 0",
-        SpecialType.System_UInt16 => $"{parameterName} == 0",
-        SpecialType.System_Int32 => $"{parameterName} == 0",
-        SpecialType.System_UInt32 => $"{parameterName} == 0",
-        SpecialType.System_Int64 => $"{parameterName} == 0",
-        SpecialType.System_UInt64 => $"{parameterName} == 0",
-        SpecialType.System_String => $"{parameterName} == global::System.String.Empty",
-        _ => $"{parameterName} == global::System.Guid.Empty",
+        SpecialType.System_Int16 => $"{BackingPropertyName} != 0",
+        SpecialType.System_UInt16 => $"{BackingPropertyName} != 0",
+        SpecialType.System_Int32 => $"{BackingPropertyName} != 0",
+        SpecialType.System_UInt32 => $"{BackingPropertyName} != 0",
+        SpecialType.System_Int64 => $"{BackingPropertyName} != 0",
+        SpecialType.System_UInt64 => $"{BackingPropertyName} != 0",
+        SpecialType.System_String => $"{BackingPropertyName} != global::System.String.Empty",
+        _ => $"{BackingPropertyName} != global::System.Guid.Empty",
     };
 
     public String ToStringExpression => ValueType.SpecialType == SpecialType.System_String ? BackingPropertyName : BackingPropertyName + ".ToString()";

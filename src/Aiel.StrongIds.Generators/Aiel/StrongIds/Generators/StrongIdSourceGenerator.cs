@@ -114,7 +114,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         EmitEmpty(builder, model, 2);
 
         // Backing Property
-        builder.AppendLine($"{I(2)}public {model.BackingTypeName} Value {{ get; }}");
+        builder.AppendLine($"{I(2)}public {model.BackingTypeName} {BackingPropertyName} {{ get; }}");
         builder.AppendLine();
 
         // Constructor
@@ -122,6 +122,8 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine($"{I(2)}{constructorAccessibility} {model.TypeSymbol.Name}({model.BackingTypeName} {ValueParameterName})");
         builder.AppendLine($"{I(2)}{{");
         EmitValidation(builder, model, ValueParameterName, 3);
+
+        // Backing Property
         builder.AppendLine($"{I(3)}/// <summary>");
         builder.AppendLine($"{I(3)}/// Gets an empty <see cref=\"{model.TypeSymbol.Name}\"/> instance, which is initialized with the default value of its backing type: <see cref=\"{model.DefaultValue}\"/>");
         builder.AppendLine($"{I(3)}/// </summary>");
@@ -129,8 +131,10 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine($"{I(2)}}}");
         builder.AppendLine();
 
+        // From
         builder.AppendLine($"{I(2)}public static {model.TypeSymbol.Name} From({model.BackingTypeName} {ValueParameterName}) => new({ValueParameterName});");
 
+        // TryFrom
         if (model.GenerateTryFrom)
         {
             builder.AppendLine();
@@ -140,10 +144,11 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             builder.AppendLine($"{I(2)}}}");
         }
 
+        // TryParse
         if (model.GenerateTryParse)
         {
             builder.AppendLine();
-            builder.AppendLine($"{I(2)}public static global::System.Boolean TryParse(global::System.String? value, global::System.IFormatProvider? provider, out {model.TypeSymbol.Name} id)");
+            builder.AppendLine($"{I(2)}public static global::System.Boolean TryParse(global::System.String? {ValueParameterName}, global::System.IFormatProvider? provider, out {model.TypeSymbol.Name} id)");
             builder.AppendLine($"{I(2)}{{");
             EmitTryParse(builder, model, ParsedParameterName, 3);
             builder.AppendLine($"{I(3)}id = {GetDefaultAssignment(model)};");
@@ -151,13 +156,24 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             builder.AppendLine($"{I(2)}}}");
 
             builder.AppendLine();
-            builder.AppendLine($"{I(2)}public static global::System.Boolean TryParse(global::System.String value, out {model.TypeSymbol.Name} id) => TryParse(value, null, out id);");
+            builder.AppendLine($"{I(2)}public static global::System.Boolean TryParse(global::System.String {ValueParameterName}, out {model.TypeSymbol.Name} id) => TryParse({ValueParameterName}, null, out id);");
         }
 
+        // HasValue
         builder.AppendLine();
-        builder.AppendLine($"{I(2)}public global::System.Boolean IsDefault => {model.DefaultExpression(BackingPropertyName)};");
+        builder.AppendLine($"{I(2)}public global::System.Boolean HasValue => {model.HasValueExpression()};");
+
+        // ToString
         builder.AppendLine();
         builder.AppendLine($"{I(2)}public override global::System.String ToString() => {model.ToStringExpression};");
+
+        // IEquatable<T>
+        //builder.AppendLine();
+        //builder.AppendLine($"{I(2)}/// <inheritdoc />");
+        //builder.AppendLine($"{I(2)}public global::System.Boolean Equals({model.BackingTypeName} other) => {BackingPropertyName}.Equals(other);");
+        builder.AppendLine();
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
+        builder.AppendLine($"{I(2)}public global::System.Boolean Equals({FqIStrongId}<{model.BackingTypeName}>? other) => other is not null && {BackingPropertyName}.Equals(other.{BackingPropertyName});");
 
         // IComparable<T>
         builder.AppendLine();
@@ -165,10 +181,31 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine($"{I(2)}public global::System.Int32 CompareTo(global::System.Object? obj) => obj is {model.TypeSymbol.Name} id ? CompareTo(id) : 1;");
         builder.AppendLine();
         builder.AppendLine($"{I(2)}/// <inheritdoc />");
-        builder.AppendLine($"{I(2)}public global::System.Int32 CompareTo({FqIStrongId}<{model.BackingTypeName}>? other) => other is {model.TypeSymbol.Name} id ? Value.CompareTo(id.Value) : 1;");
+        builder.AppendLine($"{I(2)}public global::System.Int32 CompareTo({FqIStrongId}<{model.BackingTypeName}>? other) => other is {model.TypeSymbol.Name} id ? {BackingPropertyName}.CompareTo(id.{BackingPropertyName}) : 1;");
         builder.AppendLine();
         builder.AppendLine($"{I(2)}/// <inheritdoc />");
-        builder.AppendLine($"{I(2)}public global::System.Int32 CompareTo({model.TypeSymbol.Name} id) => Value.CompareTo(id.Value);");
+        builder.AppendLine($"{I(2)}public global::System.Int32 CompareTo({model.TypeSymbol.Name} id) => {BackingPropertyName}.CompareTo(id.{BackingPropertyName});");
+
+        // Operators
+        builder.AppendLine();
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
+        builder.AppendLine($"{I(2)}public static global::System.Boolean operator <({model.TypeSymbol.Name} left, {model.TypeSymbol.Name} right) => left.CompareTo(right) < 0;");
+        builder.AppendLine();
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
+        builder.AppendLine($"{I(2)}public static global::System.Boolean operator <=({model.TypeSymbol.Name} left, {model.TypeSymbol.Name} right) => left.CompareTo(right) <= 0;");
+        builder.AppendLine();
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
+        builder.AppendLine($"{I(2)}public static global::System.Boolean operator >({model.TypeSymbol.Name} left, {model.TypeSymbol.Name} right) => left.CompareTo(right) > 0;");
+        builder.AppendLine();
+        builder.AppendLine($"{I(2)}public static global::System.Boolean operator >=({model.TypeSymbol.Name} left, {model.TypeSymbol.Name} right) => left.CompareTo(right) >= 0;");
+
+        // Coercion Operators
+        //builder.AppendLine();
+        //builder.AppendLine($"{I(2)}/// <inheritdoc />");
+        //builder.AppendLine($"{I(2)}public static explicit operator {model.TypeSymbol.Name}({model.BackingTypeName} {ValueParameterName}) => new({ValueParameterName});");
+        //builder.AppendLine();
+        //builder.AppendLine($"{I(2)}/// <inheritdoc />");
+        //builder.AppendLine($"{I(2)}public static explicit operator {model.BackingTypeName}({model.TypeSymbol.Name} id) => id.{BackingPropertyName};");
 
         // Close type definition
         builder.AppendLine($"{I(1)}}}");
@@ -252,7 +289,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             case SpecialType.System_UInt16:
             case SpecialType.System_UInt32:
             case SpecialType.System_UInt64:
-                builder.AppendLine($"{I(i)}if ({model.BackingTypeName}.TryParse(value, provider, out var {parameterName}))");
+                builder.AppendLine($"{I(i)}if ({model.BackingTypeName}.TryParse({ValueParameterName}, provider, out var {parameterName}))");
                 builder.AppendLine($"{I(i)}{{");
                 EmitTryFrom(builder, model, parameterName, i + 1);
                 builder.AppendLine($"{I(i)}}}");
@@ -260,15 +297,15 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
                 break;
 
             case SpecialType.System_String:
-                builder.AppendLine($"{I(i)}if (value is not null)");
+                builder.AppendLine($"{I(i)}if ({ValueParameterName} is not null)");
                 builder.AppendLine($"{I(i)}{{");
-                EmitTryFrom(builder, model, "value", i + 1);
+                EmitTryFrom(builder, model, ValueParameterName, i + 1);
                 builder.AppendLine($"{I(i)}}}");
                 builder.AppendLine();
                 return;
 
             default:
-                builder.AppendLine($"{I(i)}if (global::System.Guid.TryParse(value, provider, out var {parameterName}))");
+                builder.AppendLine($"{I(i)}if (global::System.Guid.TryParse({ValueParameterName}, provider, out var {parameterName}))");
                 builder.AppendLine($"{I(i)}{{");
                 EmitTryFrom(builder, model, parameterName, i + 1);
                 builder.AppendLine($"{I(i)}}}");

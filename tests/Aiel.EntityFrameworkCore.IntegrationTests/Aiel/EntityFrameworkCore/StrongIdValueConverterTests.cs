@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.StrongIds;
+using Aiel.Testing.StrongIds;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.EntityFrameworkCore;
@@ -31,16 +32,31 @@ public class StrongIdValueConverterTests
     public async Task HasStrongIdConversion_maps_generated_strong_id_keys_and_foreign_keys()
     {
         var databaseName = Guid.NewGuid().ToString("N");
-        var orderId = OrderId.From(Guid.NewGuid());
-        var customerId = CustomerId.From(Guid.NewGuid());
+
+        var guidFalseId = GuidAllowDefaultFalseId.From(Guid.NewGuid());
+        var guidFalseIdNullable = GuidAllowDefaultFalseId.From(Guid.NewGuid());
+        var guidTrueId = GuidAllowDefaultTrueId.From(Guid.NewGuid());
+        var intFalseId = Int32AllowDefaultFalseId.From(100);
+        var intFalseIdNullable = Int32AllowDefaultFalseId.From(200);
+        var intTrueId = Int32AllowDefaultTrueId.From(300);
+        var stringFalseId = StringAllowDefaultFalseId.From("abc");
+        var stringFalseIdNullable = StringAllowDefaultFalseId.From("def");
+        var stringTrueId = StringAllowDefaultTrueId.From("ghi");
 
         await using (var writeContext = CreateDbContext(databaseName))
         {
             writeContext.Orders.Add(new StrongIdOrder
             {
-                Id = orderId,
-                CustomerId = customerId,
-                Description = "alpha"
+                Description = "alpha",
+                GuidAllowDefaultFalse = guidFalseId,
+                GuidAllowDefaultFalseNullable = guidFalseIdNullable,
+                GuidAllowDefaultTrue = guidTrueId,
+                Int32AllowDefaultFalse = intFalseId,
+                Int32AllowDefaultFalseNullable = intFalseIdNullable,
+                Int32AllowDefaultTrue = intTrueId,
+                StringAllowDefaultFalse = stringFalseId,
+                StringAllowDefaultFalseNullable = stringFalseIdNullable,
+                StringAllowDefaultTrue = stringTrueId
             });
 
             await writeContext.SaveChangesAsync(TestContext.Current.CancellationToken);
@@ -49,44 +65,54 @@ public class StrongIdValueConverterTests
         await using var readContext = CreateDbContext(databaseName);
 
         var entityType = readContext.Model.FindEntityType(typeof(StrongIdOrder));
-        var idProperty = entityType?.FindProperty(nameof(StrongIdOrder.Id));
-        var customerIdProperty = entityType?.FindProperty(nameof(StrongIdOrder.CustomerId));
+        var idProperty = entityType?.FindProperty(nameof(StrongIdOrder.GuidAllowDefaultFalse));
+        var customerIdProperty = entityType?.FindProperty(nameof(StrongIdOrder.Int32AllowDefaultFalse));
 
         idProperty.Should().NotBeNull();
         customerIdProperty.Should().NotBeNull();
         idProperty!.GetValueConverter().Should().NotBeNull();
         customerIdProperty!.GetValueConverter().Should().NotBeNull();
         idProperty.GetValueConverter()!.ProviderClrType.Should().Be<Guid>();
-        customerIdProperty.GetValueConverter()!.ProviderClrType.Should().Be<Guid>();
+        customerIdProperty.GetValueConverter()!.ProviderClrType.Should().Be<Int32>();
 
         var persisted = await readContext.Orders.SingleAsync(TestContext.Current.CancellationToken);
 
-        persisted.Id.Should().Be(orderId);
-        persisted.CustomerId.Should().Be(customerId);
+        persisted.GuidAllowDefaultFalse.Should().Be(guidFalseId);
+        persisted.Int32AllowDefaultFalse.Should().Be(intFalseId);
     }
 
     [Fact]
     public async Task HasStrongIdConversion_maps_nullable_generated_strong_ids()
     {
         var databaseName = Guid.NewGuid().ToString("N");
-        var orderId = OrderId.From(Guid.NewGuid());
-        var optionalCustomerId = CustomerId.From(Guid.NewGuid());
+
+        var guidId = GuidAllowDefaultFalseId.From(Guid.NewGuid());
+        var guidIdNullable = GuidAllowDefaultFalseId.From(Guid.NewGuid());
+        var intId = Int32AllowDefaultFalseId.From(100);
+        var intIdNullable = Int32AllowDefaultFalseId.From(200);
+        var stringId = StringAllowDefaultFalseId.From("abc");
+        var stringIdNullable = StringAllowDefaultFalseId.From("def");
 
         await using (var writeContext = CreateDbContext(databaseName))
         {
             writeContext.Orders.Add(new StrongIdOrder
             {
-                Id = orderId,
-                CustomerId = optionalCustomerId,
-                OptionalCustomerId = optionalCustomerId,
+                GuidAllowDefaultFalse = guidId,
+                GuidAllowDefaultFalseNullable = guidIdNullable,
+                Int32AllowDefaultFalse = intId,
+                Int32AllowDefaultFalseNullable = intIdNullable,
+                StringAllowDefaultFalse = stringId,
+                StringAllowDefaultFalseNullable = stringIdNullable,
+                StringAllowDefaultTrue = StringAllowDefaultTrueId.From("required-beta"),
                 Description = "beta"
             });
 
             writeContext.Orders.Add(new StrongIdOrder
             {
-                Id = OrderId.From(Guid.NewGuid()),
-                CustomerId = CustomerId.From(Guid.NewGuid()),
-                OptionalCustomerId = null,
+                GuidAllowDefaultFalse = guidId,
+                Int32AllowDefaultFalse = intId,
+                StringAllowDefaultFalse = stringId,
+                StringAllowDefaultTrue = StringAllowDefaultTrueId.From("required-gamma"),
                 Description = "gamma"
             });
 
@@ -96,19 +122,19 @@ public class StrongIdValueConverterTests
         await using var readContext = CreateDbContext(databaseName);
 
         var entityType = readContext.Model.FindEntityType(typeof(StrongIdOrder));
-        var optionalCustomerIdProperty = entityType?.FindProperty(nameof(StrongIdOrder.OptionalCustomerId));
+        var optionalCustomerIdProperty = entityType?.FindProperty(nameof(StrongIdOrder.GuidAllowDefaultFalseNullable));
 
         optionalCustomerIdProperty.Should().NotBeNull();
         optionalCustomerIdProperty!.GetValueConverter().Should().NotBeNull();
-        optionalCustomerIdProperty.GetValueConverter()!.ProviderClrType.Should().Be<Guid?>();
+        optionalCustomerIdProperty.GetValueConverter()!.ProviderClrType.Should().Be<Guid>();
 
         var persisted = await readContext.Orders
             .OrderBy(static order => order.Description)
             .ToListAsync(TestContext.Current.CancellationToken);
 
         persisted.Should().HaveCount(2);
-        persisted[0].OptionalCustomerId.Should().Be(optionalCustomerId);
-        persisted[1].OptionalCustomerId.Should().BeNull();
+        persisted[0].GuidAllowDefaultFalseNullable.Should().Be(guidIdNullable);
+        persisted[1].GuidAllowDefaultFalseNullable.Should().BeNull();
     }
 
     private static StrongIdOrderDbContext CreateDbContext(String databaseName)
@@ -122,11 +148,16 @@ public class StrongIdValueConverterTests
 
     private sealed class StrongIdOrder
     {
-        public OrderId Id { get; set; }
-
-        public CustomerId CustomerId { get; set; }
-
-        public CustomerId? OptionalCustomerId { get; set; }
+        public Int32 Id { get; set; }
+        public GuidAllowDefaultFalseId GuidAllowDefaultFalse { get; set; }
+        public GuidAllowDefaultFalseId? GuidAllowDefaultFalseNullable { get; set; }
+        public GuidAllowDefaultTrueId GuidAllowDefaultTrue { get; set; }
+        public Int32AllowDefaultFalseId Int32AllowDefaultFalse { get; set; }
+        public Int32AllowDefaultFalseId? Int32AllowDefaultFalseNullable { get; set; }
+        public Int32AllowDefaultTrueId Int32AllowDefaultTrue { get; set; }
+        public StringAllowDefaultFalseId StringAllowDefaultFalse { get; set; }
+        public StringAllowDefaultFalseId? StringAllowDefaultFalseNullable { get; set; }
+        public StringAllowDefaultTrueId StringAllowDefaultTrue { get; set; }
 
         public String Description { get; set; } = String.Empty;
     }
@@ -141,10 +172,20 @@ public class StrongIdValueConverterTests
             modelBuilder.Entity<StrongIdOrder>(entity =>
             {
                 entity.HasKey(static order => order.Id);
-                entity.Property(static order => order.Id).HasStrongIdConversion<OrderId, Guid>();
-                entity.Property(static order => order.CustomerId).HasStrongIdConversion<CustomerId, Guid>();
-                entity.Property(static order => order.OptionalCustomerId).HasStrongIdConversion<CustomerId, Guid>();
+
                 entity.Property(static order => order.Description).IsRequired();
+
+                entity.Property(static order => order.GuidAllowDefaultFalse).HasStrongIdConversion<GuidAllowDefaultFalseId, Guid>();
+                entity.Property(static order => order.GuidAllowDefaultFalseNullable).HasStrongIdConversion<GuidAllowDefaultFalseId, Guid>();
+                entity.Property(static order => order.GuidAllowDefaultTrue).HasStrongIdConversion<GuidAllowDefaultTrueId, Guid>();
+
+                entity.Property(static order => order.Int32AllowDefaultFalse).HasStrongIdConversion<Int32AllowDefaultFalseId, Int32>();
+                entity.Property(static order => order.Int32AllowDefaultFalseNullable).HasStrongIdConversion<Int32AllowDefaultFalseId, Int32>();
+                entity.Property(static order => order.Int32AllowDefaultTrue).HasStrongIdConversion<Int32AllowDefaultTrueId, Int32>();
+
+                entity.Property(static order => order.StringAllowDefaultFalse).HasStrongIdConversion<StringAllowDefaultFalseId, String>();
+                entity.Property(static order => order.StringAllowDefaultFalseNullable).HasStrongIdConversion<StringAllowDefaultFalseId, String>();
+                entity.Property(static order => order.StringAllowDefaultTrue).HasStrongIdConversion<StringAllowDefaultTrueId, String>();
             });
         }
     }

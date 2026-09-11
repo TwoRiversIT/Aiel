@@ -130,7 +130,7 @@ public class StrongIdTests
     public void GivenAllowDefaultIsTrue_WhenValueIsDefault_IsEmptyReturnsTrue()
     {
         var id = new Int32AllowDefaultTrueId(0);
-        id.IsDefault.Should().BeTrue();
+        id.HasValue.Should().BeFalse();
     }
 
     #region IComparable<T> Tests for Guid-based StrongIds

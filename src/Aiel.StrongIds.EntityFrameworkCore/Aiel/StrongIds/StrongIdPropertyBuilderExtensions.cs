@@ -42,7 +42,7 @@ public static class StrongIdPropertyBuilderExtensions
     /// <returns>The configured property builder.</returns>
     public static PropertyBuilder<TStrongId> HasStrongIdConversion<TStrongId, TValue>(this PropertyBuilder<TStrongId> propertyBuilder)
         where TStrongId : notnull, IStrongId<TValue>
-        where TValue : notnull
+        where TValue : notnull, IComparable<TValue>, IEquatable<TValue>
     {
         ArgumentNullException.ThrowIfNull(propertyBuilder);
 
@@ -64,7 +64,7 @@ public static class StrongIdPropertyBuilderExtensions
     /// <returns>The configured property builder.</returns>
     public static PropertyBuilder<TStrongId?> HasStrongIdConversion<TStrongId, TValue>(this PropertyBuilder<TStrongId?> propertyBuilder)
         where TStrongId : struct, IStrongId<TValue>
-        where TValue : struct
+        where TValue : notnull, IComparable<TValue>, IEquatable<TValue>
     {
         ArgumentNullException.ThrowIfNull(propertyBuilder);
 
@@ -80,7 +80,7 @@ public static class StrongIdPropertyBuilderExtensions
 
 internal static class StrongIdConversionExpressions<TStrongId, TValue>
     where TStrongId : notnull, IStrongId<TValue>
-    where TValue : notnull
+        where TValue : notnull, IComparable<TValue>, IEquatable<TValue>
 {
     private static readonly MethodInfo FromMethod = ResolveFromMethod();
     [SuppressMessage("Roslynator", "RCS1213:Remove unused member declaration", Justification = "Pretty sure this is needed by a source generator which is why it appears unused.")]
@@ -140,14 +140,12 @@ internal static class StrongIdConversionExpressions<TStrongId, TValue>
 
 internal static class NullableStrongIdConversionExpressions<TStrongId, TValue>
     where TStrongId : struct, IStrongId<TValue>
-    where TValue : struct
+        where TValue : notnull, IComparable<TValue>, IEquatable<TValue>
 {
-    private static readonly MethodInfo FromMethod = ResolveFromMethod();
+    private static readonly Func<TValue, TStrongId> From = BuildFromDelegate();
 
     public static ValueConverter<TStrongId?, TValue?> CreateConverter()
-    {
-        return new ValueConverter<TStrongId?, TValue?>(ToProviderExpression(), FromProviderExpression());
-    }
+        => new(strongId => ConvertToProviderValue(strongId), value => ConvertFromProviderValue(value));
 
     public static ValueComparer<TStrongId?> CreateComparer()
     {
@@ -157,35 +155,28 @@ internal static class NullableStrongIdConversionExpressions<TStrongId, TValue>
             strongId => strongId);
     }
 
-    private static Expression<Func<TStrongId?, TValue?>> ToProviderExpression()
+    private static TValue? ConvertToProviderValue(TStrongId? strongId)
     {
-        var strongId = Expression.Parameter(typeof(TStrongId?), "strongId");
-        var hasValue = Expression.Property(strongId, nameof(Nullable<>.HasValue));
-        var strongIdValue = Expression.Property(strongId, nameof(Nullable<>.Value));
-        var providerValue = Expression.Property(strongIdValue, nameof(IStrongId<>.Value));
-        var body = Expression.Condition(
-            hasValue,
-            Expression.Convert(providerValue, typeof(TValue?)),
-            Expression.Constant(default(TValue?), typeof(TValue?)));
+        if (!strongId.HasValue)
+        {
+            return default;
+        }
 
-        return Expression.Lambda<Func<TStrongId?, TValue?>>(body, strongId);
+        return strongId.Value.Value;
     }
 
-    private static Expression<Func<TValue?, TStrongId?>> FromProviderExpression()
+    private static TStrongId? ConvertFromProviderValue(TValue? value)
     {
-        var value = Expression.Parameter(typeof(TValue?), "value");
-        var hasValue = Expression.Property(value, nameof(Nullable<>.HasValue));
-        var nonNullableValue = Expression.Property(value, nameof(Nullable<>.Value));
-        var createStrongId = Expression.Convert(Expression.Call(FromMethod, nonNullableValue), typeof(TStrongId?));
-        var body = Expression.Condition(
-            hasValue,
-            createStrongId,
-            Expression.Constant(default(TStrongId?), typeof(TStrongId?)));
+        Object? boxedValue = value;
+        if (boxedValue is null)
+        {
+            return default;
+        }
 
-        return Expression.Lambda<Func<TValue?, TStrongId?>>(body, value);
+        return From((TValue)boxedValue);
     }
 
-    private static MethodInfo ResolveFromMethod()
+    private static Func<TValue, TStrongId> BuildFromDelegate()
     {
         var method = typeof(TStrongId).GetMethod(
             "From",
@@ -199,6 +190,6 @@ internal static class NullableStrongIdConversionExpressions<TStrongId, TValue>
             throw new InvalidOperationException($"Strong ID type '{typeof(TStrongId).FullName}' must expose a public static From({typeof(TValue).FullName}) method.");
         }
 
-        return method;
+        return method.CreateDelegate<Func<TValue, TStrongId>>();
     }
 }

@@ -28,17 +28,17 @@ namespace Aiel.StrongIds;
 public interface IStrongId : IComparable
 {
     /// <summary>
-    /// Gets a value indicating whether the identifier is the default value.
+    /// Gets a value indicating whether the identifier has a value.
     /// </summary>
-    Boolean IsDefault { get; }
+    Boolean HasValue { get; }
 }
 
 /// <summary>
 /// Represents a strongly-typed identifier with a specific value type as the backing store.
 /// </summary>
 /// <typeparam name="TValue">The type of the value. Supported types are Int16, Int32, Int64, UInt16, UInt32, UInt64, Guid, and String.</typeparam>
-public interface IStrongId<TValue> : IStrongId, IComparable<IStrongId<TValue>>
-    where TValue : notnull
+public interface IStrongId<TValue> : IStrongId, IComparable<IStrongId<TValue>>, IEquatable<IStrongId<TValue>>
+    where TValue : notnull, IComparable<TValue>, IEquatable<TValue>
 {
     /// <summary>
     /// Gets the value of the strongly-typed identifier.
@@ -47,46 +47,26 @@ public interface IStrongId<TValue> : IStrongId, IComparable<IStrongId<TValue>>
 }
 
 /// <summary>
-/// Provides extension methods for working with strongly-typed identifiers.
+/// Represents an entity with a strongly-typed identifier.
 /// </summary>
-public static class StrongIdExtensions
+public interface IHasStrongId
 {
     /// <summary>
-    /// Throws an ArgumentException if the specified strongly-typed identifier is the default value.
+    /// Gets the unique identifier of the entity.
     /// </summary>
-    /// <typeparam name="T">The type of the strongly-typed identifier.</typeparam>
-    /// <param name="value">The strongly-typed identifier to check.</param>
-    /// <param name="parameterName">The name of the parameter.</param>
-    /// <returns>The strongly-typed identifier if it is not the default value.</returns>
-    /// <exception cref="ArgumentException"></exception>
-    public static T ThrowIfDefault<T>(this T value, String parameterName)
-        where T : IStrongId
-    {
-        if (value.IsDefault)
-        {
-            throw new ArgumentException("The StrongId is empty or default.", parameterName);
-        }
-
-        return value;
-    }
-
-    /// <summary>
-    /// Throws an ArgumentException if the specified nullable strongly-typed identifier is the default value. Does not throw an exception for null values.
-    /// </summary>
-    /// <typeparam name="T">The type of the strongly-typed identifier.</typeparam>
-    /// <param name="value">The nullable strongly-typed identifier to check.</param>
-    /// <param name="parameterName">The name of the parameter.</param>
-    /// <returns>The nullable strongly-typed identifier if it is not the default value.</returns>
-    /// <exception cref="ArgumentException"></exception>
-    public static T? ThrowIfDefault<T>(this T? value, String parameterName)
-        where T : struct, IStrongId
-    {
-        // Null is not default value so we don't throw an exception for null values.
-        if (value?.IsDefault == true)
-        {
-            throw new ArgumentException("The StrongId is empty or default.", parameterName);
-        }
-
-        return value;
-    }
+    IStrongId Id { get; }
 }
+
+/// <summary>
+/// Represents an entity with a strongly-typed identifier of a specific type.
+/// </summary>
+/// <typeparam name="TId">The type of the strongly-typed identifier.</typeparam>
+public interface IHasStrongId<TId>
+    where TId : IStrongId
+{
+    /// <summary>
+    /// Gets the unique identifier of the entity.
+    /// </summary>
+    TId Id { get; }
+}
+

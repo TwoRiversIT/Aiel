@@ -22,7 +22,7 @@
 
 using Aiel.StrongIds;
 
-namespace Aiel.Domain;
+namespace Aiel.Domain.Entities;
 
 /// <summary>
 /// Represents a base class for entities with a strongly-typed identifier and versioning support.
@@ -49,12 +49,7 @@ public abstract class ClassEntity<TKey> : IEntity<TKey>, IHasStrongId
     /// <exception cref="ArgumentException">Thrown when the provided identifier is the default value.</exception>
     protected ClassEntity(TKey id)
     {
-        if (id.IsDefault)
-        {
-            throw new ArgumentException("Entity ID cannot be the default value.", nameof(id));
-        }
-
-        Id = id;
+        Id = id.HasValue ? id : throw new ArgumentException("Entity ID cannot be the default value.", nameof(id));
     }
 
     /// <summary>

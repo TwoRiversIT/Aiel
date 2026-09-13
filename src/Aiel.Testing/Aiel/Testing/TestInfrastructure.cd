@@ -1,50 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Aiel.Testing.ConfiguratorTestFixture&lt;TConfigurator&gt;" Collapsed="true">
-    <Position X="6.25" Y="8.25" Width="3.75" />
+    <Position X="12" Y="4.75" Width="3.75" />
+    <InheritanceLine Type="Aiel.Testing.IntegrationTestFixture" ManuallyRouted="true">
+      <Path>
+        <Point X="17.125" Y="3.946" />
+        <Point X="17.125" Y="4.332" />
+        <Point X="13.875" Y="4.332" />
+        <Point X="13.875" Y="4.75" />
+      </Path>
+    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAIAAAAgAAAAAA=</HashCode>
       <FileName>Aiel\Testing\ConfiguratorTestFixture.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Aiel.Testing.SystemUnderTestBase&lt;TFixture, TSut&gt;" Collapsed="true">
-    <Position X="16.25" Y="10" Width="2.75" />
+    <Position X="1" Y="6.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Aiel\Testing\SystemUnderTestBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Aiel.Testing.IntegrationTestFixture" Collapsed="true">
-    <Position X="10.25" Y="6.75" Width="2.25" />
+    <Position X="16" Y="3.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Aiel\Testing\IntegrationTestFixture.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Aiel.Testing.TestFixtureBase" Collapsed="true">
-    <Position X="10.25" Y="5.25" Width="2.25" />
+    <Position X="16" Y="1.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>EQIAAAEAABAAAAAIAAAgBAAAAAAAAAAIAAAAhAAAAAA=</HashCode>
+      <HashCode>EQIAACEAABAAAAAIAAAgBAAAAAAAAAAIAAAAhAAAAAA=</HashCode>
       <FileName>Aiel\Testing\TestFixtureBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Aiel.Testing.SpecificationFixture&lt;TSut&gt;" Collapsed="true">
-    <Position X="12.25" Y="11.75" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AABAAAAAABAACAAAAAAAAAAAAAAAAAAAAAAAAQAACAA=</HashCode>
-      <FileName>Aiel\Testing\SpecificationTestBase.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Aiel.Testing.SpecificationTestBase&lt;TFixture, TSut&gt;" Collapsed="true">
-    <Position X="16.25" Y="11.75" Width="2.75" />
+    <Position X="1" Y="8.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAEAAAACAAAAAAAEAEAAAAACAAAAAAA=</HashCode>
       <FileName>Aiel\Testing\SpecificationTestBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Aiel.Testing.SystemUnderTestFixture&lt;TSut&gt;" Collapsed="true">
-    <Position X="12.25" Y="10" Width="2.75" />
+    <Position X="18" Y="6.5" Width="2.75" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
       <Compartment Name="Methods" Collapsed="true" />
@@ -52,10 +53,10 @@
     </Compartments>
     <InheritanceLine Type="Aiel.Testing.IntegrationTestFixture" ManuallyRouted="true">
       <Path>
-        <Point X="11.375" Y="7.446" />
-        <Point X="11.375" Y="7.874" />
-        <Point X="13.625" Y="7.874" />
-        <Point X="13.625" Y="10" />
+        <Point X="17.125" Y="3.946" />
+        <Point X="17.125" Y="4.313" />
+        <Point X="19.375" Y="4.313" />
+        <Point X="19.375" Y="6.5" />
       </Path>
     </InheritanceLine>
     <TypeIdentifier>
@@ -64,33 +65,68 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Aiel.Testing.IntegrationTestBase&lt;TFixture&gt;" Collapsed="true">
-    <Position X="16.5" Y="6.75" Width="2.25" />
+    <Position X="1.25" Y="3.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>gAAAAQAAAAAAAAAAAAACBAAAAAAAAFAAgAEAAgAAAAA=</HashCode>
+      <HashCode>gAAAAAAAAAAAAAAAAAACBAAAAAAAAFAAgAEAAgABAAA=</HashCode>
       <FileName>Aiel\Testing\IntegrationTestBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Aiel.Testing.TestBase" Collapsed="true">
-    <Position X="16.75" Y="5.25" Width="1.75" />
+    <Position X="1.5" Y="1.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>EAAAAAEAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAACAAA=</HashCode>
       <FileName>Aiel\Testing\TestBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="Aiel.Testing.SystemUnderTestConfiguratorTestBase&lt;TConfigurator, TFixture, TSut&gt;" Collapsed="true">
+    <Position X="4.25" Y="6.5" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Aiel\Testing\SystemUnderTestConfiguratorTestFixture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aiel.Testing.TestInitializationContext" Collapsed="true">
+    <Position X="5.25" Y="1.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Aiel\Testing\TestInitializationContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aiel.Testing.ConfiguratorTestBase&lt;TConfigurator, TFixture&gt;" Collapsed="true">
+    <Position X="5.25" Y="4.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Aiel\Testing\ConfiguratorTestBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="Aiel.Testing.SystemUnderTestConfiguratorTestFixture&lt;TConfigurator, TSut&gt;" Collapsed="true">
-    <Position X="5.5" Y="10" Width="5.25" />
+    <Position X="11.25" Y="6.5" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>Aiel\Testing\SystemUnderTestConfiguratorTestFixture.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Aiel.Testing.TestInitializationContext" Collapsed="true">
-    <Position X="20.5" Y="5.25" Width="2.5" />
+  <Class Name="SpecificationConfiguratorTestFixture&lt;TConfigurator, TSut&gt;" Collapsed="true">
+    <Position X="11.5" Y="8.25" Width="4.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Aiel\Testing\TestInitializationContext.cs</FileName>
+      <FileName>SpecificationConfiguratorTestFixture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aiel.Testing.SpecificationFixture&lt;TSut&gt;" Collapsed="true">
+    <Position X="18" Y="8.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAABAACAAAAAAAAAAAAAAAAAAAAAAAAQAACAA=</HashCode>
+      <FileName>Aiel\Testing\SpecificationFixture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aiel.Testing.SpecificationConfiguratorTestBase&lt;TConfigurator, TFixture, TSut&gt;" Collapsed="true">
+    <Position X="4.75" Y="8.25" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAACAAAAAAAEAEAAAAACAAAAAAA=</HashCode>
+      <FileName>Aiel\Testing\SpecificationConfiguratorTestBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Consolas" Size="10" />

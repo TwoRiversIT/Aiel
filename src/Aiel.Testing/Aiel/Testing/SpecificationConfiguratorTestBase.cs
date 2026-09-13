@@ -21,26 +21,27 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
-public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut> : ConfiguratorTestFixture<TConfigurator>
+public abstract class SpecificationConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
+    : SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(fixture, output)
     where TConfigurator : IConfigurator, new()
+    where TFixture : SpecificationConfiguratorTestFixture<TConfigurator, TSut>
     where TSut : class
 {
-    internal override ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)
+    private readonly TFixture _fixture = fixture;
+
+    internal override async ValueTask InitializeDerivedTestAsync()
     {
-        context.Services.AddScoped<TSut>();
+        _fixture.ProvideTest(GivenAsync, WhenAsync, ThenAsync);
 
-        return ValueTask.CompletedTask;
+        await base.InitializeDerivedTestAsync();
     }
-}
 
-public class SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
-    : ConfiguratorTestBase<TConfigurator, TFixture>(fixture, output)
-    where TConfigurator : IConfigurator, new()
-    where TFixture : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
-    where TSut : class
-{
+    public virtual ValueTask GivenAsync() => ValueTask.CompletedTask;
+
+    public abstract ValueTask WhenAsync();
+
+    public virtual ValueTask ThenAsync() => ValueTask.CompletedTask;
 }

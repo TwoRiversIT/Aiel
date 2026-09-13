@@ -24,7 +24,7 @@ using Aiel.Framework;
 
 namespace Aiel.Testing;
 
-public class SpecificationFixture<TSut> : SystemUnderTestFixture<TSut>
+public class SpecificationTestFixture<TSut> : SystemUnderTestFixture<TSut>
     where TSut : class
 {
     private Func<ValueTask>? _givenAsync;

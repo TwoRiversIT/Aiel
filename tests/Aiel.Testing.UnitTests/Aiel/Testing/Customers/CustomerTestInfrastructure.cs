@@ -33,7 +33,7 @@ public abstract class CustomerTestBase<TSut>(CustomersFixture<TSut> fixture, ITe
 {
 }
 
-public class CustomersFixture<TSut> : SpecificationFixture<TSut>
+public class CustomersFixture<TSut> : SpecificationTestFixture<TSut>
     where TSut : class
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

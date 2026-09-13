@@ -41,7 +41,7 @@ namespace Aiel.Testing;
 /// </remarks>
 public abstract class SpecificationTestBase<TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
     : SystemUnderTestBase<TFixture, TSut>(fixture, output)
-    where TFixture : SpecificationFixture<TSut>
+    where TFixture : SpecificationTestFixture<TSut>
     where TSut : class
 {
     private readonly TFixture _fixture = fixture;

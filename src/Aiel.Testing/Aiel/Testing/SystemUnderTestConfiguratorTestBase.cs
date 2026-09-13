@@ -21,31 +21,22 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
-public abstract class TestBase(ITestOutputHelper testOutputHelper) : DisposableBase, IAsyncLifetime
+public class SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
+    : ConfiguratorTestBase<TConfigurator, TFixture>(fixture, output)
+    where TConfigurator : IConfigurator, new()
+    where TFixture : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
+    where TSut : class
 {
     /// <summary>
-    /// Gets the cancellation token from the current test context.
-    /// </summary>
-    protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
-
-    /// <summary>
-    /// Gets the test output helper for logging test output.
-    /// </summary>
-    protected ITestOutputHelper TestOutput => testOutputHelper ?? throw new ArgumentNullException(nameof(testOutputHelper));
-
-    /// <summary>
-    /// Do not override this method! You have been warned!
+    /// Gets the System Under Test (SUT) instance from the service provider.
     /// </summary>
     /// <remarks>
-    /// This method is called by xUnit once for each test because each test gets a new instance of the test class.
+    /// The SUT is lazily instantiated on first access.
     /// </remarks>
-    public async ValueTask InitializeAsync()
-    {
-        await InitializeDerivedTestAsync();
-    }
-
-    internal abstract ValueTask InitializeDerivedTestAsync();
+    protected TSut SUT => Services.GetRequiredService<TSut>()
+        ?? throw new InvalidOperationException("SUT has not been initialized. You are not following the correct inheritance chain and initialization sequence.");
 }

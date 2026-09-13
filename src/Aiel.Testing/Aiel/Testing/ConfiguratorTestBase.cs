@@ -21,26 +21,11 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
-public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut> : ConfiguratorTestFixture<TConfigurator>
+public class ConfiguratorTestBase<TConfigurator, TFixture>(TFixture fixture, ITestOutputHelper output) : IntegrationTestBase<TFixture>(fixture, output)
     where TConfigurator : IConfigurator, new()
-    where TSut : class
-{
-    internal override ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)
-    {
-        context.Services.AddScoped<TSut>();
-
-        return ValueTask.CompletedTask;
-    }
-}
-
-public class SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
-    : ConfiguratorTestBase<TConfigurator, TFixture>(fixture, output)
-    where TConfigurator : IConfigurator, new()
-    where TFixture : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
-    where TSut : class
+    where TFixture : ConfiguratorTestFixture<TConfigurator>
 {
 }

@@ -21,26 +21,32 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
-public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut> : ConfiguratorTestFixture<TConfigurator>
-    where TConfigurator : IConfigurator, new()
+public class SpecificationFixture<TSut> : SystemUnderTestFixture<TSut>
     where TSut : class
 {
-    internal override ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)
+    private Func<ValueTask>? _givenAsync;
+    private Func<ValueTask>? _whenAsync;
+    private Func<ValueTask>? _thenAsync;
+
+    internal override async ValueTask InitializeFixtureAsync(InitializationContext context, CancellationToken cancellationToken)
     {
-        context.Services.AddScoped<TSut>();
+        if (_givenAsync is null || _whenAsync is null || _thenAsync is null)
+        {
+            throw new InvalidOperationException("GivenAsync, WhenAsync, and ThenAsync functions have not been provided.");
+        }
 
-        return ValueTask.CompletedTask;
+        await _givenAsync();
+        await _whenAsync();
+        await _thenAsync();
     }
-}
 
-public class SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
-    : ConfiguratorTestBase<TConfigurator, TFixture>(fixture, output)
-    where TConfigurator : IConfigurator, new()
-    where TFixture : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
-    where TSut : class
-{
+    public void ProvideTest(Func<ValueTask> givenAsync, Func<ValueTask> whenAsync, Func<ValueTask> thenAsync)
+    {
+        _givenAsync = givenAsync ?? throw new ArgumentNullException(nameof(givenAsync));
+        _whenAsync = whenAsync ?? throw new ArgumentNullException(nameof(whenAsync));
+        _thenAsync = thenAsync ?? throw new ArgumentNullException(nameof(thenAsync));
+    }
 }

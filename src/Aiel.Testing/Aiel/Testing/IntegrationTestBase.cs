@@ -40,25 +40,19 @@ namespace Aiel.Testing;
 /// The fixture provides shared setup, resources, or state that can be reused across multiple tests.
 /// </para>
 /// </remarks>
-public abstract class IntegrationTestBase<TFixture>
-    : TestBase, IClassFixture<TFixture>
+/// <remarks>
+/// Initializes a new instance of the <see cref="SystemUnderTestBase{TSut, TFixture}"/> class.
+/// </remarks>
+/// <param name="fixture">The test fixture providing services and configuration.</param>
+/// <param name="output">The test output helper for logging test output.</param>
+public abstract class IntegrationTestBase<TFixture>(TFixture fixture, ITestOutputHelper output)
+    : TestBase(output), IClassFixture<TFixture>
     where TFixture : TestFixtureBase
 {
-    private readonly TFixture _fixture;
+    private readonly TFixture _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
     private IServiceProvider? _serviceProvider;
     private IConfiguration? _configuration;
     private FakeTimeProvider? _timeProvider;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SystemUnderTestBase{TSut, TFixture}"/> class.
-    /// </summary>
-    /// <param name="fixture">The test fixture providing services and configuration.</param>
-    /// <param name="output">The test output helper for logging test output.</param>
-    protected IntegrationTestBase(TFixture fixture, ITestOutputHelper output) : base(output)
-    {
-        ArgumentNullException.ThrowIfNull(output);
-        _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
-    }
 
     internal override async ValueTask InitializeDerivedTestAsync()
     {

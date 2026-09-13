@@ -25,7 +25,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
-public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut> : ConfiguratorTestFixture<TConfigurator>
+public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
+    : ConfiguratorTestFixture<TConfigurator>
     where TConfigurator : IConfigurator, new()
     where TSut : class
 {
@@ -35,12 +36,4 @@ public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut> : Confi
 
         return ValueTask.CompletedTask;
     }
-}
-
-public class SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
-    : ConfiguratorTestBase<TConfigurator, TFixture>(fixture, output)
-    where TConfigurator : IConfigurator, new()
-    where TFixture : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
-    where TSut : class
-{
 }

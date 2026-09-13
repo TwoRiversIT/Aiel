@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Fakes;
+using Aiel.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,9 +36,8 @@ public class DefaultDependencyManagerTests : AielDependencyManagerTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
-        services.AddSingleton<IAielEnvironment>(FakeAielEnvironment.Create());
 
         var serviceProvider = services.BuildServiceProvider();
-        return new InitializationContext(serviceProvider);
+        return new TestInitializationContext(serviceProvider);
     }
 }

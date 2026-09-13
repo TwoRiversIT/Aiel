@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Testing.StrongIds;
-
 namespace Aiel.StrongIds;
 
 [SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "It's freaking unit tests!")]

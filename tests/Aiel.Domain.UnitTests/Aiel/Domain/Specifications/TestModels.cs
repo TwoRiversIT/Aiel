@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Contacts;
-using Aiel.Testing.Models;
+using Aiel.Testing.Dummies;
 
 namespace Aiel.Domain.Specifications;
 

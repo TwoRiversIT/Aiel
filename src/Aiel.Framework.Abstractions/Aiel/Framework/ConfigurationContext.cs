@@ -20,24 +20,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Collections;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Framework
 {
     /// <summary>
-    /// Represents the context for configuring dependencies in the Aiel framework, providing access to the environment, services, and configuration.
+    /// Represents the context for dependency configuration in the Aiel framework, providing access to the environment and configuration.
     /// </summary>
     /// <param name="environment">The Aiel environment.</param>
-    /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration.</param>
-    public sealed class ConfigurationContext(IAielEnvironment environment, IServiceCollection services, IConfiguration configuration)
-        : DependencyContext(environment, configuration)
+    /// <param name="services">The service collection.</param>
+    public class ConfigurationContext(IAielEnvironment environment, IConfiguration configuration, IServiceCollection services)
     {
         /// <summary>
-        /// Gets the service collection, which is an observable collection that allows for monitoring changes to the registered services.
+        /// Gets the Aiel environment, which provides information about the current environment in which the application is running.
         /// </summary>
-        public IServiceCollection Services { get; } = new ObservableServiceCollection(services);
+        public IAielEnvironment Environment { get; } = environment ?? throw new ArgumentNullException(nameof(environment));
+
+        /// <summary>
+        /// Gets the configuration, which provides access to application settings and configuration values.
+        /// </summary>
+        public IConfiguration Configuration { get; } = configuration ?? throw new ArgumentNullException(nameof(configuration));
+
+        /// <summary>
+        /// Gets the service collection, which provides access to registered services and allows for configuring dependencies.
+        /// </summary>
+        public IServiceCollection Services { get; } = services ?? throw new ArgumentNullException(nameof(services));
     }
 }

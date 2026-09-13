@@ -21,19 +21,20 @@
 // DEALINGS IN THE SOFTWARE.
 using Aiel.Framework;
 using Aiel.Testing;
-using Aiel.Testing.Customers;
+using Aiel.Testing.Dummies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Customers;
 
 // Fixture
-public class CustomersFixture : IntegrationTestFixture
+public class CustomersFixture<TSut> : SystemUnderTestFixture<TSut>
+    where TSut : class
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
         // Register data access
-        context.Services.AddDbContext<CustomerDbContext>(options =>
+        context.Services.AddDbContext<DummyDbContext>(options =>
             options.UseInMemoryDatabase("CustomerTests")
                    .EnableSensitiveDataLogging(true));
 
@@ -49,7 +50,7 @@ public class CustomersFixture : IntegrationTestFixture
     public override async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
         // Ensure database schema exists
-        var dbContext = context.Services.GetRequiredService<CustomerDbContext>();
+        var dbContext = context.Services.GetRequiredService<DummyDbContext>();
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
         // And no data left from previous tests

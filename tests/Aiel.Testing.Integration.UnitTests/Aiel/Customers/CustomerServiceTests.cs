@@ -20,13 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Testing.Customers;
+using Aiel.Testing.Dummies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Customers;
 
-public class CustomerServiceTests(CustomersFixture fixture, ITestOutputHelper output)
-    : CustomerTestBase<CustomerApplicationService>(fixture, output)
+public class CustomerServiceTests(CustomersFixture<CustomerApplicationService> fixture, ITestOutputHelper output)
+    : CustomerTestBase<CustomersFixture<CustomerApplicationService>, CustomerApplicationService>(fixture, output)
 {
     [Fact]
     public async Task CreateCustomer_WithValidData_ShouldReturn_Success()

@@ -45,8 +45,6 @@ public sealed class AuthorizationEfCoreFixture : IntegrationTestFixture
 
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        context.Services.AddSingleton<TimeProvider>(TimeProvider);
-
         var manifests = new[]
         {
             AuthorizationTestData.CreateSampleManifest(),

@@ -20,8 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Testing.Errors;
-
 namespace Aiel.Results;
 
 public sealed class ErrorCodeRegistryTests(ResultsIntegrationTestFixture fixture, ITestOutputHelper output)

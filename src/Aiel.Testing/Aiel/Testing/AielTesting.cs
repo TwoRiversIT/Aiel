@@ -22,6 +22,8 @@
 
 using Aiel.Framework;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Aiel.Testing.UnitTests")]
+
 namespace Aiel.Testing;
 
 [DependsOn(typeof(AielFramework))]

@@ -76,6 +76,8 @@ public abstract class DisposableBase : IAsyncDisposable, IDisposable
         // Dispose unmanaged resources only; managed already handled by DisposeAsyncCore
         Dispose(disposing: false);
         GC.SuppressFinalize(this);
+
+        _isDisposed = true;
     }
 
     /// <summary>
@@ -85,33 +87,5 @@ public abstract class DisposableBase : IAsyncDisposable, IDisposable
     /// <remarks>
     /// Derived classes should override this method to asynchronously dispose of their specific managed resources.
     /// </remarks>
-    protected virtual ValueTask DisposeAsyncCore()
-    {
-        // Dispose managed resources asynchronously in derived classes
-        return ValueTask.CompletedTask;
-    }
-
-    /// <summary>
-    /// Safely disposes an object that may implement either <see cref="IDisposable"/> or
-    /// <see cref="IAsyncDisposable"/>. If the object implements both interfaces, it
-    /// will prefer asynchronous disposal. If the object is null, this method does nothing.
-    /// </summary>
-    /// <param name="obj">The object to dispose.</param>
-    /// <returns>A task that represents the asynchronous dispose operation.</returns>
-    protected static async ValueTask SafelyDisposeOfAsync(Object? obj)
-    {
-        if (obj is null)
-        {
-            return;
-        }
-
-        if (obj is IAsyncDisposable asyncDisposable)
-        {
-            await asyncDisposable.DisposeAsync();
-        }
-        else if (obj is IDisposable disposable)
-        {
-            disposable.Dispose();
-        }
-    }
+    protected virtual ValueTask DisposeAsyncCore() => ValueTask.CompletedTask;
 }

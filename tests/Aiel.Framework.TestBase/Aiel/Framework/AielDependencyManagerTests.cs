@@ -114,9 +114,10 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
 
         var manager = CreateDependencyManager([a, b, c, d]);
 
+        var environment = FakeAielEnvironment.Create();
         var services = new ServiceCollection();
         var configuration = new ConfigurationBuilder().Build();
-        var context = new ConfigurationContext(FakeAielEnvironment.Create(), services, configuration);
+        var context = new ConfigurationContext(environment, configuration, services);
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
@@ -161,6 +162,11 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     [Fact]
     public async Task PreConfigureAsync_Is_Invoked_Once_Per_Configurator_In_Diamond_Graph()
     {
+        var environment = FakeAielEnvironment.Create();
+        var configuration = new ConfigurationBuilder().Build();
+        var services = new ServiceCollection();
+        var context = new ConfigurationContext(environment, configuration, services);
+
         var a = new DependencyDescriptor(
             name: nameof(DiamondA),
             dependencyType: typeof(DiamondA),
@@ -186,9 +192,6 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
             dependencies: []);
 
         var manager = CreateDependencyManager([a, b, c, d]);
-        var services = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().Build();
-        var context = new ConfigurationContext(FakeAielEnvironment.Create(), services, configuration);
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
@@ -201,6 +204,11 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     [Fact]
     public async Task ConfigureAsync_Runs_All_PreConfigureAsync_Before_Any_ConfigureAsync_In_Linear_Graph()
     {
+        var environment = FakeAielEnvironment.Create();
+        var configuration = new ConfigurationBuilder().Build();
+        var services = new ServiceCollection();
+        var context = new ConfigurationContext(environment, configuration, services);
+
         PhaseLog.Clear();
 
         var a = new DependencyDescriptor(
@@ -216,9 +224,6 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
             dependencies: []);
 
         var manager = CreateDependencyManager([a, b]);
-        var services = new ServiceCollection();
-        var configuration = new ConfigurationBuilder().Build();
-        var context = new ConfigurationContext(FakeAielEnvironment.Create(), services, configuration);
 
         await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
 

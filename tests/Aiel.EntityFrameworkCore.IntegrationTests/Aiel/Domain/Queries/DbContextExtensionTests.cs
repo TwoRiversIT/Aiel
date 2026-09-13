@@ -22,20 +22,20 @@
 
 using Aiel.Actions.Queries;
 using Aiel.Domain.Specifications;
-using Aiel.Testing.Models;
+using Aiel.Testing.Dummies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Domain.Queries;
 
-public class DbContextExtensionTests(QueriesTestFixture fixture, ITestOutputHelper outputHelper)
-    : QueriesTestBase(fixture, outputHelper)
+public class DbContextExtensionTests(SpecificationRepositoryFixture fixture, ITestOutputHelper outputHelper)
+    : SpecificationRepositoryTestBase(fixture, outputHelper)
 {
     [Fact]
     public async Task ExtenstionMethodsWrappingQueriesWorkCorrectly()
     {
         // Arrange
-        var dbContext = Services.GetRequiredService<TestDbContext>();
+        var dbContext = Services.GetRequiredService<DummyDbContext>();
 
         // Act
         var list = await dbContext.ListPeople(new ListPeople()).ToListAsync(CancellationToken);
@@ -56,7 +56,7 @@ public sealed record ListPeople(SortOrder? SortRequest = null, Page? PageRequest
 
 public static class TestDbContextExtensions
 {
-    public static IQueryable<Person> ListPeople(this TestDbContext dbContext, ListPeople request)
+    public static IQueryable<Person> ListPeople(this DummyDbContext dbContext, ListPeople request)
     {
         var specification = new EntitySpecification<Person>(p => true);
 

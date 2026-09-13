@@ -38,7 +38,7 @@ public class WebAssemblyApplicationBootstrapTests : BootstrapTestsBase
         var environment = FakeAielEnvironment.Create();
         var configuration = new ConfigurationBuilder().Build();
         var services = new ServiceCollection();
-        var context = new ConfigurationContext(environment, services, configuration);
+        var context = new ConfigurationContext(environment, configuration, services);
         var dependencyManager = new WebAssemblyDependencyManager(descriptors);
 
         await dependencyManager.ConfigureAsync(context);

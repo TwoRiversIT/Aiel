@@ -6,6 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Using Include="Aiel.Testing.Dummies" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!-- Temporarily disabling analyzers until I figure out which one is crashing the diagnostic runner.
         <ProjectReference Include="..\..\src\Aiel.Results.Analyzers\Aiel.Results.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />

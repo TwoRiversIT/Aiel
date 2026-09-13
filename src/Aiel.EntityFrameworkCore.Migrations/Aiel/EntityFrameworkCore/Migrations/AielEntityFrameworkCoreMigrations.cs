@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Collections;
 using Aiel.Framework;
+using Aiel.Framework.Collections;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore.Migrations;

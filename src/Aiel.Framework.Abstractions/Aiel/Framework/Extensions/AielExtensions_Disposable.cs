@@ -20,12 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.Extensions;
 
-/// <summary>
-/// Provides extension methods for safely disposing objects that may implement
-/// either <see cref="IDisposable"/> or <see cref="IAsyncDisposable"/>.
-/// </summary>
 public static partial class AielExtensions
 {
     /// <summary>

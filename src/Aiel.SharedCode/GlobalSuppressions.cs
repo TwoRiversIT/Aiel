@@ -20,20 +20,4 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Configuration;
-
-namespace Aiel.Framework.Extensions;
-
-public static partial class AielExtensions
-{
-
-    /// <summary>
-    /// Gets the options of type T from the configuration section named after the type T.
-    /// </summary>
-    /// <typeparam name="T">The type of the options to retrieve.</typeparam>
-    /// <param name="configuration">The configuration from which to retrieve the options.</param>
-    /// <returns>The options instance.</returns>
-    public static T GetOptions<T>(this IConfiguration configuration)
-            where T : class, new()
-            => configuration.GetSection(typeof(T).Name).Get<T>() ?? new T();
-}
+[assembly: SuppressMessage("Maintainability", "CA1510:Use ArgumentNullException throw helper", Justification = "The analyzer does not understand that the code is included in netstandard2.0 assemblies.", Scope = "member", Target = "~M:Aiel.CodeAnalysis.ITypeSymbolExtensions.IsSupportedBackingType(Microsoft.CodeAnalysis.ITypeSymbol)~System.Boolean")]

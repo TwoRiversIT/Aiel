@@ -65,6 +65,7 @@ public static class AielHostApplicationBuilderExtensions
             EnvironmentName = builder.Environment.EnvironmentName,
             ContentRootPath = builder.Environment.ContentRootPath
         };
+
         await app.SafelyDisposeAsync();
 
         builder.Services.AddSingleton<IAielEnvironment>(environment);

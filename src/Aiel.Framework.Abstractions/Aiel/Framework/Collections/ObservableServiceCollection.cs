@@ -20,20 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 
-namespace Aiel.Collections;
+namespace Aiel.Framework.Collections;
 
-#pragma warning disable CS1574 // XML comment has cref attribute that could not be resolved
 /// <summary>
 /// An <see cref="IServiceCollection"/> wrapper that fires registered callbacks whenever a
 /// <see cref="ServiceDescriptor"/> is added to the collection.
 /// </summary>
 /// <remarks>
 /// Wrap your <see cref="IServiceCollection"/> with this type before calling
-/// <see cref="AielServiceCollectionExtensions.OnAdding"/>.
+/// <see cref="AielExtensions.OnAdding"/>.
 /// All subsequent registrations made on this instance will trigger any subscribed callbacks.
 /// </remarks>
 /// <remarks>
@@ -41,7 +39,6 @@ namespace Aiel.Collections;
 /// </remarks>
 /// <param name="inner">The service collection to wrap.</param>
 /// <exception cref="ArgumentNullException">Thrown when <paramref name="inner"/> is <see langword="null"/>.</exception>
-#pragma warning restore CS1574 // XML comment has cref attribute that could not be resolved
 public sealed class ObservableServiceCollection(IServiceCollection inner) : IServiceCollection
 {
     private readonly IServiceCollection _inner = inner ?? throw new ArgumentNullException(nameof(inner));

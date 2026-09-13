@@ -20,20 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Microsoft.Extensions.Configuration;
+using Aiel.Framework;
 
-namespace Aiel.Framework.Extensions;
+namespace Aiel.Logging.Analyzers;
 
-public static partial class AielExtensions
-{
-
-    /// <summary>
-    /// Gets the options of type T from the configuration section named after the type T.
-    /// </summary>
-    /// <typeparam name="T">The type of the options to retrieve.</typeparam>
-    /// <param name="configuration">The configuration from which to retrieve the options.</param>
-    /// <returns>The options instance.</returns>
-    public static T GetOptions<T>(this IConfiguration configuration)
-            where T : class, new()
-            => configuration.GetSection(typeof(T).Name).Get<T>() ?? new T();
-}
+[DependsOn(typeof(AielFrameworkAbstractions))]
+public sealed class AielLoggingAnalyzersUnitTests : AielDependencyConfigurator;

@@ -1,4 +1,4 @@
-﻿// MIT License
+// MIT License
 //
 // Copyright 2026 Two Rivers Information Technology Inc.
 //
@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.Results;
 using System.Text.Json.Serialization;
 

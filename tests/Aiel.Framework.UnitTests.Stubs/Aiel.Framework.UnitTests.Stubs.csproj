@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -8,11 +8,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Using Include="Aiel.Framework.Extensions" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <None Remove="Aiel\Framework\Stubs\Usings.txt" />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielApplicationConfigurator.cs" Link="Aiel\Framework\Stubs\AielApplicationConfigurator.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDependencyConfigurator.cs" Link="Aiel\Framework\Stubs\AielDependencyConfigurator.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielEnvironment.cs" Link="Aiel\Framework\Stubs\AielEnvironment.txt" />

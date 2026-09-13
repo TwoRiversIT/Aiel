@@ -20,19 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Collections;
+using Aiel.Framework.Collections;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.Extensions;
 
-/// <summary>
-/// Provides extension methods for the IServiceCollection interface to
-/// facilitate the registration of strongly-typed options with validation in
-/// the Aiel framework.
-/// </summary>
 public static partial class AielExtensions
 {
     /// <summary>

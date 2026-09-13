@@ -20,7 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Extensions;
+using Aiel.Extensions;
+
+namespace Aiel.Framework.Extensions;
 
 public class TypeExtensionsTests
 {

@@ -29,6 +29,11 @@
         <None Include="$(OutputPath)$(AssemblyName).xml" Pack="true" PackagePath="/" />
     </ItemGroup>
 
+    <!-- Import Aiel.Framework.Extensions namespace for non-tooling projects -->
+    <ItemGroup Condition="'$(IsToolingProject)' != 'true'">
+        <Using Include="Aiel.Framework.Extensions" />
+    </ItemGroup>
+
     <!-- Finalize NuGet package description with Git commit link.
         Must run inside a Target (not a PropertyGroup) because $(GitCommitId) is
         set by the GetBuildVersion target, not during static property evaluation.

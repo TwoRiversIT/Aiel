@@ -15,7 +15,7 @@
         <IsRoslynComponent>true</IsRoslynComponent>
         <DevelopmentDependency>true</DevelopmentDependency>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-        <NoWarn>$(NoWarn);NU5128;RS2000</NoWarn>
+        <NoWarn>$(NoWarn);CA1510;NU5128;RS2000</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

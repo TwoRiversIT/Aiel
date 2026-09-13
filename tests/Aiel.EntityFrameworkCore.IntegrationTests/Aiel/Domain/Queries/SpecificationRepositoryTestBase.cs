@@ -23,7 +23,6 @@
 using Aiel.Domain.Specifications;
 using Aiel.Framework;
 using Aiel.Testing;
-using Aiel.Testing.Dummies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;

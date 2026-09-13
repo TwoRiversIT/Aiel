@@ -22,7 +22,7 @@
 
 using static AwesomeAssertions.FluentActions;
 
-namespace Aiel.Collections;
+namespace Aiel.Framework.Collections;
 
 public sealed class TypeSetTests
 {

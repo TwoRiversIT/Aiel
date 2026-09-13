@@ -22,14 +22,14 @@
 
 using System.Collections;
 
-namespace Aiel.Collections;
+namespace Aiel.Framework.Collections;
 
 /// <summary>
 /// Stores the types of items in a collection rather than the instances themselves,
 /// allowing for type-based operations on the collection without needing to know
 /// the specific item types at compile time.
 /// </summary>
-/// <typeparam name="TBase"></typeparam>
+/// <typeparam name="TBase">The base type of the items in the collection.</typeparam>
 public interface ITypeSet<in TBase> : ISet<Type>, IReadOnlyCollection<Type>//, IReadOnlySet<Type>
     where TBase : class
 {

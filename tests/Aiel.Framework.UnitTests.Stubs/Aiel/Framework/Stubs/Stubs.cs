@@ -39,7 +39,7 @@ public static class Stubs
         "DependencyDescriptor.txt",
         "DependsOnAttribute.txt",
         "DisposableBase.txt",
-        "DisposableExtensions.txt",
+        "AielExtensions_Disposable.txt",
         "IApplicationConfigurator.txt",
         "IApplicationInfo.txt",
         "IConfigurator.txt",

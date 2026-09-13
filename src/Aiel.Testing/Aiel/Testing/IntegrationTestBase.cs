@@ -31,106 +31,60 @@ namespace Aiel.Testing;
 /// Provides a base class for integration tests that use a test fixture with dependency injection.
 /// </summary>
 /// <typeparam name="TFixture">The type of the test fixture providing services and configuration.</typeparam>
+/// <remarks>
+/// <para>
+/// This class is created once per test in the derived test class, and receives
+/// the same fixture instance for all tests in the derived class.
+/// </para>
+/// <para>
+/// The fixture provides shared setup, resources, or state that can be reused across multiple tests.
+/// </para>
+/// </remarks>
 public abstract class IntegrationTestBase<TFixture>
-    : DisposableBase, IClassFixture<TFixture>, IAsyncLifetime
-    where TFixture : IntegrationTestFixture
+    : TestBase, IClassFixture<TFixture>
+    where TFixture : TestFixtureBase
 {
-    /// <summary>
-    /// Gets the shared test fixture instance for the current test context.
-    /// </summary>
-    /// <remarks>The fixture provides shared setup, resources, or state that can be reused across multiple
-    /// tests. Use this property to access common dependencies or configuration required by the test class.</remarks>
-    protected TFixture Fixture { get; }
+    private readonly TFixture _fixture;
+    private IServiceProvider? _serviceProvider;
+    private IConfiguration? _configuration;
+    private FakeTimeProvider? _timeProvider;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IntegrationTestBase{TSut, TFixture}"/> class.
+    /// Initializes a new instance of the <see cref="SystemUnderTestBase{TSut, TFixture}"/> class.
     /// </summary>
     /// <param name="fixture">The test fixture providing services and configuration.</param>
     /// <param name="output">The test output helper for logging test output.</param>
-    protected IntegrationTestBase(TFixture fixture, ITestOutputHelper output)
+    protected IntegrationTestBase(TFixture fixture, ITestOutputHelper output) : base(output)
     {
         ArgumentNullException.ThrowIfNull(output);
-        Fixture = fixture;
-        Fixture.TestOutputHelper = output;
+        _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
     }
 
-    /// <summary>
-    /// Do not override this method! You have been warned!
-    /// </summary>
-    /// <remarks>
-    /// This method is called by the test framework to initialize the test class and its dependencies.
-    /// </remarks>
-    public async ValueTask InitializeAsync()
+    internal override async ValueTask InitializeDerivedTestAsync()
     {
-        if (Fixture is IAsyncTestFixture asyncFixture)
-        {
-            await asyncFixture.BeginTestAsync();
-        }
-    }
+        _serviceProvider = _fixture.GetTestServiceProvider();
 
-    /// <summary>
-    /// Gets the configuration from the test fixture.
-    /// </summary>
-    protected IConfiguration Configuration => Fixture.Configuration;
+        await _fixture.StartingTestsAsync();
+    }
 
     /// <summary>
     /// Gets the dependency injection service provider from the test fixture.
     /// </summary>
-    protected IServiceProvider Services => Fixture.Services;
+    protected IServiceProvider Services => _serviceProvider
+        ?? throw new InvalidOperationException(TestFixtureBase.IncorrectFixtureSetup);
 
     /// <summary>
-    /// Gets the cancellation token from the current test context.
+    /// Gets the configuration from the test fixture.
     /// </summary>
-    protected CancellationToken CancellationToken => TestContext.Current.CancellationToken;
+    protected IConfiguration Configuration => _configuration
+        ??= Services.GetRequiredService<IConfiguration>();
 
-    protected FakeTimeProvider TimeProvider => Fixture.TimeProvider;
-
-    protected ITestOutputHelper TestOutput => Fixture.TestOutputHelper;
+    protected FakeTimeProvider FakeTime => _timeProvider
+        ??= Services.GetRequiredService<FakeTimeProvider>();
 
     /// <summary>
-    /// Releases managed resources used by the test.
+    /// Do not override this method! You have been warned!
     /// </summary>
     protected override async ValueTask DisposeAsyncCore()
-    {
-        if (Fixture is IAsyncTestFixture asyncFixture)
-        {
-            await asyncFixture.EndTestAsync();
-        }
-    }
-}
-
-/// <summary>
-/// Provides a base class for integration tests that test a specific service, Service Under Test (SUT), and a test fixture with
-/// configured service dependencies.
-/// </summary>
-/// <remarks>This class supports integration testing scenarios where the SUT is resolved from the test fixture's
-/// service provider. The SUT instance is created lazily and is available to derived test classes via the protected SUT
-/// property.</remarks>
-/// <typeparam name="TSut">The type of the System Under Test (SUT) to be resolved from the service provider. Must not be null.</typeparam>
-/// <typeparam name="TFixture">The type of the integration test fixture that supplies services and configuration for the test environment.</typeparam>
-public abstract class IntegrationTestBase<TSut, TFixture>
-    : IntegrationTestBase<TFixture>
-    where TSut : notnull
-    where TFixture : IntegrationTestFixture
-{
-    private readonly Lazy<TSut> _lazySut;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="IntegrationTestBase{TSut, TFixture}"/> class.
-    /// </summary>
-    /// <param name="fixture">The test fixture providing services and configuration.</param>
-    /// <param name="output">The test output helper for logging test output.</param>
-    protected IntegrationTestBase(TFixture fixture, ITestOutputHelper output)
-        : base(fixture, output)
-    {
-        _lazySut = new Lazy<TSut>(() => Fixture.Services.GetRequiredService<TSut>());
-    }
-
-    /// <summary>
-    /// Gets the System Under Test (SUT) instance from the service provider.
-    /// </summary>
-    /// <remarks>
-    /// The SUT is lazily instantiated on first access.
-    /// </remarks>
-    protected TSut SUT => _lazySut.Value;
+        => await Services.SafelyDisposeAsync();
 }

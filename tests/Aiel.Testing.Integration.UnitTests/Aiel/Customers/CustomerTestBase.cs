@@ -24,8 +24,9 @@ using Aiel.Testing;
 
 namespace Aiel.Customers;
 
-public class CustomerTestBase<TSUT>(CustomersFixture fixture, ITestOutputHelper output)
-    : IntegrationTestBase<TSUT, CustomersFixture>(fixture, output)
-    where TSUT : class
+public class CustomerTestBase<TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
+    : SystemUnderTestBase<TFixture, TSut>(fixture, output)
+    where TFixture : CustomersFixture<TSut>
+    where TSut : class
 {
 }

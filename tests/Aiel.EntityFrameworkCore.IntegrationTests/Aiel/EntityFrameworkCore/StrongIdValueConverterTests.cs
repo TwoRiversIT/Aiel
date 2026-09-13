@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.StrongIds;
-using Aiel.Testing.StrongIds;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.EntityFrameworkCore;

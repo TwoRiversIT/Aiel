@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <RootNamespace />
@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
+        <Using Include="Aiel.Testing.Dummies" />
     </ItemGroup>
 
     <ItemGroup>
@@ -14,6 +14,10 @@
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         -->
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Generators\Aiel.StrongIds.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
     </ItemGroup>
 
     <ItemGroup>
@@ -25,10 +29,6 @@
         <ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
         <ProjectReference Include="..\Aiel.Domain.UnitTests\Aiel.Domain.UnitTests.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Aiel\Domain\Contacts\" />
     </ItemGroup>
 
 </Project>

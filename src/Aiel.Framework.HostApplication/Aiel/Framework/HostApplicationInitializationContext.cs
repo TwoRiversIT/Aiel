@@ -24,7 +24,8 @@ using Microsoft.Extensions.Hosting;
 
 namespace Aiel.Framework;
 
-public sealed class HostApplicationInitializationContext(IHost host) : InitializationContext(host.Services), IHost
+public sealed class HostApplicationInitializationContext(IHost host)
+    : InitializationContext(host.Services), IHost
 {
     private readonly IHost _host = host ?? throw new ArgumentNullException(nameof(host));
 

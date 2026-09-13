@@ -23,14 +23,14 @@
 using Aiel.Actions.Queries;
 using Aiel.Domain.Contacts;
 using Aiel.Domain.Queries;
-using Aiel.Testing.Models;
+using Aiel.Testing.Dummies;
 
 namespace Aiel.Domain.Specifications;
 
-public class SpecificationRepositoryTests(QueriesTestFixture fixture, ITestOutputHelper outputHelper)
-    : QueriesTestBase(fixture, outputHelper)
+public class SpecificationRepositoryTests(SpecificationRepositoryFixture fixture, ITestOutputHelper outputHelper)
+    : SpecificationRepositoryTestBase(fixture, outputHelper)
 {
-    private DateOnly Today => DateOnly.FromDateTime(TimeProvider.GetUtcNow().Date);
+    private DateOnly Today => DateOnly.FromDateTime(FakeTime.GetUtcNow().Date);
 
     [Fact]
     public async Task Any()

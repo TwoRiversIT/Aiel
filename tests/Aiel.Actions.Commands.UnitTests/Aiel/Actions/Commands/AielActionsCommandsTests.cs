@@ -25,8 +25,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Actions.Commands;
 
-public sealed class AielActionsCommandsTests(AielConfiguratorTestFixture<AielActionsCommands> fixture, ITestOutputHelper output)
-    : IntegrationTestBase<AielConfiguratorTestFixture<AielActionsCommands>>(fixture, output)
+public sealed class AielActionsCommandsTests(ConfiguratorTestFixture<AielActionsCommands> fixture, ITestOutputHelper output)
+    : IntegrationTestBase<ConfiguratorTestFixture<AielActionsCommands>>(fixture, output)
 {
     [Fact]
     public void AielActionsCommands_RegistersICommandDispatcher()

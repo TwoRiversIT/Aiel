@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.StrongIds.Validators;
-using Aiel.Testing.StrongIds;
 using FluentValidation;
 
 namespace Aiel.StrongIds;

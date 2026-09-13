@@ -31,8 +31,20 @@ namespace Aiel.Framework
     /// </summary>
     /// <param name="serviceProvider">The service provider.</param>
     public class InitializationContext(IServiceProvider serviceProvider)
-        : DependencyContext(serviceProvider.GetRequiredService<IAielEnvironment>(), serviceProvider.GetRequiredService<IConfiguration>())
     {
+        private readonly Lazy<IAielEnvironment> _environment = new(() => serviceProvider.GetRequiredService<IAielEnvironment>());
+        private readonly Lazy<IConfiguration> _configuration = new(() => serviceProvider.GetRequiredService<IConfiguration>());
+
+        /// <summary>
+        /// Gets the Aiel environment, which provides information about the runtime environment in which the application is running.
+        /// </summary>
+        public virtual IAielEnvironment Environment => _environment.Value;
+
+        /// <summary>
+        /// Gets the configuration, which provides access to application settings and configuration values.
+        /// </summary>
+        public virtual IConfiguration Configuration => _configuration.Value;
+
         /// <summary>
         /// Gets the service provider, which provides access to registered
         /// services and allows for resolving dependencies.

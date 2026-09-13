@@ -36,7 +36,6 @@ public static class Stubs
         "AielDependencyConfigurator.txt",
         "AielEnvironment.txt",
         "ConfigurationContext.txt",
-        "DependencyContext.txt",
         "DependencyDescriptor.txt",
         "DependsOnAttribute.txt",
         "DisposableBase.txt",

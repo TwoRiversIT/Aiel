@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.CodeAnalysis;
-using Aiel.Testing.Errors;
 using System.Reflection;
 
 namespace Aiel.Results;

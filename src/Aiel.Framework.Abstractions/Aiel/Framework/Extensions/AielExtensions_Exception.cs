@@ -28,7 +28,7 @@ namespace Aiel.Framework;
 /// <summary>
 /// Provides extension methods for the <see cref="Exception"/> class to facilitate visiting and formatting exceptions and their inner exceptions.
 /// </summary>
-public static class AielExceptionExtensions
+public static partial class AielExtensions
 {
     /// <summary>
     /// Visits the exception and all its inner exceptions, executing an action on each.

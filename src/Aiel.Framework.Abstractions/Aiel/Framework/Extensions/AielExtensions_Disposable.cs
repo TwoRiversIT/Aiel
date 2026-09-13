@@ -26,7 +26,7 @@ namespace Aiel.Framework;
 /// Provides extension methods for safely disposing objects that may implement
 /// either <see cref="IDisposable"/> or <see cref="IAsyncDisposable"/>.
 /// </summary>
-public static class DisposableExtensions
+public static partial class AielExtensions
 {
     /// <summary>
     /// Safely disposes an object that may implement either

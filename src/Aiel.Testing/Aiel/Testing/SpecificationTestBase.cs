@@ -44,18 +44,18 @@ public abstract class SpecificationTestBase<TFixture, TSut>(TFixture fixture, IT
     where TFixture : SpecificationTestFixture<TSut>
     where TSut : class
 {
-    private readonly TFixture _fixture = fixture;
-
-    internal override async ValueTask InitializeDerivedTestAsync()
+    internal override async ValueTask BeginInstanceTestsAsync(CancellationToken cancellationToken)
     {
-        _fixture.ProvideTest(GivenAsync, WhenAsync, ThenAsync);
+        await base.BeginInstanceTestsAsync(cancellationToken);
 
-        await base.InitializeDerivedTestAsync();
+        await GivenAsync(cancellationToken);
+        await WhenAsync(cancellationToken);
+        await ThenAsync(cancellationToken);
     }
 
-    public virtual ValueTask GivenAsync() => ValueTask.CompletedTask;
+    public virtual ValueTask GivenAsync(CancellationToken cancellationToken) => ValueTask.CompletedTask;
 
-    public abstract ValueTask WhenAsync();
+    public abstract ValueTask WhenAsync(CancellationToken cancellationToken);
 
-    public virtual ValueTask ThenAsync() => ValueTask.CompletedTask;
+    public virtual ValueTask ThenAsync(CancellationToken cancellationToken) => ValueTask.CompletedTask;
 }

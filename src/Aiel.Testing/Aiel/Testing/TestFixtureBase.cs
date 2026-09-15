@@ -41,6 +41,8 @@ public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigu
 
     private IHost? _host;
 
+    protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
+
     /// <summary>
     /// Do not override this method! You have been warned!
     /// </summary>
@@ -61,11 +63,11 @@ public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigu
 
         var configContext = new ConfigurationContext(FakeAielEnvironment.Create(), builder.Configuration, builder.Services);
 
-        await ConfigureFixtureAsync(configContext, TestContext.Current.CancellationToken);
+        await ConfigureFixtureAsync(configContext, CancellationToken);
 
-        await PreConfigureAsync(configContext, TestContext.Current.CancellationToken);
+        await PreConfigureAsync(configContext, CancellationToken);
 
-        await ConfigureAsync(configContext, TestContext.Current.CancellationToken);
+        await ConfigureAsync(configContext, CancellationToken);
 
         _host = builder.Build();
 
@@ -73,26 +75,14 @@ public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigu
         {
             var initContext = new TestInitializationContext(scope.ServiceProvider);
 
-            await InitializeAsync(initContext, TestContext.Current.CancellationToken);
-        }
-    }
-
-    internal async ValueTask StartingTestsAsync()
-    {
-        if (_host is null)
-        {
-            throw new InvalidOperationException(IncorrectFixtureSetup);
+            await InitializeAsync(initContext, CancellationToken);
         }
 
         var context = new TestInitializationContext(_host.Services);
-        await InitializeFixtureAsync(context, TestContext.Current.CancellationToken);
+        await InitializeFixtureAsync(context, CancellationToken);
     }
 
-    /// <summary>
-    /// Gets or sets the test output helper used to capture and display test output.
-    /// </summary>
-    /// <remarks>Use this property to write diagnostic messages or additional information during test
-    /// execution. The value may be null if no output helper is available.</remarks>
+    // This is called once per test run, after all fixtures have been initialized, but before any tests are executed.
     internal IServiceProvider GetTestServiceProvider()
     {
         if (_host is null)

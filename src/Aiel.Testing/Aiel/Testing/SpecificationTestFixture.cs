@@ -20,33 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework.DependencyInjection;
-
 namespace Aiel.Testing;
 
 public class SpecificationTestFixture<TSut> : SystemUnderTestFixture<TSut>
-    where TSut : class
-{
-    private Func<ValueTask>? _givenAsync;
-    private Func<ValueTask>? _whenAsync;
-    private Func<ValueTask>? _thenAsync;
-
-    internal override async ValueTask InitializeFixtureAsync(InitializationContext context, CancellationToken cancellationToken)
-    {
-        if (_givenAsync is null || _whenAsync is null || _thenAsync is null)
-        {
-            throw new InvalidOperationException("GivenAsync, WhenAsync, and ThenAsync functions have not been provided.");
-        }
-
-        await _givenAsync();
-        await _whenAsync();
-        await _thenAsync();
-    }
-
-    public void ProvideTest(Func<ValueTask> givenAsync, Func<ValueTask> whenAsync, Func<ValueTask> thenAsync)
-    {
-        _givenAsync = givenAsync ?? throw new ArgumentNullException(nameof(givenAsync));
-        _whenAsync = whenAsync ?? throw new ArgumentNullException(nameof(whenAsync));
-        _thenAsync = thenAsync ?? throw new ArgumentNullException(nameof(thenAsync));
-    }
-}
+    where TSut : class;

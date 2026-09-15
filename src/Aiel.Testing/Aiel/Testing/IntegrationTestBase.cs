@@ -47,18 +47,16 @@ namespace Aiel.Testing;
 /// <param name="output">The test output helper for logging test output.</param>
 public abstract class IntegrationTestBase<TFixture>(TFixture fixture, ITestOutputHelper output)
     : TestBase(output), IClassFixture<TFixture>
-    where TFixture : TestFixtureBase
+    where TFixture : IntegrationTestFixture
 {
     private readonly TFixture _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
     private IServiceProvider? _serviceProvider;
     private IConfiguration? _configuration;
     private FakeTimeProvider? _timeProvider;
 
-    internal override async ValueTask InitializeDerivedTestAsync()
+    internal override async ValueTask BeginInstanceTestsAsync(CancellationToken cancellationToken = default)
     {
         _serviceProvider = _fixture.GetTestServiceProvider();
-
-        await _fixture.StartingTestsAsync();
     }
 
     /// <summary>

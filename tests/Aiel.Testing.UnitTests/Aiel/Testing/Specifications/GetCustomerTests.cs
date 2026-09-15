@@ -24,38 +24,36 @@ using Aiel.Results;
 using Aiel.Testing.Dummies;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Testing.Customers;
+namespace Aiel.Testing.Specifications;
 
-public class CreateCustomerTests(CustomersFixture<CustomerApplicationService> fixture, ITestOutputHelper output)
-    : CustomerTestBase<CustomerApplicationService>(fixture, output)
+public class GetCustomerTests(CustomerSpecificationFixture<CustomerApplicationService> fixture, ITestOutputHelper output)
+    : CustomerSpecificationTestBase<CustomerApplicationService>(fixture, output)
 {
     private Guid Id { get; set; }
-    private CreateCustomerCommand Command { get; set; } = default!;
-    private Result<Guid> Result { get; set; } = default!;
+    private GetCustomerByIdQuery Query { get; set; } = default!;
+    private Result<CustomerDto> Result { get; set; } = default!;
 
-    public override ValueTask GivenAsync()
+    public override async ValueTask GivenAsync(CancellationToken cancellationToken = default)
     {
         Id = Guid.NewGuid();
-        Command = new CreateCustomerCommand(Id, "Acme Corporation", "contact@acme.com");
+        Query = new GetCustomerByIdQuery(Id);
 
-        return ValueTask.CompletedTask;
+        var repository = Services.GetRequiredService<ICustomerRepository>();
+        var customer = new Customer(Id, "Test Corp");
+        await repository.CreateAsync(customer, TestContext.Current.CancellationToken);
     }
 
-    public override async ValueTask WhenAsync()
-    {
-        Result = await SUT.CreateCustomerAsync(Command, CancellationToken);
-    }
+    public override async ValueTask WhenAsync(CancellationToken cancellationToken = default)
+        => Result = await SUT.GetCustomerByIdAsync(Query, CancellationToken);
 
     [Fact]
-    public async Task CreateCustomer_WithValidData_ShouldReturn_Success()
+    public async Task GetCustomer_WhenExists_ShouldReturnCustomer()
     {
         Result.Should().NotBeNull();
         Result.IsSuccess.Should().BeTrue();
-        Result.Value.Should().Be(Id);
-
-        var repository = Services.GetRequiredService<ICustomerRepository>();
-        var created = await repository.GetByIdAsync(Id, CancellationToken);
-        created.Name.Should().Be("Acme Corporation");
-        created.Email.Should().Be("contact@acme.com");
+        Result.Value.Should().NotBeNull();
+        Result.Value.Id.Should().Be(Id);
+        Result.Value.Name.Should().Be("Test Corp");
+        Result.Value.Email.Should().BeEmpty();
     }
 }

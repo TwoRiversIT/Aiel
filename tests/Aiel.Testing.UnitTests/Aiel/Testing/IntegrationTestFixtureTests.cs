@@ -29,7 +29,7 @@ namespace Aiel.Testing;
 public class IntegrationTestFixtureTests
 {
     [Fact]
-    public async Task InitializeAsync_ShouldLoadWithoutTestingConfigurationFile()
+    public async Task InitializeAsync_ShouldLoadWithoutTestConfigurationFile()
     {
         using var workspace = TestWorkspace.Create();
         await using var fixture = new AppSettingsTestFixture(workspace.Path);

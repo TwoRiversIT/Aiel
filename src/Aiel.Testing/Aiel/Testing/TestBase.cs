@@ -41,11 +41,16 @@ public abstract class TestBase(ITestOutputHelper testOutputHelper) : DisposableB
     /// </summary>
     /// <remarks>
     /// This method is called by xUnit once for each test because each test gets a new instance of the test class.
+    /// This is how the test fixture can be signaled to proceed with the test execution. The test fixture is
+    /// responsible for executing the Given, When, and Then steps of the test further down the inheritance
+    /// chain.
     /// </remarks>
     public async ValueTask InitializeAsync()
     {
-        await InitializeDerivedTestAsync();
+        await BeginInstanceTestsAsync(CancellationToken);
     }
 
-    internal abstract ValueTask InitializeDerivedTestAsync();
+    // Provides a hook for derived classes to notify the test fixture
+    // that the test instance is ready to begin executing the test.
+    internal abstract ValueTask BeginInstanceTestsAsync(CancellationToken cancellationToken);
 }

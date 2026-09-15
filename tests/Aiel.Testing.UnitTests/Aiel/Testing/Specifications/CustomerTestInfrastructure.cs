@@ -19,16 +19,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
+
 using Aiel.Framework.DependencyInjection;
-using Aiel.Testing;
 using Aiel.Testing.Dummies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Customers;
+namespace Aiel.Testing.Specifications;
 
-// Fixture
-public class CustomersFixture<TSut> : SystemUnderTestFixture<TSut>
+public abstract class CustomerSpecificationTestBase<TSut>(CustomerSpecificationFixture<TSut> fixture, ITestOutputHelper output)
+    : SpecificationTestBase<CustomerSpecificationFixture<TSut>, TSut>(fixture, output)
+    where TSut : class
+{
+}
+
+public class CustomerSpecificationFixture<TSut> : SpecificationTestFixture<TSut>
     where TSut : class
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

@@ -23,19 +23,30 @@
 using Aiel.Testing.Dummies;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Customers;
+namespace Aiel.Testing.Configurators;
 
-public class CustomerServiceTests(CustomersFixture<CustomerApplicationService> fixture, ITestOutputHelper output)
-    : CustomerTestBase<CustomersFixture<CustomerApplicationService>, CustomerApplicationService>(fixture, output)
+public class ConfiguratorFixtureTests(CustomerTestFixture<CustomerApplicationService> fixture, ITestOutputHelper output)
+    : CustomerTestBase<CustomerApplicationService>(fixture, output)
 {
+    [Fact]
+    public void Fixture_Configures_and_Initializes_Dependencies_OnceOnly()
+    {
+        CustomerModule.Instances.Should().ContainSingle();
+        var instance = CustomerModule.Instances.Values.Single();
+        instance.PreconfigureCount.Should().Be(1);
+        instance.ConfigureCount.Should().Be(1);
+        instance.InitializeCount.Should().Be(1);
+        instance.DisposeCount.Should().Be(1);
+    }
+
     [Fact]
     public async Task CreateCustomer_WithValidData_ShouldReturn_Success()
     {
         // Arrange
         var id = Guid.NewGuid();
+        var command = new CreateCustomerCommand(id, "Acme Corporation", "contact@acme.com");
 
         // Act
-        var command = new CreateCustomerCommand(id, "Acme Corporation", "contact@acme.com");
         var result = await SUT.CreateCustomerAsync(command, CancellationToken);
 
         // Assert
@@ -56,10 +67,10 @@ public class CustomerServiceTests(CustomersFixture<CustomerApplicationService> f
         var id = Guid.NewGuid();
         var repository = Services.GetRequiredService<ICustomerRepository>();
         var customer = new Customer(id, "Test Corp");
+        var query = new GetCustomerByIdQuery(id);
         await repository.CreateAsync(customer, TestContext.Current.CancellationToken);
 
         // Act - Use the SUT to retrieve it
-        var query = new GetCustomerByIdQuery(id);
         var result = await SUT.GetCustomerByIdAsync(query, CancellationToken);
 
         // Assert
@@ -78,10 +89,10 @@ public class CustomerServiceTests(CustomersFixture<CustomerApplicationService> f
         var id = Guid.NewGuid();
         var repository = Services.GetRequiredService<ICustomerRepository>();
         var customer = new Customer(id, "Original Name");
+        var command = new UpdateCustomerCommand(id, "Updated Name", "user@example.com");
         await repository.CreateAsync(customer, CancellationToken);
 
         // Act
-        var command = new UpdateCustomerCommand(id, "Updated Name", "user@example.com");
         await SUT.UpdateCustomerAsync(command, CancellationToken);
 
         // Assert

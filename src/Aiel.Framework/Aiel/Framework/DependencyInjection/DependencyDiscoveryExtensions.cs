@@ -129,6 +129,28 @@ public static class DependencyDiscoveryExtensions
         }
     }
 
+    public static async Task InitializeDependenciesAsync(this DependencyRoot compositionRoot, InitializationContext context, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(compositionRoot);
+        ArgumentNullException.ThrowIfNull(context);
+
+        var orderedNodes = compositionRoot.GetOrderedDependencies();
+
+        // Phase 3: initialize every module.
+        foreach (var node in orderedNodes)
+        {
+            if (node.Instance is IInitializer initializer)
+            {
+                await initializer.InitializeAsync(context, cancellationToken);
+            }
+        }
+
+        foreach (var node in orderedNodes)
+        {
+            await node.DisposeAsync();
+        }
+    }
+
     public static IReadOnlyCollection<DependencyNode> GetOrderedDependencies(this DependencyRoot compositionRoot)
     {
         ArgumentNullException.ThrowIfNull(compositionRoot);

@@ -20,24 +20,40 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.Framework.DependencyInjection;
-using Aiel.Testing.Dummies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Testing.Customers;
+namespace Aiel.Testing.Dummies;
 
-public abstract class CustomerTestBase<TSut>(CustomersFixture<TSut> fixture, ITestOutputHelper output)
-    : SpecificationTestBase<CustomersFixture<TSut>, TSut>(fixture, output)
-    where TSut : class
+[DependsOn(typeof(AielFramework))]
+public sealed class CustomerModule : AielDependency, IInitializer, IDisposable
 {
-}
+    public static Dictionary<Guid, CustomerModule> Instances { get; } = [];
+    public Guid Instance { get; private set; }
 
-public class CustomersFixture<TSut> : SpecificationTestFixture<TSut>
-    where TSut : class
-{
+    public CustomerModule()
+    {
+        Instance = Guid.NewGuid();
+        Instances[Instance] = this;
+    }
+
+    public Int32 PreconfigureCount { get; private set; }
+    public Int32 ConfigureCount { get; private set; }
+    public Int32 InitializeCount { get; private set; }
+    public Int32 DisposeCount { get; private set; }
+
+    public override ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        PreconfigureCount++;
+        return ValueTask.CompletedTask;
+    }
+
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
+        ConfigureCount++;
+
         // Register data access
         context.Services.AddDbContext<DummyDbContext>(options =>
             options.UseInMemoryDatabase("CustomerTests")
@@ -52,9 +68,11 @@ public class CustomersFixture<TSut> : SpecificationTestFixture<TSut>
         return ValueTask.CompletedTask;
     }
 
-    public override async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
+    public async ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default)
     {
+        InitializeCount++;
         // Ensure database schema exists
+
         var dbContext = context.Services.GetRequiredService<DummyDbContext>();
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
@@ -62,4 +80,12 @@ public class CustomersFixture<TSut> : SpecificationTestFixture<TSut>
         dbContext.Customers.RemoveRange(dbContext.Customers);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public void Dispose()
+    {
+        DisposeCount++;
+        GC.SuppressFinalize(this);
+    }
+
+    public override String ToString() => $"CustomerModule: PreConfigureCount={PreconfigureCount}, ConfigureCount={ConfigureCount}, InitializeCount={InitializeCount}, DisposeCount={DisposeCount}";
 }

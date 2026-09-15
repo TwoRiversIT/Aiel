@@ -27,4 +27,4 @@ namespace Aiel.Results;
 
 [DependsOn(typeof(AielResults))]
 [DependsOn(typeof(AielTestingCodeAnalysis))]
-public sealed class AielResultsGeneratorsUnitTests : AielDependencyConfigurator;
+public sealed class AielResultsGeneratorsUnitTests : AielDependency;

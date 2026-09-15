@@ -25,5 +25,5 @@ using Aiel.Framework;
 namespace Aiel.Authorization.Analyzers;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielAuthorizationAnalyzersUnitTests : AielDependencyConfigurator;
+public sealed class AielAuthorizationAnalyzersUnitTests : AielDependency;
 

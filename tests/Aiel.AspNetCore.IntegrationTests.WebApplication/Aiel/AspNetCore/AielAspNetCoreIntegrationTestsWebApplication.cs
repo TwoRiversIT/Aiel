@@ -27,7 +27,7 @@ namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(AielFrameworkWebApplication))]
 [DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+public sealed class AielAspNetCoreIntegrationTestsWebApplication : AielApplication
 {
     public override String ApplicationName => "AielAspNetCoreIntegrationTestsWebApplication";
     public override String ApplicationVersion => "1.0.0";

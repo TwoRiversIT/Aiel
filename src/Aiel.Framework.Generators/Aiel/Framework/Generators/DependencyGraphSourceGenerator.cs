@@ -42,7 +42,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 {
     internal const String AddApplicationMethod = "AddApplicationAsync";
     internal const String BootstrapMethodName = "BootstrapAsync";
-    internal const String ApplicationType = "AielApplicationConfigurator";
+    internal const String ApplicationType = "AielApplication";
     internal const String DependenciesProperty = "Dependencies";
     internal const String DependencyNode = "DependencyNode";
     internal const String DependencyManager = "DependencyManager";
@@ -86,7 +86,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Discover root AielApplicationConfigurator types in the current application project.
+        // Discover root AielApplication types in the current application project.
         // The generator then walks their [DependsOn] graph across referenced dependencies
         // to build a complete, compile-time view of the assembly dependency graph.
         var roots = context.SyntaxProvider
@@ -130,7 +130,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
         if (IsApplicationDependencyRoot(symbol))
         {
-            // Treat every concrete AielApplicationConfigurator defined in the current application project
+            // Treat every concrete AielApplication defined in the current application project
             // as a root. The dependency closure is computed in Emit using [DependsOn] attributes.
             return symbol;
         }

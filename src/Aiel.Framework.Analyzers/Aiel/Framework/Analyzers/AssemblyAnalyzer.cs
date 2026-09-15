@@ -29,34 +29,34 @@ namespace Aiel.Framework.Analyzers;
 
 /// <summary>
 /// Ensures that any assembly that references Aiel defines exactly one public,
-/// non-abstract <c>AielDependencyConfigurator</c> subclass with a public parameterless constructor.
+/// non-abstract <c>AielDependency</c> subclass with a public parameterless constructor.
 /// </summary>
 /// <remarks>
 /// If the assembly is a library, it must define a single class that inherits from
-/// <c>AielDependencyConfigurator</c>. If the assembly is the host application, it is the
+/// <c>AielDependency</c>. If the assembly is the host application, it is the
 /// composition root for the dependency graph, and must define a single class that
-/// inherits from <c>AielApplicationConfigurator</c>.
+/// inherits from <c>AielApplication</c>.
 /// </remarks>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
 {
-    private const String DependencyName = "Aiel.Framework.AielDependencyConfigurator";
-    private const String ApplicationName = "Aiel.Framework.AielApplicationConfigurator";
+    private const String DependencyName = "Aiel.Framework.AielDependency";
+    private const String ApplicationName = "Aiel.Framework.AielApplication";
 
     private static readonly DiagnosticDescriptor AielDependencyRequired = new(
         id: DiagnosticRuleIDs.AIEL00001_AielDependencyRequiredId,
-        title: "Missing implementation of either `AielDependencyConfigurator` or `AielApplicationConfigurator`",
-        messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplicationConfigurator` if the assembly is a root application, or `AielDependencyConfigurator` if the assembly is a class library",
+        title: "Missing implementation of either `AielDependency` or `AielApplication`",
+        messageFormat: "The '{0}' assembly must declare exactly one public sealed class with a public parameterless constructor that inherits `AielApplication` if the assembly is a root application, or `AielDependency` if the assembly is a class library",
         category: DiagnosticMetadata.UsageCategory,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Framework.AielDependencyConfigurator` or `Aiel.Framework.AielApplicationConfigurator`. These types serve as the root for the dependency graph.",
+        description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Framework.AielDependency` or `Aiel.Framework.AielApplication`. These types serve as the root for the dependency graph.",
         customTags: []);
 
     private static readonly DiagnosticDescriptor DependencyIsNotSealed = new(
         id: DiagnosticRuleIDs.AIEL00020_DependencyIsNotSealedId,
         title: "Root dependency type must be sealed",
-        messageFormat: "Classes that inherit `AielApplicationConfigurator` or `AielDependencyConfigurator` must be sealed",
+        messageFormat: "Classes that inherit `AielApplication` or `AielDependency` must be sealed",
         category: DiagnosticMetadata.UsageCategory,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,
@@ -66,7 +66,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
     private static readonly DiagnosticDescriptor MultipleAielDependencyImplementations = new(
         id: DiagnosticRuleIDs.AIEL00021_MultipleAielDependencyImplementationsId,
         title: "Multiple root dependency types found",
-        messageFormat: "The '{0}' assembly contains multiple classes that inherit from either `AielApplicationConfigurator` or `AielDependencyConfigurator`. Each assembly must define exactly one such class.",
+        messageFormat: "The '{0}' assembly contains multiple classes that inherit from either `AielApplication` or `AielDependency`. Each assembly must define exactly one such class.",
         category: DiagnosticMetadata.UsageCategory,
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true,

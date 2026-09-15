@@ -27,4 +27,4 @@ using System.Runtime.CompilerServices;
 namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFramework))]
-public sealed class AielFrameworkWebAssemblyApplication : AielDependencyConfigurator;
+public sealed class AielFrameworkWebAssemblyApplication : AielDependency;

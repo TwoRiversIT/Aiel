@@ -33,4 +33,4 @@ namespace Aiel.Application;
 [DependsOn(typeof(AielDomainShared))]
 [DependsOn(typeof(AielEmailingAbstractions))]
 [DependsOn(typeof(AielResults))]
-public sealed class AielApplicationContracts : AielDependencyConfigurator;
+public sealed class AielApplicationContracts : AielDependency;

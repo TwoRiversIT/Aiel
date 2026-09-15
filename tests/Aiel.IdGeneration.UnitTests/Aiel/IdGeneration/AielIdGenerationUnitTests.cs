@@ -25,4 +25,4 @@ using Aiel.Framework;
 namespace Aiel.IdGeneration;
 
 [DependsOn(typeof(AielIdGeneration))]
-public sealed class AielIdGenerationUnitTests : AielDependencyConfigurator;
+public sealed class AielIdGenerationUnitTests : AielDependency;

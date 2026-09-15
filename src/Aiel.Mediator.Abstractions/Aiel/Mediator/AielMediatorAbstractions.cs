@@ -31,4 +31,4 @@ namespace Aiel.Mediator;
 /// </summary>
 [DependsOn(typeof(AielActionsCommands))]
 [DependsOn(typeof(AielActionsQueries))]
-public sealed class AielMediatorAbstractions : AielDependencyConfigurator;
+public sealed class AielMediatorAbstractions : AielDependency;

@@ -38,19 +38,19 @@ public partial class DependencyGraphSourceGeneratorTests
             namespace Test
             {
                 [DependsOn(typeof(DepB))]
-                public sealed class DepA : AielApplicationConfigurator
+                public sealed class DepA : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
                 }
 
                 [DependsOn(typeof(DepC))]
-                public sealed class DepB : AielDependencyConfigurator
+                public sealed class DepB : AielDependency
                 {
                 }
 
                 [DependsOn(typeof(AielFrameworkAbstractions))]
-                public sealed class DepC : AielDependencyConfigurator
+                public sealed class DepC : AielDependency
                 {
                 }
             }
@@ -81,7 +81,7 @@ public partial class DependencyGraphSourceGeneratorTests
                     using Aiel.WorkerService.Shared;
 
                     [DependsOn(typeof(AielWorkerServiceShared))]
-                    public sealed class AielWorkerService : AielApplicationConfigurator
+                    public sealed class AielWorkerService : AielApplication
                     {
                         public override String ApplicationName => "ApplicationName";
                         public override String ApplicationVersion => "0.0.0";
@@ -93,7 +93,7 @@ public partial class DependencyGraphSourceGeneratorTests
                     using Aiel.Framework;
 
                     [DependsOn(typeof(AielFrameworkAbstractions))]
-                    public sealed class AielWorkerServiceShared : AielDependencyConfigurator;
+                    public sealed class AielWorkerServiceShared : AielDependency;
                 }
                 """;
 
@@ -134,7 +134,7 @@ public partial class DependencyGraphSourceGeneratorTests
             namespace Test;
             using Aiel.Framework;
 
-            public abstract class AbstractDependency : AielApplicationConfigurator
+            public abstract class AbstractDependency : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -154,7 +154,7 @@ public partial class DependencyGraphSourceGeneratorTests
                 using Aiel.Framework;
                 using System;
 
-                public class UnsealedApplication : AielApplicationConfigurator
+                public class UnsealedApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -170,13 +170,13 @@ public partial class DependencyGraphSourceGeneratorTests
     public async Task Generate_IgnoresAielDependencyConfigurator()
     {
         // The dependency graph generator should only consider types that inherit from
-        // AielApplicationConfigurator, not AielDependencyConfigurator, since the latter
+        // AielApplication, not AielDependency, since the latter
         // is not intended to be an application entry points or root dependency.
         const String testCode = """
                 namespace Test;
                 using Aiel.Framework;
 
-                public sealed class MyApplication : AielDependencyConfigurator
+                public sealed class MyApplication : AielDependency
                 {
                 }
                 """;
@@ -196,7 +196,7 @@ public partial class DependencyGraphSourceGeneratorTests
             namespace Aiel.WorkerService;
 
             [DependsOn(typeof(AielFrameworkAbstractions))]
-            public sealed class AielWorkerService : AielApplicationConfigurator
+            public sealed class AielWorkerService : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -222,17 +222,17 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test
             {
-                public sealed class DepA : AielDependencyConfigurator
+                public sealed class DepA : AielDependency
                 {
                 }
 
-                public sealed class DepB : AielDependencyConfigurator
+                public sealed class DepB : AielDependency
                 {
                 }
 
                 [DependsOn(typeof(DepA))]
                 [DependsOn(typeof(DepB))]
-                public sealed class Root : AielApplicationConfigurator
+                public sealed class Root : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -263,58 +263,58 @@ public partial class DependencyGraphSourceGeneratorTests
                 [DependsOn(typeof(AielFrameworkHostApplication))]
                 [DependsOn(typeof(AielSecurity))]
                 [DependsOn(typeof(AielEntityFrameworkCoreMigrations))]
-                public sealed class ExampleHostApplication : AielApplicationConfigurator;
+                public sealed class ExampleHostApplication : AielApplication;
 
                 [DependsOn(typeof(AielFramework))]
-                public sealed class AielFrameworkHostApplication : AielDependencyConfigurator;
+                public sealed class AielFrameworkHostApplication : AielDependency;
 
                 [DependsOn(typeof(AielEmailingAbstractions))]
                 [DependsOn(typeof(AielSecurity))] 
-                public sealed class AielSecurity : AielDependencyConfigurator;
+                public sealed class AielSecurity : AielDependency;
 
                 [DependsOn(typeof(AielEntityFrameworkCore))]
-                public class AielEntityFrameworkCoreMigrations : AielDependencyConfigurator;
+                public class AielEntityFrameworkCoreMigrations : AielDependency;
 
                 [DependsOn(typeof(AielFrameworkAbstractions))]
-                public sealed class AielFramework : AielDependencyConfigurator;
+                public sealed class AielFramework : AielDependency;
 
                 [DependsOn(typeof(AielDomainShared))]
-                public sealed class AielEmailingAbstractions : AielDependencyConfigurator;
+                public sealed class AielEmailingAbstractions : AielDependency;
 
                 [DependsOn(typeof(AielActions))]
                 [DependsOn(typeof(AielEntityFrameworkCoreAbstractions))]
                 [DependsOn(typeof(AielDomain))]
-                public sealed class AielEntityFrameworkCore : AielDependencyConfigurator;
+                public sealed class AielEntityFrameworkCore : AielDependency;
 
                 [DependsOn(typeof(AielDomainAbstractions))]
-                public sealed class AielDomainShared : AielDependencyConfigurator;
+                public sealed class AielDomainShared : AielDependency;
 
                 [DependsOn(typeof(AielActionsAbstractions))]
-                public sealed class AielActions : AielDependencyConfigurator;
+                public sealed class AielActions : AielDependency;
 
                 [DependsOn(typeof(AielFrameworkAbstractions))]
-                public sealed class AielEntityFrameworkCoreAbstractions : AielDependencyConfigurator;
+                public sealed class AielEntityFrameworkCoreAbstractions : AielDependency;
 
                 [DependsOn(typeof(AielDomainShared))]
-                public sealed class AielDomain : AielDependencyConfigurator;
+                public sealed class AielDomain : AielDependency;
 
                 [DependsOn(typeof(AielActions))]
                 [DependsOn(typeof(AielStrongIds))]
-                public sealed class AielDomainAbstractions : AielDependencyConfigurator;
+                public sealed class AielDomainAbstractions : AielDependency;
 
                 [DependsOn(typeof(AielResultsAbstractions))]
-                public sealed class AielActionsAbstractions : AielDependencyConfigurator;
+                public sealed class AielActionsAbstractions : AielDependency;
 
                 [DependsOn(typeof(AielDomainAbstractions))]
-                public sealed class AielDomainShared : AielDependencyConfigurator;
+                public sealed class AielDomainShared : AielDependency;
 
                 [DependsOn(typeof(AielFrameworkAbstractions))]
-                public sealed class AielStrongIds : AielDependencyConfigurator;
+                public sealed class AielStrongIds : AielDependency;
 
                 [DependsOn(typeof(AielFrameworkAbstractions))]
-                public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+                public sealed class AielResultsAbstractions : AielDependency;
 
-                public sealed class AielFrameworkAbstractions : AielDependencyConfigurator;
+                public sealed class AielFrameworkAbstractions : AielDependency;
             }
             """;
 
@@ -335,7 +335,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test
             {
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -370,7 +370,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -405,7 +405,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test
             {
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -441,7 +441,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -479,7 +479,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -512,7 +512,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -545,7 +545,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -577,7 +577,7 @@ public partial class DependencyGraphSourceGeneratorTests
             
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -602,7 +602,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -627,7 +627,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -651,7 +651,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace MyCompany.MyProduct;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -674,7 +674,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -699,13 +699,13 @@ public partial class DependencyGraphSourceGeneratorTests
             namespace Test;
 
             [DependsOn(typeof(DepB))]
-            public sealed class DepA : AielApplicationConfigurator
+            public sealed class DepA : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
             }
 
-            public sealed class DepB : AielApplicationConfigurator
+            public sealed class DepB : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -732,7 +732,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -761,7 +761,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
             namespace Test
             {
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -793,7 +793,7 @@ public partial class DependencyGraphSourceGeneratorTests
             
             namespace CPCA;
 
-            public sealed class CpcaApiModule : AielApplicationConfigurator
+            public sealed class CpcaApiModule : AielApplication
             {
                 public override String ApplicationName => "CpcaApi";
                 public override String ApplicationVersion => "0.0.0";

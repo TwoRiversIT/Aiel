@@ -29,7 +29,7 @@ namespace Aiel.Actions.Commands;
 /// AielActionsCommands is the dependency configurator for the Aiel.Actions.Commands library.
 /// </summary>
 [DependsOn(typeof(AielActions))]
-public sealed class AielActionsCommands : AielDependencyConfigurator
+public sealed class AielActionsCommands : AielDependency
 {
     /// <inheritdoc />
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

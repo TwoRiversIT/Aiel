@@ -28,4 +28,4 @@ namespace Aiel.Mediator;
 /// Ensures that the Aiel.Mediator.FluentValidation participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielMediatorAbstractions))]
-public sealed class AielMediatorFluentValidation : AielDependencyConfigurator;
+public sealed class AielMediatorFluentValidation : AielDependency;

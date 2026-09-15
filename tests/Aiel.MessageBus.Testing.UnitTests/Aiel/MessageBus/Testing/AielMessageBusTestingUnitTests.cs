@@ -24,4 +24,4 @@ using Aiel.Framework;
 
 namespace Aiel.MessageBus.Testing;
 
-public sealed class AielMessageBusTestingUnitTests : AielDependencyConfigurator;
+public sealed class AielMessageBusTestingUnitTests : AielDependency;

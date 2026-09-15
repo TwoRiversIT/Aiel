@@ -23,5 +23,5 @@
 namespace Aiel.Framework.Generators;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielFrameworkGeneratorsUnitTests : AielDependencyConfigurator;
+public sealed class AielFrameworkGeneratorsUnitTests : AielDependency;
 

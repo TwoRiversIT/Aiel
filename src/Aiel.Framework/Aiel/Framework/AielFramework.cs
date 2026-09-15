@@ -25,7 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielFramework : AielDependencyConfigurator
+public sealed class AielFramework : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

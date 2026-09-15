@@ -29,4 +29,4 @@ namespace Aiel.Actions;
 /// AielActions is the dependency configurator for the Aiel.Actions library.
 /// </summary>
 [DependsOn(typeof(AielResultsAbstractions))]
-public sealed class AielActionsAbstractions : AielDependencyConfigurator;
+public sealed class AielActionsAbstractions : AielDependency;

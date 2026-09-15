@@ -24,6 +24,6 @@ using Aiel.Framework;
 
 namespace Aiel.Results.Analyzers;
 
-public sealed class AielResultsAnalyzersUnitTests : AielDependencyConfigurator
+public sealed class AielResultsAnalyzersUnitTests : AielDependency
 {
 }

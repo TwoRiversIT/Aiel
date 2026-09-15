@@ -31,5 +31,5 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// </summary>
 [DependsOn(typeof(AielAuthorizationDomain))]
 [DependsOn(typeof(AielResults))]
-public sealed class AielAuthorizationEntityFrameworkCore : AielDependencyConfigurator;
+public sealed class AielAuthorizationEntityFrameworkCore : AielDependency;
 

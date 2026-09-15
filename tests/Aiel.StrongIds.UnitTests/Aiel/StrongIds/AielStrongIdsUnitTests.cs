@@ -27,4 +27,4 @@ namespace Aiel.StrongIds;
 
 [DependsOn(typeof(AielStrongIds))]
 [DependsOn(typeof(AielTestingDummies))]
-public sealed class AielStrongIdsUnitTests : AielDependencyConfigurator;
+public sealed class AielStrongIdsUnitTests : AielDependency;

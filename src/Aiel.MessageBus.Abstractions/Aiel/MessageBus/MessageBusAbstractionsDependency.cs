@@ -36,7 +36,7 @@ namespace Aiel.MessageBus;
 /// </summary>
 [DependsOn(typeof(AielApplicationContracts))]
 [DependsOn(typeof(AielMultiTenancy))]
-public sealed class MessageBusAbstractionsDependency : AielDependencyConfigurator
+public sealed class MessageBusAbstractionsDependency : AielDependency
 {
     public override ValueTask ConfigureAsync(
         ConfigurationContext context,

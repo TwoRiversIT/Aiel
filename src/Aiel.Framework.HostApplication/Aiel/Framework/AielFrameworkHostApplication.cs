@@ -23,4 +23,4 @@
 namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFramework))]
-public sealed class AielFrameworkHostApplication : AielDependencyConfigurator;
+public sealed class AielFrameworkHostApplication : AielDependency;

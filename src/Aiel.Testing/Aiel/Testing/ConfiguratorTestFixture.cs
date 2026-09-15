@@ -28,7 +28,7 @@ namespace Aiel.Testing;
 /// <summary>
 /// A test fixture that configures dependencies using the specified <see cref="IConfigurator"> implementation.
 /// </summary>
-/// <typeparam name="TConfigurator">A type that implements <see cref="IConfigurator"/> and has a parameterless constructor. Usually inhertits from <see cref="AielDependencyConfigurator"/></typeparam>
+/// <typeparam name="TConfigurator">A type that implements <see cref="IConfigurator"/> and has a parameterless constructor. Usually inhertits from <see cref="AielDependency"/></typeparam>
 public class ConfiguratorTestFixture<TConfigurator> : IntegrationTestFixture
     where TConfigurator : class, IConfigurator, new()
 {

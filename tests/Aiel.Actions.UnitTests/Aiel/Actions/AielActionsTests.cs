@@ -38,5 +38,5 @@ public sealed class AielActionsTests(ConfiguratorTestFixture<ActionsConfigurator
 
     [DependsOn(typeof(AielActions))]
     [DependsOn(typeof(AielFramework))]
-    public sealed class ActionsConfigurator : AielDependencyConfigurator;
+    public sealed class ActionsConfigurator : AielDependency;
 }

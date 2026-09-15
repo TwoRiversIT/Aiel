@@ -27,8 +27,8 @@ namespace Aiel.Framework;
 /// configuring the application and providing runtime application information.
 /// In an application, there must be only one implementation of this interface.
 /// The recommended approach is for the application module to inherit from
-/// <see cref="AielApplicationConfigurator"/> and each dependency from
-/// <see cref="AielDependencyConfigurator"/>. This ensures that each dependency
+/// <see cref="AielApplication"/> and each dependency from
+/// <see cref="AielDependency"/>. This ensures that each dependency
 /// participates in the configuration, in the correct order.
 /// </summary>
 public interface IApplicationConfigurator : IConfigurator, IApplicationInfo;

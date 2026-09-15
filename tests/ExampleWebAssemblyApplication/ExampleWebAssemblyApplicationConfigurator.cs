@@ -27,7 +27,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 namespace ExampleWebAssemblyApplication;
 
 [DependsOn(typeof(AielFrameworkWebAssemblyApplication))]
-public sealed class ExampleWebAssemblyApplicationConfigurator : AielApplicationConfigurator
+public sealed class ExampleWebAssemblyApplicationConfigurator : AielApplication
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;

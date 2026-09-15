@@ -30,7 +30,7 @@ namespace Aiel.MultiTenancy;
 /// </summary>
 [DependsOn(typeof(AielFrameworkAbstractions))]
 [DependsOn(typeof(AielMultiTenancyAbstractions))]
-public sealed class AielMultiTenancy : AielDependencyConfigurator
+public sealed class AielMultiTenancy : AielDependency
 {
     /// <inheritdoc />
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

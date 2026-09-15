@@ -113,7 +113,7 @@ public sealed class DependencyNodeTests
     }
 
     [DependsOn(typeof(Dependency))]
-    private sealed class TestConfigurator : AielDependencyConfigurator;
+    private sealed class TestConfigurator : AielDependency;
 
-    private sealed class Dependency : AielDependencyConfigurator;
+    private sealed class Dependency : AielDependency;
 }

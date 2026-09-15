@@ -31,4 +31,4 @@ namespace Aiel.EntityFrameworkCore;
 [DependsOn(typeof(AielStrongIds))]
 [DependsOn(typeof(AielStrongIdsEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]
-public sealed class AielEntityFrameworkCoreIntegrationTests : AielDependencyConfigurator;
+public sealed class AielEntityFrameworkCoreIntegrationTests : AielDependency;

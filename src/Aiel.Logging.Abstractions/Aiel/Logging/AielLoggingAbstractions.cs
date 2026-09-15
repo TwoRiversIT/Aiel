@@ -25,4 +25,4 @@ using Aiel.Framework;
 namespace Aiel.Logging;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielLoggingAbstractions : AielDependencyConfigurator;
+public sealed class AielLoggingAbstractions : AielDependency;

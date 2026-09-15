@@ -32,8 +32,8 @@ public static class Stubs
     // the Aiel.Framework code, then either the test is now bad, or the source generator is now bad, but the stubs
     // are always correct, so we can be confident that the tests are failing for the right reasons.
     public static String[] AielDependencies => RH.GetStrings<Placeholder>(
-        "AielApplicationConfigurator.txt",
-        "AielDependencyConfigurator.txt",
+        "AielApplication.txt",
+        "AielDependency.txt",
         "AielDisposeExtensions.txt",
         "AielEnvironment.txt",
         "ConfigurationContext.txt",
@@ -64,7 +64,7 @@ public static class Stubs
                 public static class ApplicationRegistrationExtensions
                 {
                     public static async Task<IHostApplicationBuilder> AddApplicationAsync<TApplication>(this IHostApplicationBuilder builder, CancellationToken cancellationToken = default)
-                        where TApplication : AielApplicationConfigurator, new()
+                        where TApplication : AielApplication, new()
                     {
                         return builder;
                     }

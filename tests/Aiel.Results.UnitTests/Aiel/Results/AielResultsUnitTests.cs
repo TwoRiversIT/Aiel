@@ -28,5 +28,5 @@ namespace Aiel.Results;
 [DependsOn(typeof(AielResults))]
 [DependsOn(typeof(AielResultsFixtures))]
 [DependsOn(typeof(AielTestingDummies))]
-public sealed class AielResultsUnitTests : AielDependencyConfigurator;
+public sealed class AielResultsUnitTests : AielDependency;
 

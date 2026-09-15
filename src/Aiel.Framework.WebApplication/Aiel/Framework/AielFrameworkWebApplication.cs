@@ -29,7 +29,7 @@ namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielMultiTenancy))]
-public sealed class AielFrameworkWebApplication : AielDependencyConfigurator
+public sealed class AielFrameworkWebApplication : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

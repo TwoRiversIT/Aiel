@@ -24,4 +24,4 @@ namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFrameworkTestBase))]
 [DependsOn(typeof(AielFrameworkWebApplication))]
-public sealed class AielFrameworkWebApplicationUnitTests : AielDependencyConfigurator;
+public sealed class AielFrameworkWebApplicationUnitTests : AielDependency;

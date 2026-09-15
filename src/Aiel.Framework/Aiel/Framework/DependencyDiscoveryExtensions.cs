@@ -72,12 +72,12 @@ public static class DependencyDiscoveryExtensions
                     throw new CircularDependencyException($"Circular attribute detected: {cycle}");
                 }
 
-                // We are strict about the assembly types, so we throw an exception if the attribute rootType does not inherit from AielDependencyConfigurator.
+                // We are strict about the assembly types, so we throw an exception if the attribute rootType does not inherit from AielDependency.
                 // This ensures that the attribute hierarchy is well-formed and that we can safely configure the assemblies later.
                 if (!nodesByType.TryGetValue(type, out var dependency))
                 {
-                    var instance = Activator.CreateInstance(type) as AielDependencyConfigurator
-                        ?? throw new InvalidOperationException($"Type {type.FullName} does not inherit from AielDependencyConfigurator.");
+                    var instance = Activator.CreateInstance(type) as AielDependency
+                        ?? throw new InvalidOperationException($"Type {type.FullName} does not inherit from AielDependency.");
 
                     nodesByType[type] = new DependencyNode(type, current.Node.Depth + 1, instance, []);
                 }

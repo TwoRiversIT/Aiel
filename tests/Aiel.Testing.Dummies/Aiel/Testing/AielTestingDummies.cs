@@ -29,6 +29,6 @@ namespace Aiel.Testing;
 [DependsOn(typeof(AielDomain))]
 [DependsOn(typeof(AielStrongIdsEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]
-public sealed class AielTestingDummies : AielDependencyConfigurator
+public sealed class AielTestingDummies : AielDependency
 {
 }

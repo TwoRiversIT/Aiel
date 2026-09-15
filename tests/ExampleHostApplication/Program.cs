@@ -54,7 +54,7 @@ public static class Program
 [DependsOn(typeof(AielFrameworkHostApplication))]
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielEntityFrameworkCoreMigrations))]
-public sealed class ExampleHostApplication : AielApplicationConfigurator
+public sealed class ExampleHostApplication : AielApplication
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyInformationalVersion;

@@ -28,5 +28,5 @@ namespace Aiel.Gps.Benchmarks;
 [DependsOn(typeof(AielGps))]
 [DependsOn(typeof(AielGpsHp))]
 [DependsOn(typeof(AielGpsIntegrationTests))]
-public sealed class AielGpsBenchmarks : AielDependencyConfigurator;
+public sealed class AielGpsBenchmarks : AielDependency;
 

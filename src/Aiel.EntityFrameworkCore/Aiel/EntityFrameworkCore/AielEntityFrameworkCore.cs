@@ -29,4 +29,4 @@ namespace Aiel.EntityFrameworkCore;
 [DependsOn(typeof(AielActions))]
 [DependsOn(typeof(AielEntityFrameworkCoreAbstractions))]
 [DependsOn(typeof(AielDomain))]
-public sealed class AielEntityFrameworkCore : AielDependencyConfigurator;
+public sealed class AielEntityFrameworkCore : AielDependency;

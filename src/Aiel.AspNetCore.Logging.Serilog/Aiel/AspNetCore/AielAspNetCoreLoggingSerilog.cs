@@ -28,7 +28,7 @@ using Serilog;
 namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(AielLoggingAbstractions))]
-public sealed class AielAspNetCoreLoggingSerilog : AielDependencyConfigurator
+public sealed class AielAspNetCoreLoggingSerilog : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

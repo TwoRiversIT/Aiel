@@ -53,7 +53,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class MyApplication : AielApplicationConfigurator { }
+		public sealed class MyApplication : AielApplication { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -69,7 +69,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class MyRootDependency : AielDependencyConfigurator { }
+		public sealed class MyRootDependency : AielDependency { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -85,7 +85,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class NoDefaultCtor : AielDependencyConfigurator
+		public sealed class NoDefaultCtor : AielDependency
 		{
 			public NoDefaultCtor(String name) { }
 		}
@@ -106,7 +106,7 @@ public class AssemblyAnalyzerTests
             namespace Aiel.Domain;
 
             [DependsOn(typeof(AielFrameworkAbstractions))]
-            public class AielDomainAbstractions : AielDependencyConfigurator;            
+            public class AielDomainAbstractions : AielDependency;            
             """;
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -126,7 +126,7 @@ public class AssemblyAnalyzerTests
             {
                 public class SomeType
                 {
-                    // no AielDependencyConfigurator or AielApplicationConfigurator subclass here
+                    // no AielDependency or AielApplication subclass here
                 }
             }
             """;
@@ -146,7 +146,7 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public abstract class NotRoot : AielDependencyConfigurator { }
+		public abstract class NotRoot : AielDependency { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -181,8 +181,8 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class Root1 : AielDependencyConfigurator { }
-		public sealed class Root2 : AielDependencyConfigurator { }
+		public sealed class Root1 : AielDependency { }
+		public sealed class Root2 : AielDependency { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -199,8 +199,8 @@ public class AssemblyAnalyzerTests
 
 		namespace Sample;
 
-		public sealed class Root1 : AielDependencyConfigurator { }
-		public sealed class Root2 : AielApplicationConfigurator { }
+		public sealed class Root1 : AielDependency { }
+		public sealed class Root2 : AielApplication { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);

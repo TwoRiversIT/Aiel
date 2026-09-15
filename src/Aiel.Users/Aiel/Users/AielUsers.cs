@@ -30,4 +30,4 @@ namespace Aiel.Users;
 [DependsOn(typeof(AielEmailingAbstractions))]
 [DependsOn(typeof(AielAuthorizationAbstractions))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielUsers : AielDependencyConfigurator;
+public sealed class AielUsers : AielDependency;

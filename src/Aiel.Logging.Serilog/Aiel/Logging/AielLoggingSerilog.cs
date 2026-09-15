@@ -30,7 +30,7 @@ namespace Aiel.Logging;
 
 [DependsOn(typeof(AielLoggingAbstractions))]
 [DependsOn(typeof(AielUsers))]
-public sealed class AielLoggingSerilog : AielDependencyConfigurator
+public sealed class AielLoggingSerilog : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

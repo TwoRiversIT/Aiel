@@ -34,7 +34,7 @@ namespace Aiel.Authorization.AspNetCore;
 [DependsOn(typeof(AielAuthorizationTesting))]
 [DependsOn(typeof(AielResults))]
 [DependsOn(typeof(AielActionsCommands))]
-public sealed class AielAuthorizationAspNetCoreIntegrationTestsWebApplication : AielApplicationConfigurator
+public sealed class AielAuthorizationAspNetCoreIntegrationTestsWebApplication : AielApplication
 {
     public override String ApplicationName => nameof(AielAuthorizationAspNetCoreIntegrationTestsWebApplication);
     public override String ApplicationVersion => ThisAssembly.AssemblyVersion;

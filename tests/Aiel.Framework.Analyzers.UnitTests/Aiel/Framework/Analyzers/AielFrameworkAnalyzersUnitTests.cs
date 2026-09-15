@@ -23,5 +23,5 @@
 namespace Aiel.Framework.Analyzers;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielFrameworkAnalyzersUnitTests : AielDependencyConfigurator;
+public sealed class AielFrameworkAnalyzersUnitTests : AielDependency;
 

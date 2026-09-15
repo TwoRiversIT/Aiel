@@ -25,4 +25,4 @@ using Aiel.Framework;
 namespace Aiel.Actions.Commands;
 
 [DependsOn(typeof(AielActionsCommands))]
-public sealed class AielActionsCommandsUnitTests : AielDependencyConfigurator;
+public sealed class AielActionsCommandsUnitTests : AielDependency;

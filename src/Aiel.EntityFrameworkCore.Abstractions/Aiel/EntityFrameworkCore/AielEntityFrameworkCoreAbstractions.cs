@@ -25,4 +25,4 @@ using Aiel.Framework;
 namespace Aiel.EntityFrameworkCore;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielEntityFrameworkCoreAbstractions : AielDependencyConfigurator;
+public sealed class AielEntityFrameworkCoreAbstractions : AielDependency;

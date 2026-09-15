@@ -27,7 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Aiel.EntityFrameworkCore.Migrations;
 
 [DependsOn(typeof(AielEntityFrameworkCore))]
-public class AielEntityFrameworkCoreMigrations : AielDependencyConfigurator
+public class AielEntityFrameworkCoreMigrations : AielDependency
 {
     public override ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

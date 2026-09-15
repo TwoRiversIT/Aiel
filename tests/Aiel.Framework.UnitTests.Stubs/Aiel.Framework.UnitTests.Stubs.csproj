@@ -16,8 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielApplicationConfigurator.cs" Link="Aiel\Framework\Stubs\AielApplicationConfigurator.txt" />
-        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDependencyConfigurator.cs" Link="Aiel\Framework\Stubs\AielDependencyConfigurator.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielApplication.cs" Link="Aiel\Framework\Stubs\AielApplication.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDependency.cs" Link="Aiel\Framework\Stubs\AielDependency.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDisposeExtensions.cs" Link="Aiel\Framework\Stubs\AielDisposeExtensions.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielEnvironment.cs" Link="Aiel\Framework\Stubs\AielEnvironment.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielFrameworkAbstractions.cs" Link="Aiel\Framework\Stubs\AielFrameworkAbstractions.txt" />

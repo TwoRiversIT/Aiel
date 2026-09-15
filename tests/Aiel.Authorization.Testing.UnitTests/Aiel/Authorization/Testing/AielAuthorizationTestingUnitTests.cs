@@ -25,5 +25,5 @@ using Aiel.Framework;
 namespace Aiel.Authorization.Testing;
 
 [DependsOn(typeof(AielAuthorizationTesting))]
-public sealed class AielAuthorizationTestingUnitTests : AielDependencyConfigurator;
+public sealed class AielAuthorizationTestingUnitTests : AielDependency;
 

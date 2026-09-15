@@ -25,5 +25,5 @@ using Aiel.Framework;
 namespace Aiel.Gps;
 
 [DependsOn(typeof(AielGps))]
-public sealed class AielGpsUnitTests : AielDependencyConfigurator;
+public sealed class AielGpsUnitTests : AielDependency;
 

@@ -27,5 +27,5 @@ namespace Aiel.Results.IntegrationTests;
 
 [DependsOn(typeof(AielResults))]
 [DependsOn(typeof(AielTestingDummies))]
-public sealed class AielResultsIntegrationTestsWebApplication : AielDependencyConfigurator;
+public sealed class AielResultsIntegrationTestsWebApplication : AielDependency;
 

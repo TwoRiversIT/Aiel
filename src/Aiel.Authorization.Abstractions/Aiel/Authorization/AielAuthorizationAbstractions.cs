@@ -25,4 +25,4 @@ using Aiel.Framework;
 namespace Aiel.Authorization;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielAuthorizationAbstractions : AielDependencyConfigurator;
+public sealed class AielAuthorizationAbstractions : AielDependency;

@@ -25,4 +25,4 @@ using Aiel.Framework;
 namespace Aiel.Application;
 
 [DependsOn(typeof(AielApplicationContracts))]
-public sealed class AielApplicationContractsUnitTests : AielDependencyConfigurator;
+public sealed class AielApplicationContractsUnitTests : AielDependency;

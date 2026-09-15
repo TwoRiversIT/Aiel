@@ -31,4 +31,4 @@ namespace Aiel.Domain;
 /// </summary>
 [DependsOn(typeof(AielActions))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielDomainAbstractions : AielDependencyConfigurator;
+public sealed class AielDomainAbstractions : AielDependency;

@@ -25,4 +25,4 @@ using Aiel.Framework;
 namespace Aiel.Actions.Queries;
 
 [DependsOn(typeof(AielActionsAbstractions))]
-public class AielActionsQueriesFluentValidation : AielDependencyConfigurator;
+public class AielActionsQueriesFluentValidation : AielDependency;

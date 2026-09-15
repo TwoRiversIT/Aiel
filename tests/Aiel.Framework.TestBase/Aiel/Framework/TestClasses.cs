@@ -22,7 +22,7 @@
 
 namespace Aiel.Framework;
 
-public abstract class TrackedConfigurator : AielDependencyConfigurator, IInitializer, IDisposable, IAsyncDisposable
+public abstract class TrackedConfigurator : AielDependency, IInitializer, IDisposable, IAsyncDisposable
 {
     public Int32 PreConfigureCount { get; private set; }
     public Int32 ConfigureCount { get; private set; }

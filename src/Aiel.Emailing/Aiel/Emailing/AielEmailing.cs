@@ -36,7 +36,7 @@ namespace Aiel.Emailing;
 [DependsOn(typeof(AielDomainShared))]
 [DependsOn(typeof(AielSecurity))]
 [DependsOn(typeof(AielEmailingAbstractions))]
-public sealed class AielEmailing : AielDependencyConfigurator
+public sealed class AielEmailing : AielDependency
 {
     /// <inheritdoc/>
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

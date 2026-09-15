@@ -25,7 +25,7 @@ using Aiel.Framework;
 namespace Aiel.Actions;
 
 [DependsOn(typeof(AielActions))]
-public sealed class AielActionsUnitTests : AielDependencyConfigurator
+public sealed class AielActionsUnitTests : AielDependency
 {
 
 }

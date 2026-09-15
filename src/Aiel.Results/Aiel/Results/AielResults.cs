@@ -32,4 +32,4 @@ namespace Aiel.Results;
 /// </summary>
 [DependsOn(typeof(AielActionsAbstractions))]
 [DependsOn(typeof(AielResultsAbstractions))]
-public sealed class AielResults : AielDependencyConfigurator;
+public sealed class AielResults : AielDependency;

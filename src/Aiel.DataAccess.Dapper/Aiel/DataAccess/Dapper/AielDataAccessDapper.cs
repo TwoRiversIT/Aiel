@@ -26,4 +26,4 @@ using Aiel.Framework;
 namespace Aiel.DataAccess.Dapper;
 
 [DependsOn(typeof(AielEntityFrameworkCoreAbstractions))]
-public sealed class AielDataAccessDapper : AielDependencyConfigurator;
+public sealed class AielDataAccessDapper : AielDependency;

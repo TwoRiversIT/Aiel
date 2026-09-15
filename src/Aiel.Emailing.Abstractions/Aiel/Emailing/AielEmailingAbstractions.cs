@@ -29,4 +29,4 @@ namespace Aiel.Emailing;
 /// Represents the Aiel Emailing Abstractions module, which provides abstractions for email-related functionality within the Aiel framework.
 /// </summary>
 [DependsOn(typeof(AielDomainShared))]
-public sealed class AielEmailingAbstractions : AielDependencyConfigurator;
+public sealed class AielEmailingAbstractions : AielDependency;

@@ -28,4 +28,4 @@ namespace Aiel.Testing;
 
 [DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielUtilities))]
-public sealed class AielTesting : AielDependencyConfigurator;
+public sealed class AielTesting : AielDependency;

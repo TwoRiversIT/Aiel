@@ -26,7 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Aiel.EntityFrameworkCore.Seeding;
 
 [DependsOn(typeof(AielEntityFrameworkCore))]
-public class AielEntityFrameworkCoreSeeding : AielDependencyConfigurator
+public class AielEntityFrameworkCoreSeeding : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

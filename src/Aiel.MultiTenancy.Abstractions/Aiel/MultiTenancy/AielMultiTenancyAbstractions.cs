@@ -28,4 +28,4 @@ namespace Aiel.MultiTenancy;
 /// Ensures that the Aiel.MultiTenancy participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielMultiTenancyAbstractions : AielDependencyConfigurator;
+public sealed class AielMultiTenancyAbstractions : AielDependency;

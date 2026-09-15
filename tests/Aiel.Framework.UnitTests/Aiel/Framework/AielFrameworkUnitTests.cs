@@ -23,7 +23,7 @@
 namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFramework))]
-public sealed class AielFrameworkUnitTests : AielDependencyConfigurator
+public sealed class AielFrameworkUnitTests : AielDependency
 {
 
 }

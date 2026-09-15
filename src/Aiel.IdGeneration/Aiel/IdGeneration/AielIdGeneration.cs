@@ -26,7 +26,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 namespace Aiel.IdGeneration;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielIdGeneration : AielDependencyConfigurator
+public sealed class AielIdGeneration : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

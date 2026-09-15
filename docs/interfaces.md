@@ -57,7 +57,7 @@ public interface IInitializer
 
 public interface IDependencyManager
 {
-    IReadOnlyCollection<DependencyDescriptor> Dependencies { get; }
+    IReadOnlyCollection<DependencyNode> Dependencies { get; }
     ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
     Task InitializeAsync(DependencyInitializationContext context, CancellationToken cancellationToken = default);
 }

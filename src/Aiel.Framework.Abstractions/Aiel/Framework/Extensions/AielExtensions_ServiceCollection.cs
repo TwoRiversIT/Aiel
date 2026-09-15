@@ -158,6 +158,7 @@ public static partial class AielExtensions
     /// <param name="services">The service collection.</param>
     /// <returns>The instance of the service.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the singleton instance is not found.</exception>
+    [return: NotNull]
     public static T GetRequiredSingleton<T>(this IServiceCollection services)
         where T : class
         => services.GetSingleton<T>()

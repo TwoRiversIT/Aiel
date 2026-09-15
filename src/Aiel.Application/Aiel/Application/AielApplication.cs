@@ -32,5 +32,6 @@ namespace Aiel.Application;
 /// </summary>
 [DependsOn(typeof(AielApplicationContracts))]
 [DependsOn(typeof(AielDomain))]
+[DependsOn(typeof(AielFramework))]
 [DependsOn(typeof(AielResults))]
 public sealed class AielApplication : AielDependencyConfigurator;

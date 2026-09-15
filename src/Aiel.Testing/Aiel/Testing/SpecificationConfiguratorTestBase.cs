@@ -26,7 +26,7 @@ namespace Aiel.Testing;
 
 public abstract class SpecificationConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
     : SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(fixture, output)
-    where TConfigurator : IConfigurator, new()
+    where TConfigurator : class, IConfigurator, new()
     where TFixture : SpecificationConfiguratorTestFixture<TConfigurator, TSut>
     where TSut : class
 {

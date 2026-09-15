@@ -22,4 +22,10 @@
 
 namespace Aiel.Framework;
 
-public class DependencyRoot(Type type, IConfigurator instance) : DependencyNode(type, 0, instance);
+/// <summary>
+/// Represents the root node of the dependency graph, containing information
+/// about the dependency type and its configurator instance.
+/// </summary>
+/// <param name="Type">The type of the dependency.</param>
+/// <param name="Instance">The configurator instance for the dependency.</param>
+public class DependencyRoot(Type Type, IConfigurator Instance) : DependencyNode(Type, 0, Instance, []);

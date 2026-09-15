@@ -24,34 +24,50 @@ namespace Aiel.Framework;
 
 public abstract class InitializationTestBase
 {
-    public abstract Task InitializeAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    public abstract Task InitializeAsync<TApplication>(IEnumerable<DependencyNode> descriptors)
         where TApplication : class, IApplicationConfigurator, new();
 
     [Fact]
     public async Task Given_DiamondGraph_Initialize_Invokes_ConfigureAsync_Only_Once()
     {
-        var a = new DependencyDescriptor(
-            name: nameof(DiamondA),
-            dependencyType: typeof(DiamondA),
+        var a = new DependencyNode(
+            type: typeof(DiamondA),
+            depth: 0,
             instance: new DiamondA(),
-            dependencies: [typeof(DiamondB), typeof(DiamondC)]);
-        var b = new DependencyDescriptor(
-            name: nameof(DiamondB),
-            dependencyType: typeof(DiamondB),
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondB),
+                depth: 1,
+                new DiamondB(),
+                dependencies: []), new DependencyNode(
+                type: typeof(DiamondC),
+                depth: 1,
+                new DiamondC(),
+                dependencies: [])]);
+        var b = new DependencyNode(
+            type: typeof(DiamondB),
+            depth: 0,
             instance: new DiamondB(),
-            dependencies: [typeof(DiamondD)]);
-        var c = new DependencyDescriptor(
-            name: nameof(DiamondC),
-            dependencyType: typeof(DiamondC),
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondD),
+                depth: 1,
+                new DiamondD(),
+                dependencies: [])]);
+        var c = new DependencyNode(
+            type: typeof(DiamondC),
+            depth: 0,
             instance: new DiamondC(),
-            dependencies: [typeof(DiamondD)]);
-        var d = new DependencyDescriptor(
-            name: nameof(DiamondD),
-            dependencyType: typeof(DiamondD),
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondD),
+                depth: 1,
+                new DiamondD(),
+                dependencies: [])]);
+        var d = new DependencyNode(
+            type: typeof(DiamondD),
+            depth: 0,
             instance: new DiamondD(),
             dependencies: []);
 
-        var dependencies = new List<DependencyDescriptor>() { a, b, c, d };
+        var dependencies = new List<DependencyNode>() { a, b, c, d };
 
         await InitializeAsync<DiamondA>(dependencies);
 

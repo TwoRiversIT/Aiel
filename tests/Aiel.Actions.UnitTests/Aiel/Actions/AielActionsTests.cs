@@ -20,12 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
 using Aiel.Testing;
+using static Aiel.Actions.AielActionsTests;
 
 namespace Aiel.Actions;
 
-public sealed class AielActionsTests(ConfiguratorTestFixture<AielActions> fixture, ITestOutputHelper output)
-    : IntegrationTestBase<ConfiguratorTestFixture<AielActions>>(fixture, output)
+public sealed class AielActionsTests(ConfiguratorTestFixture<ActionsConfigurator> fixture, ITestOutputHelper output)
+    : ConfiguratorTestBase<ActionsConfigurator, ConfiguratorTestFixture<ActionsConfigurator>>(fixture, output)
 {
     [Fact]
     public void AielActions_RegistersIExecutionContext()
@@ -33,4 +35,8 @@ public sealed class AielActionsTests(ConfiguratorTestFixture<AielActions> fixtur
         // Just a placeholder for now to ensure the module is being loaded and the dependency graph is valid.
         // More tests should be added as functionality is added.
     }
+
+    [DependsOn(typeof(AielActions))]
+    [DependsOn(typeof(AielFramework))]
+    public sealed class ActionsConfigurator : AielDependencyConfigurator;
 }

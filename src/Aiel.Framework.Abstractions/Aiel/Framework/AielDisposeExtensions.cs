@@ -20,9 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework.Extensions;
+namespace Aiel.Framework;
 
-public static partial class AielExtensions
+/// <summary>
+/// Provides extension methods for safely disposing objects that may implement either
+/// </summary>
+public static class AielDisposeExtensions
 {
     /// <summary>
     /// Safely disposes an object that may implement either
@@ -50,6 +53,38 @@ public static partial class AielExtensions
             await asyncDisposable.DisposeAsync();
         }
         else if (obj is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Safely disposes an object that may implement either
+    /// <see cref="IDisposable"/> or <see cref="IAsyncDisposable"/>. If the
+    /// object implements both interfaces, it will prefer asynchronous
+    /// disposal. If the object is null, this method does nothing.
+    /// NOTE: This method does not call <see cref="GC.SuppressFinalize"/>.
+    /// </summary>
+    /// <remarks>
+    /// This method does not call <see cref="GC.SuppressFinalize"/> for the
+    /// simple reason that the compiler will complain if your object is
+    /// disposable and does not call <see cref="GC.SuppressFinalize"/> itself.
+    /// </remarks>
+    /// <param name="service">The object to dispose.</param>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    public static async Task SafelyDisposeAsync<T>(this T service)
+        where T : class
+    {
+        if (service is null)
+        {
+            return;
+        }
+
+        if (service is IAsyncDisposable asyncDisposable)
+        {
+            await asyncDisposable.DisposeAsync();
+        }
+        else if (service is IDisposable disposable)
         {
             disposable.Dispose();
         }

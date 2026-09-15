@@ -25,7 +25,7 @@ using Aiel.Framework;
 namespace Aiel.Testing;
 
 public class SpecificationConfiguratorTestFixture<TConfigurator, TSut> : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
-    where TConfigurator : IConfigurator, new()
+    where TConfigurator : class, IConfigurator, new()
     where TSut : class
 {
     private Func<ValueTask>? _givenAsync;

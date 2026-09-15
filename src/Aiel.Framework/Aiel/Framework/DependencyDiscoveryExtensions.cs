@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using System.Reflection;
+
 namespace Aiel.Framework;
 
 public static class DependencyDiscoveryExtensions
@@ -33,67 +35,68 @@ public static class DependencyDiscoveryExtensions
 	/// multiple assemblies, it will only appear once in the hierarchy. First one to depend on it wins.
     /// </remarks>
 	/// <exception cref="CircularDependencyException">Thrown when a circular attribute is detected in the assembly attribute hierarchy.</exception>
-	public static DependencyRoot BuildDependencyTree<TDependency>(this ConfigurationContext _)
-        where TDependency : IConfigurator, new()
+    public static DependencyRoot BuildDependencyTree<TDependency>()
+        where TDependency : class, IConfigurator, new()
     {
         // Tracks the assemblies we've already processed by Type.
         var processed = new HashSet<Type>();
         var nodesByType = new Dictionary<Type, DependencyNode>();
-        var stack = new Stack<(DependencyNode Assembly, HashSet<Type> Path)>();
+        var stack = new Stack<Plate>();
 
         var dependencyRoot = new DependencyRoot(typeof(TDependency), new TDependency());
         nodesByType[dependencyRoot.Type] = dependencyRoot;
         var initialPath = new HashSet<Type> { typeof(TDependency) };
-        stack.Push((dependencyRoot, initialPath));
+        stack.Push(new Plate(dependencyRoot, initialPath));
 
         // We walk the assembly hierarchy depth-first, using the DependsOn attributes to determine the dependencies.
         // We track both visited assemblies (to avoid reprocessing) and the current path (to detect circular dependencies).
         while (stack.Count > 0)
         {
-            var (assemblyInfo, path) = stack.Pop();
-            if (!processed.Add(assemblyInfo.Type))
+            var current = stack.Pop();
+            if (!processed.Add(current.Node.Type))
             {
                 continue;
             }
 
-            var dependencies = assemblyInfo.Type.GetCustomAttributes(typeof(DependsOnAttribute), inherit: false);
-            foreach (var dependency in dependencies.Cast<DependsOnAttribute>()) // This cast is safe because we specified the attribute rootType in GetCustomAttributes.
+            var attributes = current.Node.Type.GetCustomAttributes<DependsOnAttribute>(inherit: false);
+            foreach (var attribute in attributes)
             {
-                var dependencyType = dependency.Type;
+                var type = attribute.Type;
 
                 // Check for circular attribute: if the attribute is already in our current path, we have a cycle
-                if (path.Contains(dependencyType))
+                if (current.Path.Contains(type))
                 {
-                    var pathList = path.ToList();
-                    pathList.Add(dependencyType);
+                    var pathList = current.Path.ToList();
+                    pathList.Add(type);
                     var cycle = String.Join(" -> ", pathList.Select(t => t.Name));
                     throw new CircularDependencyException($"Circular attribute detected: {cycle}");
                 }
 
                 // We are strict about the assembly types, so we throw an exception if the attribute rootType does not inherit from AielDependencyConfigurator.
                 // This ensures that the attribute hierarchy is well-formed and that we can safely configure the assemblies later.
-                if (!nodesByType.TryGetValue(dependencyType, out var dependencyAssemblyInfo))
+                if (!nodesByType.TryGetValue(type, out var dependency))
                 {
-                    var instance = Activator.CreateInstance(dependencyType) as AielDependencyConfigurator
-                        ?? throw new InvalidOperationException($"Type {dependencyType.FullName} does not inherit from AielDependencyConfigurator.");
+                    var instance = Activator.CreateInstance(type) as AielDependencyConfigurator
+                        ?? throw new InvalidOperationException($"Type {type.FullName} does not inherit from AielDependencyConfigurator.");
 
-                    dependencyAssemblyInfo = new DependencyNode(dependencyType, assemblyInfo.Depth + 1, instance);
-                    nodesByType[dependencyType] = dependencyAssemblyInfo;
+                    nodesByType[type] = new DependencyNode(type, current.Node.Depth + 1, instance, []);
                 }
 
-                if (!assemblyInfo.Dependencies.Contains(dependencyAssemblyInfo))
+                if (!current.Node.Dependencies.Contains(nodesByType[type]))
                 {
-                    assemblyInfo.Dependencies.Add(dependencyAssemblyInfo);
+                    current.Node.Dependencies.Add(nodesByType[type]);
                 }
 
                 // Create new path for this attribute by copying current path and adding the attribute
-                var newPath = new HashSet<Type>(path) { dependencyType };
-                stack.Push((dependencyAssemblyInfo, newPath));
+                var newPath = new HashSet<Type>(current.Path) { type };
+                stack.Push(new Plate(nodesByType[type], newPath));
             }
         }
 
         return dependencyRoot;
     }
+
+    private record Plate(DependencyNode Node, HashSet<Type> Path);
 
     /// <summary>
     /// Asynchronously configures the specified root assembly and all its dependencies within the attribute hierarchy.
@@ -111,43 +114,48 @@ public static class DependencyDiscoveryExtensions
         ArgumentNullException.ThrowIfNull(compositionRoot);
         ArgumentNullException.ThrowIfNull(context);
 
-        // Collect all nodes; traversal order is irrelevant because we sort by depth below.
-        // BuildDependencyTree guarantees each rootType appears exactly once in the tree.
-        var allAssemblys = new List<DependencyNode>();
-        var visited = new HashSet<DependencyNode>();
-        var stack = new Stack<DependencyNode>();
-        stack.Push(compositionRoot);
-
-        while (stack.Count > 0)
-        {
-            var assemblyInfo = stack.Pop();
-            if (!visited.Add(assemblyInfo))
-            {
-                continue;
-            }
-
-            allAssemblys.Add(assemblyInfo);
-
-            foreach (var dependency in assemblyInfo.Dependencies)
-            {
-                stack.Push(dependency);
-            }
-        }
-
-        // Configure deepest assemblies first so that each assembly's dependencies are already configured
-        // by the time the assembly itself runs. Within a depth tier, order is not guaranteed.
-        var orderedNodes = allAssemblys.OrderByDescending(static m => m.Depth).ToArray();
+        var orderedNodes = compositionRoot.GetOrderedDependencies();
 
         // Phase 1: pre-configure every module before any configure phase begins.
-        foreach (var assemblyInfo in orderedNodes)
+        foreach (var node in orderedNodes)
         {
-            await assemblyInfo.Instance.PreConfigureAsync(context, cancellationToken);
+            await node.Instance.PreConfigureAsync(context, cancellationToken);
         }
 
         // Phase 2: configure every module.
-        foreach (var assemblyInfo in orderedNodes)
+        foreach (var node in orderedNodes)
         {
-            await assemblyInfo.Instance.ConfigureAsync(context, cancellationToken);
+            await node.Instance.ConfigureAsync(context, cancellationToken);
         }
+    }
+
+    public static IReadOnlyCollection<DependencyNode> GetOrderedDependencies(this DependencyRoot compositionRoot)
+    {
+        ArgumentNullException.ThrowIfNull(compositionRoot);
+
+        var orderedNodes = new List<DependencyNode>();
+
+        var visited = new HashSet<Type>();
+
+        void Visit(DependencyNode node)
+        {
+            if (visited.Contains(node.Type))
+            {
+                return;
+            }
+
+            visited.Add(node.Type);
+
+            foreach (var dependency in node.Dependencies)
+            {
+                Visit(dependency);
+            }
+
+            orderedNodes.Add(node);
+        }
+
+        Visit(compositionRoot);
+
+        return orderedNodes;
     }
 }

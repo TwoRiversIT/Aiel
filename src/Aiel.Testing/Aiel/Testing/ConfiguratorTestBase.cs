@@ -26,7 +26,7 @@ namespace Aiel.Testing;
 
 public class ConfiguratorTestBase<TConfigurator, TFixture>(TFixture fixture, ITestOutputHelper output)
     : IntegrationTestBase<TFixture>(fixture, output)
-    where TConfigurator : IConfigurator, new()
+    where TConfigurator : class, IConfigurator, new()
     where TFixture : ConfiguratorTestFixture<TConfigurator>
 {
 }

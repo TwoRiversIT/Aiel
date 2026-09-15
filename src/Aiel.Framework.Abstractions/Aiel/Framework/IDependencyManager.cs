@@ -36,7 +36,7 @@ namespace Aiel.Framework
         /// <summary>
     	/// Gets the collection of dependencies that are known to the manager.
         /// </summary>
-    	IReadOnlyCollection<DependencyDescriptor> Dependencies { get; }
+    	IReadOnlyCollection<DependencyNode> Dependencies { get; }
 
         /// <summary>
     	/// Configures all dependencies using the supplied configuration context.

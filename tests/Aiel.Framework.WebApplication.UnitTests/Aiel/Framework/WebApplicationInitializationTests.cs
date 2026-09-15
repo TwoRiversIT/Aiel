@@ -26,7 +26,7 @@ namespace Aiel.Framework;
 
 public class WebApplicationInitializationTests : InitializationTestBase
 {
-    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyNode> descriptors)
     {
         var builder = WebApplication.CreateBuilder();
 

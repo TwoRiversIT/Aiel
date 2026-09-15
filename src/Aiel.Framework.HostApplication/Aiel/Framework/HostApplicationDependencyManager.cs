@@ -22,10 +22,15 @@
 
 namespace Aiel.Framework;
 
-public class HostApplicationDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
-    : DependencyManager(dependencyDescriptors)
+public class HostApplicationDependencyManager
+    : DependencyManager
 {
-    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyDescriptor descriptor, CancellationToken cancellationToken)
+    public HostApplicationDependencyManager(IEnumerable<DependencyNode> dependencyDescriptors)
+    {
+        Initialize(dependencyDescriptors);
+    }
+
+    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyNode descriptor, CancellationToken cancellationToken)
     {
         var context = initializationContext as HostApplicationInitializationContext
             ?? throw new AielException("Invalid initializationContext. Expected and instance of HostApplicationInitializationContext;");

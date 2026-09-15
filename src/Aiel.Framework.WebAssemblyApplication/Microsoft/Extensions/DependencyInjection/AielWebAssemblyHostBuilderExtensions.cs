@@ -29,7 +29,7 @@ public static class AielWebAssemblyHostBuilderExtensions
 {
     public static async Task BootstrapAsync<TApplication>(
         this WebAssemblyHostBuilder builder,
-        IEnumerable<DependencyDescriptor> dependencyDescriptors,
+        IEnumerable<DependencyNode> dependencyDescriptors,
         CancellationToken cancellationToken = default)
         where TApplication : IApplicationConfigurator, new()
     {

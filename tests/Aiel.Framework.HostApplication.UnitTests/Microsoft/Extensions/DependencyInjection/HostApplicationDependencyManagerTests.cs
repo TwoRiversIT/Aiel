@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public class HostApplicationDependencyManagerTests : AielDependencyManagerTests
 {
-    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
+    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors)
         => new HostApplicationDependencyManager(descriptors);
 
     public override InitializationContext CreateInitializationContextAsync()

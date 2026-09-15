@@ -27,7 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public class HostApplicationInitializationTests : InitializationTestBase
 {
-    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyNode> descriptors)
     {
         var builder = Host.CreateApplicationBuilder();
 

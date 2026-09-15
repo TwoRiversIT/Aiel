@@ -83,7 +83,8 @@ public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigu
             throw new InvalidOperationException(IncorrectFixtureSetup);
         }
 
-        await InitializeFixtureAsync(new TestInitializationContext(_host.Services), TestContext.Current.CancellationToken);
+        var context = new TestInitializationContext(_host.Services);
+        await InitializeFixtureAsync(context, TestContext.Current.CancellationToken);
     }
 
     /// <summary>

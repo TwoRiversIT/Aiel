@@ -34,12 +34,12 @@ public static class Stubs
     public static String[] AielDependencies => RH.GetStrings<Placeholder>(
         "AielApplicationConfigurator.txt",
         "AielDependencyConfigurator.txt",
+        "AielDisposeExtensions.txt",
         "AielEnvironment.txt",
         "ConfigurationContext.txt",
-        "DependencyDescriptor.txt",
+        "DependencyNode.txt",
         "DependsOnAttribute.txt",
         "DisposableBase.txt",
-        "AielExtensions_Disposable.txt",
         "IApplicationConfigurator.txt",
         "IApplicationInfo.txt",
         "IConfigurator.txt",
@@ -71,7 +71,7 @@ public static class Stubs
 
                     public static async Task<IHostApplicationBuilder> RegisterDependenciesAsync(
                         this IHostApplicationBuilder builder,
-                        IEnumerable<DependencyDescriptor> dependencyDescriptors,
+                        IEnumerable<DependencyNode> dependencyDescriptors,
                         CancellationToken cancellationToken = default)
                     {
                         return builder;

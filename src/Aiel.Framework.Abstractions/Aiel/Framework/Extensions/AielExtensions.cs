@@ -25,6 +25,4 @@ namespace Aiel.Framework.Extensions;
 /// <summary>
 /// Provides convenience methods for all sorts of things in Aiel Framework.
 /// </summary>
-public static partial class AielExtensions
-{
-}
+public static partial class AielExtensions;

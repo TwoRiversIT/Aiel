@@ -27,7 +27,7 @@ namespace Aiel.Testing;
 
 public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
     : ConfiguratorTestFixture<TConfigurator>
-    where TConfigurator : IConfigurator, new()
+    where TConfigurator : class, IConfigurator, new()
     where TSut : class
 {
     internal override ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)

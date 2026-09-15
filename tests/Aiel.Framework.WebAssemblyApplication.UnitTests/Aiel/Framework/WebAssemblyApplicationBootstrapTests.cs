@@ -28,7 +28,7 @@ namespace Aiel.Framework;
 
 public class WebAssemblyApplicationBootstrapTests : BootstrapTestsBase
 {
-    public override async Task BootstrapAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    public override async Task BootstrapAsync<TApplication>(IEnumerable<DependencyNode> descriptors)
     {
         if (!descriptors.Any())
         {

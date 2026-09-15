@@ -22,7 +22,6 @@
 
 using Aiel.Framework;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -44,7 +43,4 @@ public static partial class AielHostApplicationExtensions
 
         await dependencyManager.InitializeAsync(context, cancellationToken);
     }
-
-    [LoggerMessage(EventId = 0, Level = LogLevel.Debug, Message = "Initializing Dependency {DependencyType}.")]
-    private static partial void LogInitializingDependency(ILogger logger, String dependencyType);
 }

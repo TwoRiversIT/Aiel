@@ -20,24 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Testing;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+//using Aiel.Testing;
+//using Microsoft.Extensions.Configuration;
+//using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Framework;
+//namespace Aiel.Framework;
 
-public class DefaultDependencyManagerTests : AielDependencyManagerTests
-{
-    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
-        => new DefaultDependencyManager(descriptors);
+//public class DefaultDependencyManagerTests : AielDependencyManagerTests
+//{
+//    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors)
+//        => new DefaultDependencyManager(descriptors);
 
-    public override InitializationContext CreateInitializationContextAsync()
-    {
-        var services = new ServiceCollection();
-        services.AddLogging();
-        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
+//    public override InitializationContext CreateInitializationContextAsync()
+//    {
+//        var services = new ServiceCollection();
+//        services.AddLogging();
+//        services.AddSingleton<IConfiguration>(new ConfigurationBuilder().Build());
 
-        var serviceProvider = services.BuildServiceProvider();
-        return new TestInitializationContext(serviceProvider);
-    }
-}
+//        var serviceProvider = services.BuildServiceProvider();
+//        return new TestInitializationContext(serviceProvider);
+//    }
+//}

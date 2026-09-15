@@ -22,9 +22,9 @@
 
 namespace Aiel.Framework;
 
-public class DefaultDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors) : DependencyManager(dependencyDescriptors)
+public class DefaultDependencyManager : DependencyManager
 {
-    protected override async Task InitializeAsync(InitializationContext context, DependencyDescriptor descriptor, CancellationToken cancellationToken)
+    protected override async Task InitializeAsync(InitializationContext context, DependencyNode descriptor, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(descriptor);

@@ -29,7 +29,7 @@ namespace Aiel.Framework.DependencyInjection;
 /// dependency type, its depth in the graph, the configurator instance, and its
 /// child dependencies.
 /// </summary>
-public class DependencyNode
+public class DependencyNode : IAsyncDisposable
 {
     /// <summary>
     /// Gets the type of the dependency represented by this node.
@@ -96,4 +96,14 @@ public class DependencyNode
     /// </summary>
     /// <returns></returns>
     public override String ToString() => $"{Type.Name} (Depth: {Depth})";
+
+    /// <summary>
+    /// Asynchronously disposes of the resources used by the <see cref="DependencyNode"/> instance.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    public async ValueTask DisposeAsync()
+    {
+        await Instance.SafelyDisposeAsync();
+        GC.SuppressFinalize(this);
+    }
 }

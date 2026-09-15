@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -30,21 +29,25 @@ namespace Aiel.Testing;
 /// A test fixture that configures dependencies using the specified <see cref="IConfigurator"> implementation.
 /// </summary>
 /// <typeparam name="TConfigurator">A type that implements <see cref="IConfigurator"/> and has a parameterless constructor. Usually inhertits from <see cref="AielDependency"/></typeparam>
-public class ConfiguratorTestFixture<TConfigurator> : IntegrationTestFixture
+public class ConfiguratorTestFixture<TConfigurator>
+    : IntegrationTestFixture
     where TConfigurator : class, IConfigurator, new()
 {
     internal override async ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)
     {
-        var root = DependencyDiscoveryExtensions.BuildDependencyTree<TConfigurator>();
+        await base.ConfigureFixtureAsync(context, cancellationToken);
 
+        var root = DependencyDiscoveryExtensions.BuildDependencyTree<TConfigurator>();
+        context.Services.AddSingleton(root);
         await root.ConfigureDependenciesAsync(context, cancellationToken);
+
     }
 
     internal override async ValueTask InitializeFixtureAsync(InitializationContext context, CancellationToken cancellationToken)
     {
-        var dependencyManager = context.Services.GetRequiredService<IDependencyManager>();
+        var root = context.Services.GetRequiredService<DependencyRoot>();
 
-        await dependencyManager.InitializeAsync(context, cancellationToken);
+        await root.InitializeDependenciesAsync(context, cancellationToken);
 
         await base.InitializeFixtureAsync(context, cancellationToken);
     }

@@ -24,7 +24,7 @@ using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Testing;
 
-public class ConfiguratorTestBase<TConfigurator, TFixture>(TFixture fixture, ITestOutputHelper output)
+public abstract class ConfiguratorTestBase<TConfigurator, TFixture>(TFixture fixture, ITestOutputHelper output)
     : IntegrationTestBase<TFixture>(fixture, output)
     where TConfigurator : class, IConfigurator, new()
     where TFixture : ConfiguratorTestFixture<TConfigurator>

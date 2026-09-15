@@ -30,6 +30,8 @@ namespace Aiel.Testing;
 /// </summary>
 public class IntegrationTestFixture : TestFixtureBase
 {
+    // This class only exists to implement/terminate the abstract base class. It does not need to do anything else.
+
     internal override ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken) => ValueTask.CompletedTask;
 
     internal override ValueTask InitializeFixtureAsync(InitializationContext context, CancellationToken cancellationToken) => ValueTask.CompletedTask;

@@ -20,40 +20,37 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework.DependencyInjection;
+namespace Aiel.Framework.DependencyInjection;
 
-namespace Aiel.Framework
+/// <summary>
+/// Provides access to dependency metadata and orchestrates startup for all configured dependencies.
+/// </summary>
+/// <remarks>
+/// The intention is to keep all the logic related to dependency configuration and initialization out of the
+/// dependency injection container and application host builders, and instead have a single, well-defined place
+/// to manage these concerns, since they only happen once during application startup and will not be needed again
+/// until the application is restarted.
+/// </remarks>
+public interface IDependencyManager
 {
     /// <summary>
-    /// Provides access to dependency metadata and orchestrates startup for all configured dependencies.
+	/// Gets the collection of dependencies that are known to the manager.
     /// </summary>
-    /// <remarks>
-    /// The intention is to keep all the logic related to dependency configuration and initialization out of the
-    /// dependency injection container and application host builders, and instead have a single, well-defined place
-    /// to manage these concerns, since they only happen once during application startup and will not be needed again
-    /// until the application is restarted.
-    /// </remarks>
-    public interface IDependencyManager
-    {
-        /// <summary>
-    	/// Gets the collection of dependencies that are known to the manager.
-        /// </summary>
-    	IReadOnlyCollection<DependencyNode> Dependencies { get; }
+	IReadOnlyCollection<DependencyNode> Dependencies { get; }
 
-        /// <summary>
-    	/// Configures all dependencies using the supplied configuration context.
-        /// </summary>
-    	/// <param name="context">The application configuration context.</param>
-    	/// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    	/// <returns>A task that represents the asynchronous configuration operation.</returns>
-    	ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
+    /// <summary>
+	/// Configures all dependencies using the supplied configuration context.
+    /// </summary>
+	/// <param name="context">The application configuration context.</param>
+	/// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+	/// <returns>A task that represents the asynchronous configuration operation.</returns>
+	ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
 
-        /// <summary>
-    	/// Initializes all dependencies using the supplied initialization context.
-        /// </summary>
-    	/// <param name="context">The application initialization context.</param>
-    	/// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-    	/// <returns>A task that represents the asynchronous initialization operation.</returns>
-    	ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default);
-    }
+    /// <summary>
+	/// Initializes all dependencies using the supplied initialization context.
+    /// </summary>
+	/// <param name="context">The application initialization context.</param>
+	/// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+	/// <returns>A task that represents the asynchronous initialization operation.</returns>
+	ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default);
 }

@@ -24,45 +24,38 @@ using Aiel.Results;
 using Aiel.Testing.Dummies;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.Testing.Customers;
+namespace Aiel.Testing.Specifications;
 
-public class UpdateCustomerTests(CustomersFixture<CustomerApplicationService> fixture, ITestOutputHelper output)
-    : CustomerTestBase<CustomerApplicationService>(fixture, output)
+public class CreateCustomerTests(CustomerSpecificationFixture<CustomerApplicationService> fixture, ITestOutputHelper output)
+    : CustomerSpecificationTestBase<CustomerApplicationService>(fixture, output)
 {
     private Guid Id { get; set; }
-    private UpdateCustomerCommand Command { get; set; } = default!;
-    private Result Result { get; set; } = default!;
-    public Customer Updated { get; private set; } = default!;
+    private CreateCustomerCommand Command { get; set; } = default!;
+    private Result<Guid> Result { get; set; } = default!;
 
-    public override async ValueTask GivenAsync()
+    public override ValueTask GivenAsync(CancellationToken cancellationToken = default)
     {
         Id = Guid.NewGuid();
-        Command = new UpdateCustomerCommand(Id, "Updated Name", "user@example.com");
+        Command = new CreateCustomerCommand(Id, "Acme Corporation", "contact@acme.com");
 
-        var repository = Services.GetRequiredService<ICustomerRepository>();
-        var customer = new Customer(Id, "Original Name");
-        await repository.CreateAsync(customer, CancellationToken);
+        return ValueTask.CompletedTask;
     }
 
-    public override async ValueTask WhenAsync()
-        => Result = await SUT.UpdateCustomerAsync(Command, CancellationToken);
-
-    public override async ValueTask ThenAsync()
+    public override async ValueTask WhenAsync(CancellationToken cancellationToken = default)
     {
-        var repository = Services.GetRequiredService<ICustomerRepository>();
-        Updated = await repository.GetByIdAsync(Id, CancellationToken);
+        Result = await SUT.CreateCustomerAsync(Command, cancellationToken);
     }
 
     [Fact]
-    public void Result_MustBeSuccess()
+    public async Task CreateCustomer_WithValidData_ShouldReturn_Success()
     {
+        Result.Should().NotBeNull();
         Result.IsSuccess.Should().BeTrue();
-    }
+        Result.Value.Should().Be(Id);
 
-    [Fact]
-    public async Task Customer_MustBeUpdated()
-    {
-        Updated.Name.Should().Be("Updated Name");
-        Updated.Email.Should().Be("user@example.com");
+        var repository = Services.GetRequiredService<ICustomerRepository>();
+        var created = await repository.GetByIdAsync(Id, CancellationToken);
+        created.Name.Should().Be("Acme Corporation");
+        created.Email.Should().Be("contact@acme.com");
     }
 }

@@ -30,10 +30,10 @@ public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
     where TConfigurator : class, IConfigurator, new()
     where TSut : class
 {
-    internal override ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)
+    internal override async ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)
     {
-        context.Services.AddScoped<TSut>();
+        await base.ConfigureFixtureAsync(context, cancellationToken);
 
-        return ValueTask.CompletedTask;
+        context.Services.AddScoped<TSut>();
     }
 }

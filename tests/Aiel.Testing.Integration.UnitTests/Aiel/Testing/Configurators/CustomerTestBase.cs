@@ -20,13 +20,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Testing;
+using Aiel.Testing.Dummies;
 
-namespace Aiel.Customers;
+namespace Aiel.Testing.Configurators;
 
-public class CustomerTestBase<TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
-    : SystemUnderTestBase<TFixture, TSut>(fixture, output)
-    where TFixture : CustomersFixture<TSut>
+public class CustomerTestBase<TSut>(CustomerTestFixture<TSut> fixture, ITestOutputHelper output)
+    : SystemUnderTestConfiguratorTestBase<CustomerModule, CustomerTestFixture<TSut>, TSut>(fixture, output)
+    where TSut : class
+{
+
+}
+
+// Fixture
+public class CustomerTestFixture<TSut> : SystemUnderTestConfiguratorTestFixture<CustomerModule, TSut>
     where TSut : class
 {
 }

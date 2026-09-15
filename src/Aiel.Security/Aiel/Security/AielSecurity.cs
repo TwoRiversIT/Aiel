@@ -22,6 +22,7 @@
 
 using Aiel.Emailing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Security;
 

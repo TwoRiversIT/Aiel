@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.DependencyInjection;
 
 /// <summary>
 /// Configures services and options for a dependency during application startup.

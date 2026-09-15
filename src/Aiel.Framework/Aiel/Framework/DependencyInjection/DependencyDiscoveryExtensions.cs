@@ -22,7 +22,7 @@
 
 using System.Reflection;
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.DependencyInjection;
 
 public static class DependencyDiscoveryExtensions
 {

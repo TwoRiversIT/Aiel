@@ -20,15 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
+namespace Aiel.Framework.DependencyInjection;
+
+/// <inheritdoc />
+public abstract class AielDependency : IConfigurator
 {
     /// <inheritdoc />
-    public abstract class AielDependency : IConfigurator
-    {
-        /// <inheritdoc />
-        public virtual ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
+    public virtual ValueTask PreConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 
-        /// <inheritdoc />
-        public virtual ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
-    }
+    /// <inheritdoc />
+    public virtual ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default) => ValueTask.CompletedTask;
 }

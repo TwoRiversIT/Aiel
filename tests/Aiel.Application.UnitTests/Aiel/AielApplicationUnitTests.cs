@@ -22,6 +22,7 @@
 
 using Aiel.Application;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel;
 

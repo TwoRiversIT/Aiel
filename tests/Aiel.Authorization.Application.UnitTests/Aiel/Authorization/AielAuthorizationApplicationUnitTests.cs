@@ -22,6 +22,7 @@
 
 using Aiel.Authorization.Testing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization;
 

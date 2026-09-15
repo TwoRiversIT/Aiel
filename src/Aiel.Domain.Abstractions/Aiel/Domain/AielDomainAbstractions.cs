@@ -22,6 +22,7 @@
 
 using Aiel.Actions;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain;

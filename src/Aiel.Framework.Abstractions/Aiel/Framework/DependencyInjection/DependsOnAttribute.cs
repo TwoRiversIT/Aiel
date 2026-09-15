@@ -20,20 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.DependencyInjection;
 
-public class DefaultDependencyManager : DependencyManager
+/// <summary>
+/// Indicates that the decorated class has a dependency on another class,
+/// specified by the provided type. This attribute can be applied to
+/// classes to declare their dependencies, which will be used for
+/// configuration, service registration, and initialization.
+/// </summary>
+/// <param name="type">
+/// The type of the class that the decorated class depends on. It must
+/// implement <see cref="IConfigurator"/>.
+/// </param>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class DependsOnAttribute(Type type) : Attribute
 {
-    protected override async Task InitializeAsync(InitializationContext context, DependencyNode descriptor, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(context);
-        ArgumentNullException.ThrowIfNull(descriptor);
-
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (descriptor.Instance is IInitializer initializer)
-        {
-            await initializer.InitializeAsync(context, cancellationToken);
-        }
-    }
+    /// <summary>
+    /// Gets the type of the class that the decorated class depends on.
+    /// The type must implement <see cref="IConfigurator"/>.
+    /// </summary>
+    public Type Type { get; } = type ?? throw new ArgumentNullException(nameof(type));
 }

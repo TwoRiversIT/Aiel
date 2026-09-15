@@ -34,6 +34,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
             using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test
             {
@@ -77,7 +78,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
                 namespace Aiel.WorkerService
                 {
-                    using Aiel.Framework;
+                    using Aiel.Framework.DependencyInjection;
                     using Aiel.WorkerService.Shared;
 
                     [DependsOn(typeof(AielWorkerServiceShared))]
@@ -91,6 +92,7 @@ public partial class DependencyGraphSourceGeneratorTests
                 namespace Aiel.WorkerService.Shared
                 {
                     using Aiel.Framework;
+                    using Aiel.Framework.DependencyInjection;
 
                     [DependsOn(typeof(AielFrameworkAbstractions))]
                     public sealed class AielWorkerServiceShared : AielDependency;
@@ -132,7 +134,7 @@ public partial class DependencyGraphSourceGeneratorTests
 
         const String testCode = """
             namespace Test;
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             public abstract class AbstractDependency : AielApplication
             {
@@ -151,7 +153,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 namespace Test;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
                 using System;
 
                 public class UnsealedApplication : AielApplication
@@ -174,7 +176,7 @@ public partial class DependencyGraphSourceGeneratorTests
         // is not intended to be an application entry points or root dependency.
         const String testCode = """
                 namespace Test;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
                 public sealed class MyApplication : AielDependency
                 {
@@ -191,6 +193,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
             using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using System;
 
             namespace Aiel.WorkerService;
@@ -218,7 +221,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void Generate_CreatesGraph_ForMultipleDependsOnAttributes()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test
             {
@@ -256,7 +259,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void Generate_DoesNotAddADependencyMoreThanOnce()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test
             {
@@ -330,7 +333,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void Generate_PrefersWebApplication_WhenBothWebApplicationAndHostBuildersAreAvailable()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using Microsoft.AspNetCore.Builder;
 
             namespace Test
@@ -366,7 +369,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
             using Microsoft.Extensions.Hosting;
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
@@ -399,7 +402,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public async Task WhenHostAppAndWebAppAreDetectedInOneAssembly_Generator_PrefersWebApplication()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using Microsoft.AspNetCore.Builder;
             using Microsoft.Extensions.Hosting;
 
@@ -436,7 +439,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void WhenCreateEmptyApplicationBuilderUsageDetecte_Generator_PrefersHostApplicationd()
     {
         const String testCode = """
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
                 using Microsoft.Extensions.Hosting;
 
                 namespace Test;
@@ -475,7 +478,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 using Microsoft.Extensions.Hosting;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
                 namespace Test;
 
@@ -508,7 +511,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 using Microsoft.AspNetCore.Builder;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
                 namespace Test;
 
@@ -541,7 +544,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 using Microsoft.AspNetCore.Builder;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
                 namespace Test;
 
@@ -573,7 +576,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void WhenWebAssemblyHostBuilderAvailable_Generator_EmitsWebAssemblyExtension()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             
             namespace Test;
 
@@ -598,7 +601,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void WhenProjectTypeUnknown_Generator_EmitsNoExtensionMethod()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
@@ -623,7 +626,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void WhenInheritingFromAielApplicationConfigurator_Generator_EmitsAddApplicationAsync()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
@@ -647,7 +650,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void WhenHandlingNamespacedDependencies_Generator_EmitsCorrectTypeReferences()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace MyCompany.MyProduct;
 
@@ -671,6 +674,7 @@ public partial class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
             using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
@@ -686,7 +690,7 @@ public partial class DependencyGraphSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
-        sourceText.Should().Contain("new global::Aiel.Framework.DependencyNode(");
+        sourceText.Should().Contain("new global::Aiel.Framework.DependencyInjection.DependencyNode(");
         sourceText.Should().Contain("typeof(global::Test.MyApplication)");
     }
 
@@ -694,7 +698,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void Generator_ProducesValidCSharpCode()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
@@ -728,7 +732,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void Generator_ProducesDeterministicHeaderAcrossRuns()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
@@ -756,7 +760,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void Generator_EmitsCodeToCall_RegisterAielEnvironment()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using Microsoft.AspNetCore.Builder;
 
             namespace Test
@@ -789,7 +793,7 @@ public partial class DependencyGraphSourceGeneratorTests
     public void CpcaApi_PrefersWebApplication()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             
             namespace CPCA;
 

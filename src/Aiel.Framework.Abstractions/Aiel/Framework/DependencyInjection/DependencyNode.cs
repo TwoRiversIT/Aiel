@@ -22,7 +22,7 @@
 
 //using System.Collections.ObjectModel;
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.DependencyInjection;
 
 /// <summary>
 /// Represents a node in the dependency graph, containing information about the

@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.DependencyInjection;
 
 /// <summary>
 /// Default implementation of <see cref="IDependencyManager"/> that builds a dependency graph

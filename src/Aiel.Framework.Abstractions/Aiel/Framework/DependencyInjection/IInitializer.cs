@@ -20,15 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.DependencyInjection;
 
 /// <summary>
-/// Identifies the root of the dependency graph and is responsible for
-/// configuring the application and providing runtime application information.
-/// In an application, there must be only one implementation of this interface.
-/// The recommended approach is for the application module to inherit from
-/// <see cref="AielApplication"/> and each dependency from
-/// <see cref="AielDependency"/>. This ensures that each dependency
-/// participates in the configuration, in the correct order.
+/// Performs post-startup initialization work for a dependency.
 /// </summary>
-public interface IApplicationConfigurator : IConfigurator, IApplicationInfo;
+/// <remarks>
+/// If an assembly needs to perform custom initialization logic after the
+/// dependency configuration phase, it can implement <see cref="IInitializer"/>.
+/// The Aiel framework will automatically discover and execute these initializers
+/// during application startup, allowing for modular and flexible dependency
+/// management across different assemblies.
+/// </remarks>
+public interface IInitializer
+{
+    /// <summary>
+    /// Initializes the current dependency using the provided context.
+    /// </summary>
+    /// <param name="context">The application initialization context.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous initialization operation.</returns>
+    ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default);
+}

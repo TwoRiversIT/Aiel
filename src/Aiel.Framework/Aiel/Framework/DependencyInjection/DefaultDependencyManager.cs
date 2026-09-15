@@ -20,12 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.DependencyInjection;
 
-/// <summary>
-/// Represents the root node of the dependency graph, containing information
-/// about the dependency type and its configurator instance.
-/// </summary>
-/// <param name="Type">The type of the dependency.</param>
-/// <param name="Instance">The configurator instance for the dependency.</param>
-public class DependencyRoot(Type Type, IConfigurator Instance) : DependencyNode(Type, 0, Instance, []);
+public class DefaultDependencyManager : DependencyManager
+{
+    protected override async Task InitializeAsync(InitializationContext context, DependencyNode descriptor, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(descriptor);
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (descriptor.Instance is IInitializer initializer)
+        {
+            await initializer.InitializeAsync(context, cancellationToken);
+        }
+    }
+}

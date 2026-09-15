@@ -49,7 +49,7 @@ public class AssemblyAnalyzerTests
     public async Task DoesNotReport_WhenExactlyOneValidAielApplicationTypeExists()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
@@ -65,7 +65,7 @@ public class AssemblyAnalyzerTests
     public async Task DoesNotReport_WhenExactlyOneValidAielDependencyTypeExists()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
@@ -81,7 +81,7 @@ public class AssemblyAnalyzerTests
     public async Task Ignores_TypesWithoutPublicParameterlessConstructor()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
@@ -101,7 +101,7 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_WhenDependencyIsNotSealed()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Aiel.Domain;
 
@@ -142,7 +142,7 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_WhenNoRootDependencyTypeIsDefined()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
@@ -177,7 +177,7 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_OnEachCandidate_WhenMultipleRootDependencyTypesExist()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
@@ -195,7 +195,7 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_OnEachCandidate_WhenAielDependencyAndAielApplicationTypesExist()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 

@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Specifications;
-using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

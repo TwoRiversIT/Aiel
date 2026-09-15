@@ -22,6 +22,7 @@
 
 using Aiel.EntityFrameworkCore;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.DataAccess.Dapper;
 

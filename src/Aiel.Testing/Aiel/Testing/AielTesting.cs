@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Aiel.Testing.UnitTests")]
 

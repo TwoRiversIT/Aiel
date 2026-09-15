@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Fakes;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace Aiel.Framework;

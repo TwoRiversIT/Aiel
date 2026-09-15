@@ -20,26 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
+namespace Aiel.Framework.DependencyInjection;
+
+/// <summary>
+/// Serves as the root node for the Aiel dependency injection framework to
+/// identify, configure, and initialize dependencies.
+/// </summary>
+public abstract class AielApplication : AielDependency, IApplicationConfigurator
 {
     /// <summary>
-    /// Performs post-startup initialization work for a dependency.
+    /// Gets the name of the application, which is used by the Aiel dependency injection framework
+    /// for logging, diagnostics, and other application-specific purposes.
     /// </summary>
-    /// <remarks>
-    /// If an assembly needs to perform custom initialization logic after the
-    /// dependency configuration phase, it can implement <see cref="IInitializer"/>.
-    /// The Aiel framework will automatically discover and execute these initializers
-    /// during application startup, allowing for modular and flexible dependency
-    /// management across different assemblies.
-    /// </remarks>
-    public interface IInitializer
-    {
-        /// <summary>
-        /// Initializes the current dependency using the provided context.
-        /// </summary>
-        /// <param name="context">The application initialization context.</param>
-        /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-        /// <returns>A task that represents the asynchronous initialization operation.</returns>
-        ValueTask InitializeAsync(InitializationContext context, CancellationToken cancellationToken = default);
-    }
+    public abstract String ApplicationName { get; }
+
+    /// <summary>
+    /// Gets the current version of the application as a string.
+    /// </summary>
+    /// <remarks>This property is typically used to identify the application's version for display, logging,
+    /// or compatibility checks. The format and meaning of the version string may vary depending on the
+    /// implementation.</remarks>
+    public abstract String ApplicationVersion { get; }
 }

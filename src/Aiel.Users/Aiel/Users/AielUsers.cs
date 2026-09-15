@@ -23,6 +23,7 @@
 using Aiel.Authorization;
 using Aiel.Emailing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds;
 
 namespace Aiel.Users;

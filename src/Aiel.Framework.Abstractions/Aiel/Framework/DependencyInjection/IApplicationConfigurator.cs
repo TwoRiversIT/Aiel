@@ -20,25 +20,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
-{
-    /// <summary>
-    /// Indicates that the decorated class has a dependency on another class,
-    /// specified by the provided type. This attribute can be applied to
-    /// classes to declare their dependencies, which will be used for
-    /// configuration, service registration, and initialization.
-    /// </summary>
-    /// <param name="type">
-    /// The type of the class that the decorated class depends on. It must
-    /// implement <see cref="IConfigurator"/>.
-    /// </param>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class DependsOnAttribute(Type type) : Attribute
-    {
-        /// <summary>
-        /// Gets the type of the class that the decorated class depends on.
-        /// The type must implement <see cref="IConfigurator"/>.
-        /// </summary>
-        public Type Type { get; } = type ?? throw new ArgumentNullException(nameof(type));
-    }
-}
+namespace Aiel.Framework.DependencyInjection;
+
+/// <summary>
+/// Identifies the root of the dependency graph and is responsible for
+/// configuring the application and providing runtime application information.
+/// In an application, there must be only one implementation of this interface.
+/// The recommended approach is for the application module to inherit from
+/// <see cref="AielApplication"/> and each dependency from
+/// <see cref="AielDependency"/>. This ensures that each dependency
+/// participates in the configuration, in the correct order.
+/// </summary>
+public interface IApplicationConfigurator : IConfigurator, IApplicationInfo;

@@ -23,6 +23,7 @@
 using Aiel.Actions.Queries;
 using Aiel.Domain;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore.Queries;
 

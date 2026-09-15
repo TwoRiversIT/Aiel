@@ -20,36 +20,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Aiel.Framework.DependencyInjection;
 
 /// <summary>
-/// Represents an exception that is thrown when a circular dependency is
-/// detected in the dependency graph.
+/// Represents the initialization context for the Aiel framework, providing
+/// access to the service provider, environment, and configuration.
 /// </summary>
-public class CircularDependencyException : AielException
+/// <param name="serviceProvider">The service provider.</param>
+public class InitializationContext(IServiceProvider serviceProvider)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CircularDependencyException"/> class.
-    /// </summary>
-    public CircularDependencyException() : base()
-    {
-    }
+    private readonly Lazy<IAielEnvironment> _environment = new(() => serviceProvider.GetRequiredService<IAielEnvironment>());
+    private readonly Lazy<IConfiguration> _configuration = new(() => serviceProvider.GetRequiredService<IConfiguration>());
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CircularDependencyException"/> class with a specified error message.
+    /// Gets the Aiel environment, which provides information about the runtime environment in which the application is running.
     /// </summary>
-    /// <param name="errorDescription">The error message that explains the reason for the exception.</param>
-    public CircularDependencyException(String errorDescription) : base(errorDescription)
-    {
-    }
+    public virtual IAielEnvironment Environment => _environment.Value;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CircularDependencyException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+    /// Gets the configuration, which provides access to application settings and configuration values.
     /// </summary>
-    /// <param name="errorDescription">The error message that explains the reason for the exception.</param>
-    /// <param name="innerException">The exception that is the cause of the current exception, or a null reference if no inner exception is specified.</param>
-    public CircularDependencyException(String errorDescription, Exception? innerException)
-        : base(errorDescription, innerException)
-    {
-    }
+    public virtual IConfiguration Configuration => _configuration.Value;
+
+    /// <summary>
+    /// Gets the service provider, which provides access to registered
+    /// services and allows for resolving dependencies.
+    /// </summary>
+    public virtual IServiceProvider Services { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 }

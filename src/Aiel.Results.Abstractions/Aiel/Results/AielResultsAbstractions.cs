@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Aiel.Testing.Dummies")]

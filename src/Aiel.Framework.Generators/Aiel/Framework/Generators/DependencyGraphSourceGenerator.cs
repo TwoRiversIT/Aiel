@@ -51,7 +51,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
     internal const String GeneratedClassName = "AielDependencyGraph";
     internal const String GeneratedNamespace = "Microsoft.Extensions.DependencyInjection";
     internal const String HostApplicationBuilder = "HostApplicationBuilder";
-    internal const String RootNamespace = "Aiel.Framework";
+    internal const String RootNamespace = "Aiel.Framework.DependencyInjection";
     internal const String WebApplicationBuilder = "WebApplicationBuilder";
     internal const String WebAssemblyBuilder = "WebAssemblyHostBuilder";
 

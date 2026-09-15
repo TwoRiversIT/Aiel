@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;

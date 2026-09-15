@@ -22,6 +22,7 @@
 
 using Aiel.Framework;
 using Aiel.Framework.Collections;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore.Migrations;

@@ -24,6 +24,7 @@ using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.EntityFrameworkCore.Queries;
 using Aiel.EntityFrameworkCore.Seeding;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds.EntityFrameworkCore;
 using Aiel.Testing;
 

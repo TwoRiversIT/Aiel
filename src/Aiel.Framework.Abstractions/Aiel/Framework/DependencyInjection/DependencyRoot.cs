@@ -20,26 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Framework
-{
-    /// <summary>
-    /// Serves as the root node for the Aiel dependency injection framework to
-    /// identify, configure, and initialize dependencies.
-    /// </summary>
-    public abstract class AielApplication : AielDependency, IApplicationConfigurator
-    {
-        /// <summary>
-        /// Gets the name of the application, which is used by the Aiel dependency injection framework
-        /// for logging, diagnostics, and other application-specific purposes.
-        /// </summary>
-        public abstract String ApplicationName { get; }
+namespace Aiel.Framework.DependencyInjection;
 
-        /// <summary>
-        /// Gets the current version of the application as a string.
-        /// </summary>
-        /// <remarks>This property is typically used to identify the application's version for display, logging,
-        /// or compatibility checks. The format and meaning of the version string may vary depending on the
-        /// implementation.</remarks>
-        public abstract String ApplicationVersion { get; }
-    }
-}
+/// <summary>
+/// Represents the root node of the dependency graph, containing information
+/// about the dependency type and its configurator instance.
+/// </summary>
+/// <param name="Type">The type of the dependency.</param>
+/// <param name="Instance">The configurator instance for the dependency.</param>
+public class DependencyRoot(Type Type, IConfigurator Instance) : DependencyNode(Type, 0, Instance, []);

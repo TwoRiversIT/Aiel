@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.MultiTenancy;
 
 namespace Aiel.Multitenancy.EntityFrameworkCore;

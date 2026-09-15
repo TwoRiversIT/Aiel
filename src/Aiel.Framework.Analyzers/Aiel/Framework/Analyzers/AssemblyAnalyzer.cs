@@ -40,8 +40,8 @@ namespace Aiel.Framework.Analyzers;
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
 {
-    private const String DependencyName = "Aiel.Framework.AielDependency";
-    private const String ApplicationName = "Aiel.Framework.AielApplication";
+    private const String DependencyName = "Aiel.Framework.DependencyInjection.AielDependency";
+    private const String ApplicationName = "Aiel.Framework.DependencyInjection.AielApplication";
 
     private static readonly DiagnosticDescriptor AielDependencyRequired = new(
         id: DiagnosticRuleIDs.AIEL00001_AielDependencyRequiredId,
@@ -50,7 +50,7 @@ public sealed class AssemblyAnalyzer : DiagnosticAnalyzer
         category: DiagnosticMetadata.UsageCategory,
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
-        description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Framework.AielDependency` or `Aiel.Framework.AielApplication`. These types serve as the root for the dependency graph.",
+        description: "Any assembly that references Aiel directly or transitively must define exactly one public sealed class with a public parameterless constructor, inheriting from either `Aiel.Framework.DependencyInjection.AielDependency` or `Aiel.Framework.DependencyInjection.AielApplication`. These types serve as the root for the dependency graph.",
         customTags: []);
 
     private static readonly DiagnosticDescriptor DependencyIsNotSealed = new(

@@ -24,6 +24,7 @@ using Aiel.Actions.Commands;
 using Aiel.Application;
 using Aiel.Authorization.Testing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Results;
 
 namespace Aiel.Authorization.AspNetCore;

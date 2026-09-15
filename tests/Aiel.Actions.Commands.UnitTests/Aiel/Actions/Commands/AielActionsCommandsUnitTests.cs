@@ -21,8 +21,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Actions.Commands;
 
 [DependsOn(typeof(AielActionsCommands))]
-public sealed class AielActionsCommandsUnitTests : AielDependencyConfigurator;
+public sealed class AielActionsCommandsUnitTests : AielDependency;

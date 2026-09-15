@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ public static class AielWebApplicationBuilderExtensions
 {
     public static async Task BootstrapAsync<TApplication>(
         this WebApplicationBuilder builder,
-        IEnumerable<DependencyDescriptor> dependencyDescriptors,
+        IEnumerable<DependencyNode> dependencyDescriptors,
         CancellationToken cancellationToken = default)
         where TApplication : class, IApplicationConfigurator, new()
     {

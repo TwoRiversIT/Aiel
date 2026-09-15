@@ -21,9 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Mediator;
 
 [DependsOn(typeof(AielMediator))]
-public sealed class AielMediatorUnitTests : AielDependencyConfigurator;
+public sealed class AielMediatorUnitTests : AielDependency;
 

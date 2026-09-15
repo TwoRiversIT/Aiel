@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.MessageBus.Sagas;
 
@@ -30,4 +31,4 @@ namespace Aiel.MessageBus.Sagas;
 /// <see cref="ISagaRepository{TSagaState}"/> implementations.
 /// </summary>
 [DependsOn(typeof(MessageBusAbstractionsDependency))]
-public sealed class SagasDependency : AielDependencyConfigurator;
+public sealed class SagasDependency : AielDependency;

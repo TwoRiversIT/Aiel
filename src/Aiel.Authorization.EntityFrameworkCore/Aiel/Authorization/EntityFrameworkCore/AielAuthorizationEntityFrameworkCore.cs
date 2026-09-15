@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Results;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
@@ -31,5 +32,5 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 /// </summary>
 [DependsOn(typeof(AielAuthorizationDomain))]
 [DependsOn(typeof(AielResults))]
-public sealed class AielAuthorizationEntityFrameworkCore : AielDependencyConfigurator;
+public sealed class AielAuthorizationEntityFrameworkCore : AielDependency;
 

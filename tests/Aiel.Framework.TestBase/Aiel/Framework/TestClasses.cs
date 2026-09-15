@@ -20,9 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
+
 namespace Aiel.Framework;
 
-public abstract class TrackedConfigurator : AielDependencyConfigurator, IInitializer, IDisposable, IAsyncDisposable
+public abstract class TrackedConfigurator : AielDependency, IInitializer, IDisposable, IAsyncDisposable
 {
     public Int32 PreConfigureCount { get; private set; }
     public Int32 ConfigureCount { get; private set; }

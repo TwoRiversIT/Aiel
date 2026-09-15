@@ -21,11 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Multitenancy.EntityFrameworkCore;
 
 namespace Aiel.MultiTenancy;
 
 [DependsOn(typeof(AielMultiTenancyUnitTests))]
 [DependsOn(typeof(AielMultitenancyEntityFrameworkCore))]
-public sealed class AielMultiTenancyIntegrationTests : AielDependencyConfigurator;
+public sealed class AielMultiTenancyIntegrationTests : AielDependency;
 

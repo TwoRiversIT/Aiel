@@ -21,26 +21,31 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Aiel.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
 /// <summary>
 /// A test fixture that configures dependencies using the specified <see cref="IConfigurator"> implementation.
 /// </summary>
-/// <typeparam name="TConfigurator">A type that implements <see cref="IConfigurator"/> and has a parameterless constructor. Usually inhertits from <see cref="AielDependencyConfigurator"/></typeparam>
+/// <typeparam name="TConfigurator">A type that implements <see cref="IConfigurator"/> and has a parameterless constructor. Usually inhertits from <see cref="AielDependency"/></typeparam>
 public class ConfiguratorTestFixture<TConfigurator> : IntegrationTestFixture
-    where TConfigurator : IConfigurator, new()
+    where TConfigurator : class, IConfigurator, new()
 {
-    public override async ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    internal override async ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken)
     {
-        var root = context.BuildDependencyTree<TConfigurator>();
-
-        context.Services.TryAddSingleton(root);
+        var root = DependencyDiscoveryExtensions.BuildDependencyTree<TConfigurator>();
 
         await root.ConfigureDependenciesAsync(context, cancellationToken);
     }
 
-    internal override ValueTask ConfigureFixtureAsync(ConfigurationContext configContext, CancellationToken cancellationToken) => ValueTask.CompletedTask;
-    internal override ValueTask InitializeFixtureAsync(InitializationContext initContext, CancellationToken cancellationToken) => ValueTask.CompletedTask;
+    internal override async ValueTask InitializeFixtureAsync(InitializationContext context, CancellationToken cancellationToken)
+    {
+        var dependencyManager = context.Services.GetRequiredService<IDependencyManager>();
+
+        await dependencyManager.InitializeAsync(context, cancellationToken);
+
+        await base.InitializeFixtureAsync(context, cancellationToken);
+    }
 }

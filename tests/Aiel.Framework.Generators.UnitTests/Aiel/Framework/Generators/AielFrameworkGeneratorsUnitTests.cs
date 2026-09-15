@@ -20,8 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
+
 namespace Aiel.Framework.Generators;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielFrameworkGeneratorsUnitTests : AielDependencyConfigurator;
+public sealed class AielFrameworkGeneratorsUnitTests : AielDependency;
 

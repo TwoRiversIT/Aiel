@@ -20,17 +20,24 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using static Aiel.Actions.Queries.AielActionsQueriesTests;
 
 namespace Aiel.Actions.Queries;
 
-public sealed class AielActionsQueriesTests(ConfiguratorTestFixture<AielActionsQueries> fixture, ITestOutputHelper output)
-    : IntegrationTestBase<ConfiguratorTestFixture<AielActionsQueries>>(fixture, output)
+public sealed class AielActionsQueriesTests(ConfiguratorTestFixture<ActionsQueriesConfigurator> fixture, ITestOutputHelper output)
+    : ConfiguratorTestBase<ActionsQueriesConfigurator, ConfiguratorTestFixture<ActionsQueriesConfigurator>>(fixture, output)
 {
     [Fact]
     public void AielActionsQueries_RegistersIQueryDispatcher()
     {
         Services.GetService<IQueryDispatcher>().Should().NotBeNull();
     }
+
+    [DependsOn(typeof(AielActionsQueries))]
+    [DependsOn(typeof(AielFramework))]
+    public sealed class ActionsQueriesConfigurator : AielDependency;
 }

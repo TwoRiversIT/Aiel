@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Aiel.Testing.Dummies")]
@@ -31,4 +32,4 @@ namespace Aiel.Results;
 /// Represents the Aiel.Results.Abstractions assembly, which provides abstractions for handling results and errors in the Aiel framework.
 /// </summary>
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielResultsAbstractions : AielDependencyConfigurator;
+public sealed class AielResultsAbstractions : AielDependency;

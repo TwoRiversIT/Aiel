@@ -21,8 +21,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Actions.Queries;
 
 [DependsOn(typeof(AielActionsAbstractions))]
-public class AielActionsQueriesFluentValidation : AielDependencyConfigurator;
+public class AielActionsQueriesFluentValidation : AielDependency;

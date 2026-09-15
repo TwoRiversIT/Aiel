@@ -20,14 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
 public class SystemUnderTestConfiguratorTestBase<TConfigurator, TFixture, TSut>(TFixture fixture, ITestOutputHelper output)
     : ConfiguratorTestBase<TConfigurator, TFixture>(fixture, output)
-    where TConfigurator : IConfigurator, new()
+    where TConfigurator : class, IConfigurator, new()
     where TFixture : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
     where TSut : class
 {

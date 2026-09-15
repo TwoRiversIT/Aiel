@@ -24,6 +24,7 @@ using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.EntityFrameworkCore.Queries;
 using Aiel.EntityFrameworkCore.Seeding;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds.EntityFrameworkCore;
 using Aiel.Testing;
 
@@ -35,4 +36,4 @@ namespace Aiel.Domain.Queries;
 [DependsOn(typeof(AielEntityFrameworkCoreSeeding))]
 [DependsOn(typeof(AielStrongIdsEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]
-public sealed class AielEntityFrameworkCoreIntegrationTests : AielDependencyConfigurator;
+public sealed class AielEntityFrameworkCoreIntegrationTests : AielDependency;

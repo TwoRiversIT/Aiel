@@ -23,11 +23,8 @@
 using System.Globalization;
 using System.Text;
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.Extensions;
 
-/// <summary>
-/// Provides extension methods for the <see cref="Exception"/> class to facilitate visiting and formatting exceptions and their inner exceptions.
-/// </summary>
 public static partial class AielExtensions
 {
     /// <summary>

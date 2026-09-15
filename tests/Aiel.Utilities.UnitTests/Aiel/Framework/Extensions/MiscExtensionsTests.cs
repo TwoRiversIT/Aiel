@@ -1,0 +1,134 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+using Aiel.Extensions;
+
+namespace Aiel.Framework.Extensions;
+
+public class MiscExtensionsTests
+{
+    [Fact]
+    public void Visit_ExecutesActionOnException()
+    {
+        var exception = new InvalidOperationException("Test exception");
+        var visited = false;
+
+        exception.Visit(ex =>
+        {
+            ex.Message.Should().Be("Test exception");
+            visited = true;
+        });
+
+        visited.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Visit_ExecutesActionOnAllInnerExceptions()
+    {
+        var innerMost = new ArgumentException("Inner most");
+        var middle = new InvalidOperationException("Middle", innerMost);
+        var outer = new Exception("Outer", middle);
+
+        var messages = new List<String>();
+
+        outer.Visit(ex => messages.Add(ex.Message));
+
+        messages.Should().HaveCount(3);
+        messages.Should().Contain("Outer");
+        messages.Should().Contain("Middle");
+        messages.Should().Contain("Inner most");
+    }
+
+    [Fact]
+    public void Visit_VisitsInCorrectOrder()
+    {
+        var inner = new ArgumentException("Inner");
+        var outer = new InvalidOperationException("Outer", inner);
+
+        var messages = new List<String>();
+
+        outer.Visit(ex => messages.Add(ex.Message));
+
+        messages[0].Should().Be("Outer");
+        messages[1].Should().Be("Inner");
+    }
+
+    [Fact]
+    public void Clamp_ReturnsValue_WhenWithinRange()
+    {
+        var result = 5.Clamp(1, 10);
+
+        result.Should().Be(5);
+    }
+
+    [Fact]
+    public void Clamp_ReturnsMin_WhenBelowRange()
+    {
+        var result = 0.Clamp(1, 10);
+
+        result.Should().Be(1);
+    }
+
+    [Fact]
+    public void Clamp_ReturnsMax_WhenAboveRange()
+    {
+        var result = 15.Clamp(1, 10);
+
+        result.Should().Be(10);
+    }
+
+    [Fact]
+    public void Clamp_WorksWithDouble()
+    {
+        var result = 5.5.Clamp(1.0, 10.0);
+
+        result.Should().Be(5.5);
+    }
+
+    [Fact]
+    public void Clamp_WorksWithDateTime()
+    {
+        var min = new DateTime(2020, 1, 1);
+        var max = new DateTime(2025, 12, 31);
+        var value = new DateTime(2023, 6, 15);
+
+        var result = value.Clamp(min, max);
+
+        result.Should().Be(value);
+    }
+
+    [Fact]
+    public void Clamp_HandlesEdgeCases_AtMin()
+    {
+        var result = 1.Clamp(1, 10);
+
+        result.Should().Be(1);
+    }
+
+    [Fact]
+    public void Clamp_HandlesEdgeCases_AtMax()
+    {
+        var result = 10.Clamp(1, 10);
+
+        result.Should().Be(10);
+    }
+}

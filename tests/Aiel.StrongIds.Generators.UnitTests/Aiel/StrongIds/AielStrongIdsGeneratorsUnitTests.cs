@@ -21,9 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.StrongIds;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielStrongIdsGeneratorsUnitTests : AielDependencyConfigurator;
+public sealed class AielStrongIdsGeneratorsUnitTests : AielDependency;
 

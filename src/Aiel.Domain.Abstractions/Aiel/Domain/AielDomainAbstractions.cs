@@ -22,6 +22,7 @@
 
 using Aiel.Actions;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds;
 
 namespace Aiel.Domain;
@@ -31,4 +32,4 @@ namespace Aiel.Domain;
 /// </summary>
 [DependsOn(typeof(AielActions))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielDomainAbstractions : AielDependencyConfigurator;
+public sealed class AielDomainAbstractions : AielDependency;

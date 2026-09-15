@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.EntityFrameworkCore;
-using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
 using Dapper;
 using Microsoft.Extensions.DependencyInjection;

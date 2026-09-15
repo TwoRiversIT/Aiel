@@ -21,10 +21,11 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.AspNetCore;
 
 [DependsOn(typeof(MultiTenancy.AielMultiTenancy))]
 [DependsOn(typeof(AielAspNetCoreIntegrationTestsWebApplication))]
-public sealed class AielAspNetCoreIntegrationTests : AielDependencyConfigurator;
+public sealed class AielAspNetCoreIntegrationTests : AielDependency;
 

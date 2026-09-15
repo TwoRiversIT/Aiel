@@ -155,4 +155,4 @@ Update `Framework.md` to replace `TrDependency`/`TrApplication` with `AielDepend
 
 The `AssemblyAnalyzer` enforces that each assembly declares exactly one `AielDependencyConfigurator` subclass. It does not need updating for this phase — the pre-configure lifecycle is fully inside the existing module contract.
 
-The source generator (`DependencyGraphSourceGenerator`) emits `DependencyDescriptor` objects whose `Configurators` list is consumed by `DependencyManager`. The generator itself does not need updating — the `DependencyManager` change is sufficient for the source-generated path.
+The source generator (`DependencyGraphSourceGenerator`) emits `DependencyNode` objects whose `Configurators` list is consumed by `DependencyManager`. The generator itself does not need updating — the `DependencyManager` change is sufficient for the source-generated path.

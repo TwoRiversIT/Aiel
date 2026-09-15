@@ -21,13 +21,18 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public class WebApplicationDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
-    : DependencyManager(dependencyDescriptors)
+public class WebApplicationDependencyManager : DependencyManager
 {
-    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyDescriptor descriptor, CancellationToken cancellationToken)
+    public WebApplicationDependencyManager(IEnumerable<DependencyNode> dependencyDescriptors)
+    {
+        Initialize(dependencyDescriptors);
+    }
+
+    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyNode descriptor, CancellationToken cancellationToken)
     {
         var context = initializationContext as WebApplicationInitializationContext
             ?? throw new AielException("Invalid initializationContext. Expected and instance of WebApplicationInitializationContext;");

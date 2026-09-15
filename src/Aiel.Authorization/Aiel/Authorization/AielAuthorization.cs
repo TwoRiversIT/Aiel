@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization;
 
@@ -28,4 +29,4 @@ namespace Aiel.Authorization;
 /// AielAuthorization is the dependency configurator for the Aiel.Authorization library,
 /// </summary>
 [DependsOn(typeof(AielAuthorizationAbstractions))]
-public sealed class AielAuthorization : AielDependencyConfigurator;
+public sealed class AielAuthorization : AielDependency;

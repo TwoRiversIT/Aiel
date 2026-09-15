@@ -22,6 +22,7 @@
 
 using Aiel.Fakes;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -83,7 +84,8 @@ public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigu
             throw new InvalidOperationException(IncorrectFixtureSetup);
         }
 
-        await InitializeFixtureAsync(new TestInitializationContext(_host.Services), TestContext.Current.CancellationToken);
+        var context = new TestInitializationContext(_host.Services);
+        await InitializeFixtureAsync(context, TestContext.Current.CancellationToken);
     }
 
     /// <summary>

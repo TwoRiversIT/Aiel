@@ -23,10 +23,11 @@
 using Aiel.Actions.Queries;
 using Aiel.Domain;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore.Queries;
 
 [DependsOn(typeof(AielActionsQueries))]
 [DependsOn(typeof(AielDomainAbstractions))]
 [DependsOn(typeof(AielEntityFrameworkCore))]
-public sealed class AielEntityFrameworkCoreQueries : AielDependencyConfigurator;
+public sealed class AielEntityFrameworkCoreQueries : AielDependency;

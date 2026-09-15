@@ -21,12 +21,13 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore.Seeding;
 
 [DependsOn(typeof(AielEntityFrameworkCore))]
-public class AielEntityFrameworkCoreSeeding : AielDependencyConfigurator
+public class AielEntityFrameworkCoreSeeding : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

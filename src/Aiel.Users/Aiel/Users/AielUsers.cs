@@ -23,6 +23,7 @@
 using Aiel.Authorization;
 using Aiel.Emailing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds;
 
 namespace Aiel.Users;
@@ -30,4 +31,4 @@ namespace Aiel.Users;
 [DependsOn(typeof(AielEmailingAbstractions))]
 [DependsOn(typeof(AielAuthorizationAbstractions))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielUsers : AielDependencyConfigurator;
+public sealed class AielUsers : AielDependency;

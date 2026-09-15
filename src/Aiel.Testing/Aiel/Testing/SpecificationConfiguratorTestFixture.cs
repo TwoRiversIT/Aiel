@@ -20,12 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Testing;
 
 public class SpecificationConfiguratorTestFixture<TConfigurator, TSut> : SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
-    where TConfigurator : IConfigurator, new()
+    where TConfigurator : class, IConfigurator, new()
     where TSut : class
 {
     private Func<ValueTask>? _givenAsync;

@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.StrongIds;
 
@@ -28,4 +29,4 @@ namespace Aiel.StrongIds;
 /// Ensures that the Aiel.StrongIds participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielStrongIdsFluentValidation : AielDependencyConfigurator;
+public sealed class AielStrongIdsFluentValidation : AielDependency;

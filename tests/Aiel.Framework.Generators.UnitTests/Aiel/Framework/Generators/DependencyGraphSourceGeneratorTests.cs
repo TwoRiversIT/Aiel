@@ -21,35 +21,37 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Microsoft.CodeAnalysis.CSharp;
+using System.Text.RegularExpressions;
 using GenerateCS = Aiel.Framework.Verifiers.SourceGeneratorVerifier<Aiel.Framework.Generators.DependencyGraphSourceGenerator>;
 using VerifyCS = Aiel.Framework.Verifiers.CSharpSourceGeneratorVerifier<Aiel.Framework.Generators.DependencyGraphSourceGenerator>;
 
 namespace Aiel.Framework.Generators;
 
-public class DependencyGraphSourceGeneratorTests
+public partial class DependencyGraphSourceGeneratorTests
 {
     [Fact]
     public void Generate_BuildsTransitiveClosure_ForNestedDependencies()
     {
         const String testCode = """
             using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test
             {
                 [DependsOn(typeof(DepB))]
-                public sealed class DepA : AielApplicationConfigurator
+                public sealed class DepA : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
                 }
 
                 [DependsOn(typeof(DepC))]
-                public sealed class DepB : AielDependencyConfigurator
+                public sealed class DepB : AielDependency
                 {
                 }
 
                 [DependsOn(typeof(AielFrameworkAbstractions))]
-                public sealed class DepC : AielDependencyConfigurator
+                public sealed class DepC : AielDependency
                 {
                 }
             }
@@ -61,13 +63,10 @@ public class DependencyGraphSourceGeneratorTests
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
         // All four nodes of the transitive closure must be present
-        sourceText.Should().Contain("\"Test.DepA\"");
+        sourceText.Should().Contain("typeof(global::Test.DepA)");
         sourceText.Should().Contain("typeof(global::Test.DepB)");
-        sourceText.Should().Contain("\"Test.DepB\"");
         sourceText.Should().Contain("typeof(global::Test.DepC)");
-        sourceText.Should().Contain("\"Test.DepC\"");
         sourceText.Should().Contain("typeof(global::Aiel.Framework.AielFrameworkAbstractions)");
-        sourceText.Should().Contain("\"Aiel.Framework.AielFrameworkAbstractions\"");
         sourceText.Should().Contain("// Project Type: HostApplication");
         sourceText.Should().Contain("Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> AddApplicationAsync");
     }
@@ -79,11 +78,11 @@ public class DependencyGraphSourceGeneratorTests
 
                 namespace Aiel.WorkerService
                 {
-                    using Aiel.Framework;
+                    using Aiel.Framework.DependencyInjection;
                     using Aiel.WorkerService.Shared;
 
                     [DependsOn(typeof(AielWorkerServiceShared))]
-                    public sealed class AielWorkerService : AielApplicationConfigurator
+                    public sealed class AielWorkerService : AielApplication
                     {
                         public override String ApplicationName => "ApplicationName";
                         public override String ApplicationVersion => "0.0.0";
@@ -93,9 +92,10 @@ public class DependencyGraphSourceGeneratorTests
                 namespace Aiel.WorkerService.Shared
                 {
                     using Aiel.Framework;
+                    using Aiel.Framework.DependencyInjection;
 
                     [DependsOn(typeof(AielFrameworkAbstractions))]
-                    public sealed class AielWorkerServiceShared : AielDependencyConfigurator;
+                    public sealed class AielWorkerServiceShared : AielDependency;
                 }
                 """;
 
@@ -104,11 +104,8 @@ public class DependencyGraphSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
-        sourceText.Should().Contain("\"Aiel.WorkerService.AielWorkerService\"");
         sourceText.Should().Contain("typeof(global::Aiel.WorkerService.Shared.AielWorkerServiceShared)");
-        sourceText.Should().Contain("\"Aiel.WorkerService.Shared.AielWorkerServiceShared\"");
         sourceText.Should().Contain("typeof(global::Aiel.Framework.AielFrameworkAbstractions)");
-        sourceText.Should().Contain("\"Aiel.Framework.AielFrameworkAbstractions\"");
         sourceText.Should().Contain("// Project Type: HostApplication");
         sourceText.Should().Contain("Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> AddApplicationAsync");
     }
@@ -137,9 +134,9 @@ public class DependencyGraphSourceGeneratorTests
 
         const String testCode = """
             namespace Test;
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
-            public abstract class AbstractDependency : AielApplicationConfigurator
+            public abstract class AbstractDependency : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -156,10 +153,10 @@ public class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 namespace Test;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
                 using System;
 
-                public class UnsealedApplication : AielApplicationConfigurator
+                public class UnsealedApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -175,13 +172,13 @@ public class DependencyGraphSourceGeneratorTests
     public async Task Generate_IgnoresAielDependencyConfigurator()
     {
         // The dependency graph generator should only consider types that inherit from
-        // AielApplicationConfigurator, not AielDependencyConfigurator, since the latter
-        // two are not intended to be application entry points.
+        // AielApplication, not AielDependency, since the latter
+        // is not intended to be an application entry points or root dependency.
         const String testCode = """
                 namespace Test;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
-                public sealed class MyApplication : AielDependencyConfigurator
+                public sealed class MyApplication : AielDependency
                 {
                 }
                 """;
@@ -196,12 +193,13 @@ public class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
             using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using System;
 
             namespace Aiel.WorkerService;
 
             [DependsOn(typeof(AielFrameworkAbstractions))]
-            public sealed class AielWorkerService : AielApplicationConfigurator
+            public sealed class AielWorkerService : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -213,10 +211,8 @@ public class DependencyGraphSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
-        sourceText.Should().Contain("\"Aiel.WorkerService.AielWorkerService\"");
         sourceText.Should().Contain("typeof(global::Aiel.WorkerService.AielWorkerService)");
         sourceText.Should().Contain("typeof(global::Aiel.Framework.AielFrameworkAbstractions)");
-        sourceText.Should().Contain("\"Aiel.Framework.AielFrameworkAbstractions\"");
         sourceText.Should().Contain("// Project Type: HostApplication");
         sourceText.Should().Contain("Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> AddApplicationAsync");
     }
@@ -225,21 +221,21 @@ public class DependencyGraphSourceGeneratorTests
     public void Generate_CreatesGraph_ForMultipleDependsOnAttributes()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test
             {
-                public sealed class DepA : AielDependencyConfigurator
+                public sealed class DepA : AielDependency
                 {
                 }
 
-                public sealed class DepB : AielDependencyConfigurator
+                public sealed class DepB : AielDependency
                 {
                 }
 
                 [DependsOn(typeof(DepA))]
                 [DependsOn(typeof(DepB))]
-                public sealed class Root : AielApplicationConfigurator
+                public sealed class Root : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -252,25 +248,97 @@ public class DependencyGraphSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
-        sourceText.Should().Contain("\"Test.Root\"");
+        sourceText.Should().Contain("typeof(global::Test.Root)");
         sourceText.Should().Contain("typeof(global::Test.DepA)");
         sourceText.Should().Contain("typeof(global::Test.DepB)");
-        sourceText.Should().Contain("\"Test.DepA\"");
-        sourceText.Should().Contain("\"Test.DepB\"");
         sourceText.Should().Contain("// Project Type: HostApplication");
         sourceText.Should().Contain("Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> AddApplicationAsync");
+    }
+
+    [Fact]
+    public void Generate_DoesNotAddADependencyMoreThanOnce()
+    {
+        const String testCode = """
+            using Aiel.Framework.DependencyInjection;
+
+            namespace Test
+            {
+                [DependsOn(typeof(AielFrameworkHostApplication))]
+                [DependsOn(typeof(AielSecurity))]
+                [DependsOn(typeof(AielEntityFrameworkCoreMigrations))]
+                public sealed class ExampleHostApplication : AielApplication;
+
+                [DependsOn(typeof(AielFramework))]
+                public sealed class AielFrameworkHostApplication : AielDependency;
+
+                [DependsOn(typeof(AielEmailingAbstractions))]
+                [DependsOn(typeof(AielSecurity))] 
+                public sealed class AielSecurity : AielDependency;
+
+                [DependsOn(typeof(AielEntityFrameworkCore))]
+                public class AielEntityFrameworkCoreMigrations : AielDependency;
+
+                [DependsOn(typeof(AielFrameworkAbstractions))]
+                public sealed class AielFramework : AielDependency;
+
+                [DependsOn(typeof(AielDomainShared))]
+                public sealed class AielEmailingAbstractions : AielDependency;
+
+                [DependsOn(typeof(AielActions))]
+                [DependsOn(typeof(AielEntityFrameworkCoreAbstractions))]
+                [DependsOn(typeof(AielDomain))]
+                public sealed class AielEntityFrameworkCore : AielDependency;
+
+                [DependsOn(typeof(AielDomainAbstractions))]
+                public sealed class AielDomainShared : AielDependency;
+
+                [DependsOn(typeof(AielActionsAbstractions))]
+                public sealed class AielActions : AielDependency;
+
+                [DependsOn(typeof(AielFrameworkAbstractions))]
+                public sealed class AielEntityFrameworkCoreAbstractions : AielDependency;
+
+                [DependsOn(typeof(AielDomainShared))]
+                public sealed class AielDomain : AielDependency;
+
+                [DependsOn(typeof(AielActions))]
+                [DependsOn(typeof(AielStrongIds))]
+                public sealed class AielDomainAbstractions : AielDependency;
+
+                [DependsOn(typeof(AielResultsAbstractions))]
+                public sealed class AielActionsAbstractions : AielDependency;
+
+                [DependsOn(typeof(AielDomainAbstractions))]
+                public sealed class AielDomainShared : AielDependency;
+
+                [DependsOn(typeof(AielFrameworkAbstractions))]
+                public sealed class AielStrongIds : AielDependency;
+
+                [DependsOn(typeof(AielFrameworkAbstractions))]
+                public sealed class AielResultsAbstractions : AielDependency;
+
+                public sealed class AielFrameworkAbstractions : AielDependency;
+            }
+            """;
+
+        var result = GenerateCS.Generate(testCode, includeHostApplication: true);
+
+        result.GeneratedSources.Should().ContainSingle();
+        var sourceText = result.GeneratedSources[0].SourceText.ToString();
+
+        Root().Count(sourceText).Should().Be(1);
     }
 
     [Fact]
     public void Generate_PrefersWebApplication_WhenBothWebApplicationAndHostBuildersAreAvailable()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using Microsoft.AspNetCore.Builder;
 
             namespace Test
             {
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -301,11 +369,11 @@ public class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
             using Microsoft.Extensions.Hosting;
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -334,13 +402,13 @@ public class DependencyGraphSourceGeneratorTests
     public async Task WhenHostAppAndWebAppAreDetectedInOneAssembly_Generator_PrefersWebApplication()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using Microsoft.AspNetCore.Builder;
             using Microsoft.Extensions.Hosting;
 
             namespace Test
             {
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -371,12 +439,12 @@ public class DependencyGraphSourceGeneratorTests
     public void WhenCreateEmptyApplicationBuilderUsageDetecte_Generator_PrefersHostApplicationd()
     {
         const String testCode = """
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
                 using Microsoft.Extensions.Hosting;
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -410,11 +478,11 @@ public class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 using Microsoft.Extensions.Hosting;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -443,11 +511,11 @@ public class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 using Microsoft.AspNetCore.Builder;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -476,11 +544,11 @@ public class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
                 using Microsoft.AspNetCore.Builder;
-                using Aiel.Framework;
+                using Aiel.Framework.DependencyInjection;
 
                 namespace Test;
 
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -508,11 +576,11 @@ public class DependencyGraphSourceGeneratorTests
     public void WhenWebAssemblyHostBuilderAvailable_Generator_EmitsWebAssemblyExtension()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -533,11 +601,11 @@ public class DependencyGraphSourceGeneratorTests
     public void WhenProjectTypeUnknown_Generator_EmitsNoExtensionMethod()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -558,11 +626,11 @@ public class DependencyGraphSourceGeneratorTests
     public void WhenInheritingFromAielApplicationConfigurator_Generator_EmitsAddApplicationAsync()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -582,11 +650,11 @@ public class DependencyGraphSourceGeneratorTests
     public void WhenHandlingNamespacedDependencies_Generator_EmitsCorrectTypeReferences()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace MyCompany.MyProduct;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -606,10 +674,11 @@ public class DependencyGraphSourceGeneratorTests
     {
         const String testCode = """
             using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -621,26 +690,26 @@ public class DependencyGraphSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
-        sourceText.Should().Contain("new global::Aiel.Framework.DependencyDescriptor(");
-        sourceText.Should().Contain("\"Test.MyApplication\"");
+        sourceText.Should().Contain("new global::Aiel.Framework.DependencyInjection.DependencyNode(");
+        sourceText.Should().Contain("typeof(global::Test.MyApplication)");
     }
 
     [Fact]
     public void Generator_ProducesValidCSharpCode()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
             [DependsOn(typeof(DepB))]
-            public sealed class DepA : AielApplicationConfigurator
+            public sealed class DepA : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
             }
 
-            public sealed class DepB : AielApplicationConfigurator
+            public sealed class DepB : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -663,11 +732,11 @@ public class DependencyGraphSourceGeneratorTests
     public void Generator_ProducesDeterministicHeaderAcrossRuns()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Test;
 
-            public sealed class MyApplication : AielApplicationConfigurator
+            public sealed class MyApplication : AielApplication
             {
                 public override String ApplicationName => "ApplicationName";
                 public override String ApplicationVersion => "0.0.0";
@@ -691,12 +760,12 @@ public class DependencyGraphSourceGeneratorTests
     public void Generator_EmitsCodeToCall_RegisterAielEnvironment()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             using Microsoft.AspNetCore.Builder;
 
             namespace Test
             {
-                public sealed class MyApplication : AielApplicationConfigurator
+                public sealed class MyApplication : AielApplication
                 {
                     public override String ApplicationName => "ApplicationName";
                     public override String ApplicationVersion => "0.0.0";
@@ -724,11 +793,11 @@ public class DependencyGraphSourceGeneratorTests
     public void CpcaApi_PrefersWebApplication()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
             
             namespace CPCA;
 
-            public sealed class CpcaApiModule : AielApplicationConfigurator
+            public sealed class CpcaApiModule : AielApplication
             {
                 public override String ApplicationName => "CpcaApi";
                 public override String ApplicationVersion => "0.0.0";
@@ -756,4 +825,7 @@ public class DependencyGraphSourceGeneratorTests
         sourceText.Should().Contain("Task<global::Microsoft.AspNetCore.Builder.WebApplicationBuilder> AddApplicationAsync");
         sourceText.Should().NotContain("Project Type: HostApplication");
     }
+
+    [GeneratedRegex(@"new global::Test\.AielFrameworkAbstractions\(\)")]
+    private static partial Regex Root();
 }

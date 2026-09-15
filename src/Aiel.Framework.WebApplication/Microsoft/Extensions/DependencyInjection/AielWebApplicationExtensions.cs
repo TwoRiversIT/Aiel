@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -54,20 +55,20 @@ public static class AielWebApplicationExtensions
         // is initialized before the dependency that depends on it.
         var initOrder = new Stack<DependencyNode>();
         var traversal = new Stack<DependencyNode>();
-        var visited = new HashSet<DependencyNode>();
+        var visited = new HashSet<Type>();
         traversal.Push(root);
 
         while (traversal.Count > 0)
         {
-            var node = traversal.Pop();
-            if (!visited.Add(node))
+            var current = traversal.Pop();
+            if (!visited.Add(current.Type))
             {
                 continue;
             }
 
-            initOrder.Push(node);
+            initOrder.Push(current);
 
-            foreach (var dependency in node.Dependencies)
+            foreach (var dependency in current.Dependencies)
             {
                 traversal.Push(dependency);
             }

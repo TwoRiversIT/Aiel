@@ -22,6 +22,7 @@
 
 using Aiel.Domain;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Results;
 
 namespace Aiel.Authorization;
@@ -32,5 +33,5 @@ namespace Aiel.Authorization;
 [DependsOn(typeof(AielAuthorizationDomainShared))]
 [DependsOn(typeof(AielDomain))]
 [DependsOn(typeof(AielResults))]
-public sealed class AielAuthorizationDomain : AielDependencyConfigurator;
+public sealed class AielAuthorizationDomain : AielDependency;
 

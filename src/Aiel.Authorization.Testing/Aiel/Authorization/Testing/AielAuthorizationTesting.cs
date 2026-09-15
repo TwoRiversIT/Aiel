@@ -21,9 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization.Testing;
 
 [DependsOn(typeof(AielAuthorizationApplication))]
 [DependsOn(typeof(AielAuthorizationDomain))]
-public sealed class AielAuthorizationTesting : AielDependencyConfigurator;
+public sealed class AielAuthorizationTesting : AielDependency;

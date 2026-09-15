@@ -42,20 +42,20 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 {
     internal const String AddApplicationMethod = "AddApplicationAsync";
     internal const String BootstrapMethodName = "BootstrapAsync";
-    internal const String ApplicationType = "AielApplicationConfigurator";
+    internal const String ApplicationType = "AielApplication";
     internal const String DependenciesProperty = "Dependencies";
-    internal const String DependencyDescriptor = "DependencyDescriptor";
+    internal const String DependencyNode = "DependencyNode";
     internal const String DependencyManager = "DependencyManager";
     internal const String DependsOn = "DependsOn";
     internal const String DependsOnAttribute = DependsOn + "Attribute";
     internal const String GeneratedClassName = "AielDependencyGraph";
     internal const String GeneratedNamespace = "Microsoft.Extensions.DependencyInjection";
     internal const String HostApplicationBuilder = "HostApplicationBuilder";
-    internal const String RootNamespace = "Aiel.Framework";
+    internal const String RootNamespace = "Aiel.Framework.DependencyInjection";
     internal const String WebApplicationBuilder = "WebApplicationBuilder";
     internal const String WebAssemblyBuilder = "WebAssemblyHostBuilder";
 
-    internal const String FqDependencyDescriptor = "global::" + RootNamespace + "." + DependencyDescriptor;
+    internal const String FqDependencyDescriptor = "global::" + RootNamespace + "." + DependencyNode;
     internal const String FqIDependencyInitializer = "global::" + RootNamespace + ".IInitializer";
 
     internal const String NsHostApplicationBuilder = "Microsoft.Extensions.Hosting." + HostApplicationBuilder;
@@ -86,7 +86,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // Discover root AielApplicationConfigurator types in the current application project.
+        // Discover root AielApplication types in the current application project.
         // The generator then walks their [DependsOn] graph across referenced dependencies
         // to build a complete, compile-time view of the assembly dependency graph.
         var roots = context.SyntaxProvider
@@ -130,7 +130,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
         if (IsApplicationDependencyRoot(symbol))
         {
-            // Treat every concrete AielApplicationConfigurator defined in the current application project
+            // Treat every concrete AielApplication defined in the current application project
             // as a root. The dependency closure is computed in Emit using [DependsOn] attributes.
             return symbol;
         }
@@ -326,9 +326,9 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
         // Build the transitive closure of dependencies reachable from the roots via [DependsOn].
         var comparer = SymbolEqualityComparer.Default;
-        var graph = new Dictionary<INamedTypeSymbol, List<DependencyReference>>(comparer);
+        var seenNodes = new Dictionary<INamedTypeSymbol, Node>(comparer);
         var unresolvedDependencies = new Dictionary<String, DependencyReference>(StringComparer.Ordinal);
-        var queue = new Queue<INamedTypeSymbol>();
+        var queue = new Queue<Node>();
         var seenRoots = new HashSet<INamedTypeSymbol>(comparer);
 
         foreach (var root in rootDependencies)
@@ -340,7 +340,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
             if (seenRoots.Add(root))
             {
-                queue.Enqueue(root);
+                queue.Enqueue(new Node(root, 0));
             }
         }
 
@@ -349,14 +349,14 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             context.CancellationToken.ThrowIfCancellationRequested();
 
             var current = queue.Dequeue();
-            if (graph.ContainsKey(current))
+            if (seenNodes.ContainsKey(current.Symbol))
             {
                 continue;
             }
 
-            graph[current] = [];
+            seenNodes[current.Symbol] = current;
 
-            foreach (var attributeData in current.GetAttributes())
+            foreach (var attributeData in current.Symbol.GetAttributes())
             {
                 if (!IsDependsOnAttribute(attributeData.AttributeClass))
                 {
@@ -365,13 +365,13 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
                 foreach (var dependencyReference in GetDependsOnDependencies(attributeData, current))
                 {
-                    graph[current].Add(dependencyReference);
+                    seenNodes[current.Symbol].Dependencies.Add(dependencyReference);
 
                     if (dependencyReference.Symbol is INamedTypeSymbol dependencySymbol)
                     {
-                        if (!graph.ContainsKey(dependencySymbol))
+                        if (!seenNodes.ContainsKey(dependencySymbol))
                         {
-                            queue.Enqueue(dependencySymbol);
+                            queue.Enqueue(new Node(dependencySymbol, current.Depth + 1));
                         }
 
                         continue;
@@ -404,37 +404,55 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
         var count = 0;
 
-        var dependencies = graph.Keys.ToArray();
+        var rendered = new HashSet<INamedTypeSymbol>(comparer);
+
+        var dependencies = seenNodes.Keys.ToArray();
         for (var i = 0; i < dependencies.Length; i++)
         {
+            if (rendered.Contains(dependencies[i]))
+            {
+                continue;
+            }
+
             var dependencySymbol = dependencies[i];
             var dependencyName = dependencySymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
             var safeDependencyName = dependencyName.Replace("\"", "\\\"");
             var dependencyTypeName = dependencySymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-            var dependencyReferences = graph[dependencySymbol];
+            var node = seenNodes[dependencySymbol];
+            rendered.Add(dependencySymbol);
 
             builder.AppendLine($"\t\tnew {FqDependencyDescriptor}(");
-            builder.AppendLine($"\t\t\t\tname: \"{safeDependencyName}\",");
-            builder.AppendLine($"\t\t\t\tdependencyType: typeof({dependencyTypeName}),");
+            //builder.AppendLine($"\t\t\t\tname: \"{safeDependencyName}\",");
+            builder.AppendLine($"\t\t\t\ttype: typeof({dependencyTypeName}),");
+            builder.AppendLine($"\t\t\t\tdepth: {node.Depth},");
             builder.AppendLine($"\t\t\t\tinstance: new {dependencyTypeName}(),");
 
-            if (dependencyReferences.Count == 0)
+            if (node.Dependencies.Count == 0)
             {
-                builder.AppendLine("\t\t\t\tdependencies: Array.Empty<Type>()");
+                builder.AppendLine($"\t\t\t\tdependencies: new global::System.Collections.ObjectModel.Collection<{FqDependencyDescriptor}>()");
             }
             else
             {
-                builder.AppendLine("\t\t\t\tdependencies: new Type[] { ");
-                for (var j = 0; j < dependencyReferences.Count; j++)
+                var skipNextComma = false;
+                builder.AppendLine($"\t\t\t\tdependencies: new global::System.Collections.ObjectModel.Collection<{FqDependencyDescriptor}> {{ ");
+                for (var j = 0; j < node.Dependencies.Count; j++)
                 {
+                    if (rendered.Contains(node.Dependencies[j].Symbol!))
+                    {
+                        skipNextComma = true;
+                        continue;
+                    }
+
+                    rendered.Add(node.Dependencies[j].Symbol!);
                     count++;
 
-                    if (j > 0)
+                    if (j > 0 && !skipNextComma)
                     {
                         builder.AppendLine(", ");
                     }
 
-                    builder.Append($"\t\t\t\t\ttypeof({dependencyReferences[j].TypeExpression})");
+                    builder.Append($"\t\t\t\t\tnew {FqDependencyDescriptor}(typeof({node.Dependencies[j].TypeExpression}), {node.Depth + 1}, new {node.Dependencies[j].TypeExpression}(), [])");
+                    skipNextComma = false;
                 }
 
                 builder.AppendLine();
@@ -534,7 +552,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             && String.Equals(attributeClass.ContainingNamespace?.ToDisplayString(), RootNamespace, StringComparison.Ordinal);
     }
 
-    private static IEnumerable<DependencyReference> GetDependsOnDependencies(AttributeData attributeData, INamedTypeSymbol current)
+    private static IEnumerable<DependencyReference> GetDependsOnDependencies(AttributeData attributeData, Node current)
     {
         var foundDependency = false;
 
@@ -595,17 +613,17 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             INamedTypeSymbol? dependencySymbol = null;
             if (dependencyTypeName.IndexOf('.') >= 0)
             {
-                dependencySymbol = current.ContainingAssembly.GetTypeByMetadataName(dependencyTypeName);
+                dependencySymbol = current.Symbol.ContainingAssembly.GetTypeByMetadataName(dependencyTypeName);
             }
             else
             {
-                foreach (var namespacedType in current.ContainingNamespace.GetTypeMembers(dependencyTypeName))
+                foreach (var namespacedType in current.Symbol.ContainingNamespace.GetTypeMembers(dependencyTypeName))
                 {
                     dependencySymbol = namespacedType;
                     break;
                 }
 
-                dependencySymbol ??= FindTypeBySimpleName(current.ContainingAssembly.GlobalNamespace, dependencyTypeName);
+                dependencySymbol ??= FindTypeBySimpleName(current.Symbol.ContainingAssembly.GlobalNamespace, dependencyTypeName);
 
                 if (dependencySymbol is null && attributeData.AttributeClass is not null)
                 {
@@ -614,7 +632,7 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
                 if (dependencySymbol is null)
                 {
-                    foreach (var module in current.ContainingAssembly.Modules)
+                    foreach (var module in current.Symbol.ContainingAssembly.Modules)
                     {
                         foreach (var referencedAssembly in module.ReferencedAssemblySymbols)
                         {
@@ -726,6 +744,13 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
             // </auto-generated>
 
             """;
+    }
+
+    private sealed class Node(INamedTypeSymbol symbol, Int32 depth)
+    {
+        public INamedTypeSymbol Symbol { get; } = symbol;
+        public List<DependencyReference> Dependencies { get; } = [];
+        public Int32 Depth { get; } = depth;
     }
 
     private sealed class DependencyReference(INamedTypeSymbol? symbol, String displayName, String typeExpression)

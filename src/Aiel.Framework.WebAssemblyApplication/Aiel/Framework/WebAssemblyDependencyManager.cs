@@ -20,12 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
+
 namespace Aiel.Framework;
 
-public class WebAssemblyDependencyManager(IEnumerable<DependencyDescriptor> dependencyDescriptors)
-        : DependencyManager(dependencyDescriptors)
+public class WebAssemblyDependencyManager : DependencyManager
 {
-    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyDescriptor descriptor, CancellationToken cancellationToken)
+    public WebAssemblyDependencyManager(IEnumerable<DependencyNode> dependencyDescriptors)
+    {
+        Initialize(dependencyDescriptors);
+    }
+
+    protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyNode descriptor, CancellationToken cancellationToken)
     {
         var context = initializationContext as WebAssemblyApplicationInitializationContext
             ?? throw new AielException("Invalid initializationContext. Expected and instance of WebAssemblyApplicationInitializationContext;");

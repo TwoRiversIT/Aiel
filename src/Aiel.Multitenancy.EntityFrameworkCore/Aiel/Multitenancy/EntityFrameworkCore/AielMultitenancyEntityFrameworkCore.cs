@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.MultiTenancy;
 
 namespace Aiel.Multitenancy.EntityFrameworkCore;
@@ -30,4 +31,4 @@ namespace Aiel.Multitenancy.EntityFrameworkCore;
 /// Framework, which depends on the multitenancy module.
 /// </summary>
 [DependsOn(typeof(AielMultiTenancy))]
-public class AielMultitenancyEntityFrameworkCore : AielDependencyConfigurator;
+public class AielMultitenancyEntityFrameworkCore : AielDependency;

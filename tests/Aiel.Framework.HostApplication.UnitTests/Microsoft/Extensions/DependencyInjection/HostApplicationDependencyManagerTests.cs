@@ -22,6 +22,7 @@
 
 using Aiel.Fakes;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -29,7 +30,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public class HostApplicationDependencyManagerTests : AielDependencyManagerTests
 {
-    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
+    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors)
         => new HostApplicationDependencyManager(descriptors);
 
     public override InitializationContext CreateInitializationContextAsync()

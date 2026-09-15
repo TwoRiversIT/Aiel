@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds;
 using Aiel.StrongIds.EntityFrameworkCore;
 using Aiel.Testing;
@@ -31,4 +32,4 @@ namespace Aiel.EntityFrameworkCore;
 [DependsOn(typeof(AielStrongIds))]
 [DependsOn(typeof(AielStrongIdsEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]
-public sealed class AielEntityFrameworkCoreIntegrationTests : AielDependencyConfigurator;
+public sealed class AielEntityFrameworkCoreIntegrationTests : AielDependency;

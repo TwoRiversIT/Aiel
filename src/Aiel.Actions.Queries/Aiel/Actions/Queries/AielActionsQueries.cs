@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Results;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -31,7 +32,7 @@ namespace Aiel.Actions.Queries;
 /// </summary>
 [DependsOn(typeof(AielActions))]
 [DependsOn(typeof(AielResultsAbstractions))]
-public sealed class AielActionsQueries : AielDependencyConfigurator
+public sealed class AielActionsQueries : AielDependency
 {
     /// <inheritdoc />
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

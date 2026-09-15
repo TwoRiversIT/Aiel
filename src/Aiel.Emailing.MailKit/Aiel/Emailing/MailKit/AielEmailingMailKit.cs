@@ -22,13 +22,14 @@
 
 using Aiel.Emailing.MailKit.Internal;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Emailing.MailKit;
 
 [DependsOn(typeof(AielEmailing))]
-public sealed class AielEmailingMailKit : AielDependencyConfigurator
+public sealed class AielEmailingMailKit : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {

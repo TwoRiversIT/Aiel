@@ -21,8 +21,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Gps.HP;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielGpsHp : AielDependencyConfigurator;
+public sealed class AielGpsHp : AielDependency;

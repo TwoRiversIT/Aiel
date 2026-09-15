@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Aiel.Framework.WebAssemblyApplication.UnitTests")]
@@ -27,4 +28,4 @@ using System.Runtime.CompilerServices;
 namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFramework))]
-public sealed class AielFrameworkWebAssemblyApplication : AielDependencyConfigurator;
+public sealed class AielFrameworkWebAssemblyApplication : AielDependency;

@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Actions;
 
@@ -28,4 +29,4 @@ namespace Aiel.Actions;
 /// AielActions is the dependency configurator for the Aiel.Actions library.
 /// </summary>
 [DependsOn(typeof(AielActionsAbstractions))]
-public sealed class AielActions : AielDependencyConfigurator;
+public sealed class AielActions : AielDependency;

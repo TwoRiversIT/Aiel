@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ public static class AielHostApplicationBuilderExtensions
 {
     public static async Task BootstrapAsync<TApplication>(
         this IHostApplicationBuilder builder,
-        IEnumerable<DependencyDescriptor> dependencyDescriptors,
+        IEnumerable<DependencyNode> dependencyDescriptors,
         CancellationToken cancellationToken = default)
         where TApplication : class, IApplicationConfigurator, new()
     {
@@ -65,6 +66,7 @@ public static class AielHostApplicationBuilderExtensions
             EnvironmentName = builder.Environment.EnvironmentName,
             ContentRootPath = builder.Environment.ContentRootPath
         };
+
         await app.SafelyDisposeAsync();
 
         builder.Services.AddSingleton<IAielEnvironment>(environment);

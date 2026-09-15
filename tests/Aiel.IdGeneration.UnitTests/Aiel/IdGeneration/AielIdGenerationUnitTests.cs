@@ -21,8 +21,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.IdGeneration;
 
 [DependsOn(typeof(AielIdGeneration))]
-public sealed class AielIdGenerationUnitTests : AielDependencyConfigurator;
+public sealed class AielIdGenerationUnitTests : AielDependency;

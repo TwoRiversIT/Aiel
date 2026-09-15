@@ -124,9 +124,9 @@ The Aiel library itself is registered as a dependency via `AielFramework : AielD
    | ASP.NET Core | `WebApplicationBuilder` |
    | Blazor WebAssembly | `WebAssemblyHostBuilder` |
 
-The generated file contains a `AielDependencyGraph.Dependencies` property (`IReadOnlyCollection<DependencyDescriptor>`) and the `AddApplicationAsync()` extension. The extension calls `builder.RegisterDependenciesAsync(AielDependencyGraph.Dependencies)`, which creates a `DependencyManager`, registers it as `IDependencyManager`, and runs all configurators.
+The generated file contains a `AielDependencyGraph.Dependencies` property (`IReadOnlyCollection<DependencyNode>`) and the `AddApplicationAsync()` extension. The extension calls `builder.RegisterDependenciesAsync(AielDependencyGraph.Dependencies)`, which creates a `DependencyManager`, registers it as `IDependencyManager`, and runs all configurators.
 
-Each generated `DependencyDescriptor` includes the dependency type itself in its `Configurators` list (since every `AielDependencyConfigurator` subclass implements `IDependencyConfigurator`). If the type also implements `IInitializer`, it is included in the `Initializers` list as well.
+Each generated `DependencyNode` includes the dependency type itself in its `Configurators` list (since every `AielDependencyConfigurator` subclass implements `IDependencyConfigurator`). If the type also implements `IInitializer`, it is included in the `Initializers` list as well.
 
 The generator requires that the `AielApplicationConfigurator` subclass be `sealed` and non-abstract; open types are ignored.
 
@@ -238,7 +238,7 @@ context.Services.OnAdding(descriptor =>
 
 #### `IDependencyConfigurator`
 
-`AielDependencyConfigurator` implements this interface, exposing both `PreConfigureAsync` and `ConfigureAsync`. You can also provide **separate configurator classes** and reference them via `DependencyDescriptor.Configurators` when building descriptors manually. The `DependencyManager` instantiates each configurator type (via `Activator.CreateInstance`), calls both phase methods in order, then disposes the instance. Configurators are called in the same topological order as the graph.
+`AielDependencyConfigurator` implements this interface, exposing both `PreConfigureAsync` and `ConfigureAsync`. You can also provide **separate configurator classes** and reference them via `DependencyNode.Configurators` when building descriptors manually. The `DependencyManager` instantiates each configurator type (via `Activator.CreateInstance`), calls both phase methods in order, then disposes the instance. Configurators are called in the same topological order as the graph.
 
 ---
 
@@ -266,7 +266,7 @@ host.InitializeApplicationAsync()
 
 Implement this interface on a `AielDependencyConfigurator` subclass to participate in the initialisation phase.
 
-Using a separate initializer class is supported only when `DependencyDescriptor.Initializers` is explicitly populated (manual descriptor registration). The default reflection and source-generated discovery paths do not scan for standalone `IInitializer` types.
+Using a separate initializer class is supported only when `DependencyNode.Initializers` is explicitly populated (manual descriptor registration). The default reflection and source-generated discovery paths do not scan for standalone `IInitializer` types.
 
 ```csharp
 public sealed class MyLibraryDependency : AielDependencyConfigurator, IInitializer

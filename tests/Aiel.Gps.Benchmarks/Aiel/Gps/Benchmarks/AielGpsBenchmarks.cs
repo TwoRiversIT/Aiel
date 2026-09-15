@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Gps.HP;
 
 namespace Aiel.Gps.Benchmarks;
@@ -28,5 +29,5 @@ namespace Aiel.Gps.Benchmarks;
 [DependsOn(typeof(AielGps))]
 [DependsOn(typeof(AielGpsHp))]
 [DependsOn(typeof(AielGpsIntegrationTests))]
-public sealed class AielGpsBenchmarks : AielDependencyConfigurator;
+public sealed class AielGpsBenchmarks : AielDependency;
 

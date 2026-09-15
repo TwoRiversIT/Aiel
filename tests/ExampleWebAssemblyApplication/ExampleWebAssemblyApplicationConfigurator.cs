@@ -21,13 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace ExampleWebAssemblyApplication;
 
 [DependsOn(typeof(AielFrameworkWebAssemblyApplication))]
-public sealed class ExampleWebAssemblyApplicationConfigurator : AielApplicationConfigurator
+public sealed class ExampleWebAssemblyApplicationConfigurator : AielApplication
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;

@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Contacts;
-using Aiel.Framework;
 using Aiel.Results;
 using MailKit.Net.Smtp;
 using MailKit.Security;

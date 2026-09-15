@@ -22,11 +22,8 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace Aiel.Framework;
+namespace Aiel.Framework.Extensions;
 
-/// <summary>
-/// Provides convenience methods for IConfiguration.
-/// </summary>
 public static partial class AielExtensions
 {
 

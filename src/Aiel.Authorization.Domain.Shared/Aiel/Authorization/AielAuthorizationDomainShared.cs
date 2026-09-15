@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Results;
 using Aiel.StrongIds;
 
@@ -31,4 +32,4 @@ namespace Aiel.Authorization;
 /// </summary>
 [DependsOn(typeof(AielResultsAbstractions))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielAuthorizationDomainShared : AielDependencyConfigurator;
+public sealed class AielAuthorizationDomainShared : AielDependency;

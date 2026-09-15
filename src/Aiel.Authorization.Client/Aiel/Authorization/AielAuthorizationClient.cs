@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization;
 
@@ -28,4 +29,4 @@ namespace Aiel.Authorization;
 /// Ensures that the Aiel.Authorization.Client participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielAuthorizationApplicationContracts))]
-public sealed class AielAuthorizationClient : AielDependencyConfigurator;
+public sealed class AielAuthorizationClient : AielDependency;

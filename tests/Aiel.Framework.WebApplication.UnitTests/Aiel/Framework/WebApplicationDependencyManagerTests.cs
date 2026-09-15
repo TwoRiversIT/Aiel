@@ -21,13 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Fakes;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace Aiel.Framework;
 
 public class WebApplicationDependencyManagerTests : AielDependencyManagerTests
 {
-    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
+    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors)
         => new WebApplicationDependencyManager(descriptors);
 
     public override InitializationContext CreateInitializationContextAsync()

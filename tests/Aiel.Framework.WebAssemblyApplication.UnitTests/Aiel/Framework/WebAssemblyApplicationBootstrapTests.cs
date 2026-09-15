@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Fakes;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +29,7 @@ namespace Aiel.Framework;
 
 public class WebAssemblyApplicationBootstrapTests : BootstrapTestsBase
 {
-    public override async Task BootstrapAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    public override async Task BootstrapAsync<TApplication>(IEnumerable<DependencyNode> descriptors)
     {
         if (!descriptors.Any())
         {

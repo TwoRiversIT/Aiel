@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.MultiTenancy;
 
@@ -28,4 +29,4 @@ namespace Aiel.MultiTenancy;
 /// Ensures that the Aiel.MultiTenancy participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielMultiTenancyAbstractions : AielDependencyConfigurator;
+public sealed class AielMultiTenancyAbstractions : AielDependency;

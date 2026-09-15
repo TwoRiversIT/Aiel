@@ -21,11 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
 
 namespace Aiel.DataAccess.Dapper;
 
 [DependsOn(typeof(AielDataAccessDapper))]
 [DependsOn(typeof(AielTesting))]
-public sealed class AielDataDapperUnitTests : AielDependencyConfigurator;
+public sealed class AielDataDapperUnitTests : AielDependency;
 

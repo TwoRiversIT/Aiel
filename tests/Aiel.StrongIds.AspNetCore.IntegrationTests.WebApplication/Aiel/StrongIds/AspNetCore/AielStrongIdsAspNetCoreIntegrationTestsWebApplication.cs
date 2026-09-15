@@ -21,9 +21,10 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.StrongIds.AspNetCore;
 
 [DependsOn(typeof(AielStrongIds))]
 [DependsOn(typeof(AielStrongIdsAspNetCore))]
-public sealed class AielStrongIdsAspNetCoreIntegrationTestsWebApplication : AielDependencyConfigurator;
+public sealed class AielStrongIdsAspNetCoreIntegrationTestsWebApplication : AielDependency;

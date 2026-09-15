@@ -21,11 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Actions;
 
 [DependsOn(typeof(AielActions))]
-public sealed class AielActionsUnitTests : AielDependencyConfigurator
+public sealed class AielActionsUnitTests : AielDependency
 {
 
 }

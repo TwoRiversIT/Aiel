@@ -22,11 +22,12 @@
 
 using Aiel.Authorization.Testing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization;
 
 [DependsOn(typeof(AielAuthorizationApplicationContracts))]
 [DependsOn(typeof(AielAuthorizationApplication))]
 [DependsOn(typeof(AielAuthorizationTesting))]
-public sealed class AielAuthorizationApplicationUnitTests : AielDependencyConfigurator;
+public sealed class AielAuthorizationApplicationUnitTests : AielDependency;
 

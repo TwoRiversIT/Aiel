@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Fakes;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using static AwesomeAssertions.FluentActions;
@@ -29,57 +30,31 @@ namespace Aiel.Framework;
 
 public abstract class AielDependencyManagerTests : PhaseLogCollector
 {
-    public abstract DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors);
+    public abstract DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors);
     public abstract InitializationContext CreateInitializationContextAsync();
-
-    [Fact]
-    public void Constructor_Throws_When_Duplicate_Dependency_Types()
-    {
-        var a1 = new DependencyDescriptor(
-            name: nameof(DiamondA),
-            dependencyType: typeof(DiamondA),
-            new DiamondA(),
-            dependencies: []);
-
-        var a2 = new DependencyDescriptor(
-            name: nameof(DiamondA),
-            dependencyType: typeof(DiamondA),
-            new DiamondA(),
-            dependencies: []);
-
-        var descriptors = new[] { a1, a2 };
-
-        Invoking(() => CreateDependencyManager(descriptors))
-            .Should().Throw<InvalidOperationException>();
-    }
-
-    [Fact]
-    public void Constructor_Throws_When_Unknown_Dependency()
-    {
-        var a = new DependencyDescriptor(
-            name: nameof(DiamondA),
-            dependencyType: typeof(DiamondA),
-            new DiamondA(),
-            dependencies: [typeof(DiamondB)]);
-
-        Invoking(() => CreateDependencyManager([a]))
-            .Should().Throw<InvalidOperationException>();
-    }
 
     [Fact]
     public void Constructor_Throws_When_Circular_Dependency()
     {
-        var a = new DependencyDescriptor(
-            name: nameof(CircularA),
-            dependencyType: typeof(CircularA),
+        var a = new DependencyNode(
+            type: typeof(CircularA),
+            depth: 0,
             new CircularA(),
-            dependencies: [typeof(CircularB)]);
+            dependencies: [new DependencyNode(
+                type: typeof(CircularB),
+                depth: 1,
+                new CircularB(),
+                dependencies: [])]);
 
-        var b = new DependencyDescriptor(
-            name: nameof(CircularB),
-            dependencyType: typeof(CircularB),
+        var b = new DependencyNode(
+            type: typeof(CircularB),
+            depth: 0,
             new CircularB(),
-            dependencies: [typeof(CircularA)]);
+            dependencies: [new DependencyNode(
+                type: typeof(CircularA),
+                depth: 1,
+                new CircularA(),
+                dependencies: [])]);
 
         Invoking(() => CreateDependencyManager([a, b]))
             .Should().ThrowExactly<CircularDependencyException>();
@@ -88,27 +63,43 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     [Fact]
     public async Task ConfigureAsync_Invokes_Each_Configurator_Once_In_Diamond_Graph()
     {
-        var a = new DependencyDescriptor(
-            name: nameof(DiamondA),
-            dependencyType: typeof(DiamondA),
+        var a = new DependencyNode(
+            type: typeof(DiamondA),
+            depth: 0,
             new DiamondA(),
-            dependencies: [typeof(DiamondB), typeof(DiamondC)]);
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondB),
+                depth: 1,
+                new DiamondB(),
+                dependencies: []), new DependencyNode(
+                type: typeof(DiamondC),
+                depth: 1,
+                new DiamondC(),
+                dependencies: [])]);
 
-        var b = new DependencyDescriptor(
-            name: nameof(DiamondB),
-            dependencyType: typeof(DiamondB),
+        var b = new DependencyNode(
+            type: typeof(DiamondB),
+            depth: 0,
             new DiamondB(),
-            dependencies: [typeof(DiamondD)]);
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondD),
+                depth: 1,
+                new DiamondD(),
+                dependencies: [])]);
 
-        var c = new DependencyDescriptor(
-            name: nameof(DiamondC),
-            dependencyType: typeof(DiamondC),
+        var c = new DependencyNode(
+            type: typeof(DiamondC),
+            depth: 0,
             new DiamondC(),
-            dependencies: [typeof(DiamondD)]);
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondD),
+                depth: 1,
+                new DiamondD(),
+                dependencies: [])]);
 
-        var d = new DependencyDescriptor(
-            name: nameof(DiamondD),
-            dependencyType: typeof(DiamondD),
+        var d = new DependencyNode(
+            type: typeof(DiamondD),
+            depth: 0,
             new DiamondD(),
             dependencies: []);
 
@@ -130,21 +121,29 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     [Fact]
     public async Task InitializeAsync_Invokes_Each_Initializer_Once_In_Linear_Graph()
     {
-        var a = new DependencyDescriptor(
-            name: nameof(LinearA),
-            dependencyType: typeof(LinearA),
+        var a = new DependencyNode(
+            type: typeof(LinearA),
+            depth: 0,
             new LinearA(),
-            dependencies: [typeof(LinearB)]);
+            dependencies: [new DependencyNode(
+                type: typeof(LinearB),
+                depth: 1,
+                new LinearB(),
+                dependencies: [])]);
 
-        var b = new DependencyDescriptor(
-            name: nameof(LinearB),
-            dependencyType: typeof(LinearB),
+        var b = new DependencyNode(
+            type: typeof(LinearB),
+            depth: 0,
             new LinearB(),
-            dependencies: [typeof(LinearC)]);
+            dependencies: [new DependencyNode(
+                type: typeof(LinearC),
+                depth: 1,
+                new LinearC(),
+                dependencies: [])]);
 
-        var c = new DependencyDescriptor(
-            name: nameof(LinearC),
-            dependencyType: typeof(LinearC),
+        var c = new DependencyNode(
+            type: typeof(LinearC),
+            depth: 0,
             new LinearC(),
             dependencies: []);
 
@@ -167,27 +166,43 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
         var services = new ServiceCollection();
         var context = new ConfigurationContext(environment, configuration, services);
 
-        var a = new DependencyDescriptor(
-            name: nameof(DiamondA),
-            dependencyType: typeof(DiamondA),
+        var a = new DependencyNode(
+            type: typeof(DiamondA),
+            depth: 0,
             new DiamondA(),
-            dependencies: [typeof(DiamondB), typeof(DiamondC)]);
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondB),
+                depth: 1,
+                new DiamondB(),
+                dependencies: []), new DependencyNode(
+                type: typeof(DiamondC),
+                depth: 1,
+                new DiamondC(),
+                dependencies: [])]);
 
-        var b = new DependencyDescriptor(
-            name: nameof(DiamondB),
-            dependencyType: typeof(DiamondB),
+        var b = new DependencyNode(
+            type: typeof(DiamondB),
+            depth: 0,
             new DiamondB(),
-            dependencies: [typeof(DiamondD)]);
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondD),
+                depth: 1,
+                new DiamondD(),
+                dependencies: [])]);
 
-        var c = new DependencyDescriptor(
-            name: nameof(DiamondC),
-            dependencyType: typeof(DiamondC),
+        var c = new DependencyNode(
+            type: typeof(DiamondC),
+            depth: 0,
             new DiamondC(),
-            dependencies: [typeof(DiamondD)]);
+            dependencies: [new DependencyNode(
+                type: typeof(DiamondD),
+                depth: 1,
+                new DiamondD(),
+                dependencies: [])]);
 
-        var d = new DependencyDescriptor(
-            name: nameof(DiamondD),
-            dependencyType: typeof(DiamondD),
+        var d = new DependencyNode(
+            type: typeof(DiamondD),
+            depth: 0,
             new DiamondD(),
             dependencies: []);
 
@@ -211,15 +226,19 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
 
         PhaseLog.Clear();
 
-        var a = new DependencyDescriptor(
-            name: nameof(PhaseA),
-            dependencyType: typeof(PhaseA),
+        var a = new DependencyNode(
+            type: typeof(PhaseA),
+            depth: 0,
             new PhaseA(),
-            dependencies: [typeof(PhaseB)]);
+            dependencies: [new DependencyNode(
+                type: typeof(PhaseB),
+                depth: 1,
+                new PhaseB(),
+                dependencies: [])]);
 
-        var b = new DependencyDescriptor(
-            name: nameof(PhaseB),
-            dependencyType: typeof(PhaseB),
+        var b = new DependencyNode(
+            type: typeof(PhaseB),
+            depth: 0,
             new PhaseB(),
             dependencies: []);
 

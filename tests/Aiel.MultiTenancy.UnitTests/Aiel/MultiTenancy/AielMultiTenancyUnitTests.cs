@@ -21,11 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds;
 
 namespace Aiel.MultiTenancy;
 
 [DependsOn(typeof(AielMultiTenancy))]
 [DependsOn(typeof(AielStrongIds))]
-public sealed class AielMultiTenancyUnitTests : AielDependencyConfigurator;
+public sealed class AielMultiTenancyUnitTests : AielDependency;
 

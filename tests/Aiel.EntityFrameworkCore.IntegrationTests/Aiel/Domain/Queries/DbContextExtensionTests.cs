@@ -22,7 +22,6 @@
 
 using Aiel.Actions.Queries;
 using Aiel.Domain.Specifications;
-using Aiel.Testing.Dummies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

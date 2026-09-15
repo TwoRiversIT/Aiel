@@ -22,8 +22,9 @@
 
 using Aiel.EntityFrameworkCore;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.DataAccess.Dapper;
 
 [DependsOn(typeof(AielEntityFrameworkCoreAbstractions))]
-public sealed class AielDataAccessDapper : AielDependencyConfigurator;
+public sealed class AielDataAccessDapper : AielDependency;

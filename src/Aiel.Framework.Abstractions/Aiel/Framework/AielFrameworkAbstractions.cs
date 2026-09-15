@@ -20,10 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
+
 namespace Aiel.Framework
 {
     /// <summary>
     /// Represents the Aiel Framework Abstractions, which provide a set of interfaces and base classes for building applications using the Aiel framework.
     /// </summary>
-    public sealed class AielFrameworkAbstractions : AielDependencyConfigurator;
+    public sealed class AielFrameworkAbstractions : AielDependency;
 }

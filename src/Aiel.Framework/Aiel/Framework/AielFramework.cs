@@ -20,7 +20,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Aiel.Framework;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielFramework : AielDependencyConfigurator;
+public sealed class AielFramework : AielDependency
+{
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.Services.AddSingleton<IDependencyManager, DefaultDependencyManager>();
+
+        return ValueTask.CompletedTask;
+    }
+}

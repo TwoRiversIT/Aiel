@@ -22,7 +22,7 @@
 
 using Aiel.Authorization.EntityFrameworkCore;
 using Aiel.Authorization.Testing;
-using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;

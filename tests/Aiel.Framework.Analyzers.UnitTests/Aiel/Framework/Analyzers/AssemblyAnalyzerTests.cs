@@ -49,11 +49,11 @@ public class AssemblyAnalyzerTests
     public async Task DoesNotReport_WhenExactlyOneValidAielApplicationTypeExists()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
-		public sealed class MyApplication : AielApplicationConfigurator { }
+		public sealed class MyApplication : AielApplication { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -65,11 +65,11 @@ public class AssemblyAnalyzerTests
     public async Task DoesNotReport_WhenExactlyOneValidAielDependencyTypeExists()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
-		public sealed class MyRootDependency : AielDependencyConfigurator { }
+		public sealed class MyRootDependency : AielDependency { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -81,11 +81,11 @@ public class AssemblyAnalyzerTests
     public async Task Ignores_TypesWithoutPublicParameterlessConstructor()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
-		public sealed class NoDefaultCtor : AielDependencyConfigurator
+		public sealed class NoDefaultCtor : AielDependency
 		{
 			public NoDefaultCtor(String name) { }
 		}
@@ -101,12 +101,12 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_WhenDependencyIsNotSealed()
     {
         const String testCode = """
-            using Aiel.Framework;
+            using Aiel.Framework.DependencyInjection;
 
             namespace Aiel.Domain;
 
             [DependsOn(typeof(AielFrameworkAbstractions))]
-            public class AielDomainAbstractions : AielDependencyConfigurator;            
+            public class AielDomainAbstractions : AielDependency;            
             """;
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -126,7 +126,7 @@ public class AssemblyAnalyzerTests
             {
                 public class SomeType
                 {
-                    // no AielDependencyConfigurator or AielApplicationConfigurator subclass here
+                    // no AielDependency or AielApplication subclass here
                 }
             }
             """;
@@ -142,11 +142,11 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_WhenNoRootDependencyTypeIsDefined()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
-		public abstract class NotRoot : AielDependencyConfigurator { }
+		public abstract class NotRoot : AielDependency { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -177,12 +177,12 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_OnEachCandidate_WhenMultipleRootDependencyTypesExist()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
-		public sealed class Root1 : AielDependencyConfigurator { }
-		public sealed class Root2 : AielDependencyConfigurator { }
+		public sealed class Root1 : AielDependency { }
+		public sealed class Root2 : AielDependency { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);
@@ -195,12 +195,12 @@ public class AssemblyAnalyzerTests
     public async Task ReportsDiagnostic_OnEachCandidate_WhenAielDependencyAndAielApplicationTypesExist()
     {
         const String testCode = """
-		using Aiel.Framework;
+		using Aiel.Framework.DependencyInjection;
 
 		namespace Sample;
 
-		public sealed class Root1 : AielDependencyConfigurator { }
-		public sealed class Root2 : AielApplicationConfigurator { }
+		public sealed class Root1 : AielDependency { }
+		public sealed class Root2 : AielApplication { }
 		""";
 
         var diagnostics = await AnalyzeAsync(testCode);

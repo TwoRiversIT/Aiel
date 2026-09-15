@@ -22,6 +22,7 @@
 
 using Aiel.Application;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization.AspNetCore;
 
@@ -30,5 +31,5 @@ namespace Aiel.Authorization.AspNetCore;
 [DependsOn(typeof(Testing.AielAuthorizationTesting))]
 [DependsOn(typeof(Results.AielResults))]
 [DependsOn(typeof(AielAuthorizationAspNetCoreIntegrationTestsWebApplication))]
-public sealed class AielAuthorizationAspNetCoreIntegrationTests : AielDependencyConfigurator;
+public sealed class AielAuthorizationAspNetCoreIntegrationTests : AielDependency;
 

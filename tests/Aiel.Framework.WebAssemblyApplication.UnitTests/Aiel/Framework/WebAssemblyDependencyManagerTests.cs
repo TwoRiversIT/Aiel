@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Fakes;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,7 +30,7 @@ namespace Aiel.Framework;
 
 public class WebAssemblyDependencyManagerTests : AielDependencyManagerTests
 {
-    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyDescriptor> descriptors)
+    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors)
         => new WebAssemblyDependencyManager(descriptors);
 
     public override InitializationContext CreateInitializationContextAsync()

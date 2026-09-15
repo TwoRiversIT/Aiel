@@ -20,13 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Http.Features;
 
 namespace Aiel.Framework;
 
 public class WebApplicationInitializationTests : InitializationTestBase
 {
-    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    public override async Task InitializeAsync<TApplication>(IEnumerable<DependencyNode> descriptors)
     {
         var builder = WebApplication.CreateBuilder();
 

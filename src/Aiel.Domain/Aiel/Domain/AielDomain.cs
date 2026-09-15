@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Domain;
 
@@ -29,4 +30,4 @@ namespace Aiel.Domain;
 /// functionality within the Aiel framework.
 /// </summary>
 [DependsOn(typeof(AielDomainShared))]
-public sealed class AielDomain : AielDependencyConfigurator;
+public sealed class AielDomain : AielDependency;

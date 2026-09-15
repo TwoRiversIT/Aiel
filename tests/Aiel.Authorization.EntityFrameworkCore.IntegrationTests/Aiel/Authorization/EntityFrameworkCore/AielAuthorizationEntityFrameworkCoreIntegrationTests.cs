@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization.EntityFrameworkCore;
 
@@ -29,5 +30,5 @@ namespace Aiel.Authorization.EntityFrameworkCore;
 [DependsOn(typeof(Testing.AielAuthorizationTesting))]
 [DependsOn(typeof(Aiel.Testing.AielTesting))]
 [DependsOn(typeof(AielAuthorizationEntityFrameworkCorePostgreSql))]
-public sealed class AielAuthorizationEntityFrameworkCoreIntegrationTests : AielDependencyConfigurator;
+public sealed class AielAuthorizationEntityFrameworkCoreIntegrationTests : AielDependency;
 

@@ -22,9 +22,9 @@
 
 using Aiel.Emailing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Security;
 
 [DependsOn(typeof(AielEmailingAbstractions))]
-[DependsOn(typeof(AielSecurity))]
-public sealed class AielSecurity : AielDependencyConfigurator;
+public sealed class AielSecurity : AielDependency;

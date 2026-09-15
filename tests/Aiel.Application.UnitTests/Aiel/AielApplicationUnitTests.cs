@@ -22,10 +22,11 @@
 
 using Aiel.Application;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel;
 
 [DependsOn(typeof(AielApplicationContracts))]
-[DependsOn(typeof(AielApplication))]
-public sealed class AielApplicationUnitTests : AielDependencyConfigurator;
+[DependsOn(typeof(Application.AielApplication))]
+public sealed class AielApplicationUnitTests : AielDependency;
 

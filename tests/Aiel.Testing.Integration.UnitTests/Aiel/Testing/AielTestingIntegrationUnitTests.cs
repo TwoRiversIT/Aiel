@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Results;
 
 namespace Aiel.Testing;
@@ -29,4 +30,4 @@ namespace Aiel.Testing;
 [DependsOn(typeof(AielResults))]
 [DependsOn(typeof(AielTesting))]
 [DependsOn(typeof(AielTestingDummies))]
-public sealed class AielTestingIntegrationUnitTests : AielDependencyConfigurator;
+public sealed class AielTestingIntegrationUnitTests : AielDependency;

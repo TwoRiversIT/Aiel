@@ -21,8 +21,9 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Authorization;
 
 [DependsOn(typeof(AielFrameworkAbstractions))]
-public sealed class AielAuthorizationAbstractions : AielDependencyConfigurator;
+public sealed class AielAuthorizationAbstractions : AielDependency;

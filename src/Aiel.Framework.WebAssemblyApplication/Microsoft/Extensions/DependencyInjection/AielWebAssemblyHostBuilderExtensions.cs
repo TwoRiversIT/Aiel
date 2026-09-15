@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ public static class AielWebAssemblyHostBuilderExtensions
 {
     public static async Task BootstrapAsync<TApplication>(
         this WebAssemblyHostBuilder builder,
-        IEnumerable<DependencyDescriptor> dependencyDescriptors,
+        IEnumerable<DependencyNode> dependencyDescriptors,
         CancellationToken cancellationToken = default)
         where TApplication : IApplicationConfigurator, new()
     {

@@ -1,0 +1,43 @@
+// MIT License
+//
+// Copyright 2026 Two Rivers Information Technology Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sub-license,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+
+namespace Aiel.Framework.DependencyInjection;
+
+/// <summary>
+/// Indicates that the decorated class has a dependency on another class,
+/// specified by the provided type. This attribute can be applied to
+/// classes to declare their dependencies, which will be used for
+/// configuration, service registration, and initialization.
+/// </summary>
+/// <param name="type">
+/// The type of the class that the decorated class depends on. It must
+/// implement <see cref="IConfigurator"/>.
+/// </param>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class DependsOnAttribute(Type type) : Attribute
+{
+    /// <summary>
+    /// Gets the type of the class that the decorated class depends on.
+    /// The type must implement <see cref="IConfigurator"/>.
+    /// </summary>
+    public Type Type { get; } = type ?? throw new ArgumentNullException(nameof(type));
+}

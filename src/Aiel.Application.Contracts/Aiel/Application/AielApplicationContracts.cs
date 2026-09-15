@@ -23,6 +23,7 @@
 using Aiel.Domain;
 using Aiel.Emailing;
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Aiel.Results;
 
 namespace Aiel.Application;
@@ -33,4 +34,4 @@ namespace Aiel.Application;
 [DependsOn(typeof(AielDomainShared))]
 [DependsOn(typeof(AielEmailingAbstractions))]
 [DependsOn(typeof(AielResults))]
-public sealed class AielApplicationContracts : AielDependencyConfigurator;
+public sealed class AielApplicationContracts : AielDependency;

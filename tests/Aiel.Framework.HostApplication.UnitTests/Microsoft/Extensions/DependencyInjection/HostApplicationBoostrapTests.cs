@@ -21,13 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public class HostApplicationBoostrapTests : BootstrapTestsBase
 {
-    public override async Task BootstrapAsync<TApplication>(IEnumerable<DependencyDescriptor> descriptors)
+    public override async Task BootstrapAsync<TApplication>(IEnumerable<DependencyNode> descriptors)
     {
         var builder = Host.CreateApplicationBuilder();
 

@@ -21,11 +21,12 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework;
+using Aiel.Framework.DependencyInjection;
 
 namespace ExampleWebApplication;
 
 [DependsOn(typeof(AielFrameworkWebApplication))]
-public sealed class ExampleWebApplicationConfigurator : AielApplicationConfigurator, IWebApplicationInitializer
+public sealed class ExampleWebApplicationConfigurator : AielApplication, IWebApplicationInitializer
 {
     public override String ApplicationName => ThisAssembly.AssemblyName;
     public override String ApplicationVersion => ThisAssembly.AssemblyFileVersion;

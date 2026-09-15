@@ -20,12 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Aggregates;
 using Aiel.Domain.Entities;
 using Aiel.Domain.Events;
 using Aiel.StrongIds;
 
-namespace Aiel.Domain;
+namespace Aiel.Domain.Aggregates;
 
 /// <summary>
 /// Represents the base class for aggregate roots in the domain-driven design

@@ -22,7 +22,7 @@
 
 using Aiel.StrongIds;
 
-namespace Aiel.Domain;
+namespace Aiel.Domain.Aggregates;
 
 /// <summary>
 /// Represents an aggregate root that is based on state rather than events, meaning its state is directly managed and not derived from a sequence of domain events.

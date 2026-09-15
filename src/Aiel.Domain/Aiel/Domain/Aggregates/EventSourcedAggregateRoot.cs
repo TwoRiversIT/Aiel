@@ -24,7 +24,7 @@ using Aiel.Domain.Events;
 using Aiel.EventSourcing;
 using Aiel.StrongIds;
 
-namespace Aiel.Domain;
+namespace Aiel.Domain.Aggregates;
 
 /// <summary>
 /// Represents an aggregate root that is event-sourced, meaning its state is derived from a sequence of domain events.

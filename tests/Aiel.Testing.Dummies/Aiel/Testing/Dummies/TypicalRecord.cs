@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
+using Aiel.Domain.ValueObjects.Contacts;
 
 namespace Aiel.Testing.Dummies;
 
@@ -28,6 +28,6 @@ public record TypicalRecord(TypicalId Id, String Name, Int32 Age, Email Email, G
 {
     public static TypicalRecord Create(String name)
     {
-        return new TypicalRecord(TypicalId.From(Guid.NewGuid()), name, 18, "typical.record@example.com", Guid.NewGuid(), true, DateTimeOffset.UtcNow);
+        return new TypicalRecord(TypicalId.From(Guid.NewGuid()), name, 18, Email.Parse("typical.record@example.com"), Guid.NewGuid(), true, DateTimeOffset.UtcNow);
     }
 }

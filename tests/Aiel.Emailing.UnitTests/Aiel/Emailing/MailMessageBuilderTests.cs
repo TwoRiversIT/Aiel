@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Domain.ValueObjects.Contacts;
 using Aiel.Security;
 using Aiel.Testing.Fakes;
 using System.Net.Mail;
@@ -30,6 +31,9 @@ namespace Aiel.Emailing;
 
 public class MailMessageBuilderTests
 {
+    private static readonly EmailAddress Sender = new("Sender", new Email("sender@example.com"));
+    private static readonly EmailAddress Recipient = new("Recipient", new Email("recipient@example.com"));
+
     [Fact]
     public void Can_be_instantiated()
     {
@@ -45,8 +49,8 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(renderer);
 
         var message = builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .Append("# Hello")
             .Build();
@@ -63,8 +67,8 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(renderer);
 
         var message = builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .WithHtmlBody("<p>Hello</p>")
             .Build();
@@ -80,8 +84,8 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(new FakeMarkdownRenderer());
 
         var message = builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .WithTextBody("Hello")
             .Build();
@@ -96,8 +100,8 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(new FakeMarkdownRenderer());
 
         var message = builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .WithHtmlBody("<p>Hello</p>")
             .WithTextBody("Hello")
@@ -114,8 +118,8 @@ public class MailMessageBuilderTests
 
         using var builder = new MailMessageBuilder(renderer);
         var message = builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithHtmlBody("<p>from html</p>")
             .WithTextBody("from text")
             .Append("from markdown")
@@ -137,7 +141,7 @@ public class MailMessageBuilderTests
         ]));
 
         var message = builder
-            .SendFrom("Sender", "sender@example.com")
+            .SendFrom(Sender)
             .To(principal)
             .WithSubject("Subject")
             .WithTextBody("Hello")
@@ -158,8 +162,8 @@ public class MailMessageBuilderTests
         builder.HasAttachments.Should().BeTrue();
 
         var message = builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .WithTextBody("Body")
             .Build();
@@ -198,7 +202,7 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(new FakeMarkdownRenderer());
 
         Action action = () => builder
-            .SendFrom("Sender", "sender@example.com")
+            .SendFrom(Sender)
             .WithSubject("Subject")
             .WithTextBody("Hello")
             .Build();
@@ -213,14 +217,14 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(new FakeMarkdownRenderer());
 
         var message = builder
-            .ReplyTo("Reply", "reply@example.com")
-            .To("Recipient", "recipient@example.com")
+            .ReplyTo(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .WithTextBody("Hello")
             .Build();
 
         message.ReplyToList.Should().ContainSingle();
-        message.ReplyToList.Single().Address.Should().Be("reply@example.com");
+        message.ReplyToList.Single().Address.Should().Be("sender@example.com");
         message.From.Should().BeNull();
     }
 
@@ -230,8 +234,8 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(new FakeMarkdownRenderer());
 
         Action action = () => builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .Build();
 
@@ -245,8 +249,8 @@ public class MailMessageBuilderTests
         using var builder = new MailMessageBuilder(new FakeMarkdownRenderer());
 
         builder
-            .SendFrom("Sender", "sender@example.com")
-            .To("Recipient", "recipient@example.com")
+            .SendFrom(Sender)
+            .To(Recipient)
             .WithSubject("Subject")
             .WithTextBody("Hello")
             .Build();

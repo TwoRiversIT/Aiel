@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
+using Aiel.Domain.ValueObjects.Contacts;
 using Aiel.Framework;
 using Aiel.Security;
 using Aiel.UI;
@@ -110,7 +110,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// <param name="principal">The claims principal representing the recipient.</param>
     /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder To(ClaimsPrincipal principal)
-        => To(new EmailAddress(principal.FullName(), principal.Email()));
+        => To(new EmailAddress(principal.FullName(), new(principal.Email())));
 
     /// <summary>
     /// Sets the recipient of the email message using the specified name and email address.

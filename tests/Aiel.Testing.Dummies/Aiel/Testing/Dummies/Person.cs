@@ -20,14 +20,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
 using Aiel.Domain.Entities;
+using Aiel.Domain.ValueObjects.Contacts;
+using Bogus;
 using System.Text.Json.Serialization;
 
 namespace Aiel.Testing.Dummies;
 
 public sealed class Person : ClassEntity<PersonId>
 {
+    private static readonly Faker Faker = new();
+
     private Person()
     {
         Id = PersonId.Empty;
@@ -58,13 +61,25 @@ public sealed class Person : ClassEntity<PersonId>
     public DateOnly? DateOfBirth { get; private set; }
     public Gender Gender { get; private set; } = Gender.NonBinary;
 
+    public String FullName => $"{FirstName} {(String.IsNullOrWhiteSpace(MiddleName) ? String.Empty : MiddleName + " ")}{LastName}".Trim();
+    public Email Email => new($"{FirstName}.{LastName}@example.com".ToLowerInvariant());
+    public EmailAddress EmailAddress => new(FullName, Email);
+
     public String Initials
         => $"{(FirstName.Length > 0 ? FirstName[0] : ' ')}{(LastName.Length > 0 ? LastName[0] : ' ')}"
             .Trim()
             .ToUpperInvariant();
 
     public static Person Create(PersonId? id = null, String? firstName = null, String? lastName = null, String? middleName = null, DateOnly? dateOfBirth = null, Gender gender = Gender.NonBinary)
-        => new(id ?? PersonId.From(Guid.NewGuid()), firstName ?? "John", lastName ?? "Doe", middleName ?? "", gender, dateOfBirth ?? DateOnly.FromDateTime(DateTime.Today.AddYears(-20)));
+    {
+        return new(
+            id ?? PersonId.From(Guid.NewGuid()),
+            firstName ?? Faker.Person.FirstName,
+            lastName ?? Faker.Person.LastName,
+            middleName ?? Faker.Person.UserName,
+            gender: gender == Gender.NonBinary ? Faker.PickRandom<Gender>() : gender,
+            dateOfBirth ?? DateOnly.FromDateTime(DateTime.Today.AddYears(-20)));
+    }
 
     public static readonly Person Empty = new();
 }

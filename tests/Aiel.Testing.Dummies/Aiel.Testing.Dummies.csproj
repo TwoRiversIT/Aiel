@@ -14,6 +14,7 @@
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         -->
         <ProjectReference Include="..\..\src\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
+        <ProjectReference Include="..\..\src\Aiel.Domain.EntityFrameworkCore\Aiel.Domain.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds.EntityFrameworkCore\Aiel.StrongIds.EntityFrameworkCore.csproj" />
@@ -21,6 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Bogus" Version="35.6.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
         <PackageReference Include="Riok.Mapperly" Version="4.3.1" />

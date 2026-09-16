@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
+using Aiel.Domain.ValueObjects.Contacts;
 using Microsoft.Extensions.Options;
 
 namespace Aiel.Emailing.MailKit;
@@ -52,7 +52,11 @@ public class MailKitOptionsValidator : EmailOptionsValidator
                 Errors.Add($"{key}.ArchiveBccName is required when ArchiveSentEmail is true.");
             }
 
-            if (EmailValidator.IsValid(mailKitOptions.ArchiveBccAddress))
+            if (mailKitOptions.ArchiveBccAddress is null)
+            {
+                Errors.Add($"{key}.ArchiveBccAddress is required when ArchiveSentEmail is true.");
+            }
+            else if (!EmailValidator.IsValid(mailKitOptions.ArchiveBccAddress))
             {
                 Errors.Add($"{key}.ArchiveBccAddress is invalid.");
             }

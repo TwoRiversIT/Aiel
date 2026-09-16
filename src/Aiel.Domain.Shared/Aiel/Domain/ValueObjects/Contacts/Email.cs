@@ -78,7 +78,10 @@ public readonly record struct Email : IComparable<Email>, IEquatable<Email>
     /// Returns the string representation of the email address.
     /// </summary>
     /// <returns>The string representation of the email address.</returns>
-    public override String ToString() => $"{User}@{Domain}";
+    public override String ToString()
+        => String.IsNullOrWhiteSpace(User) || Domain == DomainName.Empty
+        ? String.Empty
+        : $"{User}@{Domain}";
 
     /// <inheritdoc />
     public override Int32 GetHashCode() => HashCode.Combine(User, Domain);
@@ -88,6 +91,24 @@ public readonly record struct Email : IComparable<Email>, IEquatable<Email>
     {
         var domainComparison = String.Compare(Domain, other.Domain, StringComparison.OrdinalIgnoreCase);
         return domainComparison != 0 ? domainComparison : String.CompareOrdinal(User, other.User);
+    }
+
+    /// <summary>
+    /// An alternative to <see cref="Parse"/>, this method creates an
+    /// <see cref="Email"/> instance from the specified string. If the string
+    /// is not a valid email address, an empty <see cref="Email"/> instance is
+    /// returned.
+    /// </summary>
+    /// <param name="email">The string representation of the email address to create.</param>
+    /// <returns>The created <see cref="Email"/> instance, or <see cref="Email.Empty"/> if the string is not a valid email address.</returns>
+    public static Email From(String? email)
+    {
+        if (TryParse(email, out var result))
+        {
+            return result;
+        }
+
+        return Empty;
     }
 
     /// <summary>

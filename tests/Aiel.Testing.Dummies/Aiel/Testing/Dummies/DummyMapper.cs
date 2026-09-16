@@ -33,6 +33,9 @@ public static partial class DummyMapper
     /// <param name="person">The person to map.</param>
     /// <returns>The mapped person DTO.</returns>
     [MapperIgnoreSource(nameof(Person.Version))]
+    [MapperIgnoreSource(nameof(Person.FullName))]
+    [MapperIgnoreSource(nameof(Person.Email))]
+    [MapperIgnoreSource(nameof(Person.EmailAddress))]
     public static partial PersonDto ToDto(this Person person);
 
     /// <summary>

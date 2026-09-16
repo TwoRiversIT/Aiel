@@ -42,7 +42,7 @@ public readonly record struct DomainName
     /// </summary>
     public static readonly DomainName Empty = new();
 
-    private readonly String _domain;
+    private readonly String _domain = String.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DomainName" /> class with an empty domain name.
@@ -62,6 +62,12 @@ public readonly record struct DomainName
         _domain = Normalize(name);
     }
 
+    // ^1 is the C# index‑from‑end operator.
+    // domain[^1] means “the last character of the string”.
+    // ..^1 means “slice from the beginning up to (but not including) the last character”.
+    // The whole expression is a ternary operator:
+    // - If the last character is a dot → return the string without the last character
+    // Else → return the original string
     private static String Normalize(String domain)
         => domain[^1] == '.' ? domain[..^1] : domain;
 
@@ -81,7 +87,7 @@ public readonly record struct DomainName
     /// <param name="other"></param>
     /// <returns></returns>
     public Boolean Equals(DomainName other)
-        => _domain.Equals(other._domain, StringComparison.InvariantCultureIgnoreCase);
+        => other._domain is not null && _domain.Equals(other._domain, StringComparison.InvariantCultureIgnoreCase);
 
     /// <summary>
     /// Defines an implicit conversion from a <see cref="String" /> to a <see cref="DomainName" />.

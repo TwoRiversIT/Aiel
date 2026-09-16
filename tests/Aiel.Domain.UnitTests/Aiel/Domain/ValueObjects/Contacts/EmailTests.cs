@@ -86,6 +86,20 @@ public class EmailTests
     }
 
     [Fact]
+    public void Email_From_Returns_Email_For_Valid_Email()
+    {
+        var a = Email.From("a@x.yz");
+        a.ToString().Should().Be("a@x.yz");
+    }
+
+    [Fact]
+    public void Email_From_Returns_Empty_For_Invalid_Email()
+    {
+        var b = Email.From("z at x dot yz");
+        b.ToString().Should().Be(String.Empty);
+    }
+
+    [Fact]
     public void Email_is_Parsable()
     {
         var a = Email.Parse("a@x.yz");

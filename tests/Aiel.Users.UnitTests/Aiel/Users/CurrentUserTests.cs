@@ -40,6 +40,6 @@ public class CurrentUserTests
         currentUser.UserName.Should().Be(TestData.UserName);
         currentUser.FirstName.Should().Be(TestData.UserFirstName);
         currentUser.LastName.Should().Be(TestData.UserLastName);
-        currentUser.Email.Should().Be(TestData.UserEmail);
+        currentUser.Email.ToString().Should().Be(TestData.UserEmail);
     }
 }

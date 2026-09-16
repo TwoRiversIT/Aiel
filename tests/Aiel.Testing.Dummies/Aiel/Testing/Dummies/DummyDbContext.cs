@@ -20,30 +20,25 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
-using Aiel.StrongIds;
+using Aiel.Domain.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.Testing.Dummies;
 
 public sealed class DummyDbContext(DbContextOptions<DummyDbContext> options) : DbContext(options)
 {
-    public DbSet<Person> People { get; set; } = default!;
     public DbSet<Customer> Customers { get; init; } = default!;
+    public DbSet<Person> People { get; set; } = default!;
+    public DbSet<TypicalClass> TypicalClasses { get; init; } = default!;
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.ConfigureValueConverters();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Person>().HasKey(x => x.Id);
-        modelBuilder.Entity<Person>().Property(x => x.Id).HasStrongIdConversion<PersonId, Guid>();
-
-        modelBuilder.Entity<Person>().Property(x => x.FirstName).IsRequired();
-        modelBuilder.Entity<Person>().Property(x => x.LastName).IsRequired();
-
-        modelBuilder.Entity<Person>().HasData(
-            Person.Create(PersonId.From(Guid.NewGuid()), "Doug", "Wilson", String.Empty, new DateOnly(1974, 10, 16), Gender.Male),
-            Person.Create(PersonId.From(Guid.NewGuid()), "Shyloh", "Atlas", String.Empty, new DateOnly(2007, 10, 15), Gender.Female),
-            Person.Create(PersonId.From(Guid.NewGuid()), "Piper", "Wilson", String.Empty, new DateOnly(2008, 5, 19), Gender.Female),
-            Person.Create(PersonId.From(Guid.NewGuid()), "Geordi", "Wilson", String.Empty, new DateOnly(2011, 9, 14), Gender.Male)
-        );
+        modelBuilder.ApplyConfiguration(new PersonConfiguration());
+        modelBuilder.ApplyConfiguration(new TypicalClassConfiguration());
     }
 }

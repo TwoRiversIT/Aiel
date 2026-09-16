@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Actions.Queries;
-using Aiel.Domain.Contacts;
 using Aiel.Domain.Queries;
+using Aiel.Domain.ValueObjects.Contacts;
 
 namespace Aiel.Domain.Specifications;
 

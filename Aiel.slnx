@@ -156,6 +156,7 @@
     <Project Path="src/Aiel.Authorization/Aiel.Authorization.csproj" />
     <Project Path="src/Aiel.DataAccess.Dapper/Aiel.DataAccess.Dapper.csproj" />
     <Project Path="src/Aiel.Domain.Abstractions/Aiel.Domain.Abstractions.csproj" />
+    <Project Path="src/Aiel.Domain.EntityFrameworkCore/Aiel.Domain.EntityFrameworkCore.csproj" Id="99c05739-06d3-4a67-a967-1657010dc9cb" />
     <Project Path="src/Aiel.Domain.Shared/Aiel.Domain.Shared.csproj" Id="0b2dad1d-8c6e-4c8d-9260-6741b58c6c2d" />
     <Project Path="src/Aiel.Domain/Aiel.Domain.csproj" />
     <Project Path="src/Aiel.Emailing.Abstractions/Aiel.Emailing.Abstractions.csproj" Id="04543c0e-bec5-4e39-8d44-c2658d5a2d49" />
@@ -240,6 +241,7 @@
     <Project Path="tests/Aiel.Authorization.Generators.UnitTests/Aiel.Authorization.Generators.UnitTests.csproj" />
     <Project Path="tests/Aiel.Authorization.Testing.UnitTests/Aiel.Authorization.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.DataAccess.Dapper.UnitTests/Aiel.DataAccess.Dapper.UnitTests.csproj" />
+    <Project Path="tests/Aiel.Domain.IntegrationTests/Aiel.Domain.IntegrationTests.csproj" Id="385061d4-dce8-461f-aaf0-162836b72aed" />
     <Project Path="tests/Aiel.Domain.UnitTests/Aiel.Domain.UnitTests.csproj" Id="79d3229d-a659-4048-a310-1066bd078e20" />
     <Project Path="tests/Aiel.Emailing.UnitTests/Aiel.Emailing.UnitTests.csproj" />
     <Project Path="tests/Aiel.EntityFrameworkCore.IntegrationTests/Aiel.EntityFrameworkCore.IntegrationTests.csproj" />

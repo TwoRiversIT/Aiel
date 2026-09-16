@@ -44,9 +44,15 @@ public readonly record struct EmailAddress
     public EmailAddress(String emailAddress)
     {
         var parts = emailAddress.Split(AngleBrackets, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 0)
+        {
+            Name = String.Empty;
+            Email = Email.Empty;
+            return;
+        }
+
         Name = parts.Length switch
         {
-            0 => String.Empty,
             1 => String.Empty,
             2 => parts[0].Trim(),
             _ => throw new FormatException("Invalid email address format."),

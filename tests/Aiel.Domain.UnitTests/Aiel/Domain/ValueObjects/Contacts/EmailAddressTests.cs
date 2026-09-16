@@ -25,6 +25,31 @@ namespace Aiel.Domain.ValueObjects.Contacts;
 public class EmailAddressTests
 {
     [Fact]
+    public void EmailAddress_cannot_be_created_with_empty_string()
+    {
+        // Act
+        var emailAddress = new EmailAddress(String.Empty);
+
+        // Assert
+        emailAddress.Name.Should().Be(String.Empty);
+        emailAddress.Email.ToString().Should().Be(String.Empty);
+    }
+
+    [Fact]
+    public void EmailAddress_can_be_created_with_email_only()
+    {
+        // Arrange
+        const String email = "jane@example.org";
+
+        // Act
+        var emailAddress = new EmailAddress(new(email));
+
+        // Assert
+        emailAddress.Name.Should().Be(String.Empty);
+        emailAddress.Email.ToString().Should().Be(email);
+    }
+
+    [Fact]
     public void EmailAddress_can_be_created_with_name_and_email()
     {
         // Arrange

@@ -53,7 +53,7 @@ public class CustomerApplicationService(ICustomerRepository repository) : ICusto
 
         if (existing is null)
         {
-            return AfError.Notfound<Customer>(command.Id);
+            return AfError.NotFound<Customer>(command.Id);
         }
 
         if (command.Name is not null)

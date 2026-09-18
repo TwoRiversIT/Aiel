@@ -123,6 +123,6 @@ public static class QueryableExtensions
         where TStrongId : IStrongId, IEquatable<TStrongId>
     {
         var item = await source.SingleOrDefaultAsync(t => t.Id.Equals(id), cancellationToken);
-        return item ?? (Result<TEntity>)AfError.Notfound<TEntity>(id);
+        return item ?? (Result<TEntity>)AfError.NotFound<TEntity>(id);
     }
 }

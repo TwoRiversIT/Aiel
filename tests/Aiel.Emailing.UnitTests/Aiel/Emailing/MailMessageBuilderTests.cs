@@ -31,8 +31,8 @@ namespace Aiel.Emailing;
 
 public class MailMessageBuilderTests
 {
-    private static readonly EmailAddress Sender = new("Sender", new Email("sender@example.com"));
-    private static readonly EmailAddress Recipient = new("Recipient", new Email("recipient@example.com"));
+    private static readonly EmailAddress Sender = EmailAddress.From("Sender", Email.From("sender@example.com"));
+    private static readonly EmailAddress Recipient = EmailAddress.From("Recipient", Email.From("recipient@example.com"));
 
     [Fact]
     public void Can_be_instantiated()

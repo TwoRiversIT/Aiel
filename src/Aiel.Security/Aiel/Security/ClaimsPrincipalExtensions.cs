@@ -40,7 +40,7 @@ public static class ClaimsPrincipalExtensions
     public static EmailAddress EmailAddress([NotNull] this ClaimsPrincipal principal)
         => principal.Claims.EmailAddress();
     public static EmailAddress EmailAddress([NotNull] this IEnumerable<Claim> claims)
-        => new(claims.FullName(), new(claims.Email()));
+        => Domain.ValueObjects.Contacts.EmailAddress.From(claims.FullName(), claims.Email());
 
     public static String ZoneInfo([NotNull] this ClaimsPrincipal principal)
         => principal.Claims.ZoneInfo();

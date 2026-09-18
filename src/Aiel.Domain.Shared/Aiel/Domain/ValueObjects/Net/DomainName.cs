@@ -31,7 +31,7 @@ namespace Aiel.Domain.ValueObjects.Net;
 /// <remarks>
 /// A domain name consists of one or more labels separated by periods (dots), and it must adhere to specific rules regarding length, character usage, and structure.
 /// </remarks>
-public readonly record struct DomainName
+public readonly record struct DomainName : IComparable<DomainName>, IComparable<String>, IEquatable<String>
 {
     // ToDo: Change to a record struct for better performance and value semantics.
     // ToDo: Add support for Internationalized Domain Names (IDNs) using Punycode encoding.
@@ -55,12 +55,39 @@ public readonly record struct DomainName
     /// <param name="name">The domain name string.</param>
     /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is not a valid domain name.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="name" /> is <see langword="null" />.</exception>
-    public DomainName(String name)
+    private DomainName(String name)
     {
-        IsValid(name, throwIfInvalid: true);
-
         _domain = Normalize(name);
     }
+
+    /// <inheritdoc />
+    public override Int32 GetHashCode() => _domain?.GetHashCode() ?? 0;
+
+    /// <inheritdoc />
+    public override String ToString() => _domain;
+
+    /// <inheritdoc />
+    public Int32 CompareTo(DomainName other)
+        => String.Compare(_domain, other._domain, StringComparison.OrdinalIgnoreCase);
+
+    /// <inheritdoc />
+    public Int32 CompareTo(String? other)
+        => String.Compare(_domain, other, StringComparison.OrdinalIgnoreCase);
+
+    /// <inheritdoc />
+    public Boolean Equals(DomainName other)
+        => other._domain is not null && _domain.Equals(other._domain, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Indicates whether the current <see cref="DomainName" /> instance is
+    /// equal to a specified string, using a case-insensitive comparison.
+    /// </summary>
+    /// <param name="other">The string to compare with the current
+    /// <see cref="DomainName" /> instance.</param>
+    /// <returns><see langword="true" /> if the current instance is equal to
+    /// the specified string; otherwise, <see langword="false" />.</returns>
+    public Boolean Equals(String? other)
+        => _domain.Equals(other, StringComparison.OrdinalIgnoreCase);
 
     // ^1 is the C# index‑from‑end operator.
     // domain[^1] means “the last character of the string”.
@@ -71,29 +98,11 @@ public readonly record struct DomainName
     private static String Normalize(String domain)
         => domain[^1] == '.' ? domain[..^1] : domain;
 
-    /// <inheritdoc />
-    public override Int32 GetHashCode() => _domain?.GetHashCode() ?? 0;
-
-    /// <inheritdoc />
-    public override String ToString() => _domain;
-
-    /// <inheritdoc />
-    public Int32 CompareTo(DomainName other)
-        => String.Compare(_domain, other._domain, StringComparison.InvariantCultureIgnoreCase);
-
     /// <summary>
-    /// Determines whether the specified <see cref="DomainName" /> is equal to the current <see cref="DomainName" />.
-    /// </summary>
-    /// <param name="other"></param>
-    /// <returns></returns>
-    public Boolean Equals(DomainName other)
-        => other._domain is not null && _domain.Equals(other._domain, StringComparison.InvariantCultureIgnoreCase);
-
-    /// <summary>
-    /// Defines an implicit conversion from a <see cref="String" /> to a <see cref="DomainName" />.
+    /// Defines an explicit conversion from a <see cref="String" /> to a <see cref="DomainName" />.
     /// </summary>
     /// <param name="domainName">The string to convert.</param>
-    public static implicit operator DomainName(String domainName) => new(domainName);
+    public static explicit operator DomainName(String domainName) => new(domainName);
 
     /// <summary>
     /// Parses a domain name string into a <see cref="DomainName" /> instance.
@@ -102,7 +111,12 @@ public readonly record struct DomainName
     /// <returns>A <see cref="DomainName" /> instance.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="domain" /> is not a valid domain name.</exception>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="domain" /> is <see langword="null" />.</exception>
-    public static DomainName Parse(String domain) => new(domain);
+    public static DomainName Parse(String domain)
+    {
+        IsValid(domain, throwIfInvalid: true);
+
+        return new(domain);
+    }
 
     /// <summary>
     /// Attempts to parse a domain name string into a <see cref="DomainName" /> instance.
@@ -123,11 +137,19 @@ public readonly record struct DomainName
     }
 
     /// <summary>
-    /// Creates a new <see cref="DomainName" /> instance from the specified string.
+    /// Returns a new <see cref="DomainName" /> instance from the specified string if it is a valid domain name; otherwise <see cref="DomainName.Empty" />.
     /// </summary>
     /// <param name="domainName">The string to convert.</param>
     /// <returns>A <see cref="DomainName" /> instance.</returns>
-    public static DomainName From(String domainName) => new(domainName);
+    public static DomainName From(String domainName)
+    {
+        if (IsValid(domainName))
+        {
+            return new(domainName);
+        }
+
+        return Empty;
+    }
 
     /// <summary>
     /// Defines an implicit conversion from a <see cref="DomainName" /> to a <see cref="String" />.

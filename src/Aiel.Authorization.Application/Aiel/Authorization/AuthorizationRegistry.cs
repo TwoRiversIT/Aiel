@@ -20,12 +20,22 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Authorization.Testing;
-using Aiel.Framework.DependencyInjection;
+using Mapster;
 
 namespace Aiel.Authorization;
 
-[DependsOn(typeof(AielAuthorizationApplicationContracts))]
-[DependsOn(typeof(AielAuthorizationApplication))]
-[DependsOn(typeof(AielAuthorizationTesting))]
-public sealed class AielAuthorizationApplicationUnitTests : AielDependency;
+/// <summary>
+/// A Mapster registry for configuring mappings related to authorization objects.
+/// </summary>
+public class AuthorizationRegistry : IRegister
+{
+    /// <summary>
+    /// Registers the mapping configurations for authorization objects using Mapster.
+    /// </summary>
+    /// <param name="config">The TypeAdapterConfig instance used to configure mappings.</param>
+    public void Register(TypeAdapterConfig config)
+    {
+        config.NewConfig<AuthorizationGrant, AuthorizationGrantDto>()
+            .Map(dest => dest.GrantId, src => src.Id);
+    }
+}

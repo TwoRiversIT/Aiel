@@ -58,7 +58,7 @@ public class ValueConverterTests(SystemUnderTestConfiguratorTestFixture<AielDoma
             DateTimeValue = timestamp.DateTime,
             DateTimeOffsetValue = timestamp,
             DecimalValue = 123.45m,
-            DomainName = "example.com",
+            DomainName = (DomainName)"example.com",
             DoubleValue = 123.45,
             Email = person.Email,
             EmailAddress = person.EmailAddress,

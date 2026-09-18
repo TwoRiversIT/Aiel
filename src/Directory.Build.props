@@ -68,7 +68,7 @@
     
     <!-- NBGV package reference -->
     <ItemGroup>
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.91">
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.10.94">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
@@ -80,7 +80,7 @@
 
     <!-- Analyzers -->
     <ItemGroup>
-        <PackageReference Include="Roslynator.Analyzers" Version="4.16.0">
+        <PackageReference Include="Roslynator.Analyzers" Version="5.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
@@ -92,7 +92,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets='All' />
+        <PackageReference Include="ConfigureAwait.Fody" Version="3.4.1" PrivateAssets='All' />
     </ItemGroup>
 
 </Project>

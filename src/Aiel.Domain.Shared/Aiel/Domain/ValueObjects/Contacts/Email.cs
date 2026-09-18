@@ -33,31 +33,23 @@ namespace Aiel.Domain.ValueObjects.Contacts;
 /// </summary>
 [JsonConverter(typeof(EmailAddressJsonConverter))]
 [TypeConverter(typeof(EmailAddressTypeConverter))]
-public readonly record struct Email : IComparable<Email>, IEquatable<Email>
+public readonly record struct Email : IComparable<Email>, IEquatable<Email>, IEquatable<String>
 {
     /// <summary>
     /// Gets a singleton instance of an empty email address. This can be used to represent an uninitialized or default email address.
     /// </summary>
-    public static readonly Email Empty = new();
+    public static readonly Email Empty = new(String.Empty, DomainName.Empty);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Email"/> struct with the specified email address string. The constructor validates the input and throws an exception if the email address is not in a valid format.
+    /// Initializes a new instance of the <see cref="Email"/> struct with the
+    /// specified user and domain parts. The constructor DOES NOT validate the
+    /// input.
     /// </summary>
-    /// <param name="input"></param>
     [JsonConstructor]
-    public Email(String input)
+    private Email(String user, DomainName domain)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(input);
-        var parts = input.Trim().Split('@', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (parts.Length == 2)
-        {
-            User = parts[0];
-            Domain = new DomainName(parts[1].ToLower());
-        }
-        else
-        {
-            throw new ArgumentException($"The string '{input}' is not a valid email address.", nameof(input));
-        }
+        User = user;
+        Domain = domain;
     }
 
     /// <summary>
@@ -101,7 +93,7 @@ public readonly record struct Email : IComparable<Email>, IEquatable<Email>
     /// </summary>
     /// <param name="email">The string representation of the email address to create.</param>
     /// <returns>The created <see cref="Email"/> instance, or <see cref="Email.Empty"/> if the string is not a valid email address.</returns>
-    public static Email From(String? email)
+    public static Email From(String email)
     {
         if (TryParse(email, out var result))
         {
@@ -142,13 +134,30 @@ public readonly record struct Email : IComparable<Email>, IEquatable<Email>
             var parts = value.Split('@', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             if (parts.Length == 2)
             {
-                email = new Email(value);
+                email = new(parts[0], DomainName.From(parts[1]));
                 return true;
             }
         }
 
         email = Empty;
         return false;
+    }
+
+    /// <summary>
+    /// Defines an explicit conversion from <see cref="String"/> to
+    /// <see cref="Email"/>. This allows a string to be explicitly converted to
+    /// an <see cref="Email"/> instance using a cast. If the string is not a
+    /// valid email address, an <see cref="ArgumentException"/> will be thrown.
+    /// </summary>
+    /// <param name="email">The string representation of the email address to convert.</param>
+    public static explicit operator Email(String email)
+    {
+        if (TryParse(email, out var result))
+        {
+            return result;
+        }
+
+        throw new InvalidCastException("The provided string is not a valid email address.");
     }
 
     /// <summary>
@@ -192,6 +201,25 @@ public readonly record struct Email : IComparable<Email>, IEquatable<Email>
             && String.Equals(Domain, email.Domain, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Determines whether the current <see cref="Email"/> instance is equal to
+    /// a specified string representation of an email address. The comparison
+    /// is case-insensitive and based on the string representations of the
+    /// email addresses.
+    /// </summary>
+    /// <param name="other">The string representation of an email address to compare with the current instance.</param>
+    /// <returns><c>true</c> if the current instance is equal to the <paramref name="other"/> string; otherwise, <c>false</c>.</returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public Boolean Equals(String? other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return Equals(From(other));
+    }
+
     [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes", Justification = "See the JsonConverter attribute.")]
     private sealed class EmailAddressJsonConverter : JsonConverter<Email>
     {
@@ -201,12 +229,12 @@ public readonly record struct Email : IComparable<Email>, IEquatable<Email>
         public override Email Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var input = reader.GetString();
-            if (String.IsNullOrWhiteSpace(input) || !EmailValidator.IsValid(input))
+            if (String.IsNullOrWhiteSpace(input) || !TryParse(input, out var email))
             {
                 return Empty;
             }
 
-            return new(input);
+            return email;
         }
 
         public override void Write(Utf8JsonWriter writer, Email email, JsonSerializerOptions options)
@@ -225,7 +253,7 @@ public readonly record struct Email : IComparable<Email>, IEquatable<Email>
 
             return String.IsNullOrEmpty(email)
                 ? base.ConvertFrom(context, culture, value)!
-                : new Email(email);
+                : Email.From(email);
         }
     }
 }

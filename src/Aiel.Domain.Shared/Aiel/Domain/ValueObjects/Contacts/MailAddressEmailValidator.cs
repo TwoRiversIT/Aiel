@@ -35,7 +35,7 @@ public class MailAddressEmailValidator : IEmailValidator
 
     /// <inheritdoc/>
     public Boolean IsValid(Email email)
-        => !MailAddress.TryCreate(email, out _);
+        => !MailAddress.TryCreate(email.ToString(), out _);
 
     /// <inheritdoc/>
     public Boolean IsValid(EmailAddress email)

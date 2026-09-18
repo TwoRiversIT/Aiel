@@ -28,49 +28,62 @@ namespace Aiel.Domain.ValueObjects.Contacts;
 public class EmailTests
 {
     [Fact]
-    public void Email_can_be_created()
+    public void From_Returns_Email_When_Input_Is_Valid()
     {
-        var b = new Email("a@x.yz");
+        var b = Email.From("a@x.yz");
         b.ToString().Should().Be("a@x.yz");
     }
 
     [Fact]
-    public void Email_can_be_assigned_to_string()
+    public void Implicit_Conversion_To_String_Returns_Formatted_String()
     {
-        String b = new Email("a@x.yz");
+        String b = Email.From("a@x.yz");
         b.Should().Be("a@x.yz");
     }
 
     [Fact]
-    public void Email_cannot_be_created_from_null_string()
+    public void From_Returns_Empty_When_Input_Is_Null()
     {
-        Invoking(() => new Email(null!)).Should().Throw<ArgumentNullException>();
+        var email = Email.From(null!);
+        email.Should().Be(Email.Empty);
     }
 
     [Fact]
-    public void Email_cannot_be_created_from_malformed_email()
+    public void From_Returns_Empty_When_Input_Is_Invalid()
     {
-        Invoking(() => new Email("Bob's Burger")).Should().Throw<ArgumentException>();
+        var email = Email.From("Bob's Burger");
+        email.Should().Be(Email.Empty);
     }
 
     [Fact]
-    public void Email_is_Equatable()
+    public void Email_Is_Equatable_To_Email()
     {
-        new Email("a@x.yz").Should().Be(new Email("a@x.yz"));
-        new Email("a@x.yz").Should().NotBe(new Email("b@x.yz"));
+        Email.From("a@x.yz").Should().Be(Email.From("a@x.yz"));
+        Email.From("a@x.yz").Should().NotBe(Email.From("b@x.yz"));
 
         // Local is case sensitive, Domain is not case sensitive
-        new Email("a@x.yz").Should().NotBe(new Email("A@X.YZ")); // Local upper, domain upper
-        new Email("a@x.yz").Should().NotBe(new Email("A@x.yz")); // Local upper, domain lower
-        new Email("a@x.yz").Should().Be(new Email("a@X.YZ")); // Local lower, domain upper
+        Email.From("a@x.yz").Should().NotBe(Email.From("A@X.YZ")); // Local upper, domain upper
+        Email.From("a@x.yz").Should().NotBe(Email.From("A@x.yz")); // Local upper, domain lower
+        Email.From("a@x.yz").Should().Be(Email.From("a@X.YZ")); // Local lower, domain upper
+    }
+
+    [Fact]
+    public void Email_Must_Be_Equal_To_String_With_Same_Email()
+    {
+        Email.From("a@x.yz").Equals("a@x.yz").Should().BeTrue();
+
+        // Local is case sensitive, Domain is not case sensitive
+        Email.From("a@x.yz").Equals("A@X.YZ").Should().BeFalse(); // Local upper, domain upper
+        Email.From("a@x.yz").Equals("A@x.yz").Should().BeFalse(); // Local upper, domain lower
+        Email.From("a@x.yz").Equals("a@X.YZ").Should().BeTrue(); // Local lower, domain upper
     }
 
     [Fact]
     public void Email_is_Comparable()
     {
-        var a = new Email("a@x.yz");
-        var b = new Email("a@x.yz");
-        var c = new Email("b@x.yz");
+        var a = Email.From("a@x.yz");
+        var b = Email.From("a@x.yz");
+        var c = Email.From("b@x.yz");
 
         (a == b).Should().BeTrue();
         (a < b).Should().BeFalse();
@@ -86,32 +99,35 @@ public class EmailTests
     }
 
     [Fact]
-    public void Email_From_Returns_Email_For_Valid_Email()
+    public void From_Returns_Email_For_Valid_Input()
     {
         var a = Email.From("a@x.yz");
         a.ToString().Should().Be("a@x.yz");
     }
 
     [Fact]
-    public void Email_From_Returns_Empty_For_Invalid_Email()
+    public void From_Returns_Empty_For_Invalid_Input()
     {
         var b = Email.From("z at x dot yz");
         b.ToString().Should().Be(String.Empty);
     }
 
     [Fact]
-    public void Email_is_Parsable()
+    public void Parse_Returns_Email_For_Valid_Input()
     {
-        var a = Email.Parse("a@x.yz");
-        a.ToString().Should().Be("a@x.yz");
+        Email.Parse("a@x.yz").Should().Be(Email.From("a@x.yz"));
+    }
 
+    [Fact]
+    public void Parse_Throws_For_Invalid_Input()
+    {
         Invoking(() => Email.Parse("z at x dot yz")).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Email_can_be_serialized_to_and_from_JSON()
     {
-        var before = new Email("a@x.yz");
+        var before = Email.From("a@x.yz");
 
         var json = JsonSerializer.Serialize(before);
 

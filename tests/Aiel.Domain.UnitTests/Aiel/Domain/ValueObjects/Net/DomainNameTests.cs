@@ -29,61 +29,62 @@ public class DomainNameTests
     private const String LongDomain = "abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.com";
 
     [Fact]
-    public void Must_return_the_domain_when_ToString_is_called()
+    [SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
+    public void Must_accept_IPv4_or_IPv6_addresses()
     {
-        new DomainName("www.example.com").ToString().Should().Be("www.example.com");
+        var a = DomainName.From("192.168.1.1");
+        var b = DomainName.From("2001:0db8:0000:0000:0000:ff00:0042:8329");
+        var c = DomainName.From("2001:db8:0:0:0:ff00:42:8329");
+        var d = DomainName.From("2001:db8::ff00:42:8329");
     }
 
     [Fact]
-    public void Must_parse_valid_domain_names()
+    public void Must_be_Castable_from_String()
     {
-        DomainName.Parse("example.com").Should().Be(new DomainName("example.com"));
-        DomainName.Parse("example.com.").Should().Be(new DomainName("example.com"));
+        var a = (DomainName)"example.com";
+        a.Should().Be(DomainName.From("example.com"));
     }
 
     [Fact]
-    public void Must_throw_when_Parse_receives_invalid_domain_names()
+    public void Must_be_Assignable_to_String()
     {
-        Invoking(() => DomainName.Parse("example")).Should().Throw<ArgumentException>();
-        Invoking(() => DomainName.Parse(null!)).Should().Throw<ArgumentNullException>();
+        String s = DomainName.From("example.com");
+        s.Should().Be("example.com");
     }
 
     [Fact]
-    public void Must_return_true_when_TryParse_receives_valid_domain_names()
+    public void Must_be_Comparable()
     {
-        DomainName.TryParse("example.com", out var domainName).Should().BeTrue();
-        domainName.Should().Be(new DomainName("example.com"));
-    }
-
-    [Fact]
-    public void Must_return_false_when_TryParse_receives_invalid_domain_names()
-    {
-        DomainName.TryParse("example", out var domainName).Should().BeFalse();
-        domainName.Should().Be(DomainName.Empty);
-    }
-
-    [Fact]
-    public void Must_be_comparable()
-    {
-        DomainName a = "example.com";
-        DomainName b = "example.com";
-        DomainName c = "apple.com";
-        DomainName d = "orange.com";
+        var a = DomainName.From("example.com");
+        var b = DomainName.From("example.com");
+        var c = DomainName.From("apple.com");
+        var d = DomainName.From("orange.com");
 
         a.CompareTo(b).Should().Be(0);
         b.CompareTo(a).Should().Be(0);
 
-        b.CompareTo(c).Should().Be(1);
-        b.CompareTo(d).Should().Be(-1);
+        b.CompareTo(c).Should().BePositive();
+        b.CompareTo(d).Should().BeNegative();
     }
 
     [Fact]
-    public void Must_be_equatable()
+    public void Must_be_Comparable_to_String()
+        => DomainName.From("example.com").CompareTo("example.com").Should().Be(0);
+
+    [Fact]
+    public void Must_be_Constructable_from_String()
     {
-        DomainName a = "example.com";
-        DomainName b = "example.com";
-        DomainName c = "apple.com";
-        DomainName d = "orange.com";
+        var a = DomainName.From("example.com");
+        a.Should().Be(DomainName.From("example.com"));
+    }
+
+    [Fact]
+    public void Must_be_Equatable()
+    {
+        var a = DomainName.From("example.com");
+        var b = DomainName.From("example.com");
+        var c = DomainName.From("apple.com");
+        var d = DomainName.From("orange.com");
 
         (a == b).Should().BeTrue();
         (b == a).Should().BeTrue();
@@ -97,91 +98,110 @@ public class DomainNameTests
     }
 
     [Fact]
-    public void Must_be_equatable_to_Empty()
+    public void Must_be_Equatable_to_Empty()
     {
-        var a = new DomainName("example.com");
+        var a = DomainName.From("example.com");
         a.Equals(DomainName.Empty).Should().Be(false);
     }
 
     [Fact]
-    public void Must_be_equatable_to_String()
+    public void Must_be_Equatable_to_String()
     {
-        var a = new DomainName("example.com");
+        var a = DomainName.From("example.com");
         a.Equals("example.com").Should().Be(true);
     }
 
     [Fact]
-    public void Must_be_assignable_to_String()
+    public void Must_parse_valid_domain_names()
     {
-        String s = new DomainName("example.com");
-        s.Should().Be("example.com");
+        DomainName.Parse("example.com").Should().Be(DomainName.From("example.com"));
+        DomainName.Parse("example.com.").Should().Be(DomainName.From("example.com"));
     }
 
     [Fact]
-    public void Must_be_assignable_from_String()
+    public void Must_remove_trailing_period_when_domain_ends_with_a_period()
+        => DomainName.From("example.com.").Should().Be(DomainName.From("example.com"));
+
+    [Fact]
+    public void Must_return_false_when_TryParse_receives_invalid_domain_names()
     {
-        DomainName a = "example.com";
-        a.Should().Be(new DomainName("example.com"));
+        DomainName.TryParse("example", out var domainName).Should().BeFalse();
+        domainName.Should().Be(DomainName.Empty);
     }
 
     [Fact]
-    public void Must_be_comparable_to_String()
-        => new DomainName("example.com").CompareTo("example.com").Should().Be(0);
+    public void Must_return_the_domain_when_ToString_is_called()
+    {
+        DomainName.From("www.example.com").ToString().Should().Be("www.example.com");
+    }
 
     [Fact]
-    public void Must_throw_ArgumentException_when_domain_exceeds_255_characters()
-        => Invoking(() => new DomainName(LongDomain)).Should().Throw<ArgumentException>();
+    public void Must_return_true_when_TryParse_receives_valid_domain_names()
+    {
+        DomainName.TryParse("example.com", out var domainName).Should().BeTrue();
+        domainName.Should().Be(DomainName.From("example.com"));
+    }
 
     [Fact]
     public void Must_throw_ArgumentException_when_any_label_exceeds_63_characters()
     {
         // First label is too long, 2nd Level Domain
-        Invoking(() => new DomainName("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.com")).Should().Throw<ArgumentException>();
+        Invoking(() => DomainName.Parse("abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.com")).Should().Throw<ArgumentException>();
         // First label is too long, 3rd Level Domain
-        Invoking(() => new DomainName("www.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.com")).Should().Throw<ArgumentException>();
+        Invoking(() => DomainName.Parse("www.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.com")).Should().Throw<ArgumentException>();
         // Middle label is too long, 3rd Level Domain
-        Invoking(() => new DomainName("www.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.com")).Should().Throw<ArgumentException>();
+        Invoking(() => DomainName.Parse("www.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.com")).Should().Throw<ArgumentException>();
         // Last Label is too long, 2nd Level Domain
-        Invoking(() => new DomainName("example.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")).Should().Throw<ArgumentException>();
+        Invoking(() => DomainName.Parse("example.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")).Should().Throw<ArgumentException>();
         // Last Label is too long, 3rd Level Domain
-        Invoking(() => new DomainName("www.example.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")).Should().Throw<ArgumentException>();
+        Invoking(() => DomainName.Parse("www.example.abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")).Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void Must_throw_ArgumentException_when_domain_starts_with_a_period()
-        => Invoking(() => new DomainName(".example.com")).Should().Throw<ArgumentException>();
-
-    [Fact]
-    public void Must_remove_trailing_period_when_domain_ends_with_a_period()
-        => new DomainName("example.com.").Should().Be(new DomainName("example.com"));
-
-    [Fact]
     public void Must_throw_ArgumentException_when_domain_contains_two_consecutive_periods()
-        => Invoking(() => new DomainName("example..com")).Should().Throw<ArgumentException>();
+        => Invoking(() => DomainName.Parse("example..com")).Should().Throw<ArgumentException>();
 
     [Fact]
-    public void Must_throw_ArgumentException_when_domain_is_empty()
-        => Invoking(() => new DomainName("")).Should().Throw<ArgumentException>();
-
-    [Fact]
-    public void Must_throw_ArgumentException_when_domain_is_whitespace()
-        => Invoking(() => new DomainName("   ")).Should().Throw<ArgumentException>();
+    public void Must_throw_ArgumentException_when_Domain_exceeds_255_characters()
+        => Invoking(() => DomainName.Parse(LongDomain)).Should().Throw<ArgumentException>();
 
     [Fact]
     public void Must_throw_ArgumentException_when_domain_is_a_single_label()
-        => Invoking(() => new DomainName("example")).Should().Throw<ArgumentException>();
+        => Invoking(() => DomainName.Parse("example")).Should().Throw<ArgumentException>();
+
+    [Fact]
+    public void Must_throw_ArgumentException_when_domain_is_empty()
+        => Invoking(() => DomainName.Parse("")).Should().Throw<ArgumentException>();
+
+    [Fact]
+    public void Must_throw_ArgumentException_when_domain_is_whitespace()
+        => Invoking(() => DomainName.Parse("   ")).Should().Throw<ArgumentException>();
+
+    [Fact]
+    public void Must_throw_ArgumentException_when_domain_starts_with_a_period()
+        => Invoking(() => DomainName.Parse(".example.com")).Should().Throw<ArgumentException>();
 
     [Fact]
     public void Must_throw_ArgumentNullException_when_domain_null()
-        => Invoking(() => new DomainName(null!)).Should().Throw<ArgumentNullException>();
+        => Invoking(() => DomainName.Parse(null!)).Should().Throw<ArgumentNullException>();
 
     [Fact]
-    [SuppressMessage("Style", "IDE0059:Unnecessary assignment of a value", Justification = "<Pending>")]
-    public void Must_accept_IPv4_or_IPv6_addresses()
+    public void Must_throw_when_Parse_receives_invalid_domain_names()
     {
-        DomainName a = "192.168.1.1";
-        DomainName b = "2001:0db8:0000:0000:0000:ff00:0042:8329";
-        DomainName c = "2001:db8:0:0:0:ff00:42:8329";
-        DomainName d = "2001:db8::ff00:42:8329";
+        Invoking(() => DomainName.Parse("example")).Should().Throw<ArgumentException>();
+        Invoking(() => DomainName.Parse(null!)).Should().Throw<ArgumentNullException>();
+    }
+
+    [Fact]
+    public void Parameterless_Constructor_produces_DomainName_Empty()
+    {
+        var domainName = new DomainName();
+        domainName.Should().Be(DomainName.Empty);
+    }
+
+    [Fact]
+    public void When_ToString_is_called_on_Empty_Returns_StringEmpty()
+    {
+        DomainName.Empty.ToString().Should().Be(String.Empty);
     }
 }

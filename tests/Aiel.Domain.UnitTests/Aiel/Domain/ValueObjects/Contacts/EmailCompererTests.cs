@@ -31,8 +31,8 @@ public class EmailComparerTests
         public void Compare_should_return_correct_comparison()
         {
             var comparer = new EmailComparer(EmailComparerMode.LocalDomain);
-            var alice = new Email("alice@BOB.org");
-            var bob = new Email("bob@alice.org");
+            var alice = Email.From("alice@BOB.org");
+            var bob = Email.From("bob@alice.org");
 
             comparer.Compare(alice, bob).Should().BeNegative();
             comparer.Compare(bob, alice).Should().BePositive();
@@ -43,8 +43,8 @@ public class EmailComparerTests
         {
             // Arrange
             var comparer = new EmailComparer(EmailComparerMode.LocalDomain);
-            var alice1 = new Email("alice@BOB.org");
-            var alice2 = new Email("alice@bob.org");
+            var alice1 = Email.From("alice@BOB.org");
+            var alice2 = Email.From("alice@bob.org");
 
             // Act
             var result = comparer.Compare(alice1, alice2);
@@ -60,8 +60,8 @@ public class EmailComparerTests
         public void Compare_should_return_correct_comparison()
         {
             var comparer = new EmailComparer(EmailComparerMode.DomainLocal);
-            var alice = new Email("alice@bob.org");
-            var bob = new Email("bob@ALICE.ORG");
+            var alice = Email.From("alice@bob.org");
+            var bob = Email.From("bob@ALICE.ORG");
 
             comparer.Compare(alice, bob).Should().BePositive();
             comparer.Compare(bob, alice).Should().BeNegative();
@@ -72,8 +72,8 @@ public class EmailComparerTests
         {
             // Arrange
             var comparer = new EmailComparer(EmailComparerMode.DomainLocal);
-            var alice1 = new Email("alice@BOB.ORG");
-            var alice2 = new Email("alice@bob.org");
+            var alice1 = Email.From("alice@BOB.ORG");
+            var alice2 = Email.From("alice@bob.org");
 
             // Act
             var result = comparer.Compare(alice1, alice2);

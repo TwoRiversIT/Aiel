@@ -62,8 +62,8 @@ public sealed class Person : ClassEntity<PersonId>
     public Gender Gender { get; private set; } = Gender.NonBinary;
 
     public String FullName => $"{FirstName} {(String.IsNullOrWhiteSpace(MiddleName) ? String.Empty : MiddleName + " ")}{LastName}".Trim();
-    public Email Email => new($"{FirstName}.{LastName}@example.com".ToLowerInvariant());
-    public EmailAddress EmailAddress => new(FullName, Email);
+    public Email Email => Email.From($"{FirstName}.{LastName}@example.com".ToLowerInvariant());
+    public EmailAddress EmailAddress => EmailAddress.From(FullName, Email);
 
     public String Initials
         => $"{(FirstName.Length > 0 ? FirstName[0] : ' ')}{(LastName.Length > 0 ? LastName[0] : ' ')}"

@@ -25,85 +25,15 @@ namespace Aiel.Domain.ValueObjects.Contacts;
 public class EmailAddressTests
 {
     [Fact]
-    public void EmailAddress_cannot_be_created_with_empty_string()
-    {
-        // Act
-        var emailAddress = new EmailAddress(String.Empty);
-
-        // Assert
-        emailAddress.Name.Should().Be(String.Empty);
-        emailAddress.Email.ToString().Should().Be(String.Empty);
-    }
-
-    [Fact]
-    public void EmailAddress_can_be_created_with_email_only()
+    public void EmailAddress_Explicit_Conversion_From_String_Returns_EmailAddress_When_String_Is_Valid()
     {
         // Arrange
-        const String email = "jane@example.org";
-
-        // Act
-        var emailAddress = new EmailAddress(new(email));
-
-        // Assert
-        emailAddress.Name.Should().Be(String.Empty);
-        emailAddress.Email.ToString().Should().Be(email);
-    }
-
-    [Fact]
-    public void EmailAddress_can_be_created_with_name_and_email()
-    {
-        // Arrange
-        const String name = "Jane Doe";
-        const String email = "jane@example.org";
-
-        // Act
-        var emailAddress = new EmailAddress(name, new(email));
-
-        // Assert
-        emailAddress.Name.Should().Be(name);
-        emailAddress.Email.ToString().Should().Be(email);
-    }
-
-    [Fact]
-    public void EmailAddress_to_string_returns_correct_format_with_name()
-    {
-        // Arrange
-        const String name = "Jane Doe";
-        const String email = "jane@example.org";
-        const String expected = "Jane Doe <jane@example.org>";
-        var emailAddress = new EmailAddress(name, new(email));
-
-        // Act
-        var result = emailAddress.ToString();
-
-        // Assert
-        result.Should().Be(expected);
-    }
-
-    [Fact]
-    public void EmailAddress_to_string_returns_correct_format_without_name()
-    {
-        // Arrange
-        const String email = "jane@example.org";
-        var emailAddress = new EmailAddress(String.Empty, new(email));
-
-        // Act
-        var result = emailAddress.ToString();
-
-        // Assert
-        result.Should().Be(email);
-    }
-
-    [Fact]
-    public void EmailAddress_parse_returns_correct_email_address_when_email_is_in_angle_brackets()
-    {
-        // Arrange
-        const String emailAddressString = "Jane Doe <jane@example.org>";
         const String expectedName = "Jane Doe";
         const String expectedEmail = "jane@example.org";
+        var stringValue = $"{expectedName} <{expectedEmail}>";
 
         // Act
-        var emailAddress = EmailAddress.Parse(emailAddressString);
+        EmailAddress emailAddress = (EmailAddress)stringValue;
 
         // Assert
         emailAddress.Name.Should().Be(expectedName);
@@ -111,23 +41,20 @@ public class EmailAddressTests
     }
 
     [Fact]
-    public void EmailAddress_parse_returns_correct_email_address_when_name_is_in_angle_brackets()
+    public void EmailAddress_Explicit_Conversion_From_String_Throws_FormatException_When_String_Is_Invalid()
     {
         // Arrange
-        const String emailAddressString = "<Jane Doe> jane@example.org";
-        const String expectedName = "Jane Doe";
-        const String expectedEmail = "jane@example.org";
+        const String invalidStringValue = "Invalid String";
 
         // Act
-        var emailAddress = EmailAddress.Parse(emailAddressString);
+        Action act = () => { var emailAddress = (EmailAddress)invalidStringValue; };
 
         // Assert
-        emailAddress.Name.Should().Be(expectedName);
-        emailAddress.Email.ToString().Should().Be(expectedEmail);
+        act.Should().Throw<FormatException>();
     }
 
     [Fact]
-    public void EmailAddress_implicit_conversion_to_string_returns_correct_format_with_name()
+    public void EmailAddress_Implicit_Conversion_To_String_Returns_Formatted_Name_and_Email()
     {
         // Arrange
         const String name = "Jane Doe";
@@ -135,49 +62,163 @@ public class EmailAddressTests
         var expected = $"{name} <{email}>";
 
         // Act
-        String result = new EmailAddress(name, new(email));
+        String result = EmailAddress.From(name, new(email));
 
         // Assert
         result.Should().Be(expected);
     }
 
     [Fact]
-    public void EmailAddress_implicit_conversion_to_string_returns_correct_format_without_name()
+    public void EmailAddress_ToString_Returns_Formatted_String()
+    {
+        // Arrange
+        const String name = "Jane Doe";
+        const String email = "jane@example.org";
+        var expected = $"{name} <{email}>";
+
+        // Act
+        var result = EmailAddress.From(name, email).ToString();
+
+        // Assert
+        result.Should().Be(expected);
+    }
+
+    [Fact]
+    public void EmailAddress_Must_Be_Equal_To_EmailAddress_With_Same_Name_And_Email()
+    {
+        // Arrange
+        var emailAddress1 = EmailAddress.From("Jane Doe", new("jane@example.org"));
+        var emailAddress2 = EmailAddress.From("Jane Doe", new("jane@example.org"));
+
+        // Act & Assert
+        emailAddress1.Should().Be(emailAddress2);
+    }
+
+    [Fact]
+    public void EmailAddress_Must_Be_Equal_To_String_With_Same_Name_And_Email()
+    {
+        // Arrange
+        var emailAddress = EmailAddress.From("Jane Doe", "jane@example.org");
+
+        // Act & Assert
+        emailAddress.Equals("Jane Doe <jane@example.org>").Should().BeTrue();
+    }
+
+    [Fact]
+    public void From_Returns_EmailAddress_When_Name_And_Email_Are_Provided()
+    {
+        // Arrange
+        const String name = "Jane Doe";
+        const String email = "jane@example.org";
+
+        // Act
+        var emailAddress = EmailAddress.From(name, Email.From(email));
+
+        // Assert
+        emailAddress.Name.Should().Be(name);
+        emailAddress.Email.ToString().Should().Be(email);
+    }
+
+    [Fact]
+    public void From_Returns_EmailAddress_When_Name_And_Email_String_Are_Provided()
+    {
+        // Arrange
+        const String name = "Jane Doe";
+        const String email = "jane@example.org";
+
+        // Act
+        var emailAddress = EmailAddress.From(name, email);
+
+        // Assert
+        emailAddress.Name.Should().Be(name);
+        emailAddress.Email.ToString().Should().Be(email);
+    }
+
+    [Fact]
+    public void From_Returns_Empty_When_Empty_String_Is_Provided()
+    {
+        // Act
+        var emailAddress = EmailAddress.From(String.Empty);
+
+        // Assert
+        emailAddress.Name.Should().Be(String.Empty);
+        emailAddress.Email.ToString().Should().Be(String.Empty);
+    }
+
+    [Fact]
+    public void From_Returns_Empty_When_Only_Email_Is_Provided()
     {
         // Arrange
         const String email = "jane@example.org";
 
         // Act
-        String result = new EmailAddress(String.Empty, new(email));
+        var emailAddress = EmailAddress.From(email);
 
         // Assert
-        result.Should().Be(email);
+        emailAddress.Name.Should().BeEmpty();
+        emailAddress.Email.ToString().Should().BeEmpty();
+        emailAddress.ToString().Should().BeEmpty();
     }
 
     [Fact]
-    public void EmailAddress_implicit_conversion_from_string_returns_correct_email_address()
+    public void From_Returns_Empty_When_Only_Name_Is_Provided()
     {
         // Arrange
-        const String emailAddressString = "Jane Doe <jane@example.org>";
-        const String expectedName = "Jane Doe";
-        const String expectedEmail = "jane@example.org";
+        const String name = "Jane Doe";
 
         // Act
-        EmailAddress emailAddress = emailAddressString;
+        var emailAddress = EmailAddress.From(name);
 
         // Assert
-        emailAddress.Name.Should().Be(expectedName);
-        emailAddress.Email.ToString().Should().Be(expectedEmail);
+        emailAddress.Name.Should().BeEmpty();
+        emailAddress.Email.ToString().Should().BeEmpty();
+        emailAddress.ToString().Should().BeEmpty();
     }
 
     [Fact]
-    public void EmailAddress_is_equal_to_another_email_address_with_same_name_and_email()
+    public void Parse_Returns_EmailAddress_When_Email_Is_In_Angle_Brackets()
     {
         // Arrange
-        var emailAddress1 = new EmailAddress("Jane Doe", new("jane@example.org"));
-        var emailAddress2 = new EmailAddress("Jane Doe", new("jane@example.org"));
+        const String name = "Jane Doe";
+        const String email = "jane@example.org";
+        var input = $"{name} <{email}>";
 
-        // Act & Assert
-        emailAddress1.Should().Be(emailAddress2);
+        // Act
+        var emailAddress = EmailAddress.Parse(input);
+
+        // Assert
+        emailAddress.Name.Should().Be(name);
+        emailAddress.Email.ToString().Should().Be(email);
+    }
+
+    [Fact]
+    public void Parse_Returns_EmailAddress_When_Name_Is_In_Angle_Brackets()
+    {
+        // Arrange
+        const String name = "Jane Doe";
+        const String email = "jane@example.org";
+        var input = $"<{name}> {email}";
+
+        // Act
+        var emailAddress = EmailAddress.Parse(input);
+
+        // Assert
+        emailAddress.Name.Should().Be(name);
+        emailAddress.Email.ToString().Should().Be(email);
+    }
+
+    [Fact]
+    public void TryParse_Returns_True_And_EmailAddress_When_Email_Is_In_Angle_Brackets()
+    {
+        // Arrange
+        const String name = "Jane Doe";
+        const String email = "jane@example.org";
+        var input = $"<{name}> {email}";
+
+        var got = EmailAddress.TryParse(input, out var emailAddress);
+
+        got.Should().BeTrue();
+        emailAddress.Name.Should().Be(name);
+        emailAddress.Email.ToString().Should().Be(email);
     }
 }

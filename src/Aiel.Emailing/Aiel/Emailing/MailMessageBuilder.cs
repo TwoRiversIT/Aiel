@@ -65,7 +65,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// <param name="email">The email address of the sender.</param>
     /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder SendFrom(String name, Email email)
-        => SendFrom(new EmailAddress(name, email));
+        => SendFrom(EmailAddress.From(name, email));
 
     /// <summary>
     /// Sets the sender of the email message using the specified <see cref="EmailAddress"/>.
@@ -88,7 +88,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// <param name="email">The email address of the reply-to address.</param>
     /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder ReplyTo(String name, Email email)
-        => ReplyTo(new EmailAddress(name, email));
+        => ReplyTo(EmailAddress.From(name, email));
 
     /// <summary>
     /// Sets the reply-to address of the email message using the specified <see cref="EmailAddress"/>.
@@ -110,7 +110,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// <param name="principal">The claims principal representing the recipient.</param>
     /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder To(ClaimsPrincipal principal)
-        => To(new EmailAddress(principal.FullName(), new(principal.Email())));
+        => To(EmailAddress.From(principal.FullName(), principal.Email()));
 
     /// <summary>
     /// Sets the recipient of the email message using the specified name and email address.
@@ -119,7 +119,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// <param name="email">The email address of the recipient.</param>
     /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder To(String name, Email email)
-        => To(new EmailAddress(name, email));
+        => To(EmailAddress.From(name, email));
 
     /// <summary>
     /// Sets the recipient of the email message using the specified <see cref="EmailAddress"/>.
@@ -142,7 +142,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// <param name="email">The email address of the CC recipient.</param>
     /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder CC(String name, Email email)
-        => CC(new EmailAddress(name, email));
+        => CC(EmailAddress.From(name, email));
 
     /// <summary>
     /// Sets the CC (carbon copy) recipient of the email message using the specified <see cref="EmailAddress"/>.
@@ -164,7 +164,7 @@ public class MailMessageBuilder(IMarkdownRenderer markdownRenderer)
     /// <param name="email">The email address of the BCC recipient.</param>
     /// <returns>The current instance of <see cref="MailMessageBuilder"/> to allow method chaining.</returns>
     public MailMessageBuilder BCC(String name, Email email)
-        => BCC(new EmailAddress(name, email));
+        => BCC(EmailAddress.From(name, email));
 
     /// <summary>
     /// Sets the BCC (blind carbon copy) recipient of the email message using the specified <see cref="EmailAddress"/>.

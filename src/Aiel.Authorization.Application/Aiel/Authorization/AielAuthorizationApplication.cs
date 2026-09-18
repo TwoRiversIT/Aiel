@@ -20,8 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.Framework.DependencyInjection;
+using Mapster;
+using MapsterMapper;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Authorization;
 
@@ -29,4 +32,28 @@ namespace Aiel.Authorization;
 /// Ensures that the Aiel.Authorization.Application participates in the dependency graph.
 /// </summary>
 [DependsOn(typeof(AielAuthorizationApplicationContracts))]
-public sealed class AielAuthorizationApplication : AielDependency;
+public sealed class AielAuthorizationApplication : AielDependency
+{
+    /// <summary>
+    /// Configures the services required for the Aiel.Authorization.Application to function correctly.
+    /// </summary>
+    /// <param name="context">The configuration context containing the service collection.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A ValueTask representing the asynchronous operation.</returns>
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        if (context.Services.Find<TypeAdapterConfig>().FirstOrDefault() == null)
+        {
+            context.Services.AddSingleton(TypeAdapterConfig.GlobalSettings);
+        }
+
+        var config = context.Services.GetRequiredSingleton<TypeAdapterConfig>();
+
+        context.Services.TryAddSingleton(config);
+        context.Services.TryAddSingleton<IMapper>(new Mapper(config));
+
+        config.Scan(typeof(AielAuthorizationApplication).Assembly);
+
+        return ValueTask.CompletedTask;
+    }
+}

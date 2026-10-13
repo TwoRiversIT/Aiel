@@ -36,13 +36,13 @@ public class IntegrationTestFixtureTests
 
         await fixture.InitializeAsync();
 
-        var sp = fixture.GetTestServiceProvider();
+        var scope = fixture.GetTestScope();
 
-        var config = sp.GetRequiredService<IConfiguration>();
+        var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         config.Should().NotBeNull();
         config["Sample:Value"].Should().BeNull();
 
-        await sp.SafelyDisposeAsync();
+        await scope.SafelyDisposeAsync();
     }
 
     [Fact]
@@ -61,13 +61,13 @@ public class IntegrationTestFixtureTests
 
         await fixture.InitializeAsync();
 
-        var sp = fixture.GetTestServiceProvider();
+        var scope = fixture.GetTestScope();
 
-        var config = sp.GetRequiredService<IConfiguration>();
+        var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         config.Should().NotBeNull();
         config["Sample:Value"].Should().Be("Configured");
 
-        await sp.SafelyDisposeAsync();
+        await scope.SafelyDisposeAsync();
     }
 
     private sealed class AppSettingsTestFixture(String configurationBasePath) : IntegrationTestFixture

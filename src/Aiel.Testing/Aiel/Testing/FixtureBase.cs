@@ -35,11 +35,12 @@ namespace Aiel.Testing;
 /// support and core services like <seealso cref="IConfiguration"/>,
 /// <see cref="IServiceProvider"/>, <seealso cref="TimeProvider"/>, etc.
 /// </summary>
-public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigurator, IInitializer
+public abstract class FixtureBase : DisposableBase, IAsyncLifetime, IConfigurator, IInitializer
 {
     internal const String IncorrectFixtureSetup = "Incorrect fixture setup. Ensure your fixture is overriding InitializeAsync(InitializationContext, CancellationToken) and not InitializeAsync().";
 
     private IHost? _host;
+    private IServiceScope? _testScope;
 
     protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
 
@@ -83,14 +84,14 @@ public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigu
     }
 
     // This is called once per test run, after all fixtures have been initialized, but before any tests are executed.
-    internal IServiceProvider GetTestServiceProvider()
+    internal IServiceScope GetTestScope()
     {
         if (_host is null)
         {
             throw new InvalidOperationException(IncorrectFixtureSetup);
         }
 
-        return new ServiceProviderWrapper(_host.Services.CreateScope());
+        return _testScope ??= _host.Services.CreateScope();
     }
 
     internal abstract ValueTask ConfigureFixtureAsync(ConfigurationContext context, CancellationToken cancellationToken);
@@ -142,22 +143,12 @@ public abstract class TestFixtureBase : DisposableBase, IAsyncLifetime, IConfigu
     /// <returns>A ValueTask that represents the asynchronous dispose operation.</returns>
     protected override async ValueTask DisposeAsyncCore()
     {
+        _testScope?.Dispose();
+        _testScope = null;
+
         _host?.Dispose();
         _host = null;
 
         await base.DisposeAsyncCore();
-    }
-
-    private sealed class ServiceProviderWrapper(IServiceScope serviceScope) : IServiceProvider, IDisposable
-    {
-        private readonly IServiceScope _serviceScope = serviceScope;
-
-        public Object? GetService(Type serviceType) => _serviceScope.ServiceProvider.GetService(serviceType);
-
-        public void Dispose()
-        {
-            _serviceScope.Dispose();
-            GC.SuppressFinalize(this);
-        }
     }
 }

@@ -28,7 +28,7 @@ namespace Aiel.Testing;
 /// Provides a concrete test fixture with full dependency injection for
 /// integration tests.
 /// </summary>
-public class IntegrationTestFixture : TestFixtureBase
+public class IntegrationTestFixture : FixtureBase
 {
     // This class only exists to implement/terminate the abstract base class. It does not need to do anything else.
 

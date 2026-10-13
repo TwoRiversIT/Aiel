@@ -21,6 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
@@ -30,13 +31,32 @@ public abstract class SpecificationConfiguratorTestBase<TConfigurator, TFixture,
     where TFixture : SpecificationConfiguratorTestFixture<TConfigurator, TSut>
     where TSut : class
 {
+    private IServiceProvider? _services;
+
+    protected override IServiceProvider Services => _services ?? base.Services;
     internal override async ValueTask BeginInstanceTestsAsync(CancellationToken cancellationToken)
     {
         await base.BeginInstanceTestsAsync(cancellationToken);
 
-        await GivenAsync(cancellationToken);
-        await WhenAsync(cancellationToken);
-        await ThenAsync(cancellationToken);
+        using (var scope = Services.CreateScope())
+        {
+            _services = scope.ServiceProvider;
+            await GivenAsync(cancellationToken);
+        }
+
+        using (var scope = Services.CreateScope())
+        {
+            _services = scope.ServiceProvider;
+            await WhenAsync(cancellationToken);
+        }
+
+        using (var scope = Services.CreateScope())
+        {
+            _services = scope.ServiceProvider;
+            await ThenAsync(cancellationToken);
+        }
+
+        _services = null;
     }
 
     public virtual ValueTask GivenAsync(CancellationToken cancellationToken) => ValueTask.CompletedTask;

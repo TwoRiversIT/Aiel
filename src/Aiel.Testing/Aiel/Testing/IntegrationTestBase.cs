@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Time.Testing;
@@ -50,20 +49,20 @@ public abstract class IntegrationTestBase<TFixture>(TFixture fixture, ITestOutpu
     where TFixture : IntegrationTestFixture
 {
     private readonly TFixture _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
-    private IServiceProvider? _serviceProvider;
+    private IServiceScope? _scope;
     private IConfiguration? _configuration;
     private FakeTimeProvider? _timeProvider;
 
     internal override async ValueTask BeginInstanceTestsAsync(CancellationToken cancellationToken = default)
     {
-        _serviceProvider = _fixture.GetTestServiceProvider();
+        _scope = _fixture.GetTestScope();
     }
 
     /// <summary>
     /// Gets the dependency injection service provider from the test fixture.
     /// </summary>
-    protected IServiceProvider Services => _serviceProvider
-        ?? throw new InvalidOperationException(TestFixtureBase.IncorrectFixtureSetup);
+    protected virtual IServiceProvider Services => _scope?.ServiceProvider
+        ?? throw new InvalidOperationException(FixtureBase.IncorrectFixtureSetup);
 
     /// <summary>
     /// Gets the configuration from the test fixture.
@@ -73,10 +72,4 @@ public abstract class IntegrationTestBase<TFixture>(TFixture fixture, ITestOutpu
 
     protected FakeTimeProvider FakeTime => _timeProvider
         ??= Services.GetRequiredService<FakeTimeProvider>();
-
-    /// <summary>
-    /// Do not override this method! You have been warned!
-    /// </summary>
-    protected override async ValueTask DisposeAsyncCore()
-        => await Services.SafelyDisposeAsync();
 }

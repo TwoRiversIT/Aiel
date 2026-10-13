@@ -76,7 +76,7 @@ public static partial class AfError
     /// <param name="entityId">The identifier of the entity that was not found.</param>
     /// <returns>A new instance of <see cref="EntityNotFoundError"/>.</returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static EntityNotFoundError Notfound<T>(Object entityId)
+    public static EntityNotFoundError NotFound<T>(Object entityId)
     {
         ArgumentNullException.ThrowIfNull(entityId);
 

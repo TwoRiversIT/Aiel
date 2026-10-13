@@ -33,7 +33,7 @@ public class EmailAddressTests
         var stringValue = $"{expectedName} <{expectedEmail}>";
 
         // Act
-        EmailAddress emailAddress = (EmailAddress)stringValue;
+        var emailAddress = (EmailAddress)stringValue;
 
         // Assert
         emailAddress.Name.Should().Be(expectedName);

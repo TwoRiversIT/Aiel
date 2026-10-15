@@ -6,8 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Aiel.Domain\Aiel.Domain.csproj" />
-      <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Domain\Aiel.Domain.csproj" />
+        <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
     </ItemGroup>
 
 </Project>

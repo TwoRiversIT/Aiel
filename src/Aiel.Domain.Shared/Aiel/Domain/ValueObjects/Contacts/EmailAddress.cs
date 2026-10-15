@@ -160,7 +160,7 @@ public readonly record struct EmailAddress : IEquatable<String>
     /// <summary>
     /// Indicates whether the current <see cref="EmailAddress"/> instance is
     /// equal to the string representation of an email address. The comparison
-    /// is case-insensitive for the domain part of the email address and 
+    /// is case-insensitive for the domain part of the email address and
     /// case-sensitive for the local part.
     /// </summary>
     /// <param name="other">The string representation of the email address to compare with the current instance.</param>

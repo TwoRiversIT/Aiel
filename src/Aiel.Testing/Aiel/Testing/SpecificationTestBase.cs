@@ -20,6 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Aiel.Testing;
 
 /// <summary>
@@ -44,13 +46,33 @@ public abstract class SpecificationTestBase<TFixture, TSut>(TFixture fixture, IT
     where TFixture : SpecificationTestFixture<TSut>
     where TSut : class
 {
+    private IServiceProvider? _services;
+    protected override IServiceProvider Services => _services ?? base.Services;
+
     internal override async ValueTask BeginInstanceTestsAsync(CancellationToken cancellationToken)
     {
         await base.BeginInstanceTestsAsync(cancellationToken);
 
-        await GivenAsync(cancellationToken);
-        await WhenAsync(cancellationToken);
-        await ThenAsync(cancellationToken);
+        using (var scope = Services.CreateScope())
+        {
+            _services = scope.ServiceProvider;
+            await GivenAsync(cancellationToken);
+            _services = null;
+        }
+
+        using (var scope = Services.CreateScope())
+        {
+            _services = scope.ServiceProvider;
+            await WhenAsync(cancellationToken);
+            _services = null;
+        }
+
+        using (var scope = Services.CreateScope())
+        {
+            _services = scope.ServiceProvider;
+            await ThenAsync(cancellationToken);
+            _services = null;
+        }
     }
 
     public virtual ValueTask GivenAsync(CancellationToken cancellationToken) => ValueTask.CompletedTask;

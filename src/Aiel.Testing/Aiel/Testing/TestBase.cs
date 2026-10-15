@@ -47,7 +47,15 @@ public abstract class TestBase(ITestOutputHelper testOutputHelper) : DisposableB
     /// </remarks>
     public async ValueTask InitializeAsync()
     {
-        await BeginInstanceTestsAsync(CancellationToken);
+        try
+        {
+            await BeginInstanceTestsAsync(CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            TestOutput.WriteLine(ex.FormatException());
+            throw;
+        }
     }
 
     // Provides a hook for derived classes to notify the test fixture

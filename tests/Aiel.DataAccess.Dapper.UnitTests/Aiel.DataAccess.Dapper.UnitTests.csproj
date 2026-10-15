@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <RootNamespace />
-        <TargetFramework>net10.0</TargetFramework>        
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,15 +22,15 @@
         dependency on SQLitePCLRaw.lib.e_sqlite3 version 3.50.3, which is the patched version, overrides the
         transitive dependency from Microsoft.Data.Sqlite and ensures we are using the secure version.
         -->
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.12" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.13" />
         <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.12" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.13" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.13" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Framework.Abstractions\Aiel.Framework.Abstractions.csproj" />
         <ProjectReference Include="..\..\src\Aiel.DataAccess.Dapper\Aiel.DataAccess.Dapper.csproj" />

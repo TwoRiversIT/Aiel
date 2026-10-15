@@ -8,7 +8,7 @@
     <ItemGroup>
         <Using Include="Aiel.Testing.Dummies" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
         <ProjectReference Include="..\Aiel.Results.Fixtures\Aiel.Results.Fixtures.csproj" />

@@ -13,7 +13,7 @@
         <ProjectReference Include="..\..\src\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application\Aiel.Authorization.Application.csproj" />

@@ -32,8 +32,8 @@ public abstract class SpecificationConfiguratorTestBase<TConfigurator, TFixture,
     where TSut : class
 {
     private IServiceProvider? _services;
-
     protected override IServiceProvider Services => _services ?? base.Services;
+
     internal override async ValueTask BeginInstanceTestsAsync(CancellationToken cancellationToken)
     {
         await base.BeginInstanceTestsAsync(cancellationToken);
@@ -42,21 +42,22 @@ public abstract class SpecificationConfiguratorTestBase<TConfigurator, TFixture,
         {
             _services = scope.ServiceProvider;
             await GivenAsync(cancellationToken);
+            _services = null;
         }
 
         using (var scope = Services.CreateScope())
         {
             _services = scope.ServiceProvider;
             await WhenAsync(cancellationToken);
+            _services = null;
         }
 
         using (var scope = Services.CreateScope())
         {
             _services = scope.ServiceProvider;
             await ThenAsync(cancellationToken);
+            _services = null;
         }
-
-        _services = null;
     }
 
     public virtual ValueTask GivenAsync(CancellationToken cancellationToken) => ValueTask.CompletedTask;

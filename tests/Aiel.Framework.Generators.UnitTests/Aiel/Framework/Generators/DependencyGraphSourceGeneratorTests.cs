@@ -169,6 +169,34 @@ public partial class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
+    public void Generate_DiscoversSealedApplication_ThroughIntermediateBaseType()
+    {
+        const String testCode = """
+            namespace Test;
+            using Aiel.Framework.DependencyInjection;
+
+            public abstract class BaseApplication : AielApplication
+            {
+                public override String ApplicationName => "ApplicationName";
+                public override String ApplicationVersion => "0.0.0";
+            }
+
+            public sealed class MyApplication : BaseApplication
+            {
+            }
+            """;
+
+        var result = GenerateCS.Generate(testCode, includeHostApplication: true);
+
+        result.GeneratedSources.Should().ContainSingle();
+        var sourceText = result.GeneratedSources[0].SourceText.ToString();
+
+        sourceText.Should().Contain("typeof(global::Test.MyApplication)");
+        sourceText.Should().Contain("// Project Type: HostApplication");
+        sourceText.Should().Contain("Task<global::Microsoft.Extensions.Hosting.HostApplicationBuilder> AddApplicationAsync");
+    }
+
+    [Fact]
     public async Task Generate_IgnoresAielDependencyConfigurator()
     {
         // The dependency graph generator should only consider types that inherit from

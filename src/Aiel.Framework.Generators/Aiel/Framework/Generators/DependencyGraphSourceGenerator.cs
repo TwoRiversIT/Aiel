@@ -107,23 +107,23 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
 
     private static Boolean IsCandidate(SyntaxNode node)
     {
-        return node is ClassDeclarationSyntax;
+        if (node is not ClassDeclarationSyntax classDeclaration)
+        {
+            return false;
+        }
+
+        // Keep this predicate syntax-only and very cheap so projects without Aiel modules
+        // avoid semantic model work for every class declaration.
+        return classDeclaration.BaseList is not null
+            && classDeclaration.Modifiers.Any(SyntaxKind.SealedKeyword)
+            && !classDeclaration.Modifiers.Any(SyntaxKind.AbstractKeyword)
+            && !classDeclaration.Modifiers.Any(SyntaxKind.StaticKeyword);
     }
 
     private static INamedTypeSymbol? Transform(GeneratorSyntaxContext context, CancellationToken cancellationToken = default)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
         if (context.SemanticModel.GetDeclaredSymbol(classDeclaration, cancellationToken) is not INamedTypeSymbol symbol)
-        {
-            return null;
-        }
-
-        if (symbol.IsAbstract)
-        {
-            return null;
-        }
-
-        if (!symbol.IsSealed)
         {
             return null;
         }

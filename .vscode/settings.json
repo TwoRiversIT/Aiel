@@ -30,5 +30,6 @@
         "lotsofspaces",
         "nologo",
         "slnx"
-    ]
+    ],
+    "dotnet.defaultSolution": "Aiel.slnx"
 }

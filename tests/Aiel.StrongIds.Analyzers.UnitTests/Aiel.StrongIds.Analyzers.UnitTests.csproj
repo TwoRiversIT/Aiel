@@ -26,4 +26,8 @@
         <ProjectReference Include="..\..\src\Aiel.Utilities\Aiel.Utilities.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Update="Microsoft.Testing.Platform.MSBuild" Version="2.5.2" />
+    </ItemGroup>
+
 </Project>

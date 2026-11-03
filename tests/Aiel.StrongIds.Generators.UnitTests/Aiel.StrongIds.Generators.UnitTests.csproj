@@ -12,4 +12,8 @@
         <ProjectReference Include="..\..\src\Aiel.StrongIds\Aiel.StrongIds.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Update="Microsoft.Testing.Platform.MSBuild" Version="2.5.2" />
+    </ItemGroup>
+
 </Project>

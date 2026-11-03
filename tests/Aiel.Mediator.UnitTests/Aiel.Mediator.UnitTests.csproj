@@ -7,9 +7,9 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.13" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.Testing" Version="10.11.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.13" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.14" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,6 +23,10 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Authorization.Application.Contracts\Aiel.Authorization.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Mediator\Aiel.Mediator.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.Testing.Platform.MSBuild" Version="2.5.2" />
     </ItemGroup>
 
 </Project>

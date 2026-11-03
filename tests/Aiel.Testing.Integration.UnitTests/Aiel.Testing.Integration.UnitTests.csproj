@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.13" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.14" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,6 +22,10 @@
         <ProjectReference Include="..\..\src\Aiel.Results\Aiel.Results.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
         <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="Microsoft.Testing.Platform.MSBuild" Version="2.5.2" />
     </ItemGroup>
 
 </Project>

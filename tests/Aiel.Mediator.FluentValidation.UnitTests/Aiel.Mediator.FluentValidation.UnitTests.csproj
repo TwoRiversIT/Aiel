@@ -15,4 +15,8 @@
         <ProjectReference Include="..\Aiel.Mediator.UnitTests\Aiel.Mediator.UnitTests.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Update="Microsoft.Testing.Platform.MSBuild" Version="2.5.2" />
+    </ItemGroup>
+
 </Project>

@@ -64,7 +64,7 @@ public static class MigrationExtensions
     {
         ArgumentNullException.ThrowIfNull(scope);
 
-        var migrationService = scope.ServiceProvider.GetRequiredService<MigrationManager>();
+        var migrationService = scope.ServiceProvider.GetRequiredService<IMigrationManager>();
 
         await migrationService.MigrateAsync(cancellationToken);
     }
@@ -78,7 +78,7 @@ public static class MigrationExtensions
     public static IServiceCollection AddAielMigrations(this IServiceCollection services, Action<AielMigrationOptions>? configure = null)
     {
         services.Configure<AielMigrationOptions>(options => configure?.Invoke(options));
-        services.AddScoped<MigrationManager>();
+        services.AddScoped<IMigrationManager, MigrationManager>();
         return services;
     }
 

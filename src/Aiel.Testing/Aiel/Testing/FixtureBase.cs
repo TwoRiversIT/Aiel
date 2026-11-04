@@ -62,7 +62,7 @@ public abstract class FixtureBase : DisposableBase, IAsyncLifetime, IConfigurato
     {
         var builder = CreateBuilder();
 
-        var configContext = new ConfigurationContext(FakeAielEnvironment.Create(), builder.Configuration, builder.Services);
+        var configContext = new ConfigurationContext(FakeAielEnvironment.Create(), builder.Configuration, new ObservableServiceCollectionWrapper(builder.Services));
 
         await ConfigureFixtureAsync(configContext, CancellationToken);
 

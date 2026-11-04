@@ -20,6 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
+using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using static AwesomeAssertions.FluentActions;
@@ -31,7 +32,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsNull_WhenServiceCollectionIsEmpty()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
 
         var result = services.GetInstance<ITestService>();
 
@@ -41,7 +42,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsNull_WhenServiceTypeNotRegistered()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         services.AddSingleton<IOtherService>(new OtherService());
 
         var result = services.GetInstance<ITestService>();
@@ -52,7 +53,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsInstance_WhenSingletonRegisteredWithInstance()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var expectedInstance = new TestService();
         services.AddSingleton<ITestService>(expectedInstance);
 
@@ -64,7 +65,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsNull_WhenServiceRegisteredWithFactory()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         services.AddSingleton<ITestService>(_ => new TestService());
 
         var result = services.GetInstance<ITestService>();
@@ -75,7 +76,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsNull_WhenServiceRegisteredWithType()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         services.AddSingleton<ITestService, TestService>();
 
         var result = services.GetInstance<ITestService>();
@@ -86,7 +87,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsLastInstance_WhenMultipleInstancesRegistered()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var firstInstance = new TestService();
         var secondInstance = new TestService();
         var thirdInstance = new TestService();
@@ -102,7 +103,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsLastInstance_WhenMixedRegistrationTypes()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var instanceOne = new TestService();
         services.AddSingleton<ITestService>(instanceOne);
         services.AddSingleton<ITestService, TestService>();
@@ -118,7 +119,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsConcreteType_WhenRegisteredAsConcreteType()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var instance = new TestService();
         services.AddSingleton(instance);
 
@@ -130,7 +131,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsNull_WhenTypeRegisteredButNoInstanceAvailable()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         services.AddSingleton<ITestService, TestService>();
         services.AddSingleton<IOtherService>(new OtherService());
 
@@ -142,7 +143,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsValueType_WhenRegisteredWithValueTypeInstance()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         const Int32 expectedValue = 42;
         services.AddSingleton<Object>(expectedValue);
 
@@ -154,7 +155,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ReturnsDefaultValueType_WhenValueTypeNotRegistered()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
 
         var result = services.GetInstance<String>();
 
@@ -164,7 +165,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void GetInstance_ThrowNullArgumentException_WhenServicesIsNull()
     {
-        ObservableServiceCollection services = default!;
+        ObservableServiceCollectionWrapper services = default!;
         Invoking(() => services!.GetInstance<String>()).Should().Throw<ArgumentNullException>();
     }
 
@@ -178,14 +179,14 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void OnAdding_ThrowsArgumentNullException_WhenCallbackIsNull()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         Invoking(() => services.OnAdding(null!)).Should().Throw<ArgumentNullException>();
     }
 
     [Fact]
     public void OnAdding_ReturnsSameCollection_ForChaining()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
 
         var result = services.OnAdding(_ => { });
 
@@ -195,7 +196,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void OnAdding_CallbackNotInvoked_WhenNoServicesAdded()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var invoked = false;
 
         services.OnAdding(_ => invoked = true);
@@ -206,7 +207,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void OnAdding_CallbackInvoked_WhenServiceAddedAfterRegistration()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var invoked = false;
         services.OnAdding(_ => invoked = true);
 
@@ -218,7 +219,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void OnAdding_CallbackReceivesCorrectDescriptor_WhenServiceAdded()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         ServiceDescriptor? captured = null;
         services.OnAdding(d => captured = d);
 
@@ -234,7 +235,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void OnAdding_CallbackInvokedOncePerServiceAdded()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var callCount = 0;
         services.OnAdding(_ => callCount++);
 
@@ -247,7 +248,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void OnAdding_CallbackNotInvoked_ForServicesAddedBeforeRegistration()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         services.AddSingleton<ITestService, TestService>();
 
         var invoked = false;
@@ -259,7 +260,7 @@ public class AielObservableServiceCollectionTests
     [Fact]
     public void OnAdding_AllCallbacksInvoked_WhenMultipleRegistered()
     {
-        var services = new ObservableServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var firstCount = 0;
         var secondCount = 0;
         services.OnAdding(_ => firstCount++);

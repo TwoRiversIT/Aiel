@@ -46,7 +46,7 @@ public static class Stubs
         "IDependencyManager.txt",
         "IInitializer.txt",
         "InitializationContext.txt",
-        "ObservableServiceCollection.txt",
+        "ObservableServiceCollectionWrapper.txt",
         "Usings.txt"
         ).ToArray();
 

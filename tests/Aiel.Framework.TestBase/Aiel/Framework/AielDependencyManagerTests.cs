@@ -23,7 +23,6 @@
 using Aiel.Fakes;
 using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using static AwesomeAssertions.FluentActions;
 
 namespace Aiel.Framework;
@@ -106,7 +105,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
         var manager = CreateDependencyManager([a, b, c, d]);
 
         var environment = FakeAielEnvironment.Create();
-        var services = new ServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var configuration = new ConfigurationBuilder().Build();
         var context = new ConfigurationContext(environment, configuration, services);
 
@@ -163,7 +162,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     {
         var environment = FakeAielEnvironment.Create();
         var configuration = new ConfigurationBuilder().Build();
-        var services = new ServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var context = new ConfigurationContext(environment, configuration, services);
 
         var a = new DependencyNode(
@@ -221,7 +220,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     {
         var environment = FakeAielEnvironment.Create();
         var configuration = new ConfigurationBuilder().Build();
-        var services = new ServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var context = new ConfigurationContext(environment, configuration, services);
 
         PhaseLog.Clear();

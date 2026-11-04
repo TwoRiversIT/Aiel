@@ -20,6 +20,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.EntityFrameworkCore;
+using Aiel.Testing;
 
-public class Class1;
+namespace Aiel.EntityFrameworkCore.Migrations;
+
+public class MigrationsFixture : ConfiguratorTestFixture<AielEntityFrameworkCoreMigrationsIntegrationTests>
+{
+}
+
+public class MigrationsTestBase(MigrationsFixture fixture, ITestOutputHelper output)
+    : ConfiguratorTestBase<AielEntityFrameworkCoreMigrationsIntegrationTests, MigrationsFixture>(fixture, output)
+{
+}
+

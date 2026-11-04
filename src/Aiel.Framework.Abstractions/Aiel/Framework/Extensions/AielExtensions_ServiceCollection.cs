@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework.Collections;
+using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -183,7 +183,7 @@ public static partial class AielExtensions
     /// <paramref name="services"/> after this call.
     /// </summary>
     /// <param name="services">
-    /// Must be an <see cref="ObservableServiceCollection"/>; the Aiel
+    /// Must be an <see cref="ObservableServiceCollectionWrapper"/>; the Aiel
     /// dependency framework ensures this when it creates <c>ConfigurationContext.Services</c>.
     /// </param>
     /// <param name="callback">The action to invoke with each newly added <see cref="ServiceDescriptor"/>.</param>
@@ -193,17 +193,17 @@ public static partial class AielExtensions
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when <paramref name="services"/> is not an
-    /// <see cref="ObservableServiceCollection"/>.
+    /// <see cref="ObservableServiceCollectionWrapper"/>.
     /// </exception>
     public static IServiceCollection OnAdding(this IServiceCollection services, Action<ServiceDescriptor> callback)
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(callback);
 
-        if (services is not ObservableServiceCollection observable)
+        if (services is not ObservableServiceCollectionWrapper observable)
         {
             throw new InvalidOperationException(
-                $"{nameof(OnAdding)} requires an {nameof(ObservableServiceCollection)}. " +
+                $"{nameof(OnAdding)} requires an {nameof(ObservableServiceCollectionWrapper)}. " +
                 "Ensure the Aiel dependency framework created the service collection.");
         }
 

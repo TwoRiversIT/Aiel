@@ -245,6 +245,7 @@
     <Project Path="tests/Aiel.Domain.UnitTests/Aiel.Domain.UnitTests.csproj" Id="79d3229d-a659-4048-a310-1066bd078e20" />
     <Project Path="tests/Aiel.Emailing.UnitTests/Aiel.Emailing.UnitTests.csproj" />
     <Project Path="tests/Aiel.EntityFrameworkCore.IntegrationTests/Aiel.EntityFrameworkCore.IntegrationTests.csproj" />
+    <Project Path="tests/Aiel.EntityFrameworkCore.Migrations.IntegrationTests/Aiel.EntityFrameworkCore.Migrations.IntegrationTests.csproj" Id="b9e5eed6-01b9-4983-a54b-c339d2b7c8e5" />
     <Project Path="tests/Aiel.Framework.Analyzers.UnitTests/Aiel.Framework.Analyzers.UnitTests.csproj" Id="97943d6d-c93b-49ba-8f0a-862708ebb581" />
     <Project Path="tests/Aiel.Framework.Generators.UnitTests/Aiel.Framework.Generators.UnitTests.csproj" Id="9ec60c6c-84b1-4de7-b5af-14cb48f65f51" />
     <Project Path="tests/Aiel.Framework.HostApplication.UnitTests/Aiel.Framework.HostApplication.UnitTests.csproj" Id="6111c52e-f619-4923-b934-73d3c43ff5e4" />

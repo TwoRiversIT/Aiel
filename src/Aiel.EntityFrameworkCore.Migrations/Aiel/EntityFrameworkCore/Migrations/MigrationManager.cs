@@ -31,7 +31,7 @@ public class MigrationManager(
         ILogger<MigrationManager> logger,
         IOptions<AielMigrationOptions> options,
         IServiceScopeFactory serviceScopeFactory
-    )
+    ) : IMigrationManager
 {
     private readonly ILogger<MigrationManager> _logger = logger;
     private readonly AielMigrationOptions _options = options.Value;

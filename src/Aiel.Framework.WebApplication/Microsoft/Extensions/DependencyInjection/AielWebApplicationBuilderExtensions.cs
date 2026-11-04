@@ -46,7 +46,7 @@ public static class AielWebApplicationBuilderExtensions
         builder.Services.AddSingleton<IDependencyManager>(dependencyManager);
         builder.Services.AddSingleton(builder.Environment);
 
-        var context = new ConfigurationContext(environment, builder.Configuration, builder.Services);
+        var context = new ConfigurationContext(environment, builder.Configuration, new ObservableServiceCollectionWrapper(builder.Services));
 
         await dependencyManager.ConfigureAsync(context, cancellationToken);
     }

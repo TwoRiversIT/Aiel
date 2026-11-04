@@ -23,7 +23,6 @@
 using Aiel.Fakes;
 using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Framework;
 
@@ -38,7 +37,7 @@ public class WebAssemblyApplicationBootstrapTests : BootstrapTestsBase
 
         var environment = FakeAielEnvironment.Create();
         var configuration = new ConfigurationBuilder().Build();
-        var services = new ServiceCollection();
+        var services = new ObservableServiceCollectionWrapper();
         var context = new ConfigurationContext(environment, configuration, services);
         var dependencyManager = new WebAssemblyDependencyManager(descriptors);
 

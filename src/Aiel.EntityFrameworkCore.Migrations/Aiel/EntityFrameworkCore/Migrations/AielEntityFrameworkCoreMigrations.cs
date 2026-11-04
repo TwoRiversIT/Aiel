@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.Framework.Collections;
 using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,27 +39,27 @@ public class AielEntityFrameworkCoreMigrations : AielDependency
     {
         context.Services.Configure<AielMigrationOptions>(context.Configuration.GetSection(nameof(AielMigrationOptions)));
 
-        context.Services.AddScoped<MigrationManager>();
+        context.Services.AddScoped<IMigrationManager, MigrationManager>();
 
         return ValueTask.CompletedTask;
     }
 
     private static void AutoAddDatabaseMigrators(IServiceCollection services)
     {
-        var contributors = new TypeSet<IDatabaseMigrator>();
+        var migrators = new TypeSet<IDatabaseMigrator>();
 
         services.OnAdding(context =>
         {
             if (typeof(IDatabaseMigrator).IsAssignableFrom(context.ImplementationType))
             {
-                contributors.Add(context.ImplementationType);
+                migrators.Add(context.ImplementationType);
             }
         });
 
         services.Configure<AielMigrationOptions>(options =>
         {
-            // Add all found contributors
-            options.Migrators.AddRange(contributors);
+            // Add all found migrators
+            options.Migrators.AddRange(migrators);
         });
     }
 }

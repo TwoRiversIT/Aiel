@@ -23,7 +23,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 
-namespace Aiel.Framework.Collections;
+namespace Aiel.Framework.DependencyInjection;
 
 /// <summary>
 /// An <see cref="IServiceCollection"/> wrapper that fires registered callbacks whenever a
@@ -34,21 +34,26 @@ namespace Aiel.Framework.Collections;
 /// <see cref="AielExtensions.OnAdding"/>.
 /// All subsequent registrations made on this instance will trigger any subscribed callbacks.
 /// </remarks>
-/// <remarks>
-/// Initializes a new instance of the <see cref="ObservableServiceCollection"/> class.
-/// </remarks>
-/// <param name="inner">The service collection to wrap.</param>
-/// <exception cref="ArgumentNullException">Thrown when <paramref name="inner"/> is <see langword="null"/>.</exception>
-public sealed class ObservableServiceCollection(IServiceCollection inner) : IServiceCollection
+public sealed class ObservableServiceCollectionWrapper : IServiceCollection
 {
-    private readonly IServiceCollection _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+    private readonly IServiceCollection _inner;
     private readonly List<Action<ServiceDescriptor>> _callbacks = [];
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableServiceCollection"/>
+    /// Initializes a new instance of the wrapper around an existing service collection.
+    /// </summary>
+    /// <param name="inner">Service collection to wrap.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inner"/> is <see langword="null"/>.</exception>
+    public ObservableServiceCollectionWrapper(IServiceCollection inner)
+    {
+        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ObservableServiceCollectionWrapper"/>
     /// class with an empty <see cref="ServiceCollection"/>.
     /// </summary>
-    public ObservableServiceCollection() : this(new ServiceCollection())
+    public ObservableServiceCollectionWrapper() : this(new ServiceCollection())
     {
     }
 

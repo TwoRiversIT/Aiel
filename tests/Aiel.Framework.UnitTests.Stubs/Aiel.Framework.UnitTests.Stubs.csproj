@@ -19,7 +19,7 @@
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielDisposeExtensions.cs" Link="Aiel\Framework\Stubs\AielDisposeExtensions.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielEnvironment.cs" Link="Aiel\Framework\Stubs\AielEnvironment.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\AielFrameworkAbstractions.cs" Link="Aiel\Framework\Stubs\AielFrameworkAbstractions.txt" />
-        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\Collections\ObservableServiceCollection.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollection.txt" />
+        <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyInjection\ObservableServiceCollectionWrapper.cs" Link="Aiel\Framework\Stubs\ObservableServiceCollectionWrapper.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyInjection\AielApplication.cs" Link="Aiel\Framework\Stubs\AielApplication.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyInjection\AielDependency.cs" Link="Aiel\Framework\Stubs\AielDependency.txt" />
         <EmbeddedResource Include="..\..\src\Aiel.Framework.Abstractions\Aiel\Framework\DependencyInjection\ConfigurationContext.cs" Link="Aiel\Framework\Stubs\ConfigurationContext.txt" />

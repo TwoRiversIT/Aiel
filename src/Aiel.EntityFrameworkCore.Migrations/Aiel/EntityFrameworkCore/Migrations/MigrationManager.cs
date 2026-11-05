@@ -26,7 +26,6 @@ using Microsoft.Extensions.Options;
 
 namespace Aiel.EntityFrameworkCore.Migrations;
 
-// ToDo: Probably should have an Interface for this class to make it easier to test and mock.
 public class MigrationManager(
         ILogger<MigrationManager> logger,
         IOptions<AielMigrationOptions> options,

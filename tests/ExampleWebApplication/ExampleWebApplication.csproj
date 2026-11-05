@@ -23,6 +23,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Framework.WebApplication\Aiel.Framework.WebApplication.csproj" />
+        <ProjectReference Include="..\ExampleShared\ExampleShared.csproj" />
     </ItemGroup>
 
 </Project>

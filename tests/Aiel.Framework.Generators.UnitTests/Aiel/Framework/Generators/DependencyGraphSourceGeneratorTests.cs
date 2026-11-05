@@ -72,6 +72,41 @@ public partial class DependencyGraphSourceGeneratorTests
     }
 
     [Fact]
+    public void Generate_EmitsNestedDescriptor_ForTransitiveDependency()
+    {
+        const String testCode = """
+            using Aiel.Framework.DependencyInjection;
+
+            namespace Test
+            {
+                [DependsOn(typeof(DepB))]
+                public sealed class Root : AielApplication
+                {
+                    public override String ApplicationName => "ApplicationName";
+                    public override String ApplicationVersion => "0.0.0";
+                }
+
+                [DependsOn(typeof(DepC))]
+                public sealed class DepB : AielDependency
+                {
+                }
+
+                public sealed class DepC : AielDependency
+                {
+                }
+            }
+            """;
+
+        var result = GenerateCS.Generate(testCode, includeHostApplication: true);
+
+        result.GeneratedSources.Should().ContainSingle();
+        var sourceText = result.GeneratedSources[0].SourceText.ToString();
+
+        sourceText.Should().Contain("type: typeof(global::Test.DepB)");
+        sourceText.Should().Contain("new global::Aiel.Framework.DependencyInjection.DependencyNode(typeof(global::Test.DepC), 2, new global::Test.DepC(), [])");
+    }
+
+    [Fact]
     public void Generate_CreatesGraph_FollowsDependsOnToRoot()
     {
         const String testCode = """
@@ -354,7 +389,7 @@ public partial class DependencyGraphSourceGeneratorTests
         result.GeneratedSources.Should().ContainSingle();
         var sourceText = result.GeneratedSources[0].SourceText.ToString();
 
-        Root().Count(sourceText).Should().Be(1);
+        FrameworkAbstractionsNodeType().Count(sourceText).Should().Be(1);
     }
 
     [Fact]
@@ -854,6 +889,6 @@ public partial class DependencyGraphSourceGeneratorTests
         sourceText.Should().NotContain("Project Type: HostApplication");
     }
 
-    [GeneratedRegex(@"new global::Test\.AielFrameworkAbstractions\(\)")]
-    private static partial Regex Root();
+    [GeneratedRegex(@"type: typeof\(global::Test\.AielFrameworkAbstractions\),")]
+    private static partial Regex FrameworkAbstractionsNodeType();
 }

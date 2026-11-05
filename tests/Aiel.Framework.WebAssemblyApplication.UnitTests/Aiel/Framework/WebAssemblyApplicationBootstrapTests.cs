@@ -39,8 +39,8 @@ public class WebAssemblyApplicationBootstrapTests : BootstrapTestsBase
         var configuration = new ConfigurationBuilder().Build();
         var services = new ObservableServiceCollectionWrapper();
         var context = new ConfigurationContext(environment, configuration, services);
-        var dependencyManager = new WebAssemblyDependencyManager(descriptors);
+        var dependencyManager = new WebAssemblyDependencyManager(context);
 
-        await dependencyManager.ConfigureAsync(context);
+        await dependencyManager.ConfigureAsync(descriptors);
     }
 }

@@ -25,6 +25,7 @@ using Aiel.Framework.DependencyInjection;
 
 namespace ExampleWebApplication;
 
+[DependsOn(typeof(Example.ExampleShared))]
 [DependsOn(typeof(AielFrameworkWebApplication))]
 public sealed class ExampleWebApplicationConfigurator : AielApplication, IWebApplicationInitializer
 {

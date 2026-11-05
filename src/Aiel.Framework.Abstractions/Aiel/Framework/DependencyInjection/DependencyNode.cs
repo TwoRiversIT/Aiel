@@ -22,6 +22,8 @@
 
 //using System.Collections.ObjectModel;
 
+using System.Diagnostics;
+
 namespace Aiel.Framework.DependencyInjection;
 
 /// <summary>
@@ -72,6 +74,7 @@ public class DependencyNode : IAsyncDisposable
     /// </summary>
     /// <param name="obj"></param>
     /// <returns></returns>
+    [DebuggerStepThrough]
     public override Boolean Equals(Object? obj)
     {
         if (obj is not DependencyNode other)
@@ -86,21 +89,21 @@ public class DependencyNode : IAsyncDisposable
     /// Returns a hash code for the current <see cref="DependencyNode"/>.
     /// </summary>
     /// <returns></returns>
-    public override Int32 GetHashCode()
-    {
-        return Type.GetHashCode();
-    }
+    [DebuggerStepThrough]
+    public override Int32 GetHashCode() => Type.GetHashCode();
 
     /// <summary>
     /// Returns a string representation of the current <see cref="DependencyNode"/>, including its type and depth.
     /// </summary>
     /// <returns></returns>
+    [DebuggerStepThrough]
     public override String ToString() => $"{Type.Name} (Depth: {Depth})";
 
     /// <summary>
     /// Asynchronously disposes of the resources used by the <see cref="DependencyNode"/> instance.
     /// </summary>
     /// <returns>A task that represents the asynchronous dispose operation.</returns>
+    [DebuggerStepThrough]
     public async ValueTask DisposeAsync()
     {
         await Instance.SafelyDisposeAsync();

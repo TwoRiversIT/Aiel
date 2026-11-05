@@ -40,15 +40,14 @@ public static class AielWebApplicationBuilderExtensions
         }
 
         var environment = await RegisterEnvironment<TApplication>(builder);
+        var context = new ConfigurationContext(environment, builder.Configuration, new ObservableServiceCollectionWrapper(builder.Services));
 
-        var dependencyManager = new WebApplicationDependencyManager(dependencyDescriptors);
+        var dependencyManager = new WebApplicationDependencyManager(context);
 
         builder.Services.AddSingleton<IDependencyManager>(dependencyManager);
         builder.Services.AddSingleton(builder.Environment);
 
-        var context = new ConfigurationContext(environment, builder.Configuration, new ObservableServiceCollectionWrapper(builder.Services));
-
-        await dependencyManager.ConfigureAsync(context, cancellationToken);
+        await dependencyManager.ConfigureAsync(dependencyDescriptors, cancellationToken);
     }
 
     private static async Task<AielWebHostEnvironment> RegisterEnvironment<TApplication>(WebApplicationBuilder builder)

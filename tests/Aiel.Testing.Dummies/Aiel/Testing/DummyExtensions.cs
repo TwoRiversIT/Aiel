@@ -21,14 +21,23 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Framework.DependencyInjection;
+using Aiel.Testing.Dummies;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Aiel.EntityFrameworkCore.Migrations;
+namespace Aiel.Testing;
 
-[DependsOn(typeof(AielEntityFrameworkCoreMigrations))]
-public sealed class AielEntityFrameworkCoreMigrationsIntegrationTests : AielDependency
+public static class DummyExtensions
 {
-    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    static readonly String DbId = Guid.NewGuid().ToString("N");
+
+    public static ConfigurationContext AddDummyDbContext(this ConfigurationContext context)
     {
-        return ValueTask.CompletedTask;
+        context.Services.AddDbContext<DummyDbContext>(options =>
+        {
+            options.UseInMemoryDatabase(DbId);
+        });
+
+        return context;
     }
 }

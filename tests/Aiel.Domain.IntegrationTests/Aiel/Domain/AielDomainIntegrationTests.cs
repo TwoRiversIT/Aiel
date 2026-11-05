@@ -34,5 +34,10 @@ namespace Aiel.Domain;
 [DependsOn(typeof(AielEntityFrameworkCore))]
 public sealed class AielDomainIntegrationTests : AielDependency
 {
+    public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    {
+        context.AddDummyDbContext();
 
+        return ValueTask.CompletedTask;
+    }
 }

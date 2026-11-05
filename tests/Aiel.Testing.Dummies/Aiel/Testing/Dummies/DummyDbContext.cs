@@ -38,7 +38,7 @@ public sealed class DummyDbContext(DbContextOptions<DummyDbContext> options) : D
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new PersonConfiguration());
+        modelBuilder.ApplyConfiguration(new PersonConfigurationWithData());
         modelBuilder.ApplyConfiguration(new TypicalClassConfiguration());
     }
 }

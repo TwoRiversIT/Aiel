@@ -24,9 +24,6 @@ using Aiel.Domain;
 using Aiel.Domain.EntityFrameworkCore;
 using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds.EntityFrameworkCore;
-using Aiel.Testing.Dummies;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.Testing;
 
@@ -38,12 +35,6 @@ public sealed class AielTestingDummies : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        var dbid = Guid.NewGuid().ToString("N");
-        context.Services.AddDbContext<DummyDbContext>(options =>
-        {
-            options.UseInMemoryDatabase(dbid);
-        });
-
         return ValueTask.CompletedTask;
     }
 }

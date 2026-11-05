@@ -29,12 +29,20 @@ namespace Aiel.Testing.Dummies;
 
 public class PersonConfiguration : IEntityTypeConfiguration<Person>
 {
-    public void Configure(EntityTypeBuilder<Person> builder)
+    public virtual void Configure(EntityTypeBuilder<Person> builder)
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).HasStrongIdConversion<PersonId, Guid>();
         builder.Property(x => x.FirstName).IsRequired();
         builder.Property(x => x.LastName).IsRequired();
+    }
+}
+
+public class PersonConfigurationWithData : PersonConfiguration
+{
+    public override void Configure(EntityTypeBuilder<Person> builder)
+    {
+        base.Configure(builder);
         builder.HasData(
             Person.Create(PersonId.From(Guid.NewGuid()), "Doug", "Wilson", String.Empty, new DateOnly(1974, 10, 16), Gender.Male),
             Person.Create(PersonId.From(Guid.NewGuid()), "Shyloh", "Atlas", String.Empty, new DateOnly(2007, 10, 15), Gender.Female),

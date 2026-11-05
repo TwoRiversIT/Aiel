@@ -32,6 +32,8 @@ public class Program
 
         var app = builder.Build();
 
+        await app.MigrateAsync();
+
         await app.InitializeApplicationAsync();
 
         app.Run();

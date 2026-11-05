@@ -24,13 +24,9 @@ using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Framework;
 
-public class WebAssemblyDependencyManager : DependencyManager
+public class WebAssemblyDependencyManager(ConfigurationContext context)
+    : DependencyManager(context)
 {
-    public WebAssemblyDependencyManager(IEnumerable<DependencyNode> dependencyDescriptors)
-    {
-        Initialize(dependencyDescriptors);
-    }
-
     protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyNode descriptor, CancellationToken cancellationToken)
     {
         var context = initializationContext as WebAssemblyApplicationInitializationContext

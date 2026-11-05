@@ -39,7 +39,7 @@ public class AielEntityFrameworkCoreMigrations : AielDependency
     {
         context.Services.Configure<AielMigrationOptions>(context.Configuration.GetSection(nameof(AielMigrationOptions)));
 
-        context.Services.AddScoped<IMigrationManager, MigrationManager>();
+        context.Services.AddTransient<IMigrationManager, MigrationManager>();
 
         return ValueTask.CompletedTask;
     }

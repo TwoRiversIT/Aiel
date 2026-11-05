@@ -34,20 +34,15 @@ namespace Aiel.Framework.DependencyInjection;
 /// <see cref="AielExtensions.OnAdding"/>.
 /// All subsequent registrations made on this instance will trigger any subscribed callbacks.
 /// </remarks>
-public sealed class ObservableServiceCollectionWrapper : IServiceCollection
+/// <remarks>
+/// Initializes a new instance of the wrapper around an existing service collection.
+/// </remarks>
+/// <param name="inner">Service collection to wrap.</param>
+/// <exception cref="ArgumentNullException">Thrown when <paramref name="inner"/> is <see langword="null"/>.</exception>
+public sealed class ObservableServiceCollectionWrapper(IServiceCollection inner) : IServiceCollection
 {
-    private readonly IServiceCollection _inner;
+    private readonly IServiceCollection _inner = inner ?? throw new ArgumentNullException(nameof(inner));
     private readonly List<Action<ServiceDescriptor>> _callbacks = [];
-
-    /// <summary>
-    /// Initializes a new instance of the wrapper around an existing service collection.
-    /// </summary>
-    /// <param name="inner">Service collection to wrap.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inner"/> is <see langword="null"/>.</exception>
-    public ObservableServiceCollectionWrapper(IServiceCollection inner)
-    {
-        _inner = inner ?? throw new ArgumentNullException(nameof(inner));
-    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableServiceCollectionWrapper"/>

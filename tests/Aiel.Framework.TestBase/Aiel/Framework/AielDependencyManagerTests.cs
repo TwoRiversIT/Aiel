@@ -29,12 +29,16 @@ namespace Aiel.Framework;
 
 public abstract class AielDependencyManagerTests : PhaseLogCollector
 {
-    public abstract DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors);
+    protected readonly ConfigurationContext Context = new(FakeAielEnvironment.Create(), new ConfigurationBuilder().Build(), new ObservableServiceCollectionWrapper());
+
+    public abstract DependencyManager CreateDependencyManager();
     public abstract InitializationContext CreateInitializationContextAsync();
 
     [Fact]
-    public void Constructor_Throws_When_Circular_Dependency()
+    public async Task ConfigureAsync_Throws_When_Circular_Dependency()
     {
+        var manager = CreateDependencyManager();
+
         var a = new DependencyNode(
             type: typeof(CircularA),
             depth: 0,
@@ -55,13 +59,15 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
                 new CircularA(),
                 dependencies: [])]);
 
-        Invoking(() => CreateDependencyManager([a, b]))
-            .Should().ThrowExactly<CircularDependencyException>();
+        await Invoking(async () => await manager.ConfigureAsync([a, b], TestContext.Current.CancellationToken))
+            .Should().ThrowAsync<CircularDependencyException>();
     }
 
     [Fact]
     public async Task ConfigureAsync_Invokes_Each_Configurator_Once_In_Diamond_Graph()
     {
+        var manager = CreateDependencyManager();
+
         var a = new DependencyNode(
             type: typeof(DiamondA),
             depth: 0,
@@ -102,14 +108,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
             new DiamondD(),
             dependencies: []);
 
-        var manager = CreateDependencyManager([a, b, c, d]);
-
-        var environment = FakeAielEnvironment.Create();
-        var services = new ObservableServiceCollectionWrapper();
-        var configuration = new ConfigurationBuilder().Build();
-        var context = new ConfigurationContext(environment, configuration, services);
-
-        await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
+        await manager.ConfigureAsync([a, b, c, d], TestContext.Current.CancellationToken);
 
         a.Instance.Should().BeOfType<DiamondA>().Which.ConfigureCount.Should().Be(1);
         b.Instance.Should().BeOfType<DiamondB>().Which.ConfigureCount.Should().Be(1);
@@ -120,6 +119,8 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     [Fact]
     public async Task InitializeAsync_Invokes_Each_Initializer_Once_In_Linear_Graph()
     {
+        var manager = CreateDependencyManager();
+
         var a = new DependencyNode(
             type: typeof(LinearA),
             depth: 0,
@@ -146,7 +147,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
             new LinearC(),
             dependencies: []);
 
-        var manager = CreateDependencyManager([a, b, c]);
+        await manager.ConfigureAsync([a, b, c]);
 
         var context = CreateInitializationContextAsync();
 
@@ -160,10 +161,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     [Fact]
     public async Task PreConfigureAsync_Is_Invoked_Once_Per_Configurator_In_Diamond_Graph()
     {
-        var environment = FakeAielEnvironment.Create();
-        var configuration = new ConfigurationBuilder().Build();
-        var services = new ObservableServiceCollectionWrapper();
-        var context = new ConfigurationContext(environment, configuration, services);
+        var manager = CreateDependencyManager();
 
         var a = new DependencyNode(
             type: typeof(DiamondA),
@@ -205,9 +203,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
             new DiamondD(),
             dependencies: []);
 
-        var manager = CreateDependencyManager([a, b, c, d]);
-
-        await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
+        await manager.ConfigureAsync([a, b, c, d], TestContext.Current.CancellationToken);
 
         a.Instance.Should().BeOfType<DiamondA>().Which.PreConfigureCount.Should().Be(1);
         b.Instance.Should().BeOfType<DiamondB>().Which.PreConfigureCount.Should().Be(1);
@@ -218,12 +214,9 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
     [Fact]
     public async Task ConfigureAsync_Runs_All_PreConfigureAsync_Before_Any_ConfigureAsync_In_Linear_Graph()
     {
-        var environment = FakeAielEnvironment.Create();
-        var configuration = new ConfigurationBuilder().Build();
-        var services = new ObservableServiceCollectionWrapper();
-        var context = new ConfigurationContext(environment, configuration, services);
-
         PhaseLog.Clear();
+
+        var manager = CreateDependencyManager();
 
         var a = new DependencyNode(
             type: typeof(PhaseA),
@@ -241,9 +234,7 @@ public abstract class AielDependencyManagerTests : PhaseLogCollector
             new PhaseB(),
             dependencies: []);
 
-        var manager = CreateDependencyManager([a, b]);
-
-        await manager.ConfigureAsync(context, TestContext.Current.CancellationToken);
+        await manager.ConfigureAsync([a, b], TestContext.Current.CancellationToken);
 
         PhaseLog.Should().HaveCount(4);
 

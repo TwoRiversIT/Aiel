@@ -25,8 +25,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore.Migrations;
 
-public class MigrationTests(SutMigrationsFixture<MigrationManager> fixture, ITestOutputHelper output)
-    : MigrationsSutTestBase<MigrationManager>(fixture, output)
+public class MigrationTests(SutMigrationsFixture<IMigrationManager> fixture, ITestOutputHelper output)
+    : MigrationsSutTestBase<IMigrationManager>(fixture, output)
 {
     const String Query = """
         SELECT * FROM public."__EFMigrationsHistory"

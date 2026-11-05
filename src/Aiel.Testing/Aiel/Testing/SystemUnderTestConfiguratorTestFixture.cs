@@ -34,6 +34,12 @@ public class SystemUnderTestConfiguratorTestFixture<TConfigurator, TSut>
     {
         await base.ConfigureFixtureAsync(context, cancellationToken);
 
-        context.Services.AddScoped<TSut>();
+        var sutType = typeof(TSut);
+        var alreadyRegistered = context.Services.Any(x => x.ServiceType == sutType);
+
+        if (!alreadyRegistered)
+        {
+            context.Services.AddScoped<TSut>();
+        }
     }
 }

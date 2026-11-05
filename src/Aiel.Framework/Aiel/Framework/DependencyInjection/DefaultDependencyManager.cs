@@ -22,7 +22,8 @@
 
 namespace Aiel.Framework.DependencyInjection;
 
-public class DefaultDependencyManager : DependencyManager
+public class DefaultDependencyManager(ConfigurationContext context)
+    : DependencyManager(context)
 {
     protected override async Task InitializeAsync(InitializationContext context, DependencyNode descriptor, CancellationToken cancellationToken)
     {

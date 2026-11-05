@@ -39,12 +39,12 @@ public interface IDependencyManager
 	IReadOnlyCollection<DependencyNode> Dependencies { get; }
 
     /// <summary>
-	/// Configures all dependencies using the supplied configuration context.
+    /// Configures all dependencies using the supplied configuration context.
     /// </summary>
-	/// <param name="context">The application configuration context.</param>
-	/// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
-	/// <returns>A task that represents the asynchronous configuration operation.</returns>
-	ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default);
+    /// <param name="nodes">The collection of dependency nodes to configure.</param>
+    /// <param name="cancellationToken">A token that can be used to cancel the operation.</param>
+    /// <returns>A task that represents the asynchronous configuration operation.</returns>
+    ValueTask ConfigureAsync(IEnumerable<DependencyNode> nodes, CancellationToken cancellationToken = default);
 
     /// <summary>
 	/// Initializes all dependencies using the supplied initialization context.

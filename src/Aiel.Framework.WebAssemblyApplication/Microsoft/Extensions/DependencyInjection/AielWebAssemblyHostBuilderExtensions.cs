@@ -30,25 +30,24 @@ public static class AielWebAssemblyHostBuilderExtensions
 {
     public static async Task BootstrapAsync<TApplication>(
         this WebAssemblyHostBuilder builder,
-        IEnumerable<DependencyNode> dependencyDescriptors,
+        IEnumerable<DependencyNode> nodes,
         CancellationToken cancellationToken = default)
         where TApplication : IApplicationConfigurator, new()
     {
-        if (!dependencyDescriptors.Any())
+        if (!nodes.Any())
         {
             throw new AielException("No dependency descriptors were provided. At least one dependency descriptor is required to bootstrap the application.");
         }
 
         var environment = await RegisterEnvironment<TApplication>(builder);
+        var context = new ConfigurationContext(environment, builder.Configuration, new ObservableServiceCollectionWrapper(builder.Services));
 
-        var dependencyManager = new WebAssemblyDependencyManager(dependencyDescriptors);
+        var dependencyManager = new WebAssemblyDependencyManager(context);
 
         builder.Services.AddSingleton<IDependencyManager>(dependencyManager);
         builder.Services.AddSingleton(builder.HostEnvironment);
 
-        var context = new ConfigurationContext(environment, builder.Configuration, new ObservableServiceCollectionWrapper(builder.Services));
-
-        await dependencyManager.ConfigureAsync(context, cancellationToken);
+        await dependencyManager.ConfigureAsync(nodes, cancellationToken);
     }
 
     private static async Task<AielWebAssemblyEnvironment> RegisterEnvironment<TApplication>(WebAssemblyHostBuilder builder)

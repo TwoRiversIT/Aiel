@@ -28,8 +28,7 @@ namespace Aiel.Framework;
 
 public class WebApplicationDependencyManagerTests : AielDependencyManagerTests
 {
-    public override DependencyManager CreateDependencyManager(IEnumerable<DependencyNode> descriptors)
-        => new WebApplicationDependencyManager(descriptors);
+    public override DependencyManager CreateDependencyManager() => new WebApplicationDependencyManager(Context);
 
     public override InitializationContext CreateInitializationContextAsync()
     {

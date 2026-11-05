@@ -24,14 +24,9 @@ using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Framework;
 
-public class HostApplicationDependencyManager
-    : DependencyManager
+public class HostApplicationDependencyManager(ConfigurationContext context)
+    : DependencyManager(context)
 {
-    public HostApplicationDependencyManager(IEnumerable<DependencyNode> dependencyDescriptors)
-    {
-        Initialize(dependencyDescriptors);
-    }
-
     protected override async Task InitializeAsync(InitializationContext initializationContext, DependencyNode descriptor, CancellationToken cancellationToken)
     {
         var context = initializationContext as HostApplicationInitializationContext

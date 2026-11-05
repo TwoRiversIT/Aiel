@@ -27,7 +27,7 @@ namespace Aiel.Framework.DependencyInjection;
 /// from a set of <see cref="DependencyNode"/> instances and orchestrates configuration
 /// and initialization in dependency order.
 /// </summary>
-public abstract class DependencyManager : IDependencyManager
+public abstract class DependencyManager(ConfigurationContext context) : IDependencyManager
 {
     private readonly Dictionary<Type, DependencyNode> _nodesByType = [];
     private List<DependencyNode> _reversed = [];
@@ -36,17 +36,21 @@ public abstract class DependencyManager : IDependencyManager
     /// <inheritdoc />
     public IReadOnlyCollection<DependencyNode> Dependencies => _descriptors.ToArray();
 
+    public ConfigurationContext Context { get; } = context ?? throw new ArgumentNullException(nameof(context));
+
     /// <inheritdoc />
-    public async ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
+    public async ValueTask ConfigureAsync(IEnumerable<DependencyNode> nodes, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(nodes);
+
+        Initialize(nodes);
 
         // Phase 1: pre-configure every module in topological order before any configure phase begins.
         foreach (var node in _reversed)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await node.Instance.PreConfigureAsync(context, cancellationToken);
+            await node.Instance.PreConfigureAsync(Context, cancellationToken);
 
             // We do not dispose here because we need the initializer to be alive for the configure phase.
         }
@@ -56,7 +60,7 @@ public abstract class DependencyManager : IDependencyManager
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await node.Instance.ConfigureAsync(context, cancellationToken);
+            await node.Instance.ConfigureAsync(Context, cancellationToken);
 
             // We do not dispose here because we need the initializer to be alive for the initialization phase.
         }
@@ -69,7 +73,7 @@ public abstract class DependencyManager : IDependencyManager
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="dependencyDescriptors"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">Thrown when duplicate or unknown dependency types are detected.</exception>
     /// <exception cref="CircularDependencyException">Thrown when a circular dependency is detected.</exception>
-    public void Initialize(IEnumerable<DependencyNode> dependencyDescriptors)
+    private void Initialize(IEnumerable<DependencyNode> dependencyDescriptors)
     {
         ArgumentNullException.ThrowIfNull(dependencyDescriptors);
 
@@ -179,25 +183,3 @@ public abstract class DependencyManager : IDependencyManager
         ordered.Add(descriptor);
     }
 }
-
-//public class DependencyManager<TApplication> : DependencyManager
-//    where TApplication : class, IApplicationConfigurator, new()
-//{
-//    public DependencyManager()
-//    {
-//        Initialize(GetAllDependencies<TApplication>());
-//    }
-
-//    protected override async Task InitializeAsync(InitializationContext context, DependencyNode descriptor, CancellationToken cancellationToken)
-//    {
-//        ArgumentNullException.ThrowIfNull(context);
-//        ArgumentNullException.ThrowIfNull(descriptor);
-
-//        cancellationToken.ThrowIfCancellationRequested();
-
-//        if (descriptor.Instance is IInitializer initializer)
-//        {
-//            await initializer.InitializeAsync(context, cancellationToken);
-//        }
-//    }
-//}

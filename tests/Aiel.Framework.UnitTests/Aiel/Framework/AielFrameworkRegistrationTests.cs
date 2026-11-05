@@ -37,7 +37,7 @@ public class AielFrameworkRegistrationTests
         var sut = new AielFramework();
 
         // Act
-        await sut.ConfigureAsync(context);
+        await sut.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
         // Assert
         services.Should().ContainSingle(descriptor =>
@@ -57,7 +57,7 @@ public class AielFrameworkRegistrationTests
         var sut = new AielFramework();
 
         // Act
-        await sut.ConfigureAsync(context);
+        await sut.ConfigureAsync(context, TestContext.Current.CancellationToken);
 
         // Assert
         services.Should().ContainSingle(descriptor => descriptor.ServiceType == typeof(IDependencyManager));

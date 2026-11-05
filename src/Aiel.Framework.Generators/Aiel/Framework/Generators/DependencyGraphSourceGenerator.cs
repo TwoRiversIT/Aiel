@@ -443,7 +443,6 @@ public sealed class DependencyGraphSourceGenerator : IIncrementalGenerator
                         continue;
                     }
 
-                    rendered.Add(node.Dependencies[j].Symbol!);
                     count++;
 
                     if (j > 0 && !skipNextComma)

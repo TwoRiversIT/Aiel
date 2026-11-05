@@ -22,6 +22,7 @@
 
 using Aiel.Framework.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Aiel.Framework;
 
@@ -30,7 +31,7 @@ public sealed class AielFramework : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)
     {
-        context.Services.AddSingleton<IDependencyManager, DefaultDependencyManager>();
+        context.Services.TryAddSingleton<IDependencyManager, DefaultDependencyManager>();
 
         return ValueTask.CompletedTask;
     }

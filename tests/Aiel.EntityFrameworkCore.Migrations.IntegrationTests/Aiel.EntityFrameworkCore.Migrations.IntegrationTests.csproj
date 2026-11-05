@@ -6,13 +6,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore.Migrations\Aiel.EntityFrameworkCore.Migrations.csproj" />
-      <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
-      <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
+        <Using Include="Aiel.Testing.Dummies" />
     </ItemGroup>
 
     <ItemGroup>
-        <Using Include="Aiel.Testing.Dummies" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.16.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore.Migrations\Aiel.EntityFrameworkCore.Migrations.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
+        <ProjectReference Include="..\Aiel.Testing.Dummies\Aiel.Testing.Dummies.csproj" />
     </ItemGroup>
 
 </Project>

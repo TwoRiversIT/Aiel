@@ -20,16 +20,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Testing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore.Migrations;
 
-public class MigrationsFixture : ConfiguratorTestFixture<AielEntityFrameworkCoreMigrationsIntegrationTests>
+public class EnsureDatabaseCreatedTests(MigrationsFixture fixture, ITestOutputHelper output) : MigrationsTestBase(fixture, output)
 {
+    [Fact]
+    public async Task EnsureCreatedAsync_Succeeds()
+    {
+        var dbContext = Services.GetRequiredService<TestDbContext>();
+        await dbContext.Database.EnsureCreatedAsync(CancellationToken);
+    }
 }
-
-public class MigrationsTestBase(MigrationsFixture fixture, ITestOutputHelper output)
-    : ConfiguratorTestBase<AielEntityFrameworkCoreMigrationsIntegrationTests, MigrationsFixture>(fixture, output)
-{
-}
-

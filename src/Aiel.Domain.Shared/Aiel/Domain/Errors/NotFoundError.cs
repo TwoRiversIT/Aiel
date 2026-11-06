@@ -41,7 +41,7 @@ public sealed partial class EntityNotFoundError : Error
     /// <summary>
     /// Gets the default description for the error, which includes the entity type and identifier.
     /// </summary>
-    protected override String? DefaultDescription => $"Entity of type {EntityType} identified by {EntityId} was not found.";
+    protected override String? DefaultMessage => $"Entity of type {EntityType} identified by {EntityId} was not found.";
 
     /// <summary>
     /// Creates a new instance of <see cref="EntityNotFoundError"/> for the specified entity type and identifier.

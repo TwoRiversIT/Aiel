@@ -35,7 +35,7 @@ public abstract class Error
     /// <summary>
     /// Gets the default description for the error. Derived classes can override this property to provide a custom default description.
     /// </summary>
-    protected virtual String? DefaultDescription => NotImplemented;
+    protected virtual String? DefaultMessage => NotImplemented;
 
     /// <summary>
     /// Gets the code identifying the error.
@@ -43,20 +43,17 @@ public abstract class Error
     public ErrorCode Code { get; }
 
     /// <summary>
-    /// Gets the human-readable description of the error. NOTE: This property is primarily
-    /// for logging and debugging purposes. For user-facing messages, consider adding a
-    /// property to your custom generated Error that provides a friendly, localized error
-    /// description that is appropriate for a non-technical end user.
+    /// Gets a friendly, localized human-readable error message.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when the description is null or whitespace because errors are required to have a description.</exception>
-    public String Description
+    /// <exception cref="InvalidOperationException">Thrown when the message is null or whitespace because errors are required to have a message.</exception>
+    public String Message
     {
         get
         {
             if (String.IsNullOrWhiteSpace(field))
             {
-                return GenerateDescription()
-                    ?? throw new InvalidOperationException("Description must not be null or whitespace.");
+                return GenerateMessage()
+                    ?? throw new InvalidOperationException("Message must not be null or whitespace.");
             }
 
             return field;
@@ -66,7 +63,7 @@ public abstract class Error
     private Error()
     {
         Code = NoSourceGeneratedError.NoSourceGeneratedErrorCode.Instance;
-        Description = NoSourceGeneratedError.DefaultMessage + GetType().Name;
+        Message = NoSourceGeneratedError.DefaultMessage + GetType().Name;
     }
 
     /// <summary>
@@ -76,43 +73,43 @@ public abstract class Error
     /// <remarks>
     /// <para>
     /// This constructor must only be used when the derived implementation also implements
-    /// <see cref="Error.GenerateDescription"/>.
+    /// <see cref="Error.GenerateMessage"/>.
     /// </para>
     /// </remarks>
-    // ToDo: Write and analyzer that will warn if a derived class uses this constructor but does not override GenerateDescription.
+    // ToDo: Write and analyzer that will warn if a derived class uses this constructor but does not override GenerateMessage.
     protected Error(ErrorCode errorCode)
     {
         Code = errorCode ?? throw new ArgumentNullException(nameof(errorCode));
-        Description = String.Empty;
+        Message = String.Empty;
     }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Error"/> class.
     /// </summary>
     /// <param name="errorCode">A code identifying the error. Must not be null.</param>
-    /// <param name="description">A human-readable description of the error. Must not be null, empty, or whitespace.</param>
+    /// <param name="message">A human-readable message of the error. Must not be null, empty, or whitespace.</param>
     /// <remarks>
-    /// The <paramref name="description" /> parameter is for logging and debugging purposes. For
+    /// The <paramref name="message" /> parameter is for logging and debugging purposes. For
     /// user-facing messages, consider adding a property to your custom generated Error that
-    /// provides a friendly, localized error description for the end user.
+    /// provides a friendly, localized error message for the end user.
     /// </remarks>
-    protected Error(ErrorCode errorCode, String description)
+    protected Error(ErrorCode errorCode, String message)
     {
-        if (String.IsNullOrWhiteSpace(description))
+        if (String.IsNullOrWhiteSpace(message))
         {
-            throw new ArgumentException($"'{nameof(description)}' must not be null or whitespace.", nameof(description));
+            throw new ArgumentException($"'{nameof(message)}' must not be null or whitespace.", nameof(message));
         }
 
         Code = errorCode ?? throw new ArgumentNullException(nameof(errorCode));
-        Description = description;
+        Message = message;
     }
 
     /// <summary>
-    /// Gets a human-readable description of the error. This method can be overridden by derived
-    /// classes to provide a custom description using properties of the derived class.
+    /// Gets a human-readable message of the error. This method can be overridden by derived
+    /// classes to provide a custom message using properties of the derived class.
     /// </summary>
-    /// <returns>A string representing the error description.</returns>
-    protected virtual String? GenerateDescription() => DefaultDescription;
+    /// <returns>A string representing the error message.</returns>
+    protected virtual String? GenerateMessage() => DefaultMessage;
 
     /// <summary>
     /// Determines whether this error is of a specific error type.

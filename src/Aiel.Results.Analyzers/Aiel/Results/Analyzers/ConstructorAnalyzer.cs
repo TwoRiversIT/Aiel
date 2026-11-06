@@ -66,7 +66,7 @@ public sealed class ConstructorAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        var overridesGenerateDescription = OverridesGenerateDescription(typeSymbol);
+        var overridesGenerateMessage = OverridesGenerateMessage(typeSymbol);
         var hasSingleStringConstructor = false;
 
         // Get all public instance constructors
@@ -78,14 +78,14 @@ public sealed class ConstructorAnalyzer : DiagnosticAnalyzer
         {
             var parameters = ctor.Parameters;
 
-            // When GenerateDescription() is overridden, one constructor may have no parameters.
-            if (parameters.Length == 0 && overridesGenerateDescription)
+            // When GenerateMessage() is overridden, one constructor may have no parameters.
+            if (parameters.Length == 0 && overridesGenerateMessage)
             {
                 continue;
             }
 
-            // When GenerateDescription() is not overridden, one constructor must accept a single string parameter.
-            if (parameters.Length == 1 && !overridesGenerateDescription)
+            // When GenerateMessage() is not overridden, one constructor must accept a single string parameter.
+            if (parameters.Length == 1 && !overridesGenerateMessage)
             {
                 var param = parameters[0];
                 if (param.Type.SpecialType != SpecialType.System_String)
@@ -94,11 +94,11 @@ public sealed class ConstructorAnalyzer : DiagnosticAnalyzer
                     return;
                 }
 
-                // I can see some crazy developer down the line deciding that the 'description' parameter should
+                // I can see some crazy developer down the line deciding that the 'message' parameter should
                 // contain JSON, Markdown, or a Base64‑encoded goat. We cannot really prevent that, but we can at
-                // least ensure that the parameter is named 'description' so that JSON deserializers can map the
-                // constructor parameter to the Description property.
-                if (!String.Equals(param.Name, "description", StringComparison.Ordinal))
+                // least ensure that the parameter is named 'message' so that JSON deserializers can map the
+                // constructor parameter to the Message property.
+                if (!String.Equals(param.Name, "message", StringComparison.Ordinal))
                 {
                     Report(context, typeSymbol);
                     return;
@@ -108,14 +108,14 @@ public sealed class ConstructorAnalyzer : DiagnosticAnalyzer
             }
         }
 
-        if (!hasSingleStringConstructor && !overridesGenerateDescription)
+        if (!hasSingleStringConstructor && !overridesGenerateMessage)
         {
             Report(context, typeSymbol);
         }
     }
 
-    private static Boolean OverridesGenerateDescription(INamedTypeSymbol typeSymbol)
-        => typeSymbol.GetMembers(GeneratorConsts.GenerateDecriptionMethodName)
+    private static Boolean OverridesGenerateMessage(INamedTypeSymbol typeSymbol)
+        => typeSymbol.GetMembers(GeneratorConsts.GenerateMessageMethodName)
             .OfType<IMethodSymbol>()
             .Any(m => m.IsOverride);
 

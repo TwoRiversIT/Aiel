@@ -25,7 +25,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Aiel.Results.Generators;
 
-public class ErrorInfo(String ns, String error, String errorCode, String accessibility, Boolean overridesGenerateDescription)
+public class ErrorInfo(String ns, String error, String errorCode, String accessibility, Boolean overridesGenerateMessage)
 {
     public static ErrorInfo FromSymbol(INamedTypeSymbol symbol)
     {
@@ -45,8 +45,8 @@ public class ErrorInfo(String ns, String error, String errorCode, String accessi
         var errorName = symbol.Name;
         var codeName = errorName + GeneratorConsts.Suffix;
 
-        var overridesDescription = symbol.GetMembers(GeneratorConsts.GenerateDecriptionMethodName).OfType<IMethodSymbol>().Any(m => m.IsOverride)
-            || symbol.GetMembers(GeneratorConsts.DefaultDescriptionPropertyName).OfType<IPropertySymbol>().Any(p => p.IsOverride);
+        var overridesDescription = symbol.GetMembers(GeneratorConsts.GenerateMessageMethodName).OfType<IMethodSymbol>().Any(m => m.IsOverride)
+            || symbol.GetMembers(GeneratorConsts.DefaultMessagePropertyName).OfType<IPropertySymbol>().Any(p => p.IsOverride);
 
         return new ErrorInfo(ns ?? "", errorName, codeName, accessibility, overridesDescription);
     }
@@ -56,7 +56,7 @@ public class ErrorInfo(String ns, String error, String errorCode, String accessi
     public String FqErrorName => HasNamespace ? $"{GeneratorConsts.Global}{Namespace}.{ErrorName}" : $"{GeneratorConsts.Global}{ErrorName}";
     public String ErrorCodeName { get; } = errorCode;
     public String Accessibility { get; } = accessibility;
-    public Boolean OverridesGenerateDescription { get; } = overridesGenerateDescription;
+    public Boolean OverridesGenerateMessage { get; } = overridesGenerateMessage;
 
     public String ErrorAndCodeName => $"{ErrorName}.{ErrorCodeName}";
     public String FqErrorCodeName => HasNamespace ? $"{GeneratorConsts.Global}{Namespace}.{ErrorName}.{ErrorCodeName}" : $"{GeneratorConsts.Global}{ErrorName}.{ErrorCodeName}";

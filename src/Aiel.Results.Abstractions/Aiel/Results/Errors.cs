@@ -43,7 +43,7 @@ public sealed partial class NoError : Error
 
 /// <summary>
 /// A sentinel error type that indicates that the source generator was not
-/// able to generate the error type specified in the <see cref="Error.Description"/>.
+/// able to generate the error type specified in the <see cref="Error.Message"/>.
 /// </summary>
 /// <remarks>
 /// This is used to indicate a problem at runtime. with the error prototype

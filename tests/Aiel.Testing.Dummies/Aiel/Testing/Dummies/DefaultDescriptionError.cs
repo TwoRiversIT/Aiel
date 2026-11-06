@@ -24,7 +24,7 @@ using Aiel.Results;
 
 namespace Aiel.Testing.Dummies;
 
-public sealed partial class DefaultDescriptionError : Error
+public sealed partial class DefaultMessageError : Error
 {
-    protected override String? DefaultDescription => "This is the default description for DefaultDescriptionError.";
+    protected override String? DefaultMessage => "This is the default description for DefaultMessageError.";
 }

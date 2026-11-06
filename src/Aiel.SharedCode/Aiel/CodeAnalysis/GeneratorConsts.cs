@@ -29,8 +29,8 @@ internal static class GeneratorConsts
 {
     public const String Company = "Aiel";
     public const String Resolver = "JsonTypeInfoResolver";
-    public const String DefaultDescriptionPropertyName = "DefaultDescription";
-    public const String DescriptionParameterName = "description";
+    public const String DefaultMessagePropertyName = "DefaultMessage";
+    public const String DescriptionParameterName = "message";
     public const String ErrorClassName = "Error";
     public const String ErrorCodeClassName = ErrorClassName + Suffix;
     public const String ErrorCodePropertyName = "Code";
@@ -41,7 +41,7 @@ internal static class GeneratorConsts
     public const String FqPolymorphismType = Global + Root + "." + Polymorphism + Initializer;
     public const String FqRegistryType = Global + Root + "." + RegistryClassName;
     public const String GeneratedPolymorphism = "_" + Polymorphism + Initializer;
-    public const String GenerateDecriptionMethodName = "GenerateDescription";
+    public const String GenerateMessageMethodName = "GenerateMessage";
     public const String Global = "global::";
     public const String Initializer = "Initializer";
     public const String Instance = "Instance";

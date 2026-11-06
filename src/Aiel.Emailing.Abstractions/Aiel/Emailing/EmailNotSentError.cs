@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Results;
-using System.Text.Json.Serialization;
 
 namespace Aiel.Emailing;
 
@@ -33,10 +32,10 @@ public sealed partial class EmailNotSentError : Error
     private const String Unknown = "Unknown";
 
     /// <summary>
-    /// Gets a message that describes the error.
+    /// Creates a message describing a failed email send attempt.
     /// </summary>
-    [JsonIgnore]
-    public String Message => $"Failed to send email from {From} to {To}: {Subject}.";
+    /// <returns>A formatted failure message that includes the sender, recipient, and subject.</returns>
+    protected override String? GenerateMessage() => $"Failed to send email from {From} to {To}: {Subject}.";
 
     /// <summary>
     /// Gets the email address of the sender.

@@ -49,7 +49,7 @@ public sealed class ResultOfTUnitTestBase(ResultsIntegrationTestFixture fixture,
         var roundTrip = JsonSerializer.Deserialize<Result<Int32>>(json, Results.JSO);
 
         roundTrip!.IsSuccess.Should().BeFalse();
-        roundTrip.Error.Description.Should().Be(original.Error.Description);
+        roundTrip.Error.Message.Should().Be(original.Error.Message);
         roundTrip.Error.Code.Should().BeOfType(original.Error.Code.GetType());
         roundTrip.Error.Code.Should().Be(original.Error.Code);
     }

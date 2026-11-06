@@ -41,7 +41,7 @@ public class Serialization_Error(ResultsIntegrationTestFixture fixture, ITestOut
         var deserialized = JsonSerializer.Deserialize<TransactionError>(json, Results.JSO);
 
         deserialized.Should().NotBeNull();
-        deserialized!.Description.Should().Be("test");
+        deserialized!.Message.Should().Be("test");
         deserialized.Code.Should().Be(new TransactionError("test")
         {
             Reason = TransactionFailureReason.NetworkError,
@@ -58,7 +58,7 @@ public class Serialization_Error(ResultsIntegrationTestFixture fixture, ITestOut
         var deserialized = JsonSerializer.Deserialize<SimpleError>(json, Results.JSO);
 
         deserialized.Should().NotBeNull();
-        deserialized!.Description.Should().Be("Resource ID 123 not found");
+        deserialized!.Message.Should().Be("Resource ID 123 not found");
         deserialized.Code.Should().Be(new SimpleError("test").Code);
     }
 
@@ -70,7 +70,7 @@ public class Serialization_Error(ResultsIntegrationTestFixture fixture, ITestOut
 
         var deserialized = JsonSerializer.Deserialize<SimpleError>(json, Results.JSO);
         deserialized.Should().NotBeNull();
-        deserialized!.Description.Should().Be("Path: <>&\"'\\\n\t");
+        deserialized!.Message.Should().Be("Path: <>&\"'\\\n\t");
     }
 
     [Fact]
@@ -83,6 +83,6 @@ public class Serialization_Error(ResultsIntegrationTestFixture fixture, ITestOut
 
         deserialized.Should().NotBeNull();
         deserialized.Should().BeOfType<SimpleError>();
-        deserialized!.Description.Should().Be("Item not found");
+        deserialized!.Message.Should().Be("Item not found");
     }
 }

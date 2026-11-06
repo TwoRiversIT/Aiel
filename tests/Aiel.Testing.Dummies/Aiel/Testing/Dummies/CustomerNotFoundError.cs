@@ -37,7 +37,7 @@ public sealed class CustomerNotFoundError(Guid customerId)
 
     public Guid CustomerId { get; } = customerId;
 
-    override protected String GenerateDescription()
+    override protected String GenerateMessage()
         => $"Customer was not found: {CustomerId}";
 
     internal sealed class CustomerNotFoundErrorCode : ErrorCode

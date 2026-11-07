@@ -63,7 +63,7 @@ public abstract class Error
     private Error()
     {
         Code = NoSourceGeneratedError.NoSourceGeneratedErrorCode.Instance;
-        Message = NoSourceGeneratedError.DefaultMessage + GetType().Name;
+        Message = NoSourceGeneratedError.DefaultText + GetType().Name;
     }
 
     /// <summary>

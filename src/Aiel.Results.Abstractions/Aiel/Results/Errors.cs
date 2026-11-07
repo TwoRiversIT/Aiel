@@ -33,12 +33,12 @@ namespace Aiel.Results;
 /// </summary>
 public sealed partial class NoError : Error
 {
-    internal const String DefaultMessage = "No error.";
+    internal const String DefaultText = "No error.";
 
     /// <summary>
     /// Gets a singleton instance of <see cref="NoError"/> that can be used to represent the absence of an error.
     /// </summary>
-    public static readonly NoError Instance = new(DefaultMessage);
+    public static readonly NoError Instance = new(DefaultText);
 }
 
 /// <summary>
@@ -52,7 +52,7 @@ public sealed partial class NoError : Error
 /// </remarks>
 public sealed partial class NoSourceGeneratedError : Error
 {
-    internal const String DefaultMessage = "The source generator did not generate any code for this type: ";
+    internal const String DefaultText = "The source generator did not generate any code for this type: ";
 }
 
 /// <summary>
@@ -60,14 +60,14 @@ public sealed partial class NoSourceGeneratedError : Error
 /// </summary>
 public sealed partial class AggregateError : Error
 {
-    private const String DefaultMessage = "Multiple errors occurred.";
+    private const String DefaultText = "Multiple errors occurred.";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AggregateError"/> class with the specified errors.
     /// </summary>
     /// <param name="errors">The errors to aggregate.</param>
     public AggregateError(params Error[] errors)
-        : base(AggregateErrorCode.Instance, DefaultMessage)
+        : base(AggregateErrorCode.Instance, DefaultText)
     {
         Errors = errors.ToArray();
     }
@@ -75,7 +75,7 @@ public sealed partial class AggregateError : Error
     // Private to hide from public API, but needed for deserialization.
     [JsonConstructor]
     private AggregateError(IReadOnlyList<Error> errors)
-        : base(AggregateErrorCode.Instance, DefaultMessage)
+        : base(AggregateErrorCode.Instance, DefaultText)
     {
         Errors = errors.ToArray();
     }

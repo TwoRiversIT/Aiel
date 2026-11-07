@@ -69,7 +69,7 @@ public class ErrorTests
     [Fact]
     public void NoError_ShouldHave_Description()
     {
-        NoError.Instance.Message.Should().Be(NoError.DefaultMessage);
+        NoError.Instance.Message.Should().Be(NoError.DefaultText);
     }
 
     [Fact]

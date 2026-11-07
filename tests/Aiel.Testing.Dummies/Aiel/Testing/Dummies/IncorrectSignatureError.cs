@@ -38,7 +38,7 @@ public sealed class IncorrectSignatureError : Error
     // error because the base class Error does not have an accessible
     // parameterless constructor.
     public IncorrectSignatureError()
-        : base(NoSourceGeneratedError.NoSourceGeneratedErrorCode.Instance, NoSourceGeneratedError.DefaultMessage + nameof(IncorrectSignatureError))
+        : base(NoSourceGeneratedError.NoSourceGeneratedErrorCode.Instance, NoSourceGeneratedError.DefaultText + nameof(IncorrectSignatureError))
     {
     }
 }

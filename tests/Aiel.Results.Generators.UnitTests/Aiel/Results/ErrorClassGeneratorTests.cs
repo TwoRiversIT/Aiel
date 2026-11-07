@@ -37,7 +37,7 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
 
             internal sealed partial class InternalError : Error
             {
-                public const String DefaultMessage = "No error.";
+                public const String NoError = "No error.";
             }            
             """;
 
@@ -48,8 +48,8 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("internal partial class InternalError : global::Aiel.Results.Error")
-            .And.Contain("internal InternalError(String description)")
-            .And.Contain("base(InternalErrorCode.Instance, description)")
+            .And.Contain("internal InternalError(String message)")
+            .And.Contain("base(InternalErrorCode.Instance, message)")
             .And.Contain("public static readonly InternalErrorCode Instance = new()");
 
         result.CompilationDiagnostics.Should().BeEmpty();
@@ -78,16 +78,16 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class AlphaError : global::Aiel.Results.Error")
-            .And.Contain("public AlphaError(String description)")
-            .And.Contain("base(AlphaErrorCode.Instance, description)")
+            .And.Contain("public AlphaError(String message)")
+            .And.Contain("base(AlphaErrorCode.Instance, message)")
             .And.Contain("public static readonly AlphaErrorCode Instance = new()")
             .And.Contain("public partial class BravoError : global::Aiel.Results.Error")
-            .And.Contain("public BravoError(String description)")
-            .And.Contain("base(BravoErrorCode.Instance, description)")
+            .And.Contain("public BravoError(String message)")
+            .And.Contain("base(BravoErrorCode.Instance, message)")
             .And.Contain("public static readonly BravoErrorCode Instance = new()")
             .And.Contain("public partial class CharlieError : global::Aiel.Results.Error")
-            .And.Contain("public CharlieError(String description)")
-            .And.Contain("base(CharlieErrorCode.Instance, description)")
+            .And.Contain("public CharlieError(String message)")
+            .And.Contain("base(CharlieErrorCode.Instance, message)")
             .And.Contain("public static readonly CharlieErrorCode Instance = new()");
     }
 
@@ -163,8 +163,8 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
-            .And.Contain("public CustomError(String description)")
-            .And.Contain("base(CustomErrorCode.Instance, description)")
+            .And.Contain("public CustomError(String message)")
+            .And.Contain("base(CustomErrorCode.Instance, message)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 
@@ -222,8 +222,8 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
-            .And.Contain("public CustomError(String description)")
-            .And.Contain("base(CustomErrorCode.Instance, description)")
+            .And.Contain("public CustomError(String message)")
+            .And.Contain("base(CustomErrorCode.Instance, message)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 
@@ -251,13 +251,13 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
         var source = result.GeneratedSources[0].Source.ToString();
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
-            .And.Contain("public CustomError(String description)")
-            .And.Contain("base(CustomErrorCode.Instance, description)")
+            .And.Contain("public CustomError(String message)")
+            .And.Contain("base(CustomErrorCode.Instance, message)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 
     [Fact]
-    public async Task Class_Overrides_GenerateDescription_Should_Generate_ParameterlessConstructor()
+    public async Task Class_Overrides_GenerateMessage_Should_Generate_ParameterlessConstructor()
     {
         const String testCode = """
             using Aiel.Results; 
@@ -269,7 +269,7 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
             {
                 public Int32 ID { get; init; }
 
-                protected override String GenerateDescription()
+                protected override String GenerateMessage()
                 {
                     return $"CustomError with ID: {ID}";
                 }
@@ -286,13 +286,13 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
             .And.Contain("public CustomError()")
-            .And.Contain("public CustomError(String description)")
-            .And.Contain("base(CustomErrorCode.Instance, description)")
+            .And.Contain("public CustomError(String message)")
+            .And.Contain("base(CustomErrorCode.Instance, message)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 
     [Fact]
-    public void Class_Overrides_GenerateDescription_Should_Generate_ParameterlessConstructor_And_Description()
+    public void Class_Overrides_GenerateMessage_Should_Generate_ParameterlessConstructor_And_Message()
     {
         const String testCode = """
             #nullable enable
@@ -303,7 +303,7 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
             
             public sealed partial class CustomError : Error
             {
-                protected override String? DefaultDescription => "This is the default description for CustomError.";
+                protected override String? DefaultMessage => "This is the default message for CustomError.";
             }            
             """;
 
@@ -316,8 +316,8 @@ public class ErrorClassGeneratorTests : SourceGeneratorTestBase<ErrorClassGenera
         source.Should().NotBeNullOrWhiteSpace()
             .And.Contain("public partial class CustomError : global::Aiel.Results.Error")
             .And.Contain("public CustomError()")
-            .And.Contain("public CustomError(String description)")
-            .And.Contain("base(CustomErrorCode.Instance, description)")
+            .And.Contain("public CustomError(String message)")
+            .And.Contain("base(CustomErrorCode.Instance, message)")
             .And.Contain("public static readonly CustomErrorCode Instance = new()");
     }
 }

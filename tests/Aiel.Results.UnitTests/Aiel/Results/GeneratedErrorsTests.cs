@@ -42,7 +42,7 @@ public sealed class GeneratedErrorsTests
 
         // Assert
         error.OrderId.Should().Be("ORD-12345");
-        error.Description.Should().Be("Order ORD-12345 was not found in the system");
+        error.Message.Should().Be("Order ORD-12345 was not found in the system");
         error.Code.Should().NotBeNull();
     }
 
@@ -61,7 +61,7 @@ public sealed class GeneratedErrorsTests
         error.ProductSku.Should().Be("WIDGET-001");
         error.RequestedQuantity.Should().Be(100);
         error.AvailableQuantity.Should().Be(25);
-        error.Description.Should().Be("Insufficient inventory for WIDGET-001");
+        error.Message.Should().Be("Insufficient inventory for WIDGET-001");
     }
 
     [Fact]
@@ -71,29 +71,29 @@ public sealed class GeneratedErrorsTests
         var error = new DatabaseConnectionError("Failed to connect to database");
 
         // Assert
-        error.Description.Should().Be("Failed to connect to database");
+        error.Message.Should().Be("Failed to connect to database");
         error.Code.Should().NotBeNull();
     }
 
     [Fact]
-    public void GenerateDescriptionError_Description_Should_ReturnCustomDescription()
+    public void GenerateMessageError_Message_Should_ReturnCustomMessage()
     {
         // Act
-        var error = new GenerateDescriptionError() { ID = 12345 };
+        var error = new GenerateMessageError() { ID = 12345 };
 
         // Assert
         error.ID.Should().Be(12345);
-        error.Description.Should().Be("Custom error with ID: 12345");
+        error.Message.Should().Be("Custom error with ID: 12345");
     }
 
     [Fact]
-    public void When_GenerateDescription_IsNotOverridden_ItReturnsNotImplemented()
+    public void When_GenerateMessage_IsNotOverridden_ItReturnsNotImplemented()
     {
         // Act
         var error = new SimpleError("Custom error with ID: 12345");
 
         // Assert
-        error.GenerateDescriptionValue.Should().Be(Error.NotImplemented);
+        error.GenerateMessageValue.Should().Be(Error.NotImplemented);
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public sealed class GeneratedErrorsTests
 
         // Assert
         error.CustomerId.Should().Be(12345);
-        error.Description.Should().Be("Custom constructor.");
+        error.Message.Should().Be("Custom constructor.");
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public sealed class GeneratedErrorsTests
         // Assert
         deserialized.Should().NotBeNull();
         deserialized.CustomerId.Should().Be(12345);
-        deserialized.Description.Should().Be("Custom constructor.");
+        deserialized.Message.Should().Be("Custom constructor.");
     }
 
     [Fact]
@@ -141,11 +141,11 @@ public sealed class GeneratedErrorsTests
     }
 
     [Fact]
-    public void CustomErrors_WithDefaultDescriptions_ShouldReturnDefaultDescription_WhenDescriptionIsNotSet()
+    public void CustomErrors_WithDefaultMessages_ShouldReturnDefaultMessage_WhenDescriptionIsNotSet()
     {
         // Arrange & Act
-        var error = new DefaultDescriptionError();
+        var error = new DefaultMessageError();
         // Assert
-        error.Description.Should().Be("This is the default description for DefaultDescriptionError.");
+        error.Message.Should().Be("This is the default description for DefaultMessageError.");
     }
 }

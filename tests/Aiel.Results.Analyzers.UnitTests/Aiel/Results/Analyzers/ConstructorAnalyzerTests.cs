@@ -39,7 +39,7 @@ public class ConstructorAnalyzerTests : AnalyzerTestBase<ConstructorAnalyzer>
 
             public sealed class NotFoundError : Error
             {
-                public NotFoundError(String description) : base(NotFoundErrorCode.Instance, description) { }
+                public NotFoundError(String message) : base(NotFoundErrorCode.Instance, message) { }
     
                 public sealed class NotFoundErrorCode : ErrorCode
                 {
@@ -63,7 +63,7 @@ public class ConstructorAnalyzerTests : AnalyzerTestBase<ConstructorAnalyzer>
             {
                 public String OrderId { get; init; }
     
-                public OrderNotFoundError(String description) : base(OrderNotFoundErrorCode.Instance, description) { }
+                public OrderNotFoundError(String message) : base(OrderNotFoundErrorCode.Instance, message) { }
     
                 public sealed class OrderNotFoundErrorCode : ErrorCode
                 {
@@ -86,10 +86,10 @@ public class ConstructorAnalyzerTests : AnalyzerTestBase<ConstructorAnalyzer>
             public sealed partial class ConflictError : Error
             {
                 // This one is valid
-                public ConflictError(String message) : base(ConflictErrorCode.Instance, message) { }
+                public ConflictError(String conflict) : base(ConflictErrorCode.Instance, conflict) { }
     
                 // This one is invalid because it has a second parameter
-                public ConflictError(String message, Int32 code) : base(ConflictErrorCode.Instance, message) { }
+                public ConflictError(String conflict, Int32 code) : base(ConflictErrorCode.Instance, conflict) { }
     
                 public sealed class ConflictErrorCode : ErrorCode
                 {

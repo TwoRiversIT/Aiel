@@ -24,11 +24,11 @@ using Aiel.Results;
 
 namespace Aiel.Testing.Dummies;
 
-public sealed partial class GenerateDescriptionError : Error
+public sealed partial class GenerateMessageError : Error
 {
     public Int32 ID { get; init; }
 
-    protected override String GenerateDescription()
+    protected override String GenerateMessage()
     {
         return $"Custom error with ID: {ID}";
     }

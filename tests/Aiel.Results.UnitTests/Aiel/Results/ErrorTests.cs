@@ -62,14 +62,14 @@ public class ErrorTests
         // Assert
         deserialized.Should().BeOfType<AggregateError>();
         deserialized.Errors.Should().HaveCount(2);
-        deserialized.Errors.First(e => e is SimpleError).Description.Should().Be("Error 1");
+        deserialized.Errors.First(e => e is SimpleError).Message.Should().Be("Error 1");
         deserialized.Errors.First(e => e is TransactionError).As<TransactionError>().TransactionId.Should().Be("XDV83401@FVAD");
     }
 
     [Fact]
     public void NoError_ShouldHave_Description()
     {
-        NoError.Instance.Description.Should().Be(NoError.DefaultMessage);
+        NoError.Instance.Message.Should().Be(NoError.DefaultText);
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public class ErrorTests
         var error = new SimpleError("User not found");
 
         error.Should().BeOfType<SimpleError>();
-        error.Description.Should().Be("User not found");
+        error.Message.Should().Be("User not found");
         String codeName = error.Code;
         codeName.Should().Be("SimpleError");
     }
@@ -94,8 +94,8 @@ public class ErrorTests
     [Fact]
     public void SimpleError_ShouldUse_SingletonErrorCode()
     {
-        var error1 = new SimpleError("Description 1");
-        var error2 = new SimpleError("Description 2");
+        var error1 = new SimpleError("Message 1");
+        var error2 = new SimpleError("Message 2");
 
         error1.Code.Should().BeSameAs(error2.Code);
     }
@@ -130,12 +130,12 @@ public class ErrorTests
     [Fact]
     public void Errors_WithDifferentTypes_ShouldNotBe_Equal()
     {
-        var error1 = new TransactionError("Description")
+        var error1 = new TransactionError("Message")
         {
             Reason = TransactionFailureReason.CardExpired,
             TransactionId = "XDV83401@FVAD"
         };
-        var error2 = new SimpleError("Description");
+        var error2 = new SimpleError("Message");
 
         error1.Should().NotBe(error2);
     }
@@ -224,6 +224,6 @@ public class ErrorTests
         var error = new IncorrectSignatureError();
 
         error.Code.Should().BeOfType<NoSourceGeneratedError.NoSourceGeneratedErrorCode>();
-        error.Description.Should().Be("The source generator did not generate any code for this type: " + typeof(IncorrectSignatureError).Name);
+        error.Message.Should().Be("The source generator did not generate any code for this type: " + typeof(IncorrectSignatureError).Name);
     }
 }

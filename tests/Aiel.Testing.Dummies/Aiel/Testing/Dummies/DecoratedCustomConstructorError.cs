@@ -30,8 +30,8 @@ public sealed partial class DecoratedCustomConstructorError : Error
     public Int32 CustomerId { get; }
 
     [JsonConstructor]
-    public DecoratedCustomConstructorError(String description, Int32 customerId)
-        : base(DecoratedCustomConstructorErrorCode.Instance, description)
+    public DecoratedCustomConstructorError(String message, Int32 customerId)
+        : base(DecoratedCustomConstructorErrorCode.Instance, message)
     {
         CustomerId = customerId;
     }
@@ -41,8 +41,8 @@ public sealed partial class UndecoratedCustomConstructorError : Error
 {
     public Int32 CustomerId { get; }
 
-    public UndecoratedCustomConstructorError(String description, Int32 customerId)
-        : base(UndecoratedCustomConstructorErrorCode.Instance, description)
+    public UndecoratedCustomConstructorError(String message, Int32 customerId)
+        : base(UndecoratedCustomConstructorErrorCode.Instance, message)
     {
         CustomerId = customerId;
     }

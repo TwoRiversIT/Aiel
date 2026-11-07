@@ -26,5 +26,5 @@ namespace Aiel.Testing.Dummies;
 
 public sealed partial class SimpleError : Error
 {
-    public String? GenerateDescriptionValue => GenerateDescription();
+    public String? GenerateMessageValue => GenerateMessage();
 }

@@ -22,7 +22,7 @@
 
 using Aiel.Actions.Queries;
 using Aiel.Domain.Queries;
-using Aiel.Domain.ValueObjects.Contacts;
+using Aiel.Domain.ValueObjects;
 
 namespace Aiel.Domain.Specifications;
 

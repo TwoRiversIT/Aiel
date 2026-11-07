@@ -21,7 +21,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain.Entities;
-using Aiel.Domain.ValueObjects.Contacts;
+using Aiel.Domain.ValueObjects;
 using Bogus;
 using System.Text.Json.Serialization;
 

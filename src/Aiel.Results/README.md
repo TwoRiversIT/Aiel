@@ -318,7 +318,7 @@ The following `CustomerNotFoundError` example demonstrates a fully custom error 
 - It has a custom constructor that initializes the `CustomerId` property and calls the base constructor with the `CustomerNotFoundErrorCode` instance.
 - The custom constructor is decorated with the `[JsonConstructor]` attribute to ensure that JSON deserialization works correctly.
 - It defines a nested `CustomerNotFoundErrorCode`, overrides the `Name` property, and has a static `Instance` property.
-- It overrides the `GenerateDescription()` method to provide a meaningful error message. This allows an error to be created without requiring a description string to be formatted and passed to the constructor, simplifying error creation and eliminating an allocation if the error description is never accessed.
+- It overrides the `GenerateMessage()` method to provide a meaningful error message. This allows an error to be created without requiring a description string to be formatted and passed to the constructor, simplifying error creation and eliminating an allocation if the error description is never accessed.
 - It registers itself with the `Aiel.Results.ErrorRegistry` in a static constructor. This is required for it to work with the `ErrorJsonConverter`.
 
 ```csharp
@@ -341,7 +341,7 @@ public sealed class CustomerNotFoundError : Error
         CustomerId = customerId;
     }
 
-    override protected String GenerateDescription()
+    override protected String GenerateMessage()
         => $"Customer was not found: {CustomerId}";
 
     internal sealed class CustomerNotFoundErrorCode : ErrorCode

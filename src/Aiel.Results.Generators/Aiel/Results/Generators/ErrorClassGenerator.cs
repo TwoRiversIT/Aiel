@@ -65,7 +65,7 @@ public sealed partial class ErrorClassGenerator : SourceGeneratorBase, IIncremen
             sb.AppendLine($"{spaces}    }}");
             sb.AppendLine();
 
-            if (error.OverridesGenerateDescription)
+            if (error.OverridesGenerateMessage)
             {
                 sb.AppendLine($"{spaces}    {error.Accessibility} {error.ErrorName}()");
                 sb.AppendLine($"{spaces}        : base({error.ErrorCodeName}.{GeneratorConsts.Instance}) {{ }}");

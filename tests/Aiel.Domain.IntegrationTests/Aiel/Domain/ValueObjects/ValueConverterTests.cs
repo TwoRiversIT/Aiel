@@ -20,10 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
 using Aiel.Domain.Geography;
-using Aiel.Domain.ValueObjects.Addresses;
-using Aiel.Domain.ValueObjects.Geography;
 using Aiel.Domain.ValueObjects.Net;
 using Aiel.Testing;
 using Aiel.Testing.Dummies;

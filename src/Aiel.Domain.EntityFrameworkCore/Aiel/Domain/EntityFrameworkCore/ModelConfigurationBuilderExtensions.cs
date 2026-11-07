@@ -20,10 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
 using Aiel.Domain.EntityFrameworkCore.ValueConverters;
-using Aiel.Domain.ValueObjects.Addresses;
-using Aiel.Domain.ValueObjects.Contacts;
+using Aiel.Domain.ValueObjects;
+//using Aiel.Domain.ValueObjects;
 using Aiel.Domain.ValueObjects.Net;
 using Microsoft.EntityFrameworkCore;
 

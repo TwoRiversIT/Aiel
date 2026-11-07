@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.ValueObjects.Contacts;
+using Aiel.Domain.ValueObjects;
 using System.Security.Claims;
 
 namespace Aiel.Security;
@@ -40,7 +40,7 @@ public static class ClaimsPrincipalExtensions
     public static EmailAddress EmailAddress([NotNull] this ClaimsPrincipal principal)
         => principal.Claims.EmailAddress();
     public static EmailAddress EmailAddress([NotNull] this IEnumerable<Claim> claims)
-        => Domain.ValueObjects.Contacts.EmailAddress.From(claims.FullName(), claims.Email());
+        => Domain.ValueObjects.EmailAddress.From(claims.FullName(), claims.Email());
 
     public static String ZoneInfo([NotNull] this ClaimsPrincipal principal)
         => principal.Claims.ZoneInfo();

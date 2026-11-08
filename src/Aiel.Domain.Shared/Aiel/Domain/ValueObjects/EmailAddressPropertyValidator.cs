@@ -60,12 +60,14 @@ public class NullableEmailAddressPropertyValidator<T>
 }
 
 /// <summary>
-/// Defines extension methods for FluentValidation rule builders to add <see cref="EmailAddress"/> validation.
+/// Defines extension methods for FluentValidation rule builders to add <see cref="ValueObjects.EmailAddress"/> validation.
 /// </summary>
 public static class EmailAddressValidatorExtensions
 {
     /// <summary>
-    /// Defines a validator on the current rule builder for <see cref="EmailAddress"/> properties. Validation will fail if the value is not null and not a valid Member Number.
+    /// Defines a validator on the current rule builder for <see cref="ValueObjects.EmailAddress"/> properties.
+    /// Validation will fail if the value is not null and not a valid Member Number.
+    /// Under the hood, this uses <see cref="EmailValidator.Instance" /> for performing the validation.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <param name="ruleBuilder"></param>
@@ -74,7 +76,9 @@ public static class EmailAddressValidatorExtensions
         => ruleBuilder.SetValidator(new EmailAddressPropertyValidator<TRequest>());
 
     /// <summary>
-    /// Defines a validator on the current rule builder for <see cref="EmailAddress"/> properties. Validation will fail if the value is not null and not a valid Member Number.
+    /// Defines a validator on the current rule builder for <see cref="ValueObjects.EmailAddress"/> properties.
+    /// Validation will fail if the value is not null and not a valid Member Number.
+    /// Under the hood, this uses <see cref="EmailValidator.Instance" /> for performing the validation.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <param name="ruleBuilder"></param>

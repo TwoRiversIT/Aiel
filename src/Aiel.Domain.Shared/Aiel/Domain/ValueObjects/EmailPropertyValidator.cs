@@ -70,6 +70,15 @@ public static partial class EmailValidatorExtensions
     /// <typeparam name="TRequest"></typeparam>
     /// <param name="ruleBuilder"></param>
     /// <returns></returns>
+    public static IRuleBuilderOptions<TRequest, Email> Email<TRequest>(this IRuleBuilder<TRequest, Email> ruleBuilder)
+        => ruleBuilder.SetValidator(new EmailPropertyValidator<TRequest>());
+
+    /// <summary>
+    /// Defines a validator on the current rule builder for nullable <see cref="ValueObjects.Email"/> properties. Validation will fail if the value is not null and not a valid email.
+    /// </summary>
+    /// <typeparam name="TRequest"></typeparam>
+    /// <param name="ruleBuilder"></param>
+    /// <returns></returns>
     public static IRuleBuilderOptions<TRequest, Email?> Email<TRequest>(this IRuleBuilder<TRequest, Email?> ruleBuilder)
         => ruleBuilder.SetValidator(new NullableEmailPropertyValidator<TRequest>());
 }

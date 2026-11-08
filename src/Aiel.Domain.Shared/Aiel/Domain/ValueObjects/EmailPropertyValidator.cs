@@ -60,7 +60,7 @@ public class NullableEmailPropertyValidator<T>
 }
 
 /// <summary>
-/// Defines extension methods for FluentValidation rule builders to add <see cref="Email"/> validation.
+/// Defines extension methods for FluentValidation rule builders to add <see cref="ValueObjects.Email"/> validation.
 /// </summary>
 public static partial class EmailValidatorExtensions
 {

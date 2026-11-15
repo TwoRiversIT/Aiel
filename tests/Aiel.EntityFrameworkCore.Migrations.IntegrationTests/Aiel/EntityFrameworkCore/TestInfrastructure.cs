@@ -20,11 +20,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.EntityFrameworkCore;
 using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds;
 using Aiel.Testing;
+using Aiel.ValueObjects.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +40,7 @@ public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.ConfigureValueConverters();
+        configurationBuilder.AddValueObjectConverters();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

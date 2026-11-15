@@ -20,7 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.EntityFrameworkCore;
+using Aiel.ValueObjects.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Example;
@@ -31,7 +31,7 @@ public class ExampleDbContext(DbContextOptions<ExampleDbContext> options) : DbCo
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.ConfigureValueConverters();
+        configurationBuilder.AddValueObjectConverters();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

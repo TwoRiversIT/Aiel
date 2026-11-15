@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.ValueObjects;
-using Aiel.Domain.ValueObjects.Net;
+using Aiel.ValueObjects;
+using Aiel.ValueObjects.Net;
 
 namespace Aiel.Testing.Dummies;
 

@@ -21,14 +21,14 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Domain;
-using Aiel.Domain.EntityFrameworkCore;
 using Aiel.Framework.DependencyInjection;
 using Aiel.StrongIds.EntityFrameworkCore;
+using Aiel.ValueObjects.EntityFrameworkCore;
 
 namespace Aiel.Testing;
 
 [DependsOn(typeof(AielDomain))]
-[DependsOn(typeof(AielDomainEntityFrameworkCore))]
+[DependsOn(typeof(AielValueObjectsEntityFrameworkCore))]
 [DependsOn(typeof(AielStrongIdsEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]
 public sealed class AielTestingDummies : AielDependency

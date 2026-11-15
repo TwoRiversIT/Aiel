@@ -21,9 +21,23 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.StrongIds;
-using Aiel.StrongIds.Validators;
+using FluentValidation.Validators;
 
 namespace FluentValidation;
+
+/// <summary>
+/// Defines a FluentValidation validator for <see cref="IStrongId"/> properties. Validation will fail if the value is not a valid email.
+/// </summary>
+public class NotDefaultStrongIdPropertyValidator<T, TStrongId>()
+    : PropertyValidator<T, TStrongId>, IPropertyValidator<T, TStrongId>
+    where TStrongId : IStrongId
+{
+    /// <inheritdoc/>
+    public override String Name => nameof(NotDefaultStrongIdPropertyValidator<,>);
+
+    /// <inheritdoc/>
+    public override Boolean IsValid(ValidationContext<T> context, TStrongId value) => value.HasValue;
+}
 
 /// <summary>
 /// Defines extension methods for FluentValidation rule builders to add <see cref="NotDefault"/> validation.
@@ -33,7 +47,7 @@ public static partial class StrongIdValidatorExtensions
     /// <summary>
     /// Defines a validator on the current rule builder for <see cref="IStrongId"/> properties. Validation will fail if <see cref="IStrongId.HasValue"/> is false.
     /// </summary>
-    public static IRuleBuilderOptions<T, TProperty> NotDefault<T, TProperty>(this IRuleBuilder<T, TProperty> ruleBuilder)
-        where TProperty : IStrongId
-        => ruleBuilder.SetValidator(new StrongIdPropertyValidator<T, TProperty>());
+    public static IRuleBuilderOptions<T, TStrongId> NotDefault<T, TStrongId>(this IRuleBuilder<T, TStrongId> ruleBuilder)
+        where TStrongId : IStrongId
+        => ruleBuilder.SetValidator(new NotDefaultStrongIdPropertyValidator<T, TStrongId>());
 }

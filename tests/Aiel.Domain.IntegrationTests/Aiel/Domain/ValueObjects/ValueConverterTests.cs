@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Geography;
-using Aiel.Domain.ValueObjects.Net;
 using Aiel.Testing;
 using Aiel.Testing.Dummies;
+using Aiel.ValueObjects;
+using Aiel.ValueObjects.Net;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aiel.Domain.ValueObjects;

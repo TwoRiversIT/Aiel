@@ -21,7 +21,6 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Aiel.Application;
-using Aiel.Framework;
 using Aiel.Framework.DependencyInjection;
 using Aiel.MultiTenancy;
 using Microsoft.Extensions.DependencyInjection.Extensions;

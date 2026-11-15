@@ -20,14 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.EntityFrameworkCore;
 using Aiel.EntityFrameworkCore.Migrations;
 using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.EntityFrameworkCore;
 
 [DependsOn(typeof(AielEntityFrameworkCoreMigrations))]
-[DependsOn(typeof(AielDomainEntityFrameworkCore))]
 public sealed class AielEntityFrameworkCoreMigrationsIntegrationTests : AielDependency
 {
     public override ValueTask ConfigureAsync(ConfigurationContext context, CancellationToken cancellationToken = default)

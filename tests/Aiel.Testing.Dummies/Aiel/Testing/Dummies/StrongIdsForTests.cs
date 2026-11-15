@@ -57,7 +57,10 @@ public readonly partial record struct StringAllowDefaultFalseId;
 [StrongId<String>(AllowDefault = true)]
 public readonly partial record struct StringAllowDefaultTrueId;
 
-// Just want to see if these compile and work with the source generator.
+////////////////////////////////////////////////////////////////////
+// Not used for testing. Inspect the source manually to ensures that
+// the source generator is not generating the TryFrom and TryParse
+// methods when the attributes are set to false.
 [StrongId<Guid>(GenerateTryFrom = false)]
 public readonly partial record struct GuidNoTryFromId;
 
@@ -66,4 +69,4 @@ public readonly partial record struct GuidNoTryParseId;
 
 [StrongId<Guid>(GenerateTryFrom = false, GenerateTryParse = false)]
 public readonly partial record struct GuidNoTryFromNoTryParseId;
-
+////////////////////////////////////////////////////////////////////

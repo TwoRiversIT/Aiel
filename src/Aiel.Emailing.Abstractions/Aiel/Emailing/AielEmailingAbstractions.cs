@@ -20,14 +20,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain;
-using Aiel.Framework;
 using Aiel.Framework.DependencyInjection;
+using Aiel.ValueObjects;
 
 namespace Aiel.Emailing;
 
 /// <summary>
 /// Represents the Aiel Emailing Abstractions module, which provides abstractions for email-related functionality within the Aiel framework.
 /// </summary>
-[DependsOn(typeof(AielDomainShared))]
+[DependsOn(typeof(AielValueObjects))]
 public sealed class AielEmailingAbstractions : AielDependency;

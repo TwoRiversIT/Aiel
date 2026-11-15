@@ -156,7 +156,6 @@
     <Project Path="src/Aiel.Authorization/Aiel.Authorization.csproj" />
     <Project Path="src/Aiel.DataAccess.Dapper/Aiel.DataAccess.Dapper.csproj" />
     <Project Path="src/Aiel.Domain.Abstractions/Aiel.Domain.Abstractions.csproj" />
-    <Project Path="src/Aiel.Domain.EntityFrameworkCore/Aiel.Domain.EntityFrameworkCore.csproj" Id="99c05739-06d3-4a67-a967-1657010dc9cb" />
     <Project Path="src/Aiel.Domain.Shared/Aiel.Domain.Shared.csproj" Id="0b2dad1d-8c6e-4c8d-9260-6741b58c6c2d" />
     <Project Path="src/Aiel.Domain/Aiel.Domain.csproj" />
     <Project Path="src/Aiel.Emailing.Abstractions/Aiel.Emailing.Abstractions.csproj" Id="04543c0e-bec5-4e39-8d44-c2658d5a2d49" />
@@ -218,6 +217,9 @@
       <BuildDependency Project="src/Aiel.Results.Analyzers/Aiel.Results.Analyzers.csproj" />
       <BuildDependency Project="src/Aiel.StrongIds.Analyzers/Aiel.StrongIds.Analyzers.csproj" />
     </Project>
+    <Project Path="src/Aiel.ValueObjects.EntityFrameworkCore/Aiel.ValueObjects.EntityFrameworkCore.csproj" Id="bc949916-79f3-416c-aec6-ecda6f4905e4" />
+    <Project Path="src/Aiel.ValueObjects.FluentValidation/Aiel.ValueObjects.FluentValidation.csproj" Id="e948e905-b077-4736-9489-8b8b136080ab" />
+    <Project Path="src/Aiel.ValueObjects/Aiel.ValueObjects.csproj" Id="54fb6c07-fcff-4f54-8d9b-af3c44452449" />
   </Folder>
   <Folder Name="/tests/">
     <File Path="tests/Directory.Build.props" />
@@ -288,6 +290,7 @@
     <Project Path="tests/Aiel.Testing.UnitTests/Aiel.Testing.UnitTests.csproj" />
     <Project Path="tests/Aiel.Users.UnitTests/Aiel.Users.UnitTests.csproj" Id="91c57f9e-bc58-42b8-99a5-59a93d041ccc" />
     <Project Path="tests/Aiel.Utilities.UnitTests/Aiel.Utilities.UnitTests.csproj" />
+    <Project Path="tests/Aiel.ValueObjects.UnitTests/Aiel.ValueObjects.UnitTests.csproj" Id="0664d6d9-e047-48be-9b1d-b9172c01f465" />
     <Project Path="tests/ExampleHostApplication/ExampleHostApplication.csproj" />
     <Project Path="tests/ExampleShared/ExampleShared.csproj" Id="1338d36c-e06a-40ce-af02-21c094b81520" />
     <Project Path="tests/ExampleWebApplication/ExampleWebApplication.csproj" />

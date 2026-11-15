@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Framework;
 using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
 
@@ -28,7 +27,4 @@ namespace Aiel.Domain;
 
 [DependsOn(typeof(AielDomain))]
 [DependsOn(typeof(AielTestingDummies))]
-public sealed class AielDomainUnitTests : AielDependency
-{
-
-}
+public sealed class AielDomainUnitTests : AielDependency;

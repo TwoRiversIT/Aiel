@@ -28,7 +28,4 @@ namespace Aiel.Domain;
 
 [DependsOn(typeof(AielDomain))]
 [DependsOn(typeof(AielTestingDummies))]
-public sealed class AielDomainUnitTests : AielDependency
-{
-
-}
+public sealed class AielDomainUnitTests : AielDependency;

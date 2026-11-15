@@ -53,6 +53,10 @@
 
     </PropertyGroup>
 
+	<ItemGroup Condition="'$(IsToolingProject)' != 'True'">
+        <Using Include="Aiel.Framework" />
+    </ItemGroup>
+
     <ItemGroup>
         <Using Include="System" />
         <Using Include="System.Collections.Generic" />

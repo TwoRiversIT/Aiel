@@ -22,7 +22,6 @@
 
 using Aiel.Actions.Commands;
 using Aiel.Actions.Queries;
-using Aiel.Framework;
 using Aiel.Framework.DependencyInjection;
 
 namespace Aiel.Mediator;

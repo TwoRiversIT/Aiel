@@ -53,7 +53,7 @@
 
     </PropertyGroup>
 
-	<ItemGroup Condition="'$(IsToolingProject)' != 'True'">
+    <ItemGroup Condition="'$(IsRoslynComponent)' != 'True'">
         <Using Include="Aiel.Framework" />
     </ItemGroup>
 

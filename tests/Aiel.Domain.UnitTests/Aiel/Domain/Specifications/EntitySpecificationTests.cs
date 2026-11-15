@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.ValueObjects;
 using Aiel.Testing.Dummies;
+using Aiel.ValueObjects;
 
 namespace Aiel.Domain.Specifications;
 
@@ -45,17 +45,20 @@ public class EntitySpecificationTests
     }
 
     [Theory]
-    [InlineData("Doug", Gender.Male, true)]
-    [InlineData("Doug", Gender.Other, false)]
-    [InlineData("Shyloh", Gender.Male, false)]
-    public void Can_be_combined(String firstName, Gender gender, Boolean expected)
+    [InlineData("Doug", Genders.Male, true)]
+    [InlineData("Doug", Genders.Other, false)]
+    [InlineData("Shyloh", Genders.Male, false)]
+    public void Can_be_combined(String firstName, String gender, Boolean expected)
     {
         // Arrange
         var person = Person.Create(firstName: "Doug", gender: Gender.Male);
-        var spec = new HasFirstName(firstName).And(new HasGender(gender));
+        var spec = new HasFirstName(firstName).And(new HasGender(new Gender(gender)));
 
-        // Act & Assert
-        spec.IsSatisfiedBy(person).Should().Be(expected);
+        // Act
+        var result = spec.IsSatisfiedBy(person);
+
+        // Assert
+        result.Should().Be(expected);
     }
 
     [Theory]

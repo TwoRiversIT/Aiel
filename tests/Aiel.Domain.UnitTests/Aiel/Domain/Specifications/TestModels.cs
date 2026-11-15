@@ -20,8 +20,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.ValueObjects;
 using Aiel.Testing.Dummies;
+using Aiel.ValueObjects;
 
 namespace Aiel.Domain.Specifications;
 
@@ -64,7 +64,7 @@ public class HasLastName(String lastName, StringComparison stringComparison = St
 {
 }
 
-public class HasGender(Gender gender) : EntitySpecification<Person>(user => (gender & user.Gender) != 0)
+public class HasGender(Gender gender) : EntitySpecification<Person>(entity => gender == entity.Gender)
 {
 }
 

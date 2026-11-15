@@ -38,11 +38,11 @@ public sealed class Person : ClassEntity<PersonId>
         LastName = String.Empty;
         MiddleName = String.Empty;
         DateOfBirth = DateOnly.MinValue;
-        Gender = Gender.None;
+        Gender = Gender.Empty;
     }
 
     [JsonConstructor]
-    private Person(PersonId id, String firstName, String lastName, String middleName = "", Gender gender = Gender.Other, DateOnly? dateOfBirth = null)
+    private Person(PersonId id, String firstName, String lastName, String middleName = "", Gender gender = default, DateOnly? dateOfBirth = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(firstName, nameof(firstName));
         ArgumentException.ThrowIfNullOrWhiteSpace(lastName, nameof(lastName));
@@ -59,7 +59,7 @@ public sealed class Person : ClassEntity<PersonId>
     public String LastName { get; private set; }
     public String MiddleName { get; private set; }
     public DateOnly? DateOfBirth { get; private set; }
-    public Gender Gender { get; private set; } = Gender.NonBinary;
+    public Gender Gender { get; private set; } = Gender.Empty;
 
     public String FullName => $"{FirstName} {(String.IsNullOrWhiteSpace(MiddleName) ? String.Empty : MiddleName + " ")}{LastName}".Trim();
     public Email Email => Email.From($"{FirstName}.{LastName}@example.com".ToLowerInvariant());
@@ -70,7 +70,7 @@ public sealed class Person : ClassEntity<PersonId>
             .Trim()
             .ToUpperInvariant();
 
-    public static Person Create(PersonId? id = null, String? firstName = null, String? lastName = null, String? middleName = null, DateOnly? dateOfBirth = null, Gender gender = Gender.NonBinary)
+    public static Person Create(PersonId? id = null, String? firstName = null, String? lastName = null, String? middleName = null, DateOnly? dateOfBirth = null, Gender gender = default)
     {
         return new(
             id ?? PersonId.From(Guid.NewGuid()),

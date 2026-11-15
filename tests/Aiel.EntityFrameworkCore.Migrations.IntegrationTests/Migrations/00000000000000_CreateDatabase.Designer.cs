@@ -56,7 +56,7 @@ namespace Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Gender")
-                        .HasColumnType("integer");
+                        .HasColumnType("text");
 
                     b.Property<string>("LastName")
                         .IsRequired()

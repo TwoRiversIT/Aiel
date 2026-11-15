@@ -20,9 +20,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Net;
-
-namespace Aiel.Domain.ValueObjects.Net;
+namespace Aiel.ValueObjects.Net;
 
 public sealed class SerialTests
 {

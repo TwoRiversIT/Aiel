@@ -23,7 +23,7 @@
 using System.Text.Json;
 using static AwesomeAssertions.FluentActions;
 
-namespace Aiel.Domain.ValueObjects;
+namespace Aiel.ValueObjects;
 
 public class EmailTests
 {

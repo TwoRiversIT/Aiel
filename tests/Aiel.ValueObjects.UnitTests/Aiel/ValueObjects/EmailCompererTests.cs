@@ -20,11 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-namespace Aiel.Domain.ValueObjects;
+namespace Aiel.ValueObjects;
 
 public class EmailComparerTests
 {
-
     public class When_Mode_is_LocalDomain
     {
         [Fact]

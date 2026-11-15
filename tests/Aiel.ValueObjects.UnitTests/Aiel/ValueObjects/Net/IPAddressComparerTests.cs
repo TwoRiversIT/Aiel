@@ -20,21 +20,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using FluentValidation.Validators;
+namespace Aiel.ValueObjects.Net;
 
-namespace Aiel.StrongIds.Validators;
-
-/// <summary>
-/// Defines a FluentValidation validator for <see cref="IStrongId"/> properties. Validation will fail if the value is not a valid email.
-/// </summary>
-/// <typeparam name="TProperty"></typeparam>
-public class StrongIdPropertyValidator<T, TProperty>()
-    : PropertyValidator<T, TProperty>
-    where TProperty : IStrongId
+public class IPAddressComparerTests
 {
-    /// <inheritdoc/>
-    public override String Name => nameof(StrongIdPropertyValidator<,>);
+    [Fact]
+    public void IPAddressComparer_works_as_expected()
+    {
+        var a = new[] { "204.63.46.18", "110.249.212.46", "51.15.144.131", "8.8.8.8", "204.63.42.225", "193.200.164.173" };
+        var b = new[] { "8.8.8.8", "51.15.144.131", "110.249.212.46", "193.200.164.173", "204.63.42.225", "204.63.46.18" };
 
-    /// <inheritdoc/>
-    public override Boolean IsValid(ValidationContext<T> context, TProperty value) => value.HasValue;
+        var list = new List<String>(a);
+
+        list.Sort(new IPAddressComparer());
+
+        list.Should().ContainInOrder(b);
+    }
 }

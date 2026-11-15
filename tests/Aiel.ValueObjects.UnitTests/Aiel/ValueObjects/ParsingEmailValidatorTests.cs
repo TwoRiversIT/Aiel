@@ -20,22 +20,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Net;
+using Microsoft.Extensions.Options;
 
-namespace Aiel.Domain.ValueObjects.Net;
+namespace Aiel.ValueObjects;
 
-public class IPAddressComparerTests
+public class ParsingEmailValidatorTests : EmailValidatorTestBase
 {
-    [Fact]
-    public void IPAddressComparer_works_as_expected()
+    public ParsingEmailValidatorTests()
     {
-        var a = new[] { "204.63.46.18", "110.249.212.46", "51.15.144.131", "8.8.8.8", "204.63.42.225", "193.200.164.173" };
-        var b = new[] { "8.8.8.8", "51.15.144.131", "110.249.212.46", "193.200.164.173", "204.63.42.225", "204.63.46.18" };
+        var options = Options.Create(new ParsingEmailValidatorOptions());
+        Validator = new ParsingEmailValidator(options);
+    }
 
-        var list = new List<String>(a);
+    protected override IEmailValidator Validator { get; }
 
-        list.Sort(new IPAddressComparer());
+    [Theory]
+    [InlineData("admin@mailserver1")]
+    [InlineData("example@localhost")]
+    [InlineData("user@com")]
+    [InlineData("user@localserver")]
+    public void Should_Validate_Email_With_Top_Level_Domains(String email)
+    {
+        var validator = new ParsingEmailValidator(Options.Create(new ParsingEmailValidatorOptions
+        {
+            AllowTopLevelDomains = true
+        }));
 
-        list.Should().ContainInOrder(b);
+        validator.IsValid(email).Should().BeTrue();
     }
 }

@@ -22,7 +22,7 @@
 
 using static AwesomeAssertions.FluentActions;
 
-namespace Aiel.Domain.ValueObjects.Net;
+namespace Aiel.ValueObjects.Net;
 
 public class DomainNameTests
 {

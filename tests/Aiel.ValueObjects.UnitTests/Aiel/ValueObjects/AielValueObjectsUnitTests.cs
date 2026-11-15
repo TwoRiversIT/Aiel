@@ -20,17 +20,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
+using Aiel.Framework.DependencyInjection;
 
-namespace Aiel.Domain.ValueObjects;
+namespace Aiel.ValueObjects;
 
-// This is 'internal' to block the tests from running because too many fail
-internal class MailAddressEmailValidatorTests : EmailValidatorTestBase
+[DependsOn(typeof(AielValueObjects))]
+public sealed class AielValueObjectsUnitTests : AielDependency
 {
-    public MailAddressEmailValidatorTests()
-    {
-        Validator = new MailAddressEmailValidator();
-    }
 
-    protected override IEmailValidator Validator { get; }
 }

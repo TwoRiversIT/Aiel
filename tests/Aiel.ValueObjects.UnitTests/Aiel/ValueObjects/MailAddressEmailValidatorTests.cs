@@ -20,16 +20,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Contacts;
-
-namespace Aiel.Domain.ValueObjects;
+namespace Aiel.ValueObjects;
 
 // This is 'internal' to block the tests from running because too many fail
-internal class PatternEmailValidatorTests : EmailValidatorTestBase
+internal class MailAddressEmailValidatorTests : EmailValidatorTestBase
 {
-    public PatternEmailValidatorTests()
+    public MailAddressEmailValidatorTests()
     {
-        Validator = new PatternEmailValidator();
+        Validator = new MailAddressEmailValidator();
     }
 
     protected override IEmailValidator Validator { get; }

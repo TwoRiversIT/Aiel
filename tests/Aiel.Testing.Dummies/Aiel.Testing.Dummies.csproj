@@ -14,7 +14,7 @@
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         -->
         <ProjectReference Include="..\..\src\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
-        <ProjectReference Include="..\..\src\Aiel.Domain.EntityFrameworkCore\Aiel.Domain.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.Domain\Aiel.Domain.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds.EntityFrameworkCore\Aiel.StrongIds.EntityFrameworkCore.csproj" />
@@ -28,9 +28,9 @@
         <PackageReference Include="Riok.Mapperly" Version="4.3.1" />
     </ItemGroup>
 
-    <ItemGroup>        
-        <ProjectReference Include="..\..\src\Aiel.Domain\Aiel.Domain.csproj" />
+    <ItemGroup>
         <ProjectReference Include="..\..\src\Aiel.Testing\Aiel.Testing.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.ValueObjects.EntityFrameworkCore\Aiel.ValueObjects.EntityFrameworkCore.csproj" />
     </ItemGroup>
 
 </Project>

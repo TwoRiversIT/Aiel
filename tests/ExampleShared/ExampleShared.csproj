@@ -20,7 +20,6 @@
         <ProjectReference Include="..\..\src\Aiel.StrongIds.Analyzers\Aiel.StrongIds.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         -->
         <ProjectReference Include="..\..\src\Aiel.Authorization.Generators\Aiel.Authorization.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
-        <ProjectReference Include="..\..\src\Aiel.Domain.EntityFrameworkCore\Aiel.Domain.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.EntityFrameworkCore.Migrations\Aiel.EntityFrameworkCore.Migrations.csproj" />
         <ProjectReference Include="..\..\src\Aiel.Framework.Generators\Aiel.Framework.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
         <ProjectReference Include="..\..\src\Aiel.Results.Generators\Aiel.Results.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Pack="false" PrivateAssets="all" />
@@ -29,8 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Aiel.Domain.EntityFrameworkCore\Aiel.Domain.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\src\Aiel.StrongIds.EntityFrameworkCore\Aiel.StrongIds.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\src\Aiel.ValueObjects.EntityFrameworkCore\Aiel.ValueObjects.EntityFrameworkCore.csproj" />
     </ItemGroup>
 
 </Project>

@@ -31,7 +31,7 @@ public class ExampleDbContext(DbContextOptions<ExampleDbContext> options) : DbCo
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.ConfigureValueConverters();
+        configurationBuilder.AddValueObjectConverters();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

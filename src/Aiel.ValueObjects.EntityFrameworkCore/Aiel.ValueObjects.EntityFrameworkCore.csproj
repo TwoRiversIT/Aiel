@@ -4,7 +4,6 @@
         <RootNamespace />
         <TargetFramework>net10.0</TargetFramework>
         <IsPackable>true</IsPackable>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,11 +11,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Aiel.Domain.Shared\Aiel.Domain.Shared.csproj" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+        <ProjectReference Include="..\Aiel.ValueObjects\Aiel.ValueObjects.csproj" />
     </ItemGroup>
 
 </Project>

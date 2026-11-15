@@ -21,38 +21,17 @@
 // DEALINGS IN THE SOFTWARE.
 
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System.Text.Json;
 
-namespace Aiel.Domain.EntityFrameworkCore.ValueConverters;
+namespace Aiel.ValueObjects.ValueConverters;
 
-/// <summary>
-/// A generic JSON converter for Entity Framework Core that serializes and
-/// deserializes objects of type <typeparamref name="T"/> to and from JSON
-/// strings for database storage.
-/// </summary>
-/// <typeparam name="T">The type of the object to be serialized and deserialized.</typeparam>
-public class JsonValueConverter<T> : ValueConverter<T, String>
-    where T : class
+internal class GenderValueConverter : ValueConverter<Gender, String>
 {
-    // Configure JSON serialization options once to reuse
-    private static readonly JsonSerializerOptions Options = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false  // Compact storage
-    };
-
     /// <summary>
-    /// Initializes a new instance of the <see cref="JsonValueConverter{T}"/> class.
+    /// Initializes a new instance of the <see cref="GenderValueConverter"/> class.
     /// </summary>
-    public JsonValueConverter() : base(
-        // Serialize object to JSON string, handle null gracefully
-        v => v != null
-            ? JsonSerializer.Serialize(v, Options)
-            : null!,
-        // Deserialize JSON back to object, handle null/empty
-        v => !String.IsNullOrEmpty(v)
-            ? JsonSerializer.Deserialize<T>(v, Options)!
-            : null!)
+    public GenderValueConverter() : base(
+        gender => gender.ToString(),
+        serialized => new Gender(serialized))
     {
     }
 }

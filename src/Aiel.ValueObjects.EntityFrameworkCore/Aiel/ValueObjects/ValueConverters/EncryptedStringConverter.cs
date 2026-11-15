@@ -24,7 +24,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Aiel.Domain.EntityFrameworkCore.ValueConverters;
+namespace Aiel.ValueObjects.ValueConverters;
 
 /// <summary>
 /// A value converter for encrypting and decrypting string values in Entity Framework Core.

@@ -20,22 +20,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.ValueObjects.Net;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Aiel.Framework.DependencyInjection;
 
-namespace Aiel.Domain.EntityFrameworkCore.ValueConverters;
+namespace Aiel.ValueObjects.EntityFrameworkCore;
 
-/// <summary>
-/// A value converter for the <see cref="EndPoint"/> value object, enabling its conversion to and from a string representation for storage in a database.
-/// </summary>
-public class EndPointValueConverter : ValueConverter<EndPoint, String>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EndPointValueConverter"/> class.
-    /// </summary>
-    public EndPointValueConverter() : base(
-        endPoint => endPoint.ToString(),
-        serialized => EndPoint.Parse(serialized))
-    {
-    }
-}
+[DependsOn(typeof(AielValueObjects))]
+public sealed class AielValueObjectsEntityFrameworkCore : AielDependency;

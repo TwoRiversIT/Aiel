@@ -20,23 +20,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Text.Json;
 
-namespace Aiel.Domain.EntityFrameworkCore.ValueConverters;
+namespace Aiel.ValueObjects.ValueConverters;
 
 /// <summary>
-/// A value converter for the <see cref="Email"/> value object, enabling its conversion to and from a string representation for storage in a database.
+/// A value converter for the <see cref="Address"/> value object, enabling its conversion to and from a string representation for storage in a database.
 /// </summary>
-public class EmailValueConverter : ValueConverter<Email, String>
+public class AddressValueConverter : ValueConverter<Address, String>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="EmailValueConverter"/> class.
+    /// Initializes a new instance of the <see cref="AddressValueConverter"/> class.
     /// </summary>
-    public EmailValueConverter() : base(
-        email => email.ToString(),
-        serialized => Email.Parse(serialized))
+    public AddressValueConverter() : base(
+        address => ToString(address),
+        serialized => FromString(serialized))
     {
     }
+
+    private static Address FromString(String serialized)
+        => JsonSerializer.Deserialize<Address>(serialized)
+            ?? throw new InvalidOperationException("Failed to deserialize Address from JSON.");
+
+    private static String ToString(Address address) => JsonSerializer.Serialize(address);
 }
 

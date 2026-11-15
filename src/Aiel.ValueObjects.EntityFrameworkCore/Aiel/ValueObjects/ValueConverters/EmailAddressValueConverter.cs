@@ -20,22 +20,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Aiel.Domain.EntityFrameworkCore.ValueConverters;
+namespace Aiel.ValueObjects.ValueConverters;
 
 /// <summary>
-/// A value converter for the <see cref="PhoneNumber"/> value object, enabling its conversion to and from a string representation for storage in a database.
+/// A value converter for the <see cref="EmailAddress"/> value object, enabling its conversion to and from a string representation for storage in a database.
 /// </summary>
-public class PhoneNumberValueConverter : ValueConverter<PhoneNumber, String>
+public class EmailAddressValueConverter : ValueConverter<EmailAddress, String>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="PhoneNumberValueConverter"/> class.
+    /// Initializes a new instance of the <see cref="EmailAddressValueConverter"/> class.
     /// </summary>
-    public PhoneNumberValueConverter() : base(
-        phoneNumber => phoneNumber.ToString(),
-        serialized => PhoneNumber.Parse(serialized))
+    public EmailAddressValueConverter() : base(
+        emailAddress => emailAddress.ToString(),
+        serialized => EmailAddress.Parse(serialized))
     {
     }
 }

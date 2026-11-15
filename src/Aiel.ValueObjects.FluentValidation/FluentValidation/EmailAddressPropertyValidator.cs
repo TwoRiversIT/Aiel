@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using FluentValidation;
+using Aiel.ValueObjects;
 using FluentValidation.Validators;
 
-namespace Aiel.Domain.ValueObjects;
+namespace FluentValidation;
 
 /// <summary>
 /// Defines a FluentValidation validator for <see cref="EmailAddress"/> properties. Validation will fail if the value is not a valid email address.

@@ -20,11 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.Geography;
-using FluentValidation;
+using Aiel.ValueObjects;
 using FluentValidation.Validators;
 
-namespace Aiel.Domain.ValueObjects;
+namespace FluentValidation;
 
 /// <summary>
 /// Defines a FluentValidation property validator for <see cref="PostalCode"/> properties. Validation will fail if the value is not a valid postal code.

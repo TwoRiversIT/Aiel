@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="./README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="12.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Aiel.ValueObjects\Aiel.ValueObjects.csproj" />
+    </ItemGroup>
+
+</Project>

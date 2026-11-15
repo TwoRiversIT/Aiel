@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using FluentValidation;
+using Aiel.ValueObjects;
 using FluentValidation.Validators;
 
-namespace Aiel.Domain.ValueObjects;
+namespace FluentValidation;
 
 /// <summary>
 /// Defines a FluentValidation validator for <see cref="PhoneNumber"/> properties. Validation will fail if the value is not a valid NANP phone number.
@@ -101,7 +101,7 @@ public static partial class PhoneNumberValidatorExtensions
         => ruleBuilder.SetValidator(new NullablePhoneNumberPropertyValidator<TRequest>());
 
     /// <summary>
-    /// Defines a validator on the current rule builder for <see cref="ValueObjects.PhoneNumber"/> properties. Validation will fail if the value is <see cref="ValueObjects.PhoneNumber.Empty"/>.
+    /// Defines a validator on the current rule builder for <see cref="ValueObjects.PhoneNumber"/> properties. Validation will fail if the value is <see cref="PhoneNumber.Empty"/>.
     /// </summary>
     /// <typeparam name="TRequest"></typeparam>
     /// <param name="ruleBuilder"></param>

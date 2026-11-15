@@ -20,7 +20,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.EntityFrameworkCore;
 using Aiel.EntityFrameworkCore;
 using Aiel.Framework.DependencyInjection;
 using Aiel.Testing;
@@ -28,7 +27,6 @@ using Aiel.Testing;
 namespace Aiel.Domain;
 
 [DependsOn(typeof(AielDomain))]
-[DependsOn(typeof(AielDomainEntityFrameworkCore))]
 [DependsOn(typeof(AielTesting))]
 [DependsOn(typeof(AielTestingDummies))]
 [DependsOn(typeof(AielEntityFrameworkCore))]

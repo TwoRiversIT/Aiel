@@ -20,10 +20,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 // DEALINGS IN THE SOFTWARE.
 
-using Aiel.Domain.EntityFrameworkCore.ValueConverters;
-using Aiel.Domain.ValueObjects;
-using Aiel.Domain.ValueObjects.Net;
 using Aiel.StrongIds;
+using Aiel.ValueObjects;
+using Aiel.ValueObjects.Net;
+using Aiel.ValueObjects.ValueConverters;
 using ExampleShared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

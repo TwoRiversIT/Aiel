@@ -22,10 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="12.2.0" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Aiel.Domain.Abstractions\Aiel.Domain.Abstractions.csproj" />
         <ProjectReference Include="..\Aiel.Framework\Aiel.Framework.csproj" />
         <ProjectReference Include="..\Aiel.StrongIds\Aiel.StrongIds.csproj" />

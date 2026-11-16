@@ -150,7 +150,7 @@ public sealed class DefaultDomainEventDispatcherTests
 
     private record TestDomainEvent(String Label = "") : IDomainEvent
     {
-        public Guid EventId { get; } = Guid.NewGuid();
+        public EventId EventId { get; } = Events.EventId.From(Guid.NewGuid());
         public DateTimeOffset OccurredOn { get; } = DateTimeOffset.UtcNow;
         public String EventType => nameof(TestDomainEvent);
     }

@@ -203,10 +203,10 @@ public class AielDbContextTests
         public void ClearDomainEvents() => _domainEvents.Clear();
     }
 
-    private sealed record TestDomainEvent(Guid EventId, DateTimeOffset OccurredOn, String EventType) : IDomainEvent
+    private sealed record TestDomainEvent(EventId EventId, DateTimeOffset OccurredOn, String EventType) : IDomainEvent
     {
         public TestDomainEvent()
-            : this(Guid.NewGuid(), DateTimeOffset.UtcNow, nameof(TestDomainEvent))
+            : this(EventId.From(Guid.NewGuid()), DateTimeOffset.UtcNow, nameof(TestDomainEvent))
         {
         }
     }

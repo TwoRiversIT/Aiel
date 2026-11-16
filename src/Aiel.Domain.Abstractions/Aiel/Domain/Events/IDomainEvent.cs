@@ -33,7 +33,7 @@ public interface IDomainEvent
     /// <summary>
     /// Gets the unique identifier of the domain event.
     /// </summary>
-    Guid EventId { get; }
+    EventId EventId { get; }
 
     /// <summary>
     /// Gets the timestamp when the domain event occurred, preferably in UTC.

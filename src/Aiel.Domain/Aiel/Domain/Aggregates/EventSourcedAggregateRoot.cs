@@ -62,6 +62,9 @@ public abstract class EventSourcedAggregateRoot<TKey> : AggregateRoot<TKey>, IRe
     protected override void AddEvent(IDomainEvent domainEvent)
     {
         Apply(domainEvent);
+
+        base.AddEvent(domainEvent);
+
         Version++;
     }
 
@@ -69,6 +72,10 @@ public abstract class EventSourcedAggregateRoot<TKey> : AggregateRoot<TKey>, IRe
     public void RehydrateFromHistory(IEnumerable<IDomainEvent> history)
     {
         ArgumentNullException.ThrowIfNull(history);
+        if (!history.Any())
+        {
+            throw new ArgumentException("History cannot be empty.", nameof(history));
+        }
 
         foreach (var domainEvent in history)
         {

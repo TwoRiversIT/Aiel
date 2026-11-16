@@ -46,13 +46,13 @@ public record Address
     /// <summary>
     /// Gets or sets the name of the addressee for the address.
     /// </summary>
-    public required String Addressee { get; init; } = String.Empty;
+    public String Addressee { get; init; } = String.Empty;
 
     /// <summary>
     /// Gets or sets the first line of the street address.
     /// </summary>
     [Display(Name = "Line 1")]
-    public required String Line1 { get; init; } = String.Empty;
+    public String Line1 { get; init; } = String.Empty;
 
     /// <summary>
     /// Gets or sets the second line of the street address.
@@ -76,7 +76,7 @@ public record Address
     /// Gets or sets the postal code of the address. This is represented by an IPostCode interface, allowing for flexibility in postal code representation.
     /// </summary>
     [Display(Name = "Postal Code")]
-    public required PostalCode PostalCode { get; init; } = PostalCode.Empty;
+    public PostalCode PostalCode { get; init; } = PostalCode.Empty;
 
     /// <summary>
     /// Gets or sets the country of the address. This is represented by a Country interface, allowing for flexibility in country representation.

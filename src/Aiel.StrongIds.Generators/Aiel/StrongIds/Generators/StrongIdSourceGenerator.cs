@@ -114,30 +114,33 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         EmitEmpty(builder, model, 2);
 
         // Backing Property
+        builder.AppendLine($"{I(2)}/// <summary>");
+        builder.AppendLine($"{I(2)}/// Gets the value of this instance as a <see cref=\"{model.BackingTypeName}\"/>");
+        builder.AppendLine($"{I(2)}/// </summary>");
         builder.AppendLine($"{I(2)}public {model.BackingTypeName} {BackingPropertyName} {{ get; }}");
         builder.AppendLine();
 
         // Constructor
         var constructorAccessibility = model.BackingKind == StrongIdBackingKindOption.Reference ? "private" : "public";
+        builder.AppendLine($"{I(2)}/// <summary>");
+        builder.AppendLine($"{I(2)}/// Instantiates a new <see cref=\"{model.TypeSymbol.Name}\"/> instance.");
+        builder.AppendLine($"{I(2)}/// </summary>");
         builder.AppendLine($"{I(2)}{constructorAccessibility} {model.TypeSymbol.Name}({model.BackingTypeName} {ValueParameterName})");
         builder.AppendLine($"{I(2)}{{");
         EmitValidation(builder, model, ValueParameterName, 3);
-
-        // Backing Property
-        builder.AppendLine($"{I(3)}/// <summary>");
-        builder.AppendLine($"{I(3)}/// Gets an empty <see cref=\"{model.TypeSymbol.Name}\"/> instance, which is initialized with the default value of its backing type: <see cref=\"{model.DefaultValue}\"/>");
-        builder.AppendLine($"{I(3)}/// </summary>");
         builder.AppendLine($"{I(3)}{BackingPropertyName} = {model.NormalizedValue};");
         builder.AppendLine($"{I(2)}}}");
         builder.AppendLine();
 
         // From
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
         builder.AppendLine($"{I(2)}public static {model.TypeSymbol.Name} From({model.BackingTypeName} {ValueParameterName}) => new({ValueParameterName});");
 
         // TryFrom
         if (model.GenerateTryFrom)
         {
             builder.AppendLine();
+            builder.AppendLine($"{I(2)}/// <inheritdoc />");
             builder.AppendLine($"{I(2)}public static global::System.Boolean TryFrom({model.BackingTypeName} {ValueParameterName}, out {model.TypeSymbol.Name} id)");
             builder.AppendLine($"{I(2)}{{");
             EmitTryFrom(builder, model, ValueParameterName, 3);
@@ -148,6 +151,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         if (model.GenerateTryParse)
         {
             builder.AppendLine();
+            builder.AppendLine($"{I(2)}/// <inheritdoc />");
             builder.AppendLine($"{I(2)}public static global::System.Boolean TryParse(global::System.String? {ValueParameterName}, global::System.IFormatProvider? provider, out {model.TypeSymbol.Name} id)");
             builder.AppendLine($"{I(2)}{{");
             EmitTryParse(builder, model, ParsedParameterName, 3);
@@ -156,15 +160,18 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
             builder.AppendLine($"{I(2)}}}");
 
             builder.AppendLine();
+            builder.AppendLine($"{I(2)}/// <inheritdoc />");
             builder.AppendLine($"{I(2)}public static global::System.Boolean TryParse(global::System.String {ValueParameterName}, out {model.TypeSymbol.Name} id) => TryParse({ValueParameterName}, null, out id);");
         }
 
         // HasValue
         builder.AppendLine();
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
         builder.AppendLine($"{I(2)}public global::System.Boolean HasValue => {model.HasValueExpression()};");
 
         // ToString
         builder.AppendLine();
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
         builder.AppendLine($"{I(2)}public override global::System.String ToString() => {model.ToStringExpression};");
 
         // IEquatable<T>
@@ -197,6 +204,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         builder.AppendLine($"{I(2)}/// <inheritdoc />");
         builder.AppendLine($"{I(2)}public static global::System.Boolean operator >({model.TypeSymbol.Name} left, {model.TypeSymbol.Name} right) => left.CompareTo(right) > 0;");
         builder.AppendLine();
+        builder.AppendLine($"{I(2)}/// <inheritdoc />");
         builder.AppendLine($"{I(2)}public static global::System.Boolean operator >=({model.TypeSymbol.Name} left, {model.TypeSymbol.Name} right) => left.CompareTo(right) >= 0;");
 
         // Coercion Operators
@@ -222,7 +230,7 @@ public sealed class StrongIdSourceGenerator : IIncrementalGenerator
         if (model.AllowEmpty)
         {
             builder.AppendLine($"{I(i)}/// <summary>");
-            builder.AppendLine($"{I(i)}/// Gets an empty <see cref=\"{model.TypeSymbol.Name}\"/> instance, which is initialized with the default value of its backing type: <see cref=\"{model.DefaultValue}\"/>");
+            builder.AppendLine($"{I(i)}/// Gets an empty <see cref=\"{model.TypeSymbol.Name}\"/> instance, which is initialized with the default value of its backing type: <see cref=\"{model.BackingTypeName}\"/>");
             builder.AppendLine($"{I(i)}/// </summary>");
             if (String.Equals(model.BackingTypeName, "global::System.String", StringComparison.Ordinal))
             {

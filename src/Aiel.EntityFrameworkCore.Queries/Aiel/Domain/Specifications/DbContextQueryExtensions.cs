@@ -47,7 +47,7 @@ public static class DbContextQueryExtensions
         return QueryMultipleInt(dbContext, specification.Sort, specification.Page, specification.ToExpression());
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, IEntitySpecification<TEntity> specification)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQuery request, IEntitySpecification<TEntity> specification)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
@@ -57,7 +57,7 @@ public static class DbContextQueryExtensions
         return QueryMultipleInt(dbContext, request.Sort, request.Page, specification.ToExpression());
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder sort, Page page, IEntitySpecification<TEntity> specification)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, SortOrder sort, PageInfo page, IEntitySpecification<TEntity> specification)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
@@ -68,7 +68,7 @@ public static class DbContextQueryExtensions
         return QueryMultipleInt(dbContext, sort, page, specification.ToExpression());
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQuery request)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
@@ -77,7 +77,7 @@ public static class DbContextQueryExtensions
         return QueryMultipleInt<TEntity>(dbContext, request.Sort, request.Page, null);
     }
 
-    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQueryMultiple request, Expression<Func<TEntity, Boolean>> predicate)
+    public static IQueryable<TEntity> QueryMultiple<TEntity>(this DbContext dbContext, IQuery request, Expression<Func<TEntity, Boolean>> predicate)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);
@@ -87,7 +87,7 @@ public static class DbContextQueryExtensions
         return QueryMultipleInt(dbContext, request.Sort, request.Page, predicate);
     }
 
-    internal static IQueryable<TEntity> QueryMultipleInt<TEntity>(DbContext dbContext, SortOrder? sort = null, Page? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
+    internal static IQueryable<TEntity> QueryMultipleInt<TEntity>(DbContext dbContext, SortOrder? sort = null, PageInfo? page = null, Expression<Func<TEntity, Boolean>>? predicate = null)
         where TEntity : class
     {
         ArgumentNullException.ThrowIfNull(dbContext);

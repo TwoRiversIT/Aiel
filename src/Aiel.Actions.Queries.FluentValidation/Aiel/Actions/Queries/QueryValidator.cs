@@ -24,18 +24,18 @@ using FluentValidation.Validators;
 
 namespace Aiel.Actions.Queries;
 
-public class QueryMultipleValidator<TRequest> : AbstractValidator<TRequest>
-    where TRequest : IQueryMultiple
+public class QueryValidator<TRequest> : AbstractValidator<TRequest>
+    where TRequest : IQuery
 {
-    public QueryMultipleValidator()
+    public QueryValidator()
     {
-        RuleFor(x => x.Page).NotNull().SetValidator(new PageValidator<TRequest>());
-        RuleFor(x => x.Sort).NotNull().SetValidator(new SortValidator<TRequest>());
+        RuleFor(x => x.Page).NotNull().SetValidator(new PageInfoValidator<TRequest>());
+        RuleFor(x => x.Sort).NotNull().SetValidator(new SortOrderValidator<TRequest>());
     }
 }
 
-public class SortValidator<T> : IPropertyValidator<T, SortOrder>
-    where T : IQueryMultiple
+public class SortOrderValidator<T> : IPropertyValidator<T, SortOrder>
+    where T : IQuery
 {
     public String Name => "Sort Order";
 
@@ -48,7 +48,7 @@ public class SortValidator<T> : IPropertyValidator<T, SortOrder>
         => value.Fields?.All(f => !String.IsNullOrWhiteSpace(f.Name) && (f.Direction == SortDirection.Ascending || f.Direction == SortDirection.Descending)) == true;
 }
 
-public class PageValidator<T> : IPropertyValidator<T, Page>
+public class PageInfoValidator<T> : IPropertyValidator<T, PageInfo>
 {
     public String Name => "Page";
 
@@ -57,6 +57,6 @@ public class PageValidator<T> : IPropertyValidator<T, Page>
         return "{PropertyName} is invalid.";
     }
 
-    public Boolean IsValid(ValidationContext<T> context, Page value)
+    public Boolean IsValid(ValidationContext<T> context, PageInfo value)
         => value.Number >= 1 && value.Size >= 1;
 }

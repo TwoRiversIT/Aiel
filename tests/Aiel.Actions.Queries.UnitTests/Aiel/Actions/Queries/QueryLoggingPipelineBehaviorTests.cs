@@ -138,7 +138,7 @@ public sealed class QueryLoggingPipelineBehaviorTests
     // Test stubs
     // -----------------------------------------------------------------------
 
-    private record TestQuery : IQuery<String>;
+    private record TestQuery : Query<String>;
 
     private sealed class ListLogger<T> : ILogger<T>
     {

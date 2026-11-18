@@ -74,7 +74,7 @@ public static class ResultHttpClientExtensions
     /// <param name="content">The request body to serialize as JSON.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing the deserialized result.</returns>
-    public static async Task<MultipleResult<TDto>> QueryMultipleAsync<TDto>(this HttpClient httpClient, Uri requestUri, Object? content = null, CancellationToken cancellationToken = default)
+    public static async Task<QueryResult<TDto>> QueryMultipleAsync<TDto>(this HttpClient httpClient, Uri requestUri, Object? content = null, CancellationToken cancellationToken = default)
         where TDto : notnull
     {
         ArgumentNullException.ThrowIfNull(httpClient);
@@ -82,8 +82,8 @@ public static class ResultHttpClientExtensions
 
         var response = await httpClient.PostAsJsonAsync(requestUri, content, Results.JSO, cancellationToken);
         await using var utf8Json = await response.Content.ReadAsStreamAsync(cancellationToken);
-        var result = await JsonSerializer.DeserializeAsync<MultipleResult<TDto>>(utf8Json, Results.JSO, cancellationToken);
-        return result ?? (MultipleResult<TDto>)await ErrorAsync(response);
+        var result = await JsonSerializer.DeserializeAsync<QueryResult<TDto>>(utf8Json, Results.JSO, cancellationToken);
+        return result ?? (QueryResult<TDto>)await ErrorAsync(response);
     }
 
     /// <summary>

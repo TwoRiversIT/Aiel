@@ -142,7 +142,7 @@ public sealed class DefaultQueryDispatcherTests
     // Test stubs
     // -----------------------------------------------------------------------
 
-    private record TestQuery : IQuery<String>;
+    private record TestQuery : Query<String>;
 
     private sealed class TestActor : IActor;
 

@@ -40,7 +40,7 @@ public class QuerySpecification<TEntity>
     /// </summary>
     protected QuerySpecification() : base(_ => true)
     {
-        Page = Page.Default;
+        Page = PageInfo.Default;
         Sort = SortOrder.None;
     }
 
@@ -50,7 +50,7 @@ public class QuerySpecification<TEntity>
     /// <param name="expression">The predicate to apply to the query that matches zero or more entities.</param>
     public QuerySpecification(Expression<Func<TEntity, Boolean>> expression) : base(expression)
     {
-        Page = Page.Default;
+        Page = PageInfo.Default;
         Sort = SortOrder.None;
     }
 
@@ -62,7 +62,7 @@ public class QuerySpecification<TEntity>
     /// <paramref name="query"/> parameter.
     /// </summary>
     /// <param name="query">The query to initialize the specification with.</param>
-    public QuerySpecification(IQueryMultiple query) : base(_ => true)
+    public QuerySpecification(IQuery query) : base(_ => true)
     {
         ArgumentNullException.ThrowIfNull(query);
 
@@ -80,7 +80,7 @@ public class QuerySpecification<TEntity>
     /// <para>
     /// <see cref="Page"/> and <see cref="Sort"/> are set from the
     /// <paramref name="page"/> and <paramref name="sort"/> parameters when they are
-    /// not null; otherwise they are set to <see cref="Page.Default"/> and
+    /// not null; otherwise they are set to <see cref="PageInfo.Default"/> and
     /// <see cref="SortOrder.None"/>.
     /// </para>
     /// </summary>
@@ -88,20 +88,20 @@ public class QuerySpecification<TEntity>
     /// <param name="sort">The sort order to apply to the query.</param>
     /// <param name="page">The page request to apply to the query.</param>
     /// <exception cref="ArgumentNullException">Thrown when the specification is null.</exception>
-    public QuerySpecification(IEntitySpecification<TEntity> specification, SortOrder? sort = null, Page? page = null)
+    public QuerySpecification(IEntitySpecification<TEntity> specification, SortOrder? sort = null, PageInfo? page = null)
         : base(specification.ToExpression())
     {
         Sort = sort ?? SortOrder.None;
-        Page = page ?? Page.Default;
+        Page = page ?? PageInfo.Default;
     }
 
     /// <summary>
-    /// Gets or sets the pagination information for the query results. Defaults to <see cref="Page.Default"/>.
+    /// Gets or sets the pagination information for the query results. Defaults to <see cref="PageInfo.Default"/>.
     /// </summary>
     /// <remarks>
-    /// Setting <see cref="Page"/> to <see langword="null"/> will reset it to <see cref="Page.Default"/>.
+    /// Setting <see cref="Page"/> to <see langword="null"/> will reset it to <see cref="PageInfo.Default"/>.
     /// </remarks>
-    public Page Page { get; set => field = value ?? Page.Default; } = Page.Default;
+    public PageInfo Page { get; set => field = value ?? PageInfo.Default; } = PageInfo.Default;
 
     /// <summary>
     /// Gets or sets the sorting order for the query results. Defaults to <see cref="SortOrder.None"/>.

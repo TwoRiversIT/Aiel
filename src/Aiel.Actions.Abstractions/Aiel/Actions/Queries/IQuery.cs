@@ -25,5 +25,21 @@ namespace Aiel.Actions.Queries;
 /// <summary>
 /// Represents a query operation that returns a result of the specified type.
 /// </summary>
-/// <typeparam name="T">The type of the result returned by the query.</typeparam>
-public interface IQuery<T> : IAction;
+public interface IQuery : IAction
+{
+    /// <summary>
+    /// Gets the sorting order for the query results.
+    /// </summary>
+    SortOrder Sort { get; }
+
+    /// <summary>
+    /// Gets the 1-based pagination information for the query results.
+    /// </summary>
+    PageInfo Page { get; }
+}
+
+/// <summary>
+/// Represents a query that produces a result of type <typeparamref name="T"/>.
+/// </summary>
+/// <typeparam name="T">The type of result produced by the query.</typeparam>
+public interface IQuery<T> : IQuery;

@@ -25,7 +25,7 @@ namespace Aiel.Actions.Queries;
 /// <summary>
 /// Carries paging information both directions for a query. The page number is 1 based, and the page size must be greater than or equal to 1.
 /// </summary>
-public record Page
+public record PageInfo
 {
     /// <summary>
     /// Gets the default page number, which is 1.
@@ -40,7 +40,7 @@ public record Page
     /// <summary>
     /// Gets a default page instance with the default page number and size.
     /// </summary>
-    public static readonly Page Default = new()
+    public static readonly PageInfo Default = new()
     {
         Number = DefaultPageNumber,
         Size = DefaultPageSize,
@@ -50,7 +50,7 @@ public record Page
     /// <summary>
     /// Gets a page instance that includes all records.
     /// </summary>
-    public static readonly Page All = new()
+    public static readonly PageInfo All = new()
     {
         Number = DefaultPageNumber,
         Size = Int32.MaxValue,
@@ -61,8 +61,8 @@ public record Page
     /// Gets a page instance that includes the specified number of records.
     /// </summary>
     /// <param name="howMany">The number of records to include in the page.</param>
-    /// <returns>A new <see cref="Page"/> instance.</returns>
-    public static Page Some(Int32 howMany) => new()
+    /// <returns>A new <see cref="PageInfo"/> instance.</returns>
+    public static PageInfo Some(Int32 howMany) => new()
     {
         Number = DefaultPageNumber,
         Size = howMany,
@@ -75,10 +75,10 @@ public record Page
     /// <param name="pageNumber">The page number.</param>
     /// <param name="pageSize">The page size.</param>
     /// <param name="totalRecords">The total number of records.</param>
-    /// <returns>A new <see cref="Page"/> instance.</returns>
-    public static Page Create(Int32 pageNumber, Int32 pageSize, Int32 totalRecords = 0)
+    /// <returns>A new <see cref="PageInfo"/> instance.</returns>
+    public static PageInfo Create(Int32 pageNumber, Int32 pageSize, Int32 totalRecords = 0)
     {
-        return new Page
+        return new PageInfo
         {
             Number = pageNumber,
             Size = pageSize,
@@ -93,9 +93,9 @@ public record Page
     /// <param name="take"></param>
     /// <param name="totalRecords"></param>
     /// <returns></returns>
-    public static Page SkipTake(Int32 skip, Int32 take, Int32 totalRecords = 0)
+    public static PageInfo SkipTake(Int32 skip, Int32 take, Int32 totalRecords = 0)
     {
-        return new Page
+        return new PageInfo
         {
             Offset = skip,
             Size = take,

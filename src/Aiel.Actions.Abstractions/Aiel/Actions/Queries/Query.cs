@@ -27,40 +27,40 @@ namespace Aiel.Actions.Queries;
 /// <summary>
 /// Represents a query that retrieves multiple results with sorting and paging information.
 /// </summary>
-public record QueryMultiple : IQueryMultiple
+public record Query : IQuery
 {
     /// <summary>
     /// Gets a query that retrieves all results without any sorting or paging.
     /// </summary>
-    public static readonly IQueryMultiple All = new QueryMultiple(SortOrder.None, Page.All);
+    public static readonly Query All = new(SortOrder.None, PageInfo.All);
 
     /// <summary>
     /// Gets a query that retrieves results with the default paging and no sorting.
     /// </summary>
-    public static readonly IQueryMultiple Default = new QueryMultiple(SortOrder.None, Page.Default);
+    public static readonly Query Default = new(SortOrder.None, PageInfo.Default);
 
     /// <summary>
     /// Gets a query that retrieves up to the specified number of results without any sorting.
     /// </summary>
     /// <param name="howMany">The number of results to retrieve.</param>
-    /// <returns>A new <see cref="IQueryMultiple"/> instance.</returns>
-    public static IQueryMultiple Some(Int32 howMany) => new QueryMultiple(SortOrder.None, Page.Some(howMany));
+    /// <returns>A new <see cref="Query"/> instance.</returns>
+    public static Query Some(Int32 howMany) => new(SortOrder.None, PageInfo.Some(howMany));
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with default sorting and paging.
+    /// Initializes a new instance of the <see cref="Query{TDto}"/> class with default sorting and paging.
     /// </summary>
-    protected QueryMultiple() : this(SortOrder.None, Page.Default)
+    protected Query() : this(SortOrder.None, PageInfo.Default)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultiple"/> class with the specified sorting and paging.
+    /// Initializes a new instance of the <see cref="Query"/> class with the specified sorting and paging.
     /// </summary>
     /// <param name="sort"></param>
     /// <param name="page"></param>
     /// <exception cref="ArgumentNullException"></exception>
     [JsonConstructor]
-    protected QueryMultiple(SortOrder sort, Page page)
+    protected Query(SortOrder sort, PageInfo page)
     {
         Sort = sort ?? throw new ArgumentNullException(nameof(sort));
         Page = page ?? throw new ArgumentNullException(nameof(page));
@@ -72,33 +72,33 @@ public record QueryMultiple : IQueryMultiple
     public SortOrder Sort { get; set; } = SortOrder.None;
 
     /// <summary>
-    /// Gets the pagination information for the query results. Defaults to <see cref="Page.Default"/>.
+    /// Gets the pagination information for the query results. Defaults to <see cref="PageInfo.Default"/>.
     /// </summary>
-    public Page Page { get; set; } = Page.Default;
+    public PageInfo Page { get; set; } = PageInfo.Default;
 }
 
 /// <summary>
 /// Base class for queries that return multiple results with sorting and paging.
 /// By default, the Sort property is set to <see cref="SortOrder.None"/> and the
-/// Page property is set to <see cref="Page.Default"/>. Derived classes can
+/// PageInfo property is set to <see cref="PageInfo.Default"/>. Derived classes can
 /// override these defaults as needed.
 /// </summary>
-public abstract record QueryMultiple<TDto> : QueryMultiple, IQueryMultiple<TDto>
+public abstract record Query<TDto> : Query, IQuery<TDto>
     where TDto : notnull
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with default sorting and paging.
+    /// Initializes a new instance of the <see cref="Query{TDto}"/> class with default sorting and paging.
     /// </summary>
-    protected QueryMultiple() : base(SortOrder.None, Page.Default)
+    protected Query() : base(SortOrder.None, PageInfo.Default)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="QueryMultiple{TDto}"/> class with the specified sorting and paging.
+    /// Initializes a new instance of the <see cref="Query{TDto}"/> class with the specified sorting and paging.
     /// </summary>
     /// <param name="sort">The sort order for the query results.</param>
     /// <param name="page">The pagination information for the query results.</param>
-    protected QueryMultiple(SortOrder sort, Page page) : base(sort, page)
+    protected Query(SortOrder sort, PageInfo page) : base(sort, page)
     {
     }
 }

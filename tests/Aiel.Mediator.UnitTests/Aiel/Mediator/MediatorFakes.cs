@@ -33,7 +33,7 @@ namespace Aiel.Mediator;
 public sealed record MissingHandlerCommand : ICommand;
 
 [DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
-public sealed record MissingHandlerQuery : IQuery<String>;
+public sealed record MissingHandlerQuery : Query<String>;
 
 [DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
 public sealed record ScopedResolutionCommand : ICommand;
@@ -46,7 +46,7 @@ public sealed class ScopedResolutionCommandHandler : ICommandHandler<ScopedResol
 }
 
 [DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
-public sealed record ScopedResolutionQuery : IQuery<String>;
+public sealed record ScopedResolutionQuery : Query<String>;
 
 public sealed class ScopedResolutionQueryHandler : IQueryHandler<ScopedResolutionQuery, String>
 {
@@ -124,7 +124,7 @@ public sealed class InnerRecordingBehavior<TAction>(ConcurrentQueue<String> call
 }
 
 [DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
-public sealed record SuccessfulQuery(String Value) : IQuery<String>;
+public sealed record SuccessfulQuery(String Value) : Query<String>;
 
 public sealed class SuccessfulQueryHandler : IQueryHandler<SuccessfulQuery, String>
 {
@@ -133,7 +133,7 @@ public sealed class SuccessfulQueryHandler : IQueryHandler<SuccessfulQuery, Stri
 }
 
 [DoesNotRespectAuthority(Reason = "Test actions are permission-free")]
-public sealed record ShortCircuitedQuery(String Value) : IQuery<String>;
+public sealed record ShortCircuitedQuery(String Value) : Query<String>;
 
 public sealed class ShortCircuitedQueryHandler : IQueryHandler<ShortCircuitedQuery, String>
 {

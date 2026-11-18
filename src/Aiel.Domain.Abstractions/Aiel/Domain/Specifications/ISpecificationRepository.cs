@@ -42,7 +42,7 @@ public interface ISpecificationRepository<TEntity>
     /// <param name="sort">The optional sort order.</param>
     /// <param name="page">The optional paging information.</param>
     /// <returns>An asynchronous stream of entities that satisfy the specification.</returns>
-    IAsyncEnumerable<TEntity> FindAsync(IEntitySpecification<TEntity> specification, SortOrder? sort = null, Page? page = null);
+    IAsyncEnumerable<TEntity> FindAsync(IEntitySpecification<TEntity> specification, SortOrder? sort = null, PageInfo? page = null);
 
     /// <summary>
     /// Gets a single entity that satisfies the given specification.
@@ -74,5 +74,5 @@ public interface ISpecificationRepository<TEntity>
     /// <param name="specification">The specification to filter the entities.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A result containing the entities that satisfy the specification.</returns>
-    Task<MultipleResult<TEntity>> QueryAsync(IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default);
+    Task<QueryResult<TEntity>> QueryAsync(IQueryMultipleSpecification<TEntity> specification, CancellationToken cancellationToken = default);
 }

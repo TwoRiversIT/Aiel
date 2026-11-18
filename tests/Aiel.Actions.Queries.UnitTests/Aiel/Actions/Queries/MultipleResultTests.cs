@@ -32,45 +32,50 @@ public class MultipleResultTests
     public void MultipleResult_Constructor_SetsProperties()
     {
         // Arrange
-        var results = new List<Int32>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        var totalCount = results.Count;
-        var pageCount = 2;
-        var pageSize = 6;
-        var currentPage = 1;
+        var page = 2; // Note: Paging is 1 based, not 0.
+        var size = 6;
+        var dataset = Enumerable.Range(1, 100).ToList();
+        var matching = dataset.Where(d => d % 2 == 0).ToList();
+        var values = matching.Skip((page - 1) * size).Take(size).ToList();
+        var a = new String(' ', 40);
 
         // Act
-        var result = new MultipleResult<Int32>(results, currentPage, pageSize, totalCount);
+        var result = new QueryResult<Int32>(values, page, size, matching.Count, dataset.Count);
 
         // Assert
-        result.TotalRecords.Should().Be(totalCount);
-        result.TotalPages.Should().Be(pageCount);
-        result.PageSize.Should().Be(pageSize);
-        result.PageNumber.Should().Be(currentPage);
+        result.Values.Should().HaveCount(size);
+        result.Count.Should().Be(values.Count);
+        result.Matching.Should().Be(matching.Count);
+        result.Total.Should().Be(dataset.Count);
+        result.Pages.Should().Be((matching.Count + size - 1) / size);
+        result.Page.Should().Be(page);
+        result.Size.Should().Be(size);
     }
 
     [Fact]
     public void MultipleResult_Create_SetsProperties_Returns_Result()
     {
         // Arrange
-        var results = new List<Int32>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        var totalCount = results.Count;
-        var pageCount = 2;
-        var pageSize = 6;
-        var currentPage = 1;
+        var page = 2; // Note: Paging is 1 based, not 0.
+        var size = 6;
+        var dataset = Enumerable.Range(1, 100).ToList();
+        var matching = dataset.Where(d => d % 2 == 0).ToList();
+        var values = matching.Skip((page - 1) * size).Take(size).ToList();
+        var a = new String(' ', 40);
 
         // Act
-        var result = MultipleResult.Success(results, currentPage, pageSize, totalCount);
+        var result = QueryResult.Success(values, page, size, matching.Count, dataset.Count);
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeOfType<MultipleResult<Int32>>();
+        result.Should().BeOfType<QueryResult<Int32>>();
         result.IsSuccess.Should().BeTrue();
-        result.Records.Should().NotBeNull();
-        result.TotalRecords.Should().Be(totalCount);
-        result.TotalRecords.Should().Be(totalCount);
-        result.TotalPages.Should().Be(pageCount);
-        result.PageSize.Should().Be(pageSize);
-        result.PageNumber.Should().Be(currentPage);
+        result.Values.Should().NotBeNull();
+        result.Total.Should().Be(dataset.Count);
+        result.Total.Should().Be(dataset.Count);
+        result.Pages.Should().Be((matching.Count + size - 1) / size);
+        result.Size.Should().Be(size);
+        result.Page.Should().Be(page);
     }
 
     [Fact]
@@ -78,29 +83,29 @@ public class MultipleResultTests
     {
         // Arrange
         var results = new List<Int32>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        var totalCount = results.Count;
+        var matching = results.Count;
         var pageCount = 2;
         var pageSize = 6;
         var currentPage = 1;
-        var multipleResult = new MultipleResult<Int32>(results, currentPage, pageSize, totalCount);
+        var multipleResult = new QueryResult<Int32>(results, currentPage, pageSize, matching);
 
         // Act
         var serialized = JsonSerializer.Serialize(multipleResult);
-        var deserialized = JsonSerializer.Deserialize<MultipleResult<Int32>>(serialized);
+        var deserialized = JsonSerializer.Deserialize<QueryResult<Int32>>(serialized);
 
         // Assert
         deserialized.Should().NotBeNull();
-        deserialized.TotalRecords.Should().Be(totalCount);
-        deserialized.TotalPages.Should().Be(pageCount);
-        deserialized.PageSize.Should().Be(pageSize);
-        deserialized.PageNumber.Should().Be(currentPage);
+        deserialized.Matching.Should().Be(matching);
+        deserialized.Pages.Should().Be(pageCount);
+        deserialized.Size.Should().Be(pageSize);
+        deserialized.Page.Should().Be(currentPage);
     }
 
     [Fact]
     public void MultipleResultOfT_Can_Be_Assigned_Error()
     {
         // Act
-        MultipleResult<Int32> result = new ApiError("An error occurred while processing the query.");
+        QueryResult<Int32> result = new ApiError("An error occurred while processing the query.");
 
         // Assert
         result.Should().NotBeNull();
@@ -112,10 +117,10 @@ public class MultipleResultTests
     public void MultipleResultOfT_TryGetRecords_Should_ReturnFalseAndDefault_When_IsFailed()
     {
         // Arrange
-        var result = MultipleResult.Failure<TypicalRecord>(new SimpleError("Not found"));
+        var result = QueryResult.Failure<TypicalRecord>(new SimpleError("Not found"));
 
         // Act
-        var got = result.TryGetRecords(out IReadOnlyList<TypicalRecord> records);
+        var got = result.TryGetValues(out IReadOnlyList<TypicalRecord> records);
 
         // Assert
         got.Should().BeFalse();
@@ -126,10 +131,10 @@ public class MultipleResultTests
     public void MultipleResultOfT_TryGetRecords_Should_ReturnFalse_When_ResultIsNotResultOfT()
     {
         // Arrange
-        var result = MultipleResult.Success([1, 2, 3, 4]);
+        var result = QueryResult.Success([1, 2, 3, 4]);
 
         // Act
-        var got = result.TryGetRecords<TypicalRecord>(out var value);
+        var got = result.TryGetValues<TypicalRecord>(out var value);
 
         // Assert
         got.Should().BeFalse();
@@ -141,10 +146,10 @@ public class MultipleResultTests
     {
         // Arrange
         var john = TypicalRecord.Create("John");
-        var result = MultipleResult.Success([john]);
+        var result = QueryResult.Success([john]);
 
         // Act
-        var got = result.TryGetRecords<TypicalRecord>(out var records);
+        var got = result.TryGetValues<TypicalRecord>(out var records);
 
         // Assert
         got.Should().BeTrue();

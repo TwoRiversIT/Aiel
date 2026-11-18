@@ -35,12 +35,12 @@ public class QueryMultipleTests
 
         // Assert
         query.Sort.Should().Be(SortOrder.None);
-        query.Page.Should().Be(Page.Default);
+        query.Page.Should().Be(PageInfo.Default);
         query.Id.Should().Be(1);
         query.UID.Should().NotBeEmpty();
     }
 
-    private record TestQueryMultiple() : QueryMultiple<String>(SortOrder.None, Page.Default)
+    private record TestQueryMultiple() : Query<String>(SortOrder.None, PageInfo.Default)
     {
         public Int32 Id { get; init; }
         public Guid UID { get; init; }

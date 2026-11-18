@@ -29,5 +29,5 @@ namespace Aiel.Domain.Specifications;
 /// type <typeparamref name="T"/>.
 /// </summary>
 /// <typeparam name="T">The type of the entities to query.</typeparam>
-public interface IQueryMultipleSpecification<T> : IQueryMultiple<T>, IEntitySpecification<T>
+public interface IQueryMultipleSpecification<T> : IQuery, IEntitySpecification<T>
     where T : class;

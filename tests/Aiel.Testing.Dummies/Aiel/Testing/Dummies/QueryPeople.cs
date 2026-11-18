@@ -24,7 +24,7 @@ using Aiel.Actions.Queries;
 
 namespace Aiel.Testing.Dummies;
 
-public record QueryPeople() : QueryMultiple<PersonDto>(DefaultSort, Page.Default)
+public record QueryPeople() : Query<PersonDto>(DefaultSort, PageInfo.Default)
 {
     public static readonly SortOrder DefaultSort = new([
         new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending),

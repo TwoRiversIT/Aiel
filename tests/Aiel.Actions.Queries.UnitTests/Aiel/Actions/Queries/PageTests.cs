@@ -35,7 +35,7 @@ public class PageTests
         var totalRecords = 50;
 
         // Act
-        var pageBased = Page.Create(pageNumber, pageSize, totalRecords);
+        var pageBased = PageInfo.Create(pageNumber, pageSize, totalRecords);
 
         // Assert
         pageBased.Number.Should().Be(pageNumber);
@@ -51,7 +51,7 @@ public class PageTests
         var take = 50;
 
         // Act
-        var skipTake = Page.SkipTake(skip, take);
+        var skipTake = PageInfo.SkipTake(skip, take);
 
         // Assert
         skipTake.Offset.Should().Be(skip);
@@ -62,7 +62,7 @@ public class PageTests
     public void Page_Create_SetsPageNumberToOne_WhenPageNumberIsLessThanOne()
     {
         // Act
-        var pageInfo = Page.Create(0, 0, 0);
+        var pageInfo = PageInfo.Create(0, 0, 0);
 
         // Assert
         pageInfo.Number.Should().Be(1);
@@ -72,7 +72,7 @@ public class PageTests
     public void Page_Create_SetsPageSizeToOne_WhenPageSizeIsLessThanOne()
     {
         // Act
-        var pageInfo = Page.Create(0, 0, 0);
+        var pageInfo = PageInfo.Create(0, 0, 0);
 
         // Assert
         pageInfo.Size.Should().Be(1);
@@ -82,7 +82,7 @@ public class PageTests
     public void Page_Number_Setter_SetsPageNumberToOne_WhenValueIsLessThanOne()
     {
         // Arrange
-        var pageInfo = Page.Create(10, 10, 100);
+        var pageInfo = PageInfo.Create(10, 10, 100);
 
         // Act
         pageInfo = pageInfo with { Number = 0 };
@@ -95,7 +95,7 @@ public class PageTests
     public void Page_Size_Setter_SetsPageSizeToOne_WhenValueIsLessThanOne()
     {
         // Arrange
-        var pageInfo = Page.Create(10, 10, 100);
+        var pageInfo = PageInfo.Create(10, 10, 100);
 
         // Act
         pageInfo = pageInfo with { Size = 0 };
@@ -108,8 +108,8 @@ public class PageTests
     public void Page_Create_Calculates_Offset_Correctly()
     {
         // Arrange
-        // Remember, Paging is 1-based, so Page 3 with a size of 10 means the offset is 20 (0-based).
-        var pageInfo = Page.Create(3, 10, 1);
+        // Remember, Paging is 1-based, so PageInfo 3 with a size of 10 means the offset is 20 (0-based).
+        var pageInfo = PageInfo.Create(3, 10, 1);
 
         // Act
         var offset = pageInfo.Offset;
@@ -122,7 +122,7 @@ public class PageTests
     public void Page_SkipTake_Calculates_Offset_Correctly()
     {
         // Arrange
-        var pageInfo = Page.SkipTake(3, 10, 1);
+        var pageInfo = PageInfo.SkipTake(3, 10, 1);
 
         // Act
         var offset = pageInfo.Offset;
@@ -135,7 +135,7 @@ public class PageTests
     public void Page_Offset_Can_Be_Set()
     {
         // Arrange
-        var pageInfo = Page.Create(3, 10, 100);
+        var pageInfo = PageInfo.Create(3, 10, 100);
 
         // Act
         pageInfo = pageInfo with { Offset = 15 };
@@ -148,7 +148,7 @@ public class PageTests
     public void Page_Offset_Can_Be_Reset()
     {
         // Arrange & Sanity Check
-        var pageInfo = Page.All;
+        var pageInfo = PageInfo.All;
         pageInfo.Offset.Should().Be(0);
         pageInfo.Size.Should().Be(Int32.MaxValue);
 
@@ -163,7 +163,7 @@ public class PageTests
     public void Page_Calculates_Pages_Correctly()
     {
         // Act
-        var pageInfo = Page.Create(10, 10, 45);
+        var pageInfo = PageInfo.Create(10, 10, 45);
 
         // Assert
         pageInfo.Pages.Should().Be(5);
@@ -173,11 +173,11 @@ public class PageTests
     public void Page_Create_CanBeSerialized()
     {
         // Arrange
-        var pageInfo = Page.Create(2, 10, 50);
+        var pageInfo = PageInfo.Create(2, 10, 50);
 
         // Act
         var serialized = JsonSerializer.Serialize(pageInfo);
-        var deserialized = JsonSerializer.Deserialize<Page>(serialized);
+        var deserialized = JsonSerializer.Deserialize<PageInfo>(serialized);
 
         // Assert
         deserialized.Should().NotBeNull();
@@ -191,11 +191,11 @@ public class PageTests
     public void Page_SkipTake_CanBeSerialized()
     {
         // Arrange
-        var pageInfo = Page.SkipTake(2, 10, 50);
+        var pageInfo = PageInfo.SkipTake(2, 10, 50);
 
         // Act
         var serialized = JsonSerializer.Serialize(pageInfo);
-        var deserialized = JsonSerializer.Deserialize<Page>(serialized);
+        var deserialized = JsonSerializer.Deserialize<PageInfo>(serialized);
 
         // Assert
         deserialized.Should().NotBeNull();
@@ -209,7 +209,7 @@ public class PageTests
     public void Page_WhenTotalIsZero_Pages_ReturnsZero()
     {
         // Act
-        var pageInfo = Page.Create(1, 10, 0);
+        var pageInfo = PageInfo.Create(1, 10, 0);
 
         // Assert
         pageInfo.Pages.Should().Be(0);
@@ -219,7 +219,7 @@ public class PageTests
     public void Page_Create_WithInsaneValues_Returns_SaneValue()
     {
         // Act
-        var pageInfo = Page.Create(-99, -99, -1000);
+        var pageInfo = PageInfo.Create(-99, -99, -1000);
 
         // Assert
         pageInfo.Pages.Should().Be(0);
@@ -232,7 +232,7 @@ public class PageTests
     public void Page_SkipTake_WithInsaneValues_Returns_SaneValue()
     {
         // Act
-        var pageInfo = Page.SkipTake(-99, -99, -1000);
+        var pageInfo = PageInfo.SkipTake(-99, -99, -1000);
 
         // Assert
         pageInfo.Pages.Should().Be(0);

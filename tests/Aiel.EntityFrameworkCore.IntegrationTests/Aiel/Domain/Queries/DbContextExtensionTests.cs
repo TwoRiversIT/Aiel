@@ -45,8 +45,8 @@ public class DbContextExtensionTests(SpecificationRepositoryFixture fixture, ITe
     }
 }
 
-public sealed record ListPeople(SortOrder? SortRequest = null, Page? PageRequest = null)
-    : QueryMultiple<PersonDto>(SortRequest ?? DefaultSort, PageRequest ?? Page.Default)
+public sealed record ListPeople(SortOrder? SortRequest = null, PageInfo? PageRequest = null)
+    : Query<PersonDto>(SortRequest ?? DefaultSort, PageRequest ?? PageInfo.Default)
 {
     public static readonly SortOrder DefaultSort = new([
         new SortField(nameof(PersonDto.DateOfBirth), SortDirection.Descending)

@@ -74,7 +74,7 @@ public class SpecificationRepositoryTests(SpecificationRepositoryFixture fixture
     {
         var spec = new EntitySpecification<Person>(_ => true);
 
-        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.DateOfBirth), SortDirection.Descending)]), Page.Default))
+        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.DateOfBirth), SortDirection.Descending)]), PageInfo.Default))
         {
             person.FirstName.Should().Be("Geordi");
             break;
@@ -86,7 +86,7 @@ public class SpecificationRepositoryTests(SpecificationRepositoryFixture fixture
     {
         var spec = new EntitySpecification<Person>(_ => true);
 
-        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.LastName), SortDirection.Ascending), new SortField(nameof(Person.FirstName), SortDirection.Ascending)]), Page.Default))
+        await foreach (var person in SUT.FindAsync(spec, new SortOrder([new SortField(nameof(Person.LastName), SortDirection.Ascending), new SortField(nameof(Person.FirstName), SortDirection.Ascending)]), PageInfo.Default))
         {
             person.FirstName.Should().Be("Shyloh");
             break;
@@ -101,7 +101,7 @@ public class SpecificationRepositoryTests(SpecificationRepositoryFixture fixture
         await foreach (var person in SUT.FindAsync(
             spec,
             new SortOrder([new SortField(nameof(Person.DateOfBirth))]),
-            Page.Create(2, 1, 0)))
+            PageInfo.Create(2, 1, 0)))
         {
             person.FirstName.Should().Be("Shyloh");
         }
@@ -113,8 +113,8 @@ public class SpecificationRepositoryTests(SpecificationRepositoryFixture fixture
         var query = new ListPeople();
         var result = await SUT.QueryAsync(query, CancellationToken);
 
-        result.Records.Should().HaveCount(4);
-        result.Records.Should().BeInAscendingOrder(p => p.LastName);
+        result.Values.Should().HaveCount(4);
+        result.Values.Should().BeInAscendingOrder(p => p.LastName);
     }
 
     private class ListPeople
@@ -123,7 +123,7 @@ public class SpecificationRepositoryTests(SpecificationRepositoryFixture fixture
         public ListPeople() : base()
         {
             Sort = new SortOrder([new SortField(nameof(Person.LastName)), new SortField(nameof(Person.FirstName))]);
-            Page = Page.Default;
+            Page = PageInfo.Default;
         }
     }
 }

@@ -118,7 +118,7 @@ public abstract class QueryResult : Result
     /// <param name="total">The total number of values in the dataset. Optional.</param>
     /// <typeparam name="TDto">The type of the values.</typeparam>
     /// <returns>A new <see cref="QueryResult{TDto}"/> instance.</returns>
-    public static QueryResult<TDto> Success<TDto>(IReadOnlyList<TDto> records, Query query, Int32 matching, Int32 total = 0)
+    public static QueryResult<TDto> Success<TDto>(IReadOnlyList<TDto> records, IQuery query, Int32 matching, Int32 total = 0)
         where TDto : notnull
     {
         return Success(records, query.Page.Number, query.Page.Size, matching, total);
